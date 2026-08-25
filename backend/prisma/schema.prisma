@@ -62,7 +62,9 @@ model VehicleImage {
 
 model Vehicle {
   id              String         @id @default(uuid())
+  brand           String
   model           String
+  licensePlate    String         @unique
   doors           Int
   seats           Int
   luggage         Int
@@ -71,6 +73,7 @@ model Vehicle {
   fuelType        FuelType
   age             Int
   pricePerHour    Float
+  outOfService    Boolean        @default(false)
   builtIn         Boolean        @default(false)
   images          VehicleImage[]
   reservations    Reservation[]

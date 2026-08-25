@@ -9,6 +9,7 @@ const {
   deleteReservationAdmin,
   updateReservationAdmin,
   getReservationByIdAdmin,
+  getAdminSchedule,
 } = require("./reservations.controller");
 
 const router = Router();
@@ -16,6 +17,7 @@ const router = Router();
 router.post("/reservations/add", authenticate, createReservation);
 router.get("/reservations/auth/all", authenticate, getMyReservationsByPage);
 router.get("/reservations/auth", authenticate, checkVehicleAvailability);
+router.get("/reservations/admin/schedule/auth", authenticate, requireAdmin, getAdminSchedule);
 router.get("/reservations/:id/auth", authenticate, getReservationById);
 router.get("/reservations/:id/admin", authenticate, requireAdmin, getReservationByIdAdmin);
 

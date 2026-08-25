@@ -9,7 +9,7 @@ import { ImHome } from "react-icons/im";
 
 const {
   routes: { about, contact, home, privacyPolicy, vehicles },
-  website: { name, footer },
+  website: { footer },
 } = constants;
 
 const quickLinks = [
@@ -50,7 +50,6 @@ const Footer = () => {
           <Col lg={6} xl={3}>
             <Link to={home}>
               <div className="logo">
-                <img src="/logo.png" alt={name} />
                 <div className="logo_text">
                   RENT<span>WIN</span>
                   <p>YOUR RELIABLE RIDE, AS LONG AS YOU NEED</p>

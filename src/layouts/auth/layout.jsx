@@ -19,7 +19,6 @@ const AuthLayout = () => {
   }, [pathname]);
 
   if (Object.keys(user).length > 0) return <Navigate to={routes.home} />;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
 
   return (
     <Container fluid className="auth-layout">
@@ -32,7 +31,6 @@ const AuthLayout = () => {
           </div>
         </Col>
         <Link to={routes.home} className="logo">
-          <img src="/logo.png" alt={website.name} title={website.name} />
           <div className="logo_text">
             RENT<span>WIN</span>
             <p>YOUR RELIABLE RIDE, AS LONG AS YOU NEED</p>

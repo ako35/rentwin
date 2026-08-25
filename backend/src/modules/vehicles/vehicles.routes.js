@@ -5,6 +5,8 @@ const {
   getVehicleById,
   getAllVehicles,
   getVehiclesByPage,
+  getVehiclesByPageAdmin,
+  getFleetStats,
   addVehicle,
   updateVehicle,
   deleteVehicle,
@@ -18,6 +20,8 @@ router.get("/car/visitors/all", getAllVehicles);
 router.get("/car/visitors/pages", getVehiclesByPage);
 router.get("/car/visitors/:id", getVehicleById);
 
+router.get("/car/admin/pages/auth", authenticate, requireAdmin, getVehiclesByPageAdmin);
+router.get("/car/admin/fleet-stats/auth", authenticate, requireAdmin, getFleetStats);
 router.post("/car/admin/:imageId/add", authenticate, requireAdmin, addVehicle);
 router.put("/car/admin/auth", authenticate, requireAdmin, updateVehicle);
 router.delete("/car/admin/:id/auth", authenticate, requireAdmin, deleteVehicle);

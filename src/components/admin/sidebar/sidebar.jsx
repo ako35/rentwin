@@ -4,7 +4,7 @@ import { utils } from "../../../utils";
 import { logout } from "../../../store";
 import { services } from "../../../services";
 import { constants } from "../../../constants";
-import { Container, Nav, Navbar } from "react-bootstrap";
+import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import {
   MdBookOnline,
   MdOutlineDashboard,
@@ -18,7 +18,7 @@ import "./sidebar.scss";
 
 const { routes } = constants;
 
-const navigationItems = [
+const beforeVehiclesItems = [
   {
     title: "Dashboard",
     icon: <MdOutlineDashboard />,
@@ -29,11 +29,9 @@ const navigationItems = [
     icon: <FaUsers />,
     pathname: `${routes.adminUsers}`,
   },
-  {
-    title: "Vehicles",
-    icon: <GiMechanicGarage />,
-    pathname: `${routes.adminVehicles}`,
-  },
+];
+
+const afterVehiclesItems = [
   {
     title: "Reservations",
     icon: <MdBookOnline />,
@@ -45,6 +43,21 @@ const navigationItems = [
     pathname: `${routes.adminContactMessages}`,
   },
 ];
+
+const renderNavLink = (item, pathname) => (
+  <Nav.Link
+    key={item.title}
+    as={Link}
+    to={item.pathname}
+    active={
+      item.title === "Dashboard"
+        ? pathname === item.pathname
+        : pathname.startsWith(item.pathname)
+    }
+  >
+    {item.icon} {item.title}
+  </Nav.Link>
+);
 
 const Sidebar = () => {
   const { pathname } = useLocation();
@@ -69,7 +82,6 @@ const Sidebar = () => {
         <Navbar.Brand>
           <Link to={routes.home}>
             <div className="logo">
-              <img src="/logo.png" alt={name} />
               <div className="logo_text">
                 RENT<span>WIN</span>
                 <p>YOUR RELIABLE RIDE, AS LONG AS YOU NEED</p>
@@ -80,20 +92,24 @@ const Sidebar = () => {
         <Navbar.Toggle aria-controls="admin-panel" />
         <Navbar.Collapse id="admin-panel">
           <Nav className="mt-5">
-            {navigationItems.map((item) => (
-              <Nav.Link
-                key={item.title}
-                as={Link}
-                to={item.pathname}
-                active={
-                  item.title === "Dashboard"
-                    ? pathname === item.pathname
-                    : pathname.startsWith(item.pathname)
-                }
-              >
-                {item.icon} {item.title}
-              </Nav.Link>
-            ))}
+            {beforeVehiclesItems.map((item) => renderNavLink(item, pathname))}
+            <NavDropdown
+              title={
+                <>
+                  <GiMechanicGarage /> Vehicles
+                </>
+              }
+              active={pathname.startsWith(routes.adminVehicles)}
+              id="vehicles-nav-dropdown"
+            >
+              <NavDropdown.Item as={Link} to={`${routes.adminVehicles}/new`}>
+                Add Vehicle
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminVehicles}>
+                Vehicle List
+              </NavDropdown.Item>
+            </NavDropdown>
+            {afterVehiclesItems.map((item) => renderNavLink(item, pathname))}
             <Nav.Link as={Link} to={routes.home}>
               <MdWeb /> Back To Website
             </Nav.Link>

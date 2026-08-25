@@ -35,7 +35,11 @@ const LoginPage = () => {
                 "You have successfully logged in",
                 "success"
             );
-            navigate(routes.home);
+            navigate(
+                responseUser?.roles?.includes("Administrator")
+                    ? routes.adminDashboard
+                    : routes.home
+            );
         } catch (error) {
             dispatch(loginFailure());
             utils.functions.swalToast(error.response.data.message, "error");

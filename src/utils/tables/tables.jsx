@@ -56,6 +56,12 @@ export const adminContactMessagesColumns = [
     },
 ];
 
+const STATUS_BADGE = {
+    AVAILABLE: { label: "Available", background: "#1b7a43" },
+    RENTED: { label: "Rented", background: "#c98a1f" },
+    OUT_OF_SERVICE: { label: "Out of Service", background: "#b93a3a" },
+};
+
 export const adminVehiclesColumns = [
     {
         name: "Image",
@@ -64,7 +70,7 @@ export const adminVehiclesColumns = [
                 src={`${API_URL}/files/display/${row?.image[0]}`}
                 alt={row?.model}
                 title={row?.model}
-                width={100}
+                width={80}
                 style={{
                     pointerEvents: "none",
                 }}
@@ -72,15 +78,53 @@ export const adminVehiclesColumns = [
         ),
     },
     {
+        name: "Brand",
+        selector: (row) => row?.brand,
+    },
+    {
         name: "Model",
         selector: (row) => row?.model,
+    },
+    {
+        name: "Plate",
+        selector: (row) => row?.licensePlate,
     },
     {
         name: "Age",
         selector: (row) => row?.age,
     },
     {
+        name: "Transmission",
+        selector: (row) => row?.transmission,
+    },
+    {
+        name: "Fuel",
+        selector: (row) => row?.fuelType,
+    },
+    {
         name: "Price/hour",
         selector: (row) => `$ ${row?.pricePerHour}`,
+    },
+    {
+        name: "Status",
+        selector: (row) => {
+            const status = STATUS_BADGE[row?.status];
+            if (!status) return null;
+            return (
+                <span
+                    style={{
+                        backgroundColor: status.background,
+                        color: "#fff",
+                        padding: "0.25rem 0.6rem",
+                        borderRadius: "4px",
+                        fontSize: "0.75rem",
+                        fontWeight: 600,
+                        whiteSpace: "nowrap",
+                    }}
+                >
+                    {status.label}
+                </span>
+            );
+        },
     },
 ];

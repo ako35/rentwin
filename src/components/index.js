@@ -1,8 +1,10 @@
 // admin components
 import AdminCarousel from './admin/carousel/carousel'
 import DashboardCard from './admin/dashboard-card/dashboard-card'
+import ScheduleTable from './admin/schedule-table/schedule-table'
 import Sidebar from './admin/sidebar/sidebar'
 import TableRow from './admin/table-row/table-row'
+import VehicleStatsPanel from './admin/vehicle-stats-panel/vehicle-stats-panel'
 
 
 // common components
@@ -17,6 +19,7 @@ import ContactInfo from './common/contact/info/info'
 import ContactMap from './common/contact/map/map'
 import CustomForm from './common/custom-form/custom-form'
 import CustomPagination from './common/custom-pagination/custom-pagination'
+import GaugeChart from './common/gauge-chart/gauge-chart'
 import QuickLink from './common/footer/quick-link/quick-link'
 import Footer from './common/footer/footer'
 import BottomMenu from './common/header/bottom-menu/bottom-menu'
@@ -45,8 +48,10 @@ export{
     // admin components
     AdminCarousel,
     DashboardCard,
+    ScheduleTable,
     Sidebar,
     TableRow,
+    VehicleStatsPanel,
 
     // common components
     OfferItem,
@@ -60,6 +65,7 @@ export{
     ContactMap,
     CustomForm,
     CustomPagination,
+    GaugeChart,
     QuickLink,
     Footer,
     BottomMenu,

@@ -23,8 +23,18 @@ const API_URL = import.meta.env.VITE_APP_API_URL;
 
 const formItems = [
   {
+    name: "brand",
+    label: "Brand",
+    asGroup: Col,
+  },
+  {
     name: "model",
     label: "Model",
+    asGroup: Col,
+  },
+  {
+    name: "licensePlate",
+    label: "License Plate",
     asGroup: Col,
   },
   {
@@ -93,7 +103,9 @@ const AdminVehicleDetailsPage = () => {
   const navigate = useNavigate();
 
   const [initialValues, setInitialValues] = useState({
+    brand: "",
     model: "",
+    licensePlate: "",
     doors: "",
     seats: "",
     luggage: "",
@@ -102,6 +114,7 @@ const AdminVehicleDetailsPage = () => {
     transmission: constants.transmissionTypes[0].value,
     airConditioning: constants.airConditioningTypes[0].value,
     fuelType: constants.fuelTypes[0].value,
+    outOfService: false,
     image: [],
   });
 
@@ -262,6 +275,15 @@ const AdminVehicleDetailsPage = () => {
                   <CustomForm key={item.name} formik={formik} {...item} />
                 ))}
               </Row>
+              <Form.Check
+                type="switch"
+                id="outOfService"
+                name="outOfService"
+                label="Out of Service"
+                checked={formik.values.outOfService}
+                onChange={formik.handleChange}
+                className="mt-3"
+              />
             </Col>
           </Row>
         </fieldset>

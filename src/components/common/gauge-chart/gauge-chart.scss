@@ -1,0 +1,52 @@
+@use '../../../styles/variables' as v;
+
+.gauge-chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 200px;
+
+    svg {
+        width: 100%;
+        max-width: 220px;
+        overflow: visible;
+    }
+
+    &__track {
+        fill: none;
+        stroke: v.$color3;
+        stroke-width: 14;
+    }
+
+    &__fill {
+        fill: none;
+        stroke-width: 14;
+        stroke-linecap: round;
+        transition: stroke-dashoffset 0.6s ease;
+    }
+
+    &__value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        fill: v.$color5;
+    }
+
+    &__label {
+        font-weight: 600;
+        color: v.$color1;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+    }
+
+    &__scale {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 220px;
+        margin-top: -0.5rem;
+        font-size: 0.75rem;
+        color: v.$color5;
+        padding: 0 0.5rem;
+    }
+}

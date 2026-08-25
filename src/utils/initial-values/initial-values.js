@@ -54,7 +54,9 @@ export const userPasswordFormInitialValues = {
 
 // NEW VEHICLE FORM
 export const adminNewVehicleFormInitialValues = {
+    brand: "",
     model: "",
+    licensePlate: "",
     doors: "",
     seats: "",
     luggage: "",
@@ -63,5 +65,6 @@ export const adminNewVehicleFormInitialValues = {
     fuelType: constants.fuelTypes[0].value,
     age: "",
     pricePerHour: "",
+    outOfService: false,
     image: "",
 };

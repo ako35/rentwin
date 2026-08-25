@@ -172,8 +172,12 @@ export const adminReservationDetailsFormValidationSchema = Yup.object({
 
 // ADMIN VEHICLE FORM
 export const adminVehicleFormValidationSchema = Yup.object({
+    brand: Yup.string()
+        .required("Enter the vehicle brand"),
     model: Yup.string()
         .required("Enter the vehicle model"),
+    licensePlate: Yup.string()
+        .required("Enter the license plate"),
     doors: Yup.number()
         .required("Enter the number of doors"),
     seats: Yup.number()

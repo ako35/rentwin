@@ -2,30 +2,36 @@ import { useEffect, useState } from "react";
 import { constants } from "../../../constants";
 import { services } from "../../../services";
 import { IoIosPeople } from "react-icons/io";
-import { FaCar } from "react-icons/fa";
-import { MdOutlineBookOnline } from "react-icons/md";
+import { MdBookOnline } from "react-icons/md";
 import { Col, Container, Row } from "react-bootstrap";
-import { AdminCarousel, DashboardCard, Loading } from "../../../components";
+import {
+  DashboardCard,
+  GaugeChart,
+  Loading,
+  ScheduleTable,
+  VehicleStatsPanel,
+} from "../../../components";
+import "./style.scss";
 
 const { routes } = constants;
 
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
-  const [vehicles, setVehicles] = useState([]);
-  const [reservations, setReservations] = useState([]);
-  const [members, setMembers] = useState([]);
+  const [fleetStats, setFleetStats] = useState(null);
+  const [members, setMembers] = useState(null);
+  const [reservations, setReservations] = useState(null);
 
-  const loadData = async (page) => {
+  const loadData = async () => {
     try {
-      const userData = await services.user.getUsersByPage(page);
-      const vehicleData = await services.vehicle.getVehiclesByPage(page, 20);
-      const reservationsData = await services.reservation.getReservationsByPage(
-        page
-      );
+      const [userData, reservationsData, stats] = await Promise.all([
+        services.user.getUsersByPage(0),
+        services.reservation.getReservationsByPage(0),
+        services.vehicle.getFleetStats(),
+      ]);
 
       setMembers(userData?.totalElements);
-      setVehicles(vehicleData);
       setReservations(reservationsData?.totalElements);
+      setFleetStats(stats);
     } catch (error) {
       console.log(error);
     } finally {
@@ -33,7 +39,11 @@ const AdminDashboard = () => {
     }
   };
 
-  const dashboardItems = [
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const summaryItems = [
     {
       title: "Members",
       icon: <IoIosPeople />,
@@ -41,22 +51,12 @@ const AdminDashboard = () => {
       statistics: members,
     },
     {
-      title: "Vehicles",
-      icon: <FaCar />,
-      path: routes.adminVehicles,
-      statistics: vehicles?.totalElements,
-    },
-    {
       title: "Reservations",
-      icon: <MdOutlineBookOnline />,
+      icon: <MdBookOnline />,
       path: routes.adminReservations,
       statistics: reservations,
     },
   ];
-
-  useEffect(() => {
-    loadData();
-  }, []);
 
   return (
     <Container className="admin-dashboard">
@@ -64,14 +64,42 @@ const AdminDashboard = () => {
         <Loading height={500} />
       ) : (
         <>
-          <Row xxl={3} className="gy-3">
-            {dashboardItems.map((item, index) => (
+          <Row xxl={2} className="gy-3">
+            {summaryItems.map((item, index) => (
               <Col key={index}>
                 <DashboardCard {...item} />
               </Col>
             ))}
           </Row>
-          <AdminCarousel loading={loading} vehicles={vehicles} />
+
+          <Row className="gy-3 mt-1 align-items-stretch">
+            <Col xl={5}>
+              <VehicleStatsPanel stats={fleetStats} />
+            </Col>
+            <Col xl={7}>
+              <div className="admin-dashboard__gauges">
+                <GaugeChart
+                  value={fleetStats?.occupancyRate}
+                  label="Occupancy"
+                  color="#1b7a43"
+                />
+                <GaugeChart
+                  value={fleetStats?.outOfServiceRate}
+                  label="Out of Service"
+                  color="#b93a3a"
+                />
+              </div>
+            </Col>
+          </Row>
+
+          <Row className="gy-3 mt-1">
+            <Col xl={6}>
+              <ScheduleTable title="Returns" type="returns" dateField="dropOffTime" />
+            </Col>
+            <Col xl={6}>
+              <ScheduleTable title="Departures" type="departures" dateField="pickUpTime" />
+            </Col>
+          </Row>
         </>
       )}
     </Container>

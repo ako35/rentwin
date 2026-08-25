@@ -29,7 +29,9 @@ const downloadCars = asyncHandler(async (req, res) => {
     "cars.xlsx",
     [
       { header: "ID", key: "id", width: 36 },
+      { header: "Brand", key: "brand", width: 16 },
       { header: "Model", key: "model", width: 22 },
+      { header: "License Plate", key: "licensePlate", width: 14 },
       { header: "Doors", key: "doors", width: 8 },
       { header: "Seats", key: "seats", width: 8 },
       { header: "Luggage", key: "luggage", width: 8 },
@@ -38,11 +40,13 @@ const downloadCars = asyncHandler(async (req, res) => {
       { header: "Fuel Type", key: "fuelType", width: 12 },
       { header: "Age", key: "age", width: 8 },
       { header: "Price Per Hour", key: "pricePerHour", width: 14 },
+      { header: "Out Of Service", key: "outOfService", width: 14 },
       { header: "Image Count", key: "imageCount", width: 12 },
     ],
     vehicles.map((vehicle) => ({
       ...vehicle,
       airConditioning: vehicle.airConditioning ? "Yes" : "No",
+      outOfService: vehicle.outOfService ? "Yes" : "No",
       imageCount: vehicle.images.length,
     }))
   );

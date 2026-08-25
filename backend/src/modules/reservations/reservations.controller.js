@@ -1,8 +1,8 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
-const { parseFrontendDateTime } = require("../../lib/dates");
+const { parseFrontendDateTime, resolveWindow } = require("../../lib/dates");
 const { checkAvailability } = require("../../lib/availability");
-const { serializeReservation } = require("../../lib/serializers");
+const { serializeReservation, serializeScheduleRow } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 
@@ -145,6 +145,28 @@ const getReservationByIdAdmin = asyncHandler(async (req, res) => {
   res.json({ ...serializeReservation(reservation), carId: reservation.carId, userId: reservation.userId });
 });
 
+// Admin dashboard "Returns"/"Departures" tables: reservations whose
+// drop-off (returns) or pick-up (departures) falls within a day window
+// from now. Always excludes CANCELLED; optionally excludes DONE too.
+const getAdminSchedule = asyncHandler(async (req, res) => {
+  const { type = "returns", window = "7", excludeCompleted } = req.query;
+  const dateField = type === "departures" ? "pickUpTime" : "dropOffTime";
+  const { from, to } = resolveWindow(window);
+
+  const statusFilter = { not: "CANCELLED" };
+
+  const reservations = await prisma.reservation.findMany({
+    where: {
+      [dateField]: { gte: from, lte: to },
+      status: excludeCompleted === "true" ? { notIn: ["CANCELLED", "DONE"] } : statusFilter,
+    },
+    orderBy: { [dateField]: "asc" },
+    include: { car: true, user: true },
+  });
+
+  res.json(reservations.map(serializeScheduleRow));
+});
+
 module.exports = {
   createReservation,
   getReservationById,
@@ -153,4 +175,5 @@ module.exports = {
   deleteReservationAdmin,
   updateReservationAdmin,
   getReservationByIdAdmin,
+  getAdminSchedule,
 };

@@ -1,0 +1,66 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+.schedule-table {
+    background-color: v.$color4;
+    border: 1px solid v.$color1-5;
+    border-radius: 5px;
+    box-shadow: 0 0 5px v.$color1-5;
+    padding: 1rem 1.5rem;
+    height: 100%;
+
+    &__header {
+        @include m.flexbox(row, space-between, center, 1rem);
+        flex-wrap: wrap;
+        margin-bottom: 0.5rem;
+
+        h3 {
+            text-transform: uppercase;
+            font-size: 1rem;
+            color: v.$color1;
+            margin: 0;
+        }
+
+        .nav-pills {
+            .nav-link {
+                color: v.$color1;
+                font-size: 0.8rem;
+                padding: 0.25rem 0.6rem;
+
+                &.active {
+                    background-color: v.$color1;
+                    color: v.$color4;
+                }
+            }
+        }
+    }
+
+    &__filter {
+        margin-bottom: 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    &__table-container {
+        max-height: 350px;
+        overflow-y: auto;
+
+        table {
+            font-size: 0.85rem;
+            margin-bottom: 0;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background-color: v.$color4;
+        }
+
+        tbody tr {
+            cursor: pointer;
+        }
+    }
+
+    &__row--overdue {
+        background-color: rgba(185, 58, 58, 0.12);
+    }
+}

@@ -20,8 +20,18 @@ const { routes } = constants;
 
 const formItems = [
   {
+    name: "brand",
+    label: "Brand",
+    asGroup: Col,
+  },
+  {
     name: "model",
     label: "Model",
+    asGroup: Col,
+  },
+  {
+    name: "licensePlate",
+    label: "License Plate",
     asGroup: Col,
   },
   {
@@ -166,6 +176,15 @@ const AdminNewVehiclePage = () => {
                 <CustomForm key={item.name} formik={formik} {...item} />
               ))}
             </Row>
+            <Form.Check
+              type="switch"
+              id="outOfService"
+              name="outOfService"
+              label="Out of Service"
+              checked={formik.values.outOfService}
+              onChange={formik.handleChange}
+              className="mt-3"
+            />
           </Col>
         </Row>
         <div className="text-end">

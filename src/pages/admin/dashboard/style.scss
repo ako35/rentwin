@@ -1,0 +1,9 @@
+@use '../../../styles/mixins' as m;
+
+.admin-dashboard {
+    &__gauges {
+        @include m.flexbox(row, space-evenly, center, 1rem);
+        flex-wrap: wrap;
+        height: 100%;
+    }
+}

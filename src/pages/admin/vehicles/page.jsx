@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { constants } from "../../../constants";
 import { Link, useNavigate } from "react-router-dom";
 import { services } from "../../../services";
@@ -18,11 +18,11 @@ const AdminVehiclesPage = () => {
   const [perPage, setPerPage] = useState(10);
   const navigate = useNavigate();
 
-  const loadData = async (page) => {
+  const loadData = async (page, size = perPage) => {
     try {
-      const vehicleData = await services.vehicle.getVehiclesByPage(
+      const vehicleData = await services.vehicle.getVehiclesByPageAdmin(
         page,
-        perPage
+        size
       );
       setVehicles(vehicleData.content);
       setTotalRows(vehicleData.totalElements);
@@ -60,12 +60,8 @@ const AdminVehiclesPage = () => {
 
   const handlePerPageRowsChange = async (newPerPage, page) => {
     try {
-      const data = await services.vehicle.getVehiclesByPage(
-        page - 1,
-        newPerPage
-      );
-      setVehicles(data.content);
       setPerPage(newPerPage);
+      await loadData(page - 1, newPerPage);
     } catch (error) {
       utils.functions.swalToast(
         "There was an error while changing the page!",
@@ -82,8 +78,13 @@ const AdminVehiclesPage = () => {
     navigate(`${routes.adminVehicles}/${row.id}`);
   };
 
+  useEffect(() => {
+    loadData(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <div className="admin-reservations-page">
+    <div className="admin-vehicle-page">
       <ButtonGroup className="align-self-end">
         <Button as={Link} to={`${routes.adminVehicles}/new`}>
           New Vehicle
@@ -93,10 +94,10 @@ const AdminVehiclesPage = () => {
           Vehicle Reports
         </Button>
       </ButtonGroup>
-      <div className="admin-reservations-table-container">
+      <div className="admin-vehicle-table-container">
         <DataTable
           title="Vehicles"
-          columns={utils.tables.adminReservationsColumns}
+          columns={utils.tables.adminVehiclesColumns}
           data={vehicles}
           progressPending={loading}
           progressComponent={<Loading height={500} />}

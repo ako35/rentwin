@@ -16,4 +16,21 @@ const serializeReservation = (reservation) => {
   return { ...rest, car: car ? serializeVehicle(car) : undefined };
 };
 
-module.exports = { serializeUser, serializeVehicle, serializeReservation };
+// Lightweight row shape for the admin dashboard's returns/departures tables
+// — only what the table needs, no image relation required on the query.
+const serializeScheduleRow = (reservation) => ({
+  id: reservation.id,
+  pickUpTime: reservation.pickUpTime,
+  dropOffTime: reservation.dropOffTime,
+  pickUpLocation: reservation.pickUpLocation,
+  dropOffLocation: reservation.dropOffLocation,
+  status: reservation.status,
+  car: reservation.car
+    ? { model: reservation.car.model, brand: reservation.car.brand, licensePlate: reservation.car.licensePlate }
+    : undefined,
+  user: reservation.user
+    ? { firstName: reservation.user.firstName, lastName: reservation.user.lastName, email: reservation.user.email }
+    : undefined,
+});
+
+module.exports = { serializeUser, serializeVehicle, serializeReservation, serializeScheduleRow };

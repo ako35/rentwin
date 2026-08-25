@@ -1,10 +1,10 @@
 import { deleteMessage, getMessage, getMessagesByPage, sendMessage } from "./contact/contact-service";
 
-import { createReservation, deleteReservation, downloadReservationReports, getReservationById, getReservationByIdAdmin, getReservationsByPage, getReservationsByPageAdmin, isVehicleAvailable, updateReservation } from "./reservation/reservation-service";
+import { createReservation, deleteReservation, downloadReservationReports, getAdminSchedule, getReservationById, getReservationByIdAdmin, getReservationsByPage, getReservationsByPageAdmin, isVehicleAvailable, updateReservation } from "./reservation/reservation-service";
 
 import { deleteUser, downloadUserReports, getUser, getUserAdmin, getUsersByPage, login, register, updatePassword, updateUser, updateUserAdmin } from "./user/user-service";
 
-import { addVehicle, deleteVehicle, deleteVehicleImage, downloadVehicleReports, getVehicleById, getVehicles, getVehiclesByPage, updateVehicle, uploadVehicleImage } from "./vehicle/vehicle-service";
+import { addVehicle, deleteVehicle, deleteVehicleImage, downloadVehicleReports, getFleetStats, getVehicleById, getVehicles, getVehiclesByPage, getVehiclesByPageAdmin, updateVehicle, uploadVehicleImage } from "./vehicle/vehicle-service";
 
 import { encryptedLocalStorage } from "./encrypt-storage/encrypt-storage";
 import { authHeader } from "./auth-header/auth-header";
@@ -27,6 +27,7 @@ export const services = {
         // ADMIN ENDPOINTS
         deleteReservation,
         downloadReservationReports,
+        getAdminSchedule,
         getReservationByIdAdmin,
         getReservationsByPageAdmin,
         updateReservation,
@@ -56,6 +57,8 @@ export const services = {
         deleteVehicle,
         deleteVehicleImage,
         downloadVehicleReports,
+        getFleetStats,
+        getVehiclesByPageAdmin,
         updateVehicle,
         uploadVehicleImage,
     },

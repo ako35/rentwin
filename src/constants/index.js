@@ -200,7 +200,7 @@ const website = {
 const teamMembers = [
   {
     id: 1,
-    image: "person1.jpg",
+    image: "patron.jpg",
     name: "Jonathan Price",
     title: "Co-Founder and Chief Executive Officer",
     desc: "Jonathan Price is the driving force behind Rentwin. With a background in automotive engineering and business, He co-founded the company in 2014, aiming to revolutionize the car rental industry. Overseeing strategic operations, he ensures that the company stays true to its mission of providing customers with top-quality vehicles that cater to their individual needs.",

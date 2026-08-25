@@ -60,6 +60,22 @@ export const updateVehicle = async(vehicleId, imageId, payload) => {
   );
   return response.data;
 };
+export const getVehiclesByPageAdmin = async (
+  page = 0,
+  size = 20,
+  sort = "id",
+  direction = "DESC"
+) => {
+  const response = await axios.get(
+    `${API_URL}/car/admin/pages/auth?page=${page}&size=${size}&sort=${sort}&direction=${direction}`,
+    services.authHeader()
+  );
+  return response.data;
+};
+export const getFleetStats = async () => {
+  const response = await axios.get(`${API_URL}/car/admin/fleet-stats/auth`, services.authHeader());
+  return response.data;
+};
 export const uploadVehicleImage = async(file) => {
   const response = await axios.post(`${API_URL}/files/upload`, file, {
     headers: {

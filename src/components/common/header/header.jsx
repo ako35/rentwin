@@ -9,7 +9,6 @@ const Header = () => {
       <div className="header">
         <Link to="/" title="GO TO HOMEPAGE">
           <div className="logo">
-            <img src="/logo.png" alt="Rentwin Logo" />
             <div className="logo_text">
               RENT<span>WIN</span>
               <p>YOUR RELIABLE RIDE, AS LONG AS YOU NEED</p>

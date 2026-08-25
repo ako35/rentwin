@@ -8,7 +8,9 @@ const ALLOWED_SORT_FIELDS = ["id", "model", "pricePerHour", "age"];
 const IMAGES_INCLUDE = { images: { orderBy: { createdAt: "asc" } } };
 
 const VEHICLE_FIELDS = [
+  "brand",
   "model",
+  "licensePlate",
   "doors",
   "seats",
   "luggage",
@@ -17,6 +19,7 @@ const VEHICLE_FIELDS = [
   "fuelType",
   "age",
   "pricePerHour",
+  "outOfService",
 ];
 
 const pickVehicleFields = (body) =>
@@ -64,6 +67,85 @@ const getVehiclesByPage = asyncHandler(async (req, res) => {
       sortField,
     })
   );
+});
+
+// Vehicles with an active (non-cancelled, currently in-window) reservation
+// right now are "RENTED". Shared by the admin list (per-row status) and the
+// fleet-stats summary (aggregate counts).
+const getRentedVehicleIds = async (vehicleIds) => {
+  const now = new Date();
+  const active = await prisma.reservation.findMany({
+    where: {
+      carId: { in: vehicleIds },
+      status: "CREATED",
+      pickUpTime: { lte: now },
+      dropOffTime: { gte: now },
+    },
+    select: { carId: true },
+  });
+  return new Set(active.map((r) => r.carId));
+};
+
+const getVehicleStatus = (vehicle, rentedIds) => {
+  if (vehicle.outOfService) return "OUT_OF_SERVICE";
+  if (rentedIds.has(vehicle.id)) return "RENTED";
+  return "AVAILABLE";
+};
+
+const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
+  const { page, size, direction, sortField } = parsePageParams(req.query, {
+    defaultSize: 20,
+    allowedSortFields: ALLOWED_SORT_FIELDS,
+  });
+
+  const [content, totalElements] = await Promise.all([
+    prisma.vehicle.findMany({
+      skip: page * size,
+      take: size,
+      orderBy: { [sortField]: direction },
+      include: IMAGES_INCLUDE,
+    }),
+    prisma.vehicle.count(),
+  ]);
+
+  const rentedIds = await getRentedVehicleIds(content.map((v) => v.id));
+
+  res.json(
+    buildPageResponse({
+      content: content.map((vehicle) => ({
+        ...serializeVehicle(vehicle),
+        status: getVehicleStatus(vehicle, rentedIds),
+      })),
+      totalElements,
+      page,
+      size,
+      sortField,
+    })
+  );
+});
+
+const getFleetStats = asyncHandler(async (req, res) => {
+  const vehicles = await prisma.vehicle.findMany({
+    select: { id: true, outOfService: true },
+  });
+
+  const outOfService = vehicles.filter((v) => v.outOfService).length;
+  const inServiceIds = vehicles.filter((v) => !v.outOfService).map((v) => v.id);
+  const rentedIds = await getRentedVehicleIds(inServiceIds);
+
+  const total = vehicles.length;
+  const rented = rentedIds.size;
+  const available = total - outOfService - rented;
+  const rate = (count) => (total > 0 ? Math.round((count / total) * 100) : 0);
+
+  res.json({
+    total,
+    rented,
+    available,
+    outOfService,
+    occupancyRate: rate(rented),
+    outOfServiceRate: rate(outOfService),
+  });
 });
 
 const addVehicle = asyncHandler(async (req, res) => {
@@ -118,6 +200,8 @@ module.exports = {
   getVehicleById,
   getAllVehicles,
   getVehiclesByPage,
+  getVehiclesByPageAdmin,
+  getFleetStats,
   addVehicle,
   updateVehicle,
   deleteVehicle,
