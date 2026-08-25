@@ -1,7 +1,7 @@
 import axios from "axios";
 import { services } from "..";
 
-const API_URL = import.meta.env.REACT_APP_API_URL;
+const API_URL = import.meta.env.VITE_APP_API_URL;
 
 // COMMON ENDPOINTS
 export const createReservation = async (carId, dto) => {
