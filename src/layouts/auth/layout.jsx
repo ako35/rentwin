@@ -34,7 +34,7 @@ const AuthLayout = () => {
         <Link to={routes.home} className="logo">
           <img src="/logo.png" alt={website.name} title={website.name} />
           <div className="logo_text">
-            RENT<br /> <span>WIN</span>
+            RENT<span>WIN</span>
             <p>YOUR RELIABLE RIDE, AS LONG AS YOU NEED</p>
           </div>
         </Link>

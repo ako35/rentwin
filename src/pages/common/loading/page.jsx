@@ -11,7 +11,7 @@ const LoadingPage = () => {
       <div className="logo">
         <img src="/logo.png" alt={website.name} />
         <div className="logo_text">
-          RENT<br /> <span>WIN</span> <p>YOUR RELIABLE RIDE, AS LONG AS YOU NEED</p>
+          RENT<span>WIN</span> <p>YOUR RELIABLE RIDE, AS LONG AS YOU NEED</p>
         </div>
       </div>
     </div>
