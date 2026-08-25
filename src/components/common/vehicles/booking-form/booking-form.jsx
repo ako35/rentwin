@@ -127,7 +127,7 @@ const BookingForm = () => {
 
     try {
       await services.reservation.createReservation(vehicle.id, dto);
-      utils.functions.swalToast("Reservation created successfully!", "success");
+      await utils.functions.swalToast("Reservation created successfully!", "success");
       navigate(routes.userReservations);
     } catch (error) {
       utils.functions.swalToast(

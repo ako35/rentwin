@@ -68,7 +68,7 @@ const RegisterPage = () => {
     setLoading(true);
     try {
       await services.user.register(values);
-      utils.functions.swalToast("You have successfully registered", "success");
+      await utils.functions.swalToast("You have successfully registered", "success");
       navigate(routes.login);
     } catch (error) {
       utils.functions.swalToast(error.response.data.message, "error");

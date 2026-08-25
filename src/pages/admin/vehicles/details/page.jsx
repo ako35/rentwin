@@ -199,7 +199,7 @@ const AdminVehicleDetailsPage = () => {
     setDeleting(true);
     try {
       await services.vehicle.deleteVehicle(vehicleId);
-      utils.functions.swalToast("Vehicle deleted successfully.", "success");
+      await utils.functions.swalToast("Vehicle deleted successfully.", "success");
       navigate(`${routes.adminVehicles}`);
     } catch (error) {
       utils.functions.swalToast(

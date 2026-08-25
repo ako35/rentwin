@@ -93,7 +93,7 @@ const AdminNewVehiclePage = () => {
       const imageData = await services.vehicle.uploadVehicleImage(formData);
       delete values.image;
       await services.vehicle.addVehicle(imageData.imageId, values);
-      utils.functions.swalToast("Vehicle created successfully.", "success");
+      await utils.functions.swalToast("Vehicle created successfully.", "success");
       navigate(`${routes.adminVehicles}`);
     } catch (error) {
       utils.functions.swalToast(

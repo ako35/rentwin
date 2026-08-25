@@ -22,7 +22,7 @@ export const swalQuestion = (title, text) => {
 }
 
 export const swalToast = (title, icon='info', timer=5000) => {
-    Swal.fire({
+    return Swal.fire({
         title: title,
         icon: icon,
         timer: timer,

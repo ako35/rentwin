@@ -125,7 +125,7 @@ const AdminReservationDetailsPage = () => {
     setDeleting(true);
     try {
       await services.reservation.deleteReservation(reservationId);
-      utils.functions.swalToast("Reservation deleted successfully.", "success");
+      await utils.functions.swalToast("Reservation deleted successfully.", "success");
       navigate(`${routes.adminReservations}`);
     } catch (error) {
       utils.functions.swalToast(

@@ -89,7 +89,7 @@ const AdminUserDetailsPage = () => {
     setDeleting(true);
     try {
       await services.user.deleteUser(userId)
-      utils.functions.swalToast("User deleted successfully.", "success");
+      await utils.functions.swalToast("User deleted successfully.", "success");
       navigate(`${routes.adminUsers}`);
     } catch (error) {
       utils.functions.swalToast(

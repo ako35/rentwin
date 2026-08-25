@@ -31,7 +31,7 @@ const LoginPage = () => {
             const responseUser = await services.user.getUser();
             // kullanici bilgilerini merkezi state'e kaydet
             dispatch(loginSuccess(responseUser));
-            utils.functions.swalToast(
+            await utils.functions.swalToast(
                 "You have successfully logged in",
                 "success"
             );
