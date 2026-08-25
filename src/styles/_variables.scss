@@ -1,34 +1,34 @@
-// COLOR PALETTES
-// COLOR 1
-$color1: #324681;
-$color1_2: #324681d2;
-$color1_3: #324681a3;
-$color1_4: #3246817a;
-$color1_5: #3246814d;
-// COLOR 2
-$color2: #688bf6;
-$color2_2: #688bf6d2;
-$color2_3: #688bf6a3;
-$color2_4: #688bf67a;
-$color2_5: #688bf64d;
-// COLOR 3
-$color3: #f1f1e6;
-$color3_2: #f1f1e6d2;
-$color3_3: #f1f1e6a3;
-$color3_4: #f1f1e67a;
-$color3_5: #f1f1e64d;
-// COLOR 4
-$color4: #f8f9ff;
-$color4_2: #f8f9ffd2;
-$color4_3: #f8f9ffa3;
-$color4_4: #f8f9ff7a;
-$color4_5: #f8f9ff4d;
-// COLOR 5
-$color5: #444655;
-$color5_2: #444655d2;
-$color5_3: #444655a3;
-$color5_4: #4446557a;
-$color5_5: #4446554d;
+// COLOR PALETTES (Rentwin brand green)
+// COLOR 1 - primary brand green
+$color1: #1b7a43;
+$color1_2: #1b7a43d2;
+$color1_3: #1b7a43a3;
+$color1_4: #1b7a437a;
+$color1_5: #1b7a434d;
+// COLOR 2 - accent/hover green
+$color2: #2fa85c;
+$color2_2: #2fa85cd2;
+$color2_3: #2fa85ca3;
+$color2_4: #2fa85c7a;
+$color2_5: #2fa85c4d;
+// COLOR 3 - warm neutral (borders, on-dark text)
+$color3: #f0f3ea;
+$color3_2: #f0f3ead2;
+$color3_3: #f0f3eaa3;
+$color3_4: #f0f3ea7a;
+$color3_5: #f0f3ea4d;
+// COLOR 4 - near-white background
+$color4: #f7fbf8;
+$color4_2: #f7fbf8d2;
+$color4_3: #f7fbf8a3;
+$color4_4: #f7fbf87a;
+$color4_5: #f7fbf84d;
+// COLOR 5 - dark neutral
+$color5: #33403a;
+$color5_2: #33403ad2;
+$color5_3: #33403aa3;
+$color5_4: #33403a7a;
+$color5_5: #33403a4d;
 
 /* BOOTSTRAP */
 $primary: $color1;

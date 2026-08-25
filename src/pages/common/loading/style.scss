@@ -2,7 +2,7 @@
 @use '../../../styles/mixins' as m;
 
 .loading-page{
-    background-color: v.$color2;
+    background-color: v.$color3;
     height: 100%;
     width: 100%;
     @include m.flexbox(row, center, center);
@@ -31,6 +31,7 @@
             line-height: 2.2rem;
             z-index: 2;
             color: v.$color1;
+            font-weight: 700;
 
             span{
                 font-size: 3rem;
