@@ -48,7 +48,7 @@ export const deleteReservation = async (id) => {
   return response.data;
 };
 export const downloadReservationReports = async () => {
-  const token = services.encryptedLocalStorage.getItem("pickanddrivetoken");
+  const token = services.encryptedLocalStorage.getItem("rentwintoken");
   const response = await axios.get(`${API_URL}/excel/download/reservations`, {
     headers: {
       Authorization: `Bearer ${token}`,

@@ -33,7 +33,7 @@ export const deleteUser = async (id) => {
 };
 
 export const downloadUserReports = async () => {
-    const token = services.encryptedLocalStorage.getItem("pickanddrivetoken");
+    const token = services.encryptedLocalStorage.getItem("rentwintoken");
     const response = await axios.get(`${API_URL}/excel/download/users`,
         {
             headers: {

@@ -52,7 +52,7 @@ const Footer = () => {
               <div className="logo">
                 <img src="/logo.png" alt={name} />
                 <div className="logo_text">
-                  PICK & <br /> <span>DRIVE</span>
+                  RENT<br /> <span>WIN</span>
                   <p>YOUR RELIABLE RIDE, AS LONG AS YOU NEED</p>
                 </div>
               </div>

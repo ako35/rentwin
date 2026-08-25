@@ -15,12 +15,12 @@ const authSlice = createSlice({
         loginFailure: (state) => {
             state.isLoggedIn = false;
             state.user = {};
-            services.encryptedLocalStorage.removeItem("pickanddrivetoken");
+            services.encryptedLocalStorage.removeItem("rentwintoken");
         },
         logout: (state) => {
             state.isLoggedIn = false;
             state.user = {};
-            services.encryptedLocalStorage.removeItem("pickanddrivetoken");
+            services.encryptedLocalStorage.removeItem("rentwintoken");
         }
     }
 });

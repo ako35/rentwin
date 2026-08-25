@@ -1,7 +1,7 @@
 import { services } from "../";
 
 export const authHeader = () => {
-    const token = services.encryptedLocalStorage.getItem("pickanddrivetoken");
+    const token = services.encryptedLocalStorage.getItem("rentwintoken");
 
     let headers = {};
 

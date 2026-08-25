@@ -43,7 +43,7 @@ export const deleteVehicleImage = async(id) => {
   return response.data;
 };
 export const downloadVehicleReports = async() => {
-  const token = services.encryptedLocalStorage.getItem("pickanddrivetoken");
+  const token = services.encryptedLocalStorage.getItem("rentwintoken");
   const response = await axios.get(`${API_URL}/excel/download/cars`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -64,7 +64,7 @@ export const uploadVehicleImage = async(file) => {
   const response = await axios.post(`${API_URL}/files/upload`, file, {
     headers: {
       "Content-Type": "multipart/form-data",
-      "Authorization": `Bearer ${services.encryptedLocalStorage.getItem("pickanddrivetoken")}`
+      "Authorization": `Bearer ${services.encryptedLocalStorage.getItem("rentwintoken")}`
     }
   })
   return response.data

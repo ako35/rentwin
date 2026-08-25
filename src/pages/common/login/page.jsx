@@ -24,7 +24,7 @@ const LoginPage = () => {
             const data = await services.user.login(values);
             // token'i sifrelenmis localstorage'e kaydet
             services.encryptedLocalStorage.setItem(
-                "pickanddrivetoken",
+                "rentwintoken",
                 data.token
             );
             // token ile kullanici bilgilerini al

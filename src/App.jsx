@@ -11,7 +11,7 @@ const App = () => {
 
   const loadData = async () => {
     try {
-      const token = services.encryptedLocalStorage.getItem("pickanddrivetoken");
+      const token = services.encryptedLocalStorage.getItem("rentwintoken");
 
       if (token) {
         const userData = await services.user.getUser();
