@@ -16,7 +16,7 @@ const updateCurrentUser = asyncHandler(async (req, res) => {
 
   const user = await prisma.user.update({
     where: { id: req.user.id },
-    data: { firstName, lastName, email, phoneNumber, address, zipCode },
+    data: { firstName, lastName, email, phoneNumber, address, zipCode: String(zipCode) },
   });
 
   res.json(serializeUser(user));
@@ -78,7 +78,7 @@ const updateUserAdmin = asyncHandler(async (req, res) => {
 
   const { firstName, lastName, email, phoneNumber, address, zipCode, roles, password } = req.body;
 
-  const data = { firstName, lastName, email, phoneNumber, address, zipCode, roles };
+  const data = { firstName, lastName, email, phoneNumber, address, zipCode: String(zipCode), roles };
   if (password) {
     data.passwordHash = await hashPassword(password);
   }

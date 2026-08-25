@@ -25,7 +25,7 @@ const register = asyncHandler(async (req, res) => {
       email,
       phoneNumber,
       address,
-      zipCode,
+      zipCode: String(zipCode),
       passwordHash,
       roles: ["Customer"],
       builtIn: false,
