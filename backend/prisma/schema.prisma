@@ -1,0 +1,104 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  Customer
+  Administrator
+}
+
+enum Transmission {
+  Automatic
+  Manual
+  Tiptronic
+}
+
+enum FuelType {
+  Diesel
+  Gasoline
+  Hybrid
+  Electricity
+  LPG
+  CNG
+  Hydrogen
+}
+
+enum ReservationStatus {
+  CREATED
+  CANCELLED
+  DONE
+}
+
+model User {
+  id           String        @id @default(uuid())
+  firstName    String
+  lastName     String
+  email        String        @unique
+  passwordHash String
+  phoneNumber  String
+  address      String
+  zipCode      String
+  roles        Role[]        @default([Customer])
+  builtIn      Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  reservations Reservation[]
+}
+
+model VehicleImage {
+  id        String   @id @default(cuid())
+  blobUrl   String
+  pathname  String
+  vehicleId String?
+  vehicle   Vehicle? @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+}
+
+model Vehicle {
+  id              String         @id @default(uuid())
+  model           String
+  doors           Int
+  seats           Int
+  luggage         Int
+  transmission    Transmission
+  airConditioning Boolean
+  fuelType        FuelType
+  age             Int
+  pricePerHour    Float
+  builtIn         Boolean        @default(false)
+  images          VehicleImage[]
+  reservations    Reservation[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model Reservation {
+  id              String            @id @default(uuid())
+  pickUpLocation  String
+  dropOffLocation String
+  pickUpTime      DateTime
+  dropOffTime     DateTime
+  totalPrice      Float
+  status          ReservationStatus @default(CREATED)
+  userId          String
+  user            User              @relation(fields: [userId], references: [id])
+  carId           String
+  car             Vehicle           @relation(fields: [carId], references: [id], onDelete: Restrict)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  subject   String
+  body      String
+  createdAt DateTime @default(now())
+}
