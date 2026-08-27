@@ -1,0 +1,200 @@
+{
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "vehicles": "Vehicles",
+    "addVehicle": "Add Vehicle",
+    "vehicleList": "Vehicle List",
+    "reservations": "Reservations",
+    "contactMessages": "Contact Messages",
+    "backToWebsite": "Back To Website",
+    "logout": "Logout",
+    "logoutConfirmTitle": "Logout",
+    "logoutConfirmText": "Are you sure you want to logout?"
+  },
+  "dashboard": {
+    "members": "Members",
+    "reservations": "Reservations",
+    "occupancy": "Occupancy",
+    "outOfService": "Out of Service",
+    "returns": "Returns",
+    "departures": "Departures"
+  },
+  "vehicleStatsPanel": {
+    "title": "Vehicles",
+    "total": "Total",
+    "rented": "Rented",
+    "available": "Available",
+    "outOfService": "Out of Service"
+  },
+  "scheduleTable": {
+    "windows": {
+      "today": "Today",
+      "3": "3 Days",
+      "7": "7 Days",
+      "15": "15 Days",
+      "30": "30 Days"
+    },
+    "excludeCompleted": "Exclude Completed",
+    "date": "Date",
+    "time": "Time",
+    "vehicle": "Vehicle",
+    "reservationNo": "Reservation No",
+    "customer": "Customer",
+    "days": "Days",
+    "noRecords": "No records found",
+    "loadError": "There was an error loading the schedule"
+  },
+  "vehicles": {
+    "newVehicle": "New Vehicle",
+    "downloadReports": "Download Vehicle Reports",
+    "tableTitle": "Vehicles",
+    "selectImage": "Select Image",
+    "outOfService": "Out of Service",
+    "cancel": "Cancel",
+    "create": "Create",
+    "update": "Update",
+    "delete": "Delete",
+    "builtInWarning": "Built-in vehicles cannot be deleted or updated.",
+    "form": {
+      "brand": "Brand",
+      "model": "Model",
+      "licensePlate": "License Plate",
+      "doors": "Doors",
+      "seats": "Seats",
+      "luggage": "Luggage",
+      "age": "Age",
+      "pricePerHour": "Price Per Hour",
+      "transmission": "Transmission",
+      "airConditioner": "Air Conditioner",
+      "fuelType": "Fuel Type"
+    },
+    "toasts": {
+      "createSuccess": "Vehicle created successfully.",
+      "createError": "There was an error while creating the vehicle.",
+      "updateSuccess": "Vehicle updated successfully.",
+      "updateError": "There was an error updating the vehicle.",
+      "deleteSuccess": "Vehicle deleted successfully.",
+      "deleteError": "There was an error while deleting the vehicle.",
+      "downloadSuccess": "Vehicle data downloaded successfully!",
+      "downloadError": "There was an error while downloading vehicle data!",
+      "pageChangeError": "There was an error while changing the page!",
+      "deleteConfirmTitle": "Are you sure you want to delete this vehicle?",
+      "deleteConfirmText": "You won't be able to revert this action!"
+    }
+  },
+  "reservations": {
+    "downloadData": "Download Reservations Data",
+    "tableTitle": "Reservations",
+    "sectionTitle1": "reservation",
+    "sectionTitle2": "details",
+    "reservationId": "Reservation id",
+    "goToCustomer": "Go To Customer",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "form": {
+      "pickUpLocation": "Pick Up Location",
+      "dropOffLocation": "Drop Off Location",
+      "pickUpDate": "Pick Up Date",
+      "pickUpTime": "Pick Up Time",
+      "dropOffDate": "Drop Off Date",
+      "dropOffTime": "Drop Off Time",
+      "vehicle": "Vehicle",
+      "status": "Status"
+    },
+    "toasts": {
+      "downloadSuccess": "Your download will start soon",
+      "downloadError": "There was an error while downloading",
+      "pageChangeError": "There was an error while changing the page",
+      "updateSuccess": "Reservation updated successfully.",
+      "updateError": "There was an error updated the data.",
+      "deleteSuccess": "Reservation deleted successfully.",
+      "deleteError": "There was an error deleting the reservation.",
+      "deleteConfirmTitle": "Are you sure you want to delete this reservation?",
+      "deleteConfirmText": "You won't be able to revert this action!"
+    }
+  },
+  "users": {
+    "downloadData": "Download User Data",
+    "tableTitle": "Users",
+    "cancel": "Cancel",
+    "update": "Update",
+    "delete": "Delete",
+    "customer": "Customer",
+    "admin": "Admin",
+    "builtInWarning": "Built-in accounts cannot ve deleted or updated.",
+    "form": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phoneNumber": "Phone Number",
+      "address": "Address",
+      "zipCode": "Zip Code"
+    },
+    "toasts": {
+      "downloadSuccess": "Your download will start soon",
+      "downloadError": "There was an error while downloading",
+      "pageChangeError": "There was an error while changing the page",
+      "updateSuccess": "User updated successfully.",
+      "updateError": "There was an error updating the user.",
+      "deleteSuccess": "User deleted successfully.",
+      "deleteError": "There was an error deleting the user.",
+      "deleteConfirmTitle": "Are you sure you want to delete this user",
+      "deleteConfirmText": "You won't be able to revert this action!"
+    }
+  },
+  "contactMessages": {
+    "tableTitle": "Contact Messages",
+    "sectionTitle1": "Message",
+    "sectionTitle2": "Details",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Message",
+    "toasts": {
+      "deleteSuccess": "Message deleted successfully.",
+      "deleteError": "There was an error while deleting the message.",
+      "pageChangeError": "There was an error while changing the page",
+      "deleteConfirmTitle": "Are you sure you want to delete this message?",
+      "deleteConfirmText": "You won't be able to revert this action!"
+    }
+  },
+  "table": {
+    "user": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "roles": "Roles"
+    },
+    "reservation": {
+      "vehicle": "Vehicle",
+      "pickup": "Pickup",
+      "dropoff": "Dropoff",
+      "price": "Price"
+    },
+    "contactMessage": {
+      "senderName": "Sender Name",
+      "senderEmail": "Sender Email",
+      "subject": "Subject"
+    },
+    "vehicle": {
+      "image": "Image",
+      "brand": "Brand",
+      "model": "Model",
+      "plate": "Plate",
+      "age": "Age",
+      "transmission": "Transmission",
+      "fuel": "Fuel",
+      "pricePerHour": "Price/hour",
+      "status": "Status"
+    }
+  },
+  "vehicleStatus": {
+    "AVAILABLE": "Available",
+    "RENTED": "Rented",
+    "OUT_OF_SERVICE": "Out of Service"
+  }
+}

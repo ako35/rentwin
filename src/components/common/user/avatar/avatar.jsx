@@ -1,9 +1,11 @@
 import { Alert } from "react-bootstrap";
 import { RiAdminLine, RiUserFill } from "react-icons/ri";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const UserAvatar = () => {
   const { user } = useSelector((state) => state.auth);
+  const { t } = useTranslation("user");
 
   const iconStyle = {
     width: "120px",
@@ -23,7 +25,7 @@ const UserAvatar = () => {
       {
         user?.builtIn && (
           <Alert variant="warning mt-5">
-            <strong>Warning!</strong> This is a built-in user and cannot be updated.
+            {t("profile.builtInWarning")}
           </Alert>
         )
       }

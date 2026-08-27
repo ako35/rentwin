@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { services } from "../../../services";
 import { constants } from "../../../constants";
 import { utils } from "../../../utils";
@@ -10,6 +11,8 @@ import "./style.scss";
 const { routes } = constants;
 
 const AdminContactMessagesPage = () => {
+  const { t } = useTranslation("admin");
+  const columns = utils.tables.getAdminContactMessagesColumns(t);
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState([]);
   const [totalRows, setTotalRows] = useState(0);
@@ -38,7 +41,7 @@ const AdminContactMessagesPage = () => {
       setPerPage(newPerPage);
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error while changing the page",
+        t("contactMessages.toasts.pageChangeError"),
         "error"
       );
     }
@@ -61,8 +64,8 @@ const AdminContactMessagesPage = () => {
     <div className="admin-contact-messages-page">
       <div className="admin-contact-messages-table-container">
         <DataTable
-          title="Contact Messages"
-          columns={utils.tables.adminContactMessagesColumns}
+          title={t("contactMessages.tableTitle")}
+          columns={columns}
           data={messages}
           progressPending={loading}
           progressComponent={<Loading height={500} />}

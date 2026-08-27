@@ -1,11 +1,11 @@
 import "./slider.scss";
-import { constants } from "../../../constants";
+import { useTranslation } from "react-i18next";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectFade, Pagination, Navigation, Autoplay } from "swiper";
 
-const { slider } = constants;
-
 const Slider = () => {
+  const { t } = useTranslation("home");
+  const slider = t("slider", { returnObjects: true });
   return (
     <Swiper
       effect="fade"

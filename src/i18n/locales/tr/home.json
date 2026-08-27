@@ -1,0 +1,94 @@
+{
+  "slider": [
+    {
+      "title": "Şehir Kaçamağı: Yeşil Vahayı Keşfedin",
+      "subtitle": "Lüks SUV'larımızla şehir macerasına çıkın. Yemyeşil bitki örtüsüyle çevrili şirin arnavut kaldırımlı sokaklarda ilerleyin, şehrin karmaşasından uzaklaşın. Metropolün içindeki gizli cennetleri ve huzurlu vahayı keşfedin."
+    },
+    {
+      "title": "Performansın Gücünü Ortaya Çıkarın",
+      "subtitle": "Doğanın büyüleyici güzelliğiyle çevrili virajlı yollarda yüksek performanslı araçlarımızın heyecanını yaşayın. Hassas mühendislik ve gelişmiş güvenlik özellikleriyle araçlarımız, heyecan ve profesyonelliği bir araya getiren bir sürüş deneyimi sunar."
+    }
+  ],
+  "sections": {
+    "popularCars": {
+      "title1": "Popüler",
+      "title2": "Araçlar",
+      "desc": "Olağanüstü sürdürülebilirlik hedeflerimize katkıda bulunmak ve olumlu değişime öncülük etmek için buradayız"
+    },
+    "bestOffers": {
+      "title1": "En İyi",
+      "title2": "Tekliflerimiz"
+    },
+    "team": {
+      "title1": "Bizim",
+      "title2": "Ekibimiz"
+    }
+  },
+  "offers": [
+    {
+      "title": "Şehir Kaşifi",
+      "desc": "Şehir Kaşifi teklifimizle kentin ritmine kendinizi bırakın. Kompakt, yakıt tasarruflu araç filomuz, kalabalık sokaklarda ve dar park alanlarında rahatça ilerlemeniz için idealdir. Sorunsuz bir sürüş için sezgisel teknoloji özellikleri ve seçebileceğiniz şık modellerle şehir içi yolculuğunuzu keyifli bir gezintiye dönüştürün.",
+      "direction": ""
+    },
+    {
+      "title": "Doğa Maceracısı",
+      "desc": "Doğa Maceracısı paketimizle vahşi doğaya adım atın. Farklı arazi koşullarını kaldırabilen sağlam SUV seçkimiz, off-road maceraları veya kamp gezileri için mükemmeldir. Gelişmiş 4 çeker özellikleri ve geniş iç mekanlarıyla araçlarımız, varış noktanız ne olursa olsun rahat ve keyifli bir yolculuk sağlar.",
+      "direction": ""
+    },
+    {
+      "title": "Yönetici Konforu",
+      "desc": "Yönetici Konforu teklifimizle lüksün ve konforun doruğunun tadını çıkarın. Premium sedanlarımız, üstün bir sürüş deneyimi için şıklık, sofistike tasarım ve teknolojiyi kusursuz bir şekilde birleştirir. Şık iç mekanlar, son teknoloji özellikler ve pürüzsüz performansla her yolculuğu birinci sınıf bir deneyime dönüştürün.",
+      "direction": ""
+    },
+    {
+      "title": "Aile Eğlencesi",
+      "desc": "Aile Eğlencesi paketimizle unutulmaz aile anıları biriktirin. Geniş van ve SUV seçeneklerimiz, sevdikleriniz ve eşyalarınız için bol yer sunar. Üst düzey güvenlik özellikleri ve konfor artırıcı donanımlarla, ailenizin yolculuğunun eğlenceli, rahat ve güvenli olmasını sağlarken içiniz rahat olsun.",
+      "direction": "right"
+    },
+    {
+      "title": "Çevre Dostu",
+      "desc": "Çevre Dostu teklifimizle sürdürülebilir yaşamı benimseyin. Elektrikli ve hibrit modellerden oluşan yelpazemiz, verimli performans ile çevre dostu teknoloji arasında mükemmel bir denge sunar. Modern sürüş teknolojisinin tüm kolaylıklarından yararlanırken karbon ayak izinizi azalttığınızı bilerek güvenle sürün.",
+      "direction": "right"
+    },
+    {
+      "title": "Sportif Deneyim",
+      "desc": "Heyecan arayanlar Sportif Deneyim paketimizle sevinecek. Optimum hız ve kontrol için ince ayarlanmış yüksek performanslı bir spor arabanın direksiyonuna geçin. Son teknoloji ve zarif tasarımlarla bu araçlar, eşi benzeri olmayan bir sürüş deneyimi sunmak için üretildi. Açık yolun heyecanını hiç olmadığı gibi hissedin.",
+      "direction": "right"
+    }
+  ],
+  "team": [
+    {
+      "id": 1,
+      "image": "patron.jpg",
+      "name": "Jonathan Price",
+      "title": "Kurucu Ortak ve İcra Kurulu Başkanı",
+      "desc": "Jonathan Price, Rentwin'in arkasındaki itici güçtür. Otomotiv mühendisliği ve iş dünyası geçmişiyle, araç kiralama sektörünü dönüştürmeyi hedefleyerek şirketi 2014 yılında kurdu. Stratejik operasyonları denetleyerek şirketin, müşterilere kendi ihtiyaçlarına uygun üst kalitede araçlar sunma misyonuna sadık kalmasını sağlıyor."
+    },
+    {
+      "id": 2,
+      "image": "person2.jpg",
+      "name": "Emily Wright",
+      "title": "Operasyon Direktörü",
+      "desc": "Emily Wright, Rentwin'in iş stratejisinin şekillenmesinde etkili olmuştur. 2015 yılında ekibe katılan Emily, o zamandan beri şirketin operasyonlarını sadeleştirmek ve müşteriler için araç kiralama sürecini olabildiğince sorunsuz hale getirmek için yorulmadan çalışmıştır. Operasyonel yönetimdeki uzmanlığı, her kiralama noktasının Rentwin'in belirlediği yüksek standartları korumasını sağlar."
+    },
+    {
+      "id": 3,
+      "image": "person3.jpg",
+      "name": "David Thompson",
+      "title": "Teknoloji Direktörü",
+      "desc": "Rentwin'in Teknoloji Direktörü olarak David Thompson, yenilikçi teknolojinin şirketin hizmetlerine entegre edilmesinde büyük rol oynamıştır. 2017 yılında ekibe katılan David, müşteri odaklı teknoloji çözümleri geliştirme konusunda geniş bir deneyim getirmiştir. Yenilikçi vizyonu, müşterilerin araçlara göz atmasını, rezervasyon yapmasını ve kiralamasını her zamankinden daha kolay hale getiren Rentwin çevrimiçi rezervasyon sisteminin geliştirilmesine öncülük etmiştir."
+    }
+  ],
+  "whatWeDo": {
+    "title": "Ne Yapıyoruz",
+    "desc": "Rentwin'de sadece araç kiralamanın ötesine geçiyoruz. Müşterilerimizin çeşitli ihtiyaçlarına uygun kapsamlı ulaşım çözümleri sunuyoruz. Filomuz, şehir içi sürüş için mükemmel kompakt ve çevre dostu araçlardan, off-road maceraları ve aile tatilleri için ideal geniş ve sağlam SUV'lara kadar geniş bir araç yelpazesinden oluşuyor. Müşteri odaklı yaklaşımımızla araç kiralama deneyimini yeniden tasarladık; sadece bir araç değil, kalite, güvenilirlik ve kolaylık sözü de sunuyoruz. En son teknoloji rezervasyon sistemimiz, 7/24 müşteri hizmetimiz ve sürdürülebilirliğe olan bağlılığımızla gurur duyuyoruz. Filomuzdaki her araç, güvenli, konforlu ve keyifli bir sürüş deneyimi sağlamak için titizlikle bakımdan geçirilir. Rentwin'de sadece bir hizmet sunmuyoruz; unutulmaz yolculuklar yaratılmasına yardımcı oluyoruz.",
+    "services": [
+      { "id": 1, "title": "Bireysel Araç Kiralama" },
+      { "id": 2, "title": "Kurumsal Filo Çözümleri" },
+      { "id": 3, "title": "Uzun Dönem Kiralama Programları" },
+      { "id": 4, "title": "Premium Otomobil Kiralama" },
+      { "id": 5, "title": "Sürdürülebilir Ulaşım Çözümleri" },
+      { "id": 6, "title": "Arazi Aracı Kiralama" }
+    ]
+  }
+}

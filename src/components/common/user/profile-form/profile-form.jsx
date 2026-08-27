@@ -2,43 +2,45 @@ import { useFormik } from "formik";
 import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { utils } from "../../../../utils";
 import { services } from "../../../../services";
 import { CustomForm } from "../../../";
 
-const formInputs = [
-  {
-    name: "firstName",
-    label: "First Name",
-  },
-  {
-    name: "lastName",
-    label: "Last Name",
-  },
-  {
-    name: "email",
-    label: "Email",
-    type: "email",
-  },
-  {
-    name: "phoneNumber",
-    label: "Phone Number",
-    asInput: "ReactInputMask",
-    mask: "(999) 999-9999",
-  },
-  {
-    name: "address",
-    label: "Address",
-  },
-  {
-    name: "zipCode",
-    label: "Zip Code",
-    type: "number",
-  },
-];
-
 const UserProfileForm = () => {
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation("user");
+
+  const formInputs = [
+    {
+      name: "firstName",
+      label: t("profile.form.firstName"),
+    },
+    {
+      name: "lastName",
+      label: t("profile.form.lastName"),
+    },
+    {
+      name: "email",
+      label: t("profile.form.email"),
+      type: "email",
+    },
+    {
+      name: "phoneNumber",
+      label: t("profile.form.phoneNumber"),
+      asInput: "ReactInputMask",
+      mask: "(999) 999-9999",
+    },
+    {
+      name: "address",
+      label: t("profile.form.address"),
+    },
+    {
+      name: "zipCode",
+      label: t("profile.form.zipCode"),
+      type: "number",
+    },
+  ];
 
   const user = useSelector((state) => state.auth.user);
 
@@ -55,9 +57,9 @@ const UserProfileForm = () => {
     setLoading(true);
     try {
       await services.user.updateUser(values);
-      utils.functions.swalToast("User updated successfully!", "success");
+      utils.functions.swalToast(t("profile.form.successToast"), "success");
     } catch (error) {
-      utils.functions.swalToast("Unable to update profile", "error");
+      utils.functions.swalToast(t("profile.form.errorToast"), "error");
     } finally {
       setLoading(false);
     }
@@ -81,7 +83,7 @@ const UserProfileForm = () => {
           ))
         }
         <Button type="submit" disabled={!(formik.dirty && formik.isValid) || loading} className="text-uppercase w-100 mt-3">
-          Update Information 
+          {t("profile.form.updateButton")}
         </Button>
       </fieldset>
     </Form>

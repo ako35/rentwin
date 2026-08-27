@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 import { constants } from "../../../../constants"
 import { GiCarDoor, GiCarSeat, GiGasPump, GiGearStick } from "react-icons/gi"
 import { Button } from "react-bootstrap"
@@ -9,6 +10,8 @@ const { routes } = constants
 const API_URL = import.meta.env.VITE_APP_API_URL
 
 const VehicleCard = (props) => {
+  const { t } = useTranslation("vehicles");
+  const { t: tCommon } = useTranslation("common");
 
   return (
     <Link to={`${routes.vehicles}/${props.id}`}>
@@ -19,19 +22,19 @@ const VehicleCard = (props) => {
         <h4>{props.model}</h4>
         <div className="details">
           <div>
-            <GiGearStick /> {props.transmission}
+            <GiGearStick /> {tCommon(`options.transmissionTypes.${props.transmission}`)}
           </div>
           <div>
-            <GiGasPump /> {props.fuelType}
+            <GiGasPump /> {tCommon(`options.fuelTypes.${props.fuelType}`)}
           </div>
           <div>
-            <GiCarDoor /> {props.doors} doors 
+            <GiCarDoor /> {props.doors} {t("card.doors")}
           </div>
           <div>
-            <GiCarSeat /> {props.seats} seats
+            <GiCarSeat /> {props.seats} {t("card.seats")}
           </div>
         </div>
-        <Button>Rent Now</Button>
+        <Button>{t("card.rentNow")}</Button>
       </div>
     </Link>
   )

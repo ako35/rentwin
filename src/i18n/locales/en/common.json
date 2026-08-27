@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "home": "Home",
+    "vehicles": "Vehicles",
+    "about": "About Us",
+    "contact": "Contact Us",
+    "privacyPolicy": "Privacy Policy"
+  },
+  "userMenu": {
+    "guest": "Guest",
+    "login": "login",
+    "register": "register",
+    "logout": "Logout",
+    "profile": "Profile",
+    "reservations": "Reservations",
+    "adminPanel": "Admin Panel",
+    "logoutConfirmTitle": "Logout",
+    "logoutConfirmText": "Are you sure you want to logout?"
+  },
+  "language": {
+    "label": "Language",
+    "tr": "Türkçe",
+    "en": "English"
+  },
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "search": "Search",
+    "submit": "Submit",
+    "back": "Back",
+    "yes": "Yes",
+    "no": "No",
+    "close": "Close",
+    "view": "View",
+    "update": "Update",
+    "create": "Create",
+    "export": "Export"
+  },
+  "passwordInput": {
+    "show": "Show Password",
+    "hide": "Hide Password"
+  },
+  "options": {
+    "fuelTypes": {
+      "Diesel": "Diesel",
+      "Gasoline": "Gasoline",
+      "Hybrid": "Hybrid",
+      "Electricity": "Electricity",
+      "LPG": "LPG",
+      "CNG": "CNG",
+      "Hydrogen": "Hydrogen"
+    },
+    "transmissionTypes": {
+      "Automatic": "Automatic",
+      "Manual": "Manual",
+      "Tiptronic": "Tiptronic"
+    },
+    "airConditioning": {
+      "yes": "Yes",
+      "no": "No"
+    },
+    "roles": {
+      "Customer": "Customer",
+      "Administrator": "Administrator"
+    },
+    "reservationStatus": {
+      "CREATED": "Created",
+      "CANCELLED": "Cancelled",
+      "DONE": "Done"
+    }
+  }
+}

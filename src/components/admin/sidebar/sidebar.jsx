@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { utils } from "../../../utils";
 import { logout } from "../../../store";
 import { services } from "../../../services";
@@ -18,39 +19,13 @@ import "./sidebar.scss";
 
 const { routes } = constants;
 
-const beforeVehiclesItems = [
-  {
-    title: "Dashboard",
-    icon: <MdOutlineDashboard />,
-    pathname: `${routes.adminDashboard}`,
-  },
-  {
-    title: "Users",
-    icon: <FaUsers />,
-    pathname: `${routes.adminUsers}`,
-  },
-];
-
-const afterVehiclesItems = [
-  {
-    title: "Reservations",
-    icon: <MdBookOnline />,
-    pathname: `${routes.adminReservations}`,
-  },
-  {
-    title: "Contact Messages",
-    icon: <MdOutlineSpeakerNotes />,
-    pathname: `${routes.adminContactMessages}`,
-  },
-];
-
-const renderNavLink = (item, pathname) => (
+const renderNavLink = (item, pathname, isDashboard) => (
   <Nav.Link
-    key={item.title}
+    key={item.key}
     as={Link}
     to={item.pathname}
     active={
-      item.title === "Dashboard"
+      isDashboard
         ? pathname === item.pathname
         : pathname.startsWith(item.pathname)
     }
@@ -63,10 +38,42 @@ const Sidebar = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t } = useTranslation("admin");
+  const { t: tHeader } = useTranslation("header");
+
+  const beforeVehiclesItems = [
+    {
+      key: "dashboard",
+      title: t("sidebar.dashboard"),
+      icon: <MdOutlineDashboard />,
+      pathname: `${routes.adminDashboard}`,
+    },
+    {
+      key: "users",
+      title: t("sidebar.users"),
+      icon: <FaUsers />,
+      pathname: `${routes.adminUsers}`,
+    },
+  ];
+
+  const afterVehiclesItems = [
+    {
+      key: "reservations",
+      title: t("sidebar.reservations"),
+      icon: <MdBookOnline />,
+      pathname: `${routes.adminReservations}`,
+    },
+    {
+      key: "contactMessages",
+      title: t("sidebar.contactMessages"),
+      icon: <MdOutlineSpeakerNotes />,
+      pathname: `${routes.adminContactMessages}`,
+    },
+  ];
 
   const handleLogout = () => {
     utils.functions
-      .swalQuestion("Logout", "Are you sure you want to logout?")
+      .swalQuestion(t("sidebar.logoutConfirmTitle"), t("sidebar.logoutConfirmText"))
       .then((result) => {
         if (result.isConfirmed) {
           dispatch(logout());
@@ -84,7 +91,7 @@ const Sidebar = () => {
             <div className="logo">
               <div className="logo_text">
                 RENT<span>WIN</span>
-                <p>YOUR RELIABLE RIDE, AS LONG AS YOU NEED</p>
+                <p>{tHeader("slogan")}</p>
               </div>
             </div>
           </Link>
@@ -92,29 +99,29 @@ const Sidebar = () => {
         <Navbar.Toggle aria-controls="admin-panel" />
         <Navbar.Collapse id="admin-panel">
           <Nav className="mt-5">
-            {beforeVehiclesItems.map((item) => renderNavLink(item, pathname))}
+            {beforeVehiclesItems.map((item) => renderNavLink(item, pathname, item.key === "dashboard"))}
             <NavDropdown
               title={
                 <>
-                  <GiMechanicGarage /> Vehicles
+                  <GiMechanicGarage /> {t("sidebar.vehicles")}
                 </>
               }
               active={pathname.startsWith(routes.adminVehicles)}
               id="vehicles-nav-dropdown"
             >
               <NavDropdown.Item as={Link} to={`${routes.adminVehicles}/new`}>
-                Add Vehicle
+                {t("sidebar.addVehicle")}
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to={routes.adminVehicles}>
-                Vehicle List
+                {t("sidebar.vehicleList")}
               </NavDropdown.Item>
             </NavDropdown>
-            {afterVehiclesItems.map((item) => renderNavLink(item, pathname))}
+            {afterVehiclesItems.map((item) => renderNavLink(item, pathname, false))}
             <Nav.Link as={Link} to={routes.home}>
-              <MdWeb /> Back To Website
+              <MdWeb /> {t("sidebar.backToWebsite")}
             </Nav.Link>
             <Nav.Link onClick={handleLogout}>
-              <MdOutlineLogout /> Logout
+              <MdOutlineLogout /> {t("sidebar.logout")}
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>

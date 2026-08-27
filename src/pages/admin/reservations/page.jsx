@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
 import { Button, Spinner } from "react-bootstrap";
@@ -11,6 +12,8 @@ import { constants } from "../../../constants";
 const { routes } = constants;
 
 const AdminReservationsPage = () => {
+  const { t } = useTranslation("admin");
+  const columns = utils.tables.getAdminReservationsColumns(t);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [reservations, setReservations] = useState([]);
@@ -45,11 +48,11 @@ const AdminReservationsPage = () => {
       link.download = "users.xlsx";
       document.body.appendChild(link);
       link.click();
-      utils.functions.swalToast("Your download will start soon", "success");
+      utils.functions.swalToast(t("reservations.toasts.downloadSuccess"), "success");
       link.remove();
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error while downloading",
+        t("reservations.toasts.downloadError"),
         "error"
       );
     } finally {
@@ -68,7 +71,7 @@ const AdminReservationsPage = () => {
       setTotalRows(data.totalElements);
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error while changing the page",
+        t("reservations.toasts.pageChangeError"),
         "error"
       );
     }
@@ -90,13 +93,12 @@ const AdminReservationsPage = () => {
   return (
     <div className="admin-reservations-page">
       <Button onClick={handleDownload} disabled={loading}>
-        {downloading && <Spinner animation="border" size="sm" />} Download
-        Reservations Data
+        {downloading && <Spinner animation="border" size="sm" />} {t("reservations.downloadData")}
       </Button>
       <div className="admin-reservations-table-container">
         <DataTable
-          title="Reservations"
-          columns={utils.tables.adminReservationsColumns}
+          title={t("reservations.tableTitle")}
+          columns={columns}
           data={reservations}
           progressPending={loading}
           progressComponent={<Loading height={500} />}

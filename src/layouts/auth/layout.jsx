@@ -3,6 +3,7 @@ import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router-d
 import { constants } from "../../constants"
 import { GiCancel, GiHomeGarage } from "react-icons/gi"
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import './style.scss'
 import { useEffect } from "react";
 
@@ -11,6 +12,8 @@ const { routes, website } = constants;
 const AuthLayout = () => {
   const { user } = useSelector(state => state.auth);
   const navigate = useNavigate();
+  const { t } = useTranslation("auth");
+  const { t: tHeader } = useTranslation("header");
 
   const { pathname } = useLocation();
 
@@ -26,14 +29,14 @@ const AuthLayout = () => {
         <Col lg={6} className="banner">
           <img src="/logo.png" alt={website.name} title={website.name} />
           <div className="toolbar">
-            <GiCancel title="Go Back" onClick={() => navigate(-1)} />
-            <GiHomeGarage title="Go Home Page" onClick={() => navigate(routes.home)} />
+            <GiCancel title={t("layout.goBack")} onClick={() => navigate(-1)} />
+            <GiHomeGarage title={t("layout.goHomePage")} onClick={() => navigate(routes.home)} />
           </div>
         </Col>
         <Link to={routes.home} className="logo">
           <div className="logo_text">
             RENT<span>WIN</span>
-            <p>YOUR RELIABLE RIDE, AS LONG AS YOU NEED</p>
+            <p>{tHeader("slogan")}</p>
           </div>
         </Link>
         <Col lg={6} className="forms">

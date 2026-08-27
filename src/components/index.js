@@ -20,6 +20,7 @@ import ContactMap from './common/contact/map/map'
 import CustomForm from './common/custom-form/custom-form'
 import CustomPagination from './common/custom-pagination/custom-pagination'
 import GaugeChart from './common/gauge-chart/gauge-chart'
+import LanguageSwitcher from './common/language-switcher/language-switcher'
 import QuickLink from './common/footer/quick-link/quick-link'
 import Footer from './common/footer/footer'
 import BottomMenu from './common/header/bottom-menu/bottom-menu'
@@ -66,6 +67,7 @@ export{
     CustomForm,
     CustomPagination,
     GaugeChart,
+    LanguageSwitcher,
     QuickLink,
     Footer,
     BottomMenu,

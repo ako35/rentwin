@@ -1,0 +1,12 @@
+{
+  "notFound": {
+    "code": 404,
+    "title": "Hata! Sayfa Bulunamadı",
+    "desc": "Aradığınız sayfa kaldırılmış, adı değiştirilmiş veya geçici olarak kullanılamıyor olabilir. Lütfen daha sonra tekrar deneyin."
+  },
+  "forbidden": {
+    "code": 403,
+    "title": "Hata! Erişim Yasak!",
+    "desc": "Bu sayfaya erişim izniniz yok. Aksini düşünüyorsanız lütfen yöneticiyle iletişime geçin."
+  }
+}

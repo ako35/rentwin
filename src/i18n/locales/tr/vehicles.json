@@ -1,0 +1,55 @@
+{
+  "pageTitle": "Araçlarımız",
+  "detailsPageTitle": "Araç Detayı",
+  "loadError": "Araç bilgileri yüklenemedi",
+  "sections": {
+    "vehicleModels": {
+      "title1": "Araç",
+      "title2": "Modelleri",
+      "desc": "Kaliteli araçlardan oluşan geniş yelpazemizi keşfedin. İster şehir içi gezileriniz için yakıt tasarruflu kompakt bir araç, ister açık hava maceraları için sağlam bir SUV, ister maksimum konfor için lüks bir sedan arıyor olun, kapsamlı filomuz ihtiyaçlarınıza mutlaka cevap verecektir."
+    }
+  },
+  "card": {
+    "doors": "kapı",
+    "seats": "koltuk",
+    "rentNow": "Şimdi Kirala"
+  },
+  "details": {
+    "pricePerHour": "{{price}} $ / saat",
+    "propertyHighlights": "Öne Çıkan Özellikler",
+    "model": "Model",
+    "doors": "Kapı",
+    "seats": "Koltuk",
+    "luggage": "Bagaj",
+    "transmission": "Vites",
+    "airConditioning": "Klima",
+    "fuelType": "Yakıt Tipi",
+    "age": "Yaş",
+    "yes": "Evet",
+    "no": "Hayır"
+  },
+  "booking": {
+    "sectionTitle1": "Şimdi",
+    "sectionTitle2": "Rezervasyon Yap",
+    "loginAlert": "Aracın müsait olup olmadığını kontrol etmek için önce giriş yapın",
+    "pickUpLocation": "Alış Konumu",
+    "dropOffLocation": "Bırakış Konumu",
+    "pickUpDate": "Alış Tarihi",
+    "pickUpTime": "Alış Saati",
+    "dropOffDate": "Bırakış Tarihi",
+    "dropOffTime": "Bırakış Saati",
+    "cardNumber": "Kart Numarası",
+    "cardHolderName": "Kart Sahibinin Adı",
+    "expiryDate": "Son Kullanma Tarihi",
+    "cvv": "CVV",
+    "termsLabel": "Şartlar ve koşulları kabul ediyorum",
+    "checkAvailability": "Müsaitliği Kontrol Et",
+    "totalPrice": "Toplam Fiyat",
+    "edit": "Düzenle",
+    "bookNow": "Şimdi Rezervasyon Yap",
+    "successToast": "Rezervasyon başarıyla oluşturuldu!",
+    "genericError": "Rezervasyon işlemi sırasında bir hata oluştu!",
+    "dateOrderError": "Alış tarihi, bırakış tarihinden en az 1 saat önce olmalıdır!",
+    "notAvailableError": "Araç seçilen tarihler için müsait değil!"
+  }
+}

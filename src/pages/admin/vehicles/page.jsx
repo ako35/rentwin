@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { constants } from "../../../constants";
 import { Link, useNavigate } from "react-router-dom";
 import { services } from "../../../services";
@@ -11,6 +12,8 @@ import './style.scss'
 const { routes } = constants;
 
 const AdminVehiclesPage = () => {
+  const { t } = useTranslation("admin");
+  const columns = utils.tables.getAdminVehiclesColumns(t);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [vehicles, setVehicles] = useState([]);
@@ -45,12 +48,12 @@ const AdminVehiclesPage = () => {
       link.click();
       document.body.removeChild(link);
       utils.functions.swalToast(
-        "Vehicle data downloaded successfully!",
+        t("vehicles.toasts.downloadSuccess"),
         "success"
       );
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error while downloading vehicle data!",
+        t("vehicles.toasts.downloadError"),
         "error"
       );
     } finally {
@@ -64,7 +67,7 @@ const AdminVehiclesPage = () => {
       await loadData(page - 1, newPerPage);
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error while changing the page!",
+        t("vehicles.toasts.pageChangeError"),
         "error"
       );
     }
@@ -87,17 +90,16 @@ const AdminVehiclesPage = () => {
     <div className="admin-vehicle-page">
       <ButtonGroup className="align-self-end">
         <Button as={Link} to={`${routes.adminVehicles}/new`}>
-          New Vehicle
+          {t("vehicles.newVehicle")}
         </Button>
         <Button onClick={handleDownload} disabled={downloading}>
-          {downloading && <Spinner animation="border" size="sm" />} Download
-          Vehicle Reports
+          {downloading && <Spinner animation="border" size="sm" />} {t("vehicles.downloadReports")}
         </Button>
       </ButtonGroup>
       <div className="admin-vehicle-table-container">
         <DataTable
-          title="Vehicles"
-          columns={utils.tables.adminVehiclesColumns}
+          title={t("vehicles.tableTitle")}
+          columns={columns}
           data={vehicles}
           progressPending={loading}
           progressComponent={<Loading height={500} />}

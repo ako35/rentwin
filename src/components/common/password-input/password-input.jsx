@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Form, InputGroup } from "react-bootstrap";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 import { utils } from "../../../utils";
 
 const PasswordInput = (props) => {
     // formik, label, name, disabled, placeholder
     const [type, setType] = useState("password");
+    const { t } = useTranslation("common");
 
     const togglePassword = () => {
         const newType = type === "password" ? "text" : "password";
@@ -23,7 +25,7 @@ const PasswordInput = (props) => {
     return (
         <Form.Group
             className="mb-3"
-            title={type === "password" ? "Show Password" : "Hide Password"}>
+            title={type === "password" ? t("passwordInput.show") : t("passwordInput.hide")}>
             <Form.Label>{props.label}</Form.Label>
             <InputGroup>
                 <Form.Control {...properties} />

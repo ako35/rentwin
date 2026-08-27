@@ -3,6 +3,7 @@ import { utils } from "../../../../utils";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { CustomForm, SectionHeader } from "../../../";
 import {
   Alert,
@@ -19,79 +20,11 @@ import moment from "moment/moment";
 
 const { routes } = constants;
 
-const formItems = [
-  {
-    label: "Pick Up Location",
-    name: "pickUpLocation",
-    floating: true,
-  },
-  {
-    label: "Drop Off Location",
-    name: "dropOffLocation",
-    floating: true,
-  },
-  {
-    label: "Pick Up Date",
-    name: "pickUpDate",
-    type: "date",
-    floating: true,
-    min: moment().format("YYYY-MM-DD"),
-  },
-  {
-    label: "Pick Up Time",
-    name: "pickUpTime",
-    type: "time",
-    floating: true,
-  },
-  {
-    label: "Drop Off Date",
-    name: "dropOffDate",
-    type: "date",
-    floating: true,
-  },
-  {
-    label: "Drop Off Time",
-    name: "dropOffTime",
-    type: "time",
-    floating: true,
-  },
-  {
-    label: "Card Number",
-    name: "cardNo",
-    floating: true,
-    asInput: "ReactInputMask",
-    mask: "9999-9999-9999-9999",
-  },
-  {
-    label: "Card Holder Name",
-    name: "cardHolderName",
-    floating: true,
-  },
-  {
-    label: "Expiry Date",
-    name: "expiryDate",
-    type: "month",
-    floating: true,
-  },
-  {
-    label: "CVV",
-    name: "cvv",
-    floating: true,
-    asInput: "ReactInputMask",
-    mask: "999",
-  },
-  {
-    label: "I agree to the terms and conditions",
-    name: "terms",
-    id: "terms",
-    type: "checkbox",
-  },
-];
-
 const BookingForm = () => {
   const [loading, setLoading] = useState(false);
   const [vehicleAvailable, setVehicleAvailable] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
+  const { t } = useTranslation("vehicles");
 
   const {
     auth: { isLoggedIn },
@@ -99,6 +32,75 @@ const BookingForm = () => {
   } = useSelector((state) => state);
 
   const navigate = useNavigate();
+
+  const formItems = [
+    {
+      label: t("booking.pickUpLocation"),
+      name: "pickUpLocation",
+      floating: true,
+    },
+    {
+      label: t("booking.dropOffLocation"),
+      name: "dropOffLocation",
+      floating: true,
+    },
+    {
+      label: t("booking.pickUpDate"),
+      name: "pickUpDate",
+      type: "date",
+      floating: true,
+      min: moment().format("YYYY-MM-DD"),
+    },
+    {
+      label: t("booking.pickUpTime"),
+      name: "pickUpTime",
+      type: "time",
+      floating: true,
+    },
+    {
+      label: t("booking.dropOffDate"),
+      name: "dropOffDate",
+      type: "date",
+      floating: true,
+    },
+    {
+      label: t("booking.dropOffTime"),
+      name: "dropOffTime",
+      type: "time",
+      floating: true,
+    },
+    {
+      label: t("booking.cardNumber"),
+      name: "cardNo",
+      floating: true,
+      asInput: "ReactInputMask",
+      mask: "9999-9999-9999-9999",
+    },
+    {
+      label: t("booking.cardHolderName"),
+      name: "cardHolderName",
+      floating: true,
+    },
+    {
+      label: t("booking.expiryDate"),
+      name: "expiryDate",
+      type: "month",
+      floating: true,
+    },
+    {
+      label: t("booking.cvv"),
+      name: "cvv",
+      floating: true,
+      asInput: "ReactInputMask",
+      mask: "999",
+    },
+    {
+      label: t("booking.termsLabel"),
+      name: "terms",
+      id: "terms",
+      type: "checkbox",
+    },
+  ];
 
   const onSubmit = async (values) => {
     setLoading(true);
@@ -127,11 +129,11 @@ const BookingForm = () => {
 
     try {
       await services.reservation.createReservation(vehicle.id, dto);
-      await utils.functions.swalToast("Reservation created successfully!", "success");
+      await utils.functions.swalToast(t("booking.successToast"), "success");
       navigate(routes.userReservations);
     } catch (error) {
       utils.functions.swalToast(
-        "There is an error occurred during rent operation!",
+        t("booking.genericError"),
         "error"
       );
     } finally {
@@ -155,22 +157,22 @@ const BookingForm = () => {
       ),
     };
     try {
-      if (!utils.functions.checkDates(formik.values)) 
+      if (!utils.functions.checkDates(formik.values))
       return utils.functions.swalToast(
-          "Pick up date must be minimum 1 hour before drop off date!",
+          t("booking.dateOrderError"),
           "error"
         );
-      
+
       const data = await services.reservation.isVehicleAvailable(dto);
       const { available, totalPrice } = data;
       setTotalPrice(totalPrice);
       setVehicleAvailable(available);
       if(!available) {
-        utils.functions.swalToast("Vehicle is not available for the selected dates!", "error");
+        utils.functions.swalToast(t("booking.notAvailableError"), "error");
       }
     } catch (error) {
       utils.functions.swalToast(
-        "There is an error occurred during rent operation!",
+        t("booking.genericError"),
         "error"
       );
     } finally {
@@ -185,9 +187,9 @@ const BookingForm = () => {
   });
   return (
     <div className="booking-form">
-      <SectionHeader title1="Book" title2="Now" />
+      <SectionHeader title1={t("booking.sectionTitle1")} title2={t("booking.sectionTitle2")} />
       {!isLoggedIn && (
-        <Alert>Please login first to check if the car is available</Alert>
+        <Alert>{t("booking.loginAlert")}</Alert>
       )}
       <Form noValidate onSubmit={formik.handleSubmit}>
         <fieldset disabled={!isLoggedIn}>
@@ -210,15 +212,14 @@ const BookingForm = () => {
             disabled={loading}
             onClick={handleAvailability}
           >
-            {loading && <Spinner animation="border" size="sm" />} Check If
-            Available
+            {loading && <Spinner animation="border" size="sm" />} {t("booking.checkAvailability")}
           </Button>
         </fieldset>
         <fieldset
           className={`mt-5 ${vehicleAvailable && isLoggedIn} || 'd-none'`}
         >
           <Alert variant="success">
-            <h2>Total Price: {totalPrice}</h2>
+            <h2>{t("booking.totalPrice")}: {totalPrice}</h2>
             {formItems.slice(6, 10).map((item) => (
               <CustomForm key={item.name} formik={formik} {...item} />
             ))}
@@ -226,7 +227,7 @@ const BookingForm = () => {
               type="checkbox"
               id="terms"
               value={true}
-              label="I agree to the terms and conditions"
+              label={t("booking.termsLabel")}
               {...formik.getFieldProps("terms")}
             />
             <ButtonGroup className="mt-3 w-100">
@@ -236,7 +237,7 @@ const BookingForm = () => {
                 onClick={() => setVehicleAvailable(false)}
                 className="w-50"
               >
-                Edit
+                {t("booking.edit")}
               </Button>
               <Button
                 variant="outline-primary"
@@ -244,7 +245,7 @@ const BookingForm = () => {
                 disabled={loading}
                 className="w-50"
               >
-                Book Now
+                {t("booking.bookNow")}
               </Button>
             </ButtonGroup>
           </Alert>

@@ -12,6 +12,7 @@ import { constants } from "../../../../constants";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
+import { useTranslation } from "react-i18next";
 import { utils } from "../../../../utils";
 import { CustomForm, Loading } from "../../../../components";
 import "./style.scss";
@@ -21,76 +22,88 @@ const { routes } = constants;
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
 
-const formItems = [
-  {
-    name: "brand",
-    label: "Brand",
-    asGroup: Col,
-  },
-  {
-    name: "model",
-    label: "Model",
-    asGroup: Col,
-  },
-  {
-    name: "licensePlate",
-    label: "License Plate",
-    asGroup: Col,
-  },
-  {
-    name: "doors",
-    label: "Doors",
-    asGroup: Col,
-    type: "number",
-  },
-  {
-    name: "seats",
-    label: "Seats",
-    asGroup: Col,
-    type: "number",
-  },
-  {
-    name: "luggage",
-    label: "Luggage",
-    asGroup: Col,
-    type: "number",
-  },
-  {
-    name: "age",
-    label: "Age",
-    asGroup: Col,
-    type: "number",
-  },
-  {
-    name: "pricePerHour",
-    label: "Price Per Hour",
-    asGroup: Col,
-    type: "number",
-  },
-  {
-    name: "transmission",
-    label: "Transmission",
-    asGroup: Col,
-    type: "select",
-    itemsArr: constants.transmissionTypes,
-  },
-  {
-    name: "airConditioning",
-    label: "Air Conditioner",
-    asGroup: Col,
-    type: "select",
-    itemsArr: constants.airConditioningTypes,
-  },
-  {
-    name: "fuelType",
-    label: "Fuel Type",
-    asGroup: Col,
-    type: "select",
-    itemsArr: constants.fuelTypes,
-  },
-];
-
 const AdminVehicleDetailsPage = () => {
+  const { t } = useTranslation("admin");
+  const { t: tCommon } = useTranslation("common");
+
+  const formItems = [
+    {
+      name: "brand",
+      label: t("vehicles.form.brand"),
+      asGroup: Col,
+    },
+    {
+      name: "model",
+      label: t("vehicles.form.model"),
+      asGroup: Col,
+    },
+    {
+      name: "licensePlate",
+      label: t("vehicles.form.licensePlate"),
+      asGroup: Col,
+    },
+    {
+      name: "doors",
+      label: t("vehicles.form.doors"),
+      asGroup: Col,
+      type: "number",
+    },
+    {
+      name: "seats",
+      label: t("vehicles.form.seats"),
+      asGroup: Col,
+      type: "number",
+    },
+    {
+      name: "luggage",
+      label: t("vehicles.form.luggage"),
+      asGroup: Col,
+      type: "number",
+    },
+    {
+      name: "age",
+      label: t("vehicles.form.age"),
+      asGroup: Col,
+      type: "number",
+    },
+    {
+      name: "pricePerHour",
+      label: t("vehicles.form.pricePerHour"),
+      asGroup: Col,
+      type: "number",
+    },
+    {
+      name: "transmission",
+      label: t("vehicles.form.transmission"),
+      asGroup: Col,
+      type: "select",
+      itemsArr: constants.transmissionTypes.map((item) => ({
+        ...item,
+        name: tCommon(`options.transmissionTypes.${item.value}`),
+      })),
+    },
+    {
+      name: "airConditioning",
+      label: t("vehicles.form.airConditioner"),
+      asGroup: Col,
+      type: "select",
+      itemsArr: constants.airConditioningTypes.map((item) => ({
+        ...item,
+        name: tCommon(`options.airConditioning.${item.value ? "yes" : "no"}`),
+      })),
+    },
+    {
+      name: "fuelType",
+      label: t("vehicles.form.fuelType"),
+      asGroup: Col,
+      type: "select",
+      itemsArr: constants.fuelTypes.map((item) => ({
+        ...item,
+        name: tCommon(`options.fuelTypes.${item.value}`),
+      })),
+    },
+  ];
+
   const [loading, setLoading] = useState(true);
   const [loaded, setLoaded] = useState(false);
   const [imageChanged, setImageChanged] = useState(false);
@@ -148,10 +161,10 @@ const AdminVehicleDetailsPage = () => {
       delete payload.image;
 
       await services.vehicle.updateVehicle(vehicleId, imageId, payload);
-      utils.functions.swalToast("Vehicle updated successfully.", "success");
+      utils.functions.swalToast(t("vehicles.toasts.updateSuccess"), "success");
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error updating the vehicle.",
+        t("vehicles.toasts.updateError"),
         "error"
       );
     } finally {
@@ -198,8 +211,8 @@ const AdminVehicleDetailsPage = () => {
   const handleDelete = async () => {
     utils.functions
       .swalQuestion(
-        "Are you sure you want to delete this vehicle?",
-        "You won't be able to revert this action!"
+        t("vehicles.toasts.deleteConfirmTitle"),
+        t("vehicles.toasts.deleteConfirmText")
       )
       .then((result) => {
         if (result.isConfirmed) {
@@ -212,11 +225,11 @@ const AdminVehicleDetailsPage = () => {
     setDeleting(true);
     try {
       await services.vehicle.deleteVehicle(vehicleId);
-      await utils.functions.swalToast("Vehicle deleted successfully.", "success");
+      await utils.functions.swalToast(t("vehicles.toasts.deleteSuccess"), "success");
       navigate(`${routes.adminVehicles}`);
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error while deleting the vehicle.",
+        t("vehicles.toasts.deleteError"),
         "error"
       );
     } finally {
@@ -261,7 +274,7 @@ const AdminVehicleDetailsPage = () => {
                     htmlFor="selectImage"
                     // onClick={handleSelectImage}
                   >
-                    Select Image
+                    {t("vehicles.selectImage")}
                   </Button>
                 </div>
               </Form.Group>
@@ -279,7 +292,7 @@ const AdminVehicleDetailsPage = () => {
                 type="switch"
                 id="outOfService"
                 name="outOfService"
-                label="Out of Service"
+                label={t("vehicles.outOfService")}
                 checked={formik.values.outOfService}
                 onChange={formik.handleChange}
                 className="mt-3"
@@ -289,13 +302,13 @@ const AdminVehicleDetailsPage = () => {
         </fieldset>
         {formik.values.builtIn && (
           <Alert variant="warning" className="mt-5">
-            Built-in vehicles cannot be deleted or updated.
+            {t("vehicles.builtInWarning")}
           </Alert>
         )}
         <div className="text-end">
           <ButtonGroup>
             <Button onClick={() => navigate(`${routes.adminVehicles}`)}>
-              Cancel
+              {t("vehicles.cancel")}
             </Button>
             {!formik.values.builtIn && (
               <>
@@ -306,14 +319,14 @@ const AdminVehicleDetailsPage = () => {
                     updating
                   }
                 >
-                  {updating && <Spinner animation="border" size="sm" />}{" "} Update
+                  {updating && <Spinner animation="border" size="sm" />}{" "} {t("vehicles.update")}
                 </Button>
                 <Button
                   variant="danger"
                   disabled={deleting}
                   onClick={handleDelete}
                 >
-                  {deleting && <Spinner animation="border" size="sm" />}{" "} Delete
+                  {deleting && <Spinner animation="border" size="sm" />}{" "} {t("vehicles.delete")}
                 </Button>
               </>
             )}

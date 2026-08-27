@@ -1,0 +1,56 @@
+{
+  "profile": {
+    "pageTitle": "Profil",
+    "builtInWarning": "Uyarı! Bu, yerleşik (built-in) bir kullanıcıdır ve güncellenemez.",
+    "form": {
+      "firstName": "Ad",
+      "lastName": "Soyad",
+      "email": "E-posta",
+      "phoneNumber": "Telefon Numarası",
+      "address": "Adres",
+      "zipCode": "Posta Kodu",
+      "updateButton": "Bilgileri Güncelle",
+      "successToast": "Kullanıcı başarıyla güncellendi!",
+      "errorToast": "Profil güncellenemedi"
+    },
+    "password": {
+      "currentPassword": "Mevcut Şifre",
+      "newPassword": "Yeni Şifre",
+      "confirmPassword": "Şifre Onayı",
+      "updateButton": "Şifreyi Güncelle",
+      "successToast": "Şifreniz güncellendi!",
+      "errorToast": "Profil güncellenemedi"
+    }
+  },
+  "reservations": {
+    "pageTitle": "Rezervasyonlarım",
+    "detailsPageTitle": "Rezervasyon Detayı",
+    "table": {
+      "no": "#",
+      "vehicle": "Araç",
+      "pickUp": "Alış",
+      "dropOff": "Bırakış"
+    },
+    "details": {
+      "backButton": "Rezervasyonlara Geri Dön",
+      "reservationDetails": "Rezervasyon Detayları",
+      "carDetails": "Araç Detayları",
+      "pickUpLocation": "Alış Konumu",
+      "dropOffLocation": "Bırakış Konumu",
+      "pickUpTime": "Alış Saati",
+      "dropOffTime": "Bırakış Saati",
+      "status": "Durum",
+      "price": "Fiyat",
+      "model": "Model",
+      "doors": "Kapı",
+      "seats": "Koltuk",
+      "luggage": "Bagaj",
+      "transmission": "Vites",
+      "airConditioning": "Klima",
+      "fuelType": "Yakıt Tipi",
+      "age": "Yaş",
+      "yes": "Evet",
+      "no": "Hayır"
+    }
+  }
+}

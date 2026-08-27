@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { services } from "../../../services";
 import { Col, Container, Row } from "react-bootstrap";
 import SectionHeader from "../section-header/section-header";
@@ -7,6 +8,7 @@ import VehicleCard from "./vehicle-card/vehicle-card";
 import CustomPagination from "../custom-pagination/custom-pagination";
 
 const Vehicles = () => {
+  const { t } = useTranslation("vehicles");
   const [loading, setLoading] = useState(true);
   const [vehicles, setVehicles] = useState([]);
   const [paging, setPaging] = useState({})
@@ -34,7 +36,7 @@ const Vehicles = () => {
 
   return (
     <Container className="vehicles">
-      <SectionHeader title1="Vehicle" title2="Models" desc="Explore our diverse range of high-quality vehicles. Whether you're seeking a fuel-efficient compact for city trips, a robust SUV for outdoor adventures, or a luxury sedan for utmost comfort, our comprehensive fleet is sure to cater to your specific needs." />
+      <SectionHeader title1={t("sections.vehicleModels.title1")} title2={t("sections.vehicleModels.title2")} desc={t("sections.vehicleModels.desc")} />
       {
         loading ? <Loading height={500} /> : 
         <>

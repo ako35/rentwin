@@ -1,4 +1,5 @@
 import { Accordion, Table } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 import { utils } from "../../../../../utils";
 import "./details-accordion.scss";
 
@@ -12,72 +13,74 @@ const UserReservationDetailsAccordion = (props) => {
         totalPrice,
         car,
     } = props;
+    const { t } = useTranslation("user");
+    const { t: tCommon } = useTranslation("common");
 
     const accordionItems = [
         {
             id: 1,
-            title: "Reservation Details",
+            title: t("reservations.details.reservationDetails"),
             content: [
                 {
-                    label: "Pick Up Location",
+                    label: t("reservations.details.pickUpLocation"),
                     value: pickUpLocation,
                 },
                 {
-                    label: "Drop Off Location",
+                    label: t("reservations.details.dropOffLocation"),
                     value: dropOffLocation,
                 },
                 {
-                    label: "Pick Up Time",
+                    label: t("reservations.details.pickUpTime"),
                     value: utils.functions.formatDateTime(pickUpTime),
                 },
                 {
-                    label: "Drop Off Time",
+                    label: t("reservations.details.dropOffTime"),
                     value: utils.functions.formatDateTime(dropOffTime),
                 },
                 {
-                    label: "Status",
-                    value: status,
+                    label: t("reservations.details.status"),
+                    value: tCommon(`options.reservationStatus.${status}`),
                 },
                 {
-                    label: "Price",
+                    label: t("reservations.details.price"),
                     value: `$${totalPrice}`,
                 },
             ],
         },
         {
             id: 2,
-            title: "Car Details",
+            title: t("reservations.details.carDetails"),
             content: [
                 {
-                    label: "Model",
+                    label: t("reservations.details.model"),
                     value: car.model,
                 },
                 {
-                    label: "Doors",
+                    label: t("reservations.details.doors"),
                     value: car.doors,
                 },
                 {
-                    label: "Seats",
+                    label: t("reservations.details.seats"),
                     value: car.seats,
                 },
                 {
-                    label: "Luggage",
+                    label: t("reservations.details.luggage"),
                     value: car.luggage,
                 },
                 {
-                    label: "Transmission",
-                    value: car.transmission,
+                    label: t("reservations.details.transmission"),
+                    value: tCommon(`options.transmissionTypes.${car.transmission}`),
                 },
                 {
-                    label: "Air Conditioning",
-                    value: car.airConditioning ? "Yes" : "No",
+                    label: t("reservations.details.airConditioning"),
+                    value: car.airConditioning ? t("reservations.details.yes") : t("reservations.details.no"),
                 },
                 {
-                    label: "Fuel Type",
-                    value: car.fuelType,
+                    label: t("reservations.details.fuelType"),
+                    value: tCommon(`options.fuelTypes.${car.fuelType}`),
                 },
                 {
-                    label: "Age",
+                    label: t("reservations.details.age"),
                     value: car.age,
                 },
             ],

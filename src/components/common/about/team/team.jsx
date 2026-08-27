@@ -1,15 +1,16 @@
 import { Col, Container, Row } from "react-bootstrap"
+import { useTranslation } from "react-i18next"
 import SectionHeader from "../../section-header/section-header"
 import Spacer from "../../spacer/spacer"
-import { constants } from "../../../../constants"
 import TeamMember from "./member/member"
 
-const { teamMembers } = constants
-
 const Team = () => {
+  const { t } = useTranslation("home");
+  const teamMembers = t("team", { returnObjects: true });
+
   return (
     <div className="team">
-      <SectionHeader title1="Our" title2="Team" />
+      <SectionHeader title1={t("sections.team.title1")} title2={t("sections.team.title2")} />
       <Spacer />
       <Container>
         <Row className='gy-5'>

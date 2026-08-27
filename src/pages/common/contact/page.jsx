@@ -1,19 +1,18 @@
 import { Col, Container, Row } from "react-bootstrap";
 import { ContactForm, ContactInfo, ContactMap, PageHeader, Spacer } from "../../../components/";
-import { constants } from "../../../constants";
+import { useTranslation } from "react-i18next";
 import './style.scss'
 
-const { website } = constants;
-
 const ContactPage = () => {
+  const { t } = useTranslation("contact");
   return (
     <>
-      <PageHeader title={website.contact.title}/>
+      <PageHeader title={t("pageTitle")}/>
       <Spacer />
       <Container>
         <Row>
           <Col md={6} className="contact-info-container">
-            <p>{website.contact.desc}</p>
+            <p>{t("desc")}</p>
             <Spacer />
             <ContactInfo />
           </Col>

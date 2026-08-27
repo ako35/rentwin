@@ -1,10 +1,12 @@
 import { Col, Container, Row } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 import { PageHeader, Spacer, UserAvatar, UserPasswordForm, UserProfileForm } from "../../../../components";
 
 const UserProfilePage = () => {
+  const { t } = useTranslation("user");
   return (
     <>
-      <PageHeader title="Profile" />
+      <PageHeader title={t("profile.pageTitle")} />
       <Spacer />
       <Container>
         <Row className="justify-content-center gap-5">

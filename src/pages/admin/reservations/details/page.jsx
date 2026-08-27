@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { constants } from "../../../../constants";
 import { Form, Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
+import { useTranslation } from "react-i18next";
 import { utils } from "../../../../utils";
 import { services } from "../../../../services";
 import "./style.scss";
@@ -18,6 +19,8 @@ const AdminReservationDetailsPage = () => {
   const [vehicles, setVehicles] = useState([]);
   const { reservationId } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation("admin");
+  const { t: tCommon } = useTranslation("common");
 
   const vehiclesOptions = vehicles.map((vehicle) => ({
     id: vehicle?.id,
@@ -28,43 +31,46 @@ const AdminReservationDetailsPage = () => {
   const formItems = [
     {
       name: "pickUpLocation",
-      label: "Pick Up Location",
+      label: t("reservations.form.pickUpLocation"),
     },
     {
       name: "dropOffLocation",
-      label: "Drop Off Location",
+      label: t("reservations.form.dropOffLocation"),
     },
     {
       name: "pickUpDate",
-      label: "Pick Up Date",
+      label: t("reservations.form.pickUpDate"),
       type: "date",
     },
     {
       name: "pickUpTime",
-      label: "Pick Up Time",
+      label: t("reservations.form.pickUpTime"),
       type: "time",
     },
     {
       name: "dropOffDate",
-      label: "Drop Off Date",
+      label: t("reservations.form.dropOffDate"),
       type: "date",
     },
     {
       name: "dropOffTime",
-      label: "Drop Off Time",
+      label: t("reservations.form.dropOffTime"),
       type: "time",
     },
     {
       name: "carId",
-      label: "Vehicle",
+      label: t("reservations.form.vehicle"),
       type: "select",
       itemsArr: vehiclesOptions,
     },
     {
       name: "status",
-      label: "Status",
+      label: t("reservations.form.status"),
       type: "select",
-      itemsArr: constants.reservationStatus,
+      itemsArr: constants.reservationStatus.map((item) => ({
+        ...item,
+        name: tCommon(`options.reservationStatus.${item.value}`),
+      })),
     },
   ];
 
@@ -100,12 +106,12 @@ const AdminReservationDetailsPage = () => {
     try {
       await services.reservation.updateReservation(values.carId, reservationId, dto);
       utils.functions.swalToast(
-        "Reservation updated successfully.",
+        t("reservations.toasts.updateSuccess"),
         "success"
       )
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error updated the data.",
+        t("reservations.toasts.updateError"),
         "error"
       )
     } finally {
@@ -125,11 +131,11 @@ const AdminReservationDetailsPage = () => {
     setDeleting(true);
     try {
       await services.reservation.deleteReservation(reservationId);
-      await utils.functions.swalToast("Reservation deleted successfully.", "success");
+      await utils.functions.swalToast(t("reservations.toasts.deleteSuccess"), "success");
       navigate(`${routes.adminReservations}`);
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error deleting the reservation.",
+        t("reservations.toasts.deleteError"),
         "error"
       );
     } finally {
@@ -140,8 +146,8 @@ const AdminReservationDetailsPage = () => {
   const handleDelete = async () => {
     utils.functions
       .swalQuestion(
-        "Are you sure you want to delete this reservation?",
-        "You won't be able to revert this action!"
+        t("reservations.toasts.deleteConfirmTitle"),
+        t("reservations.toasts.deleteConfirmText")
       )
       .then((result) => {
         if (result.isConfirmed) {
@@ -180,7 +186,7 @@ const AdminReservationDetailsPage = () => {
     <Loading />
   ) : (
     <>
-      <SectionHeader title1="reservation" title2="details" />
+      <SectionHeader title1={t("reservations.sectionTitle1")} title2={t("reservations.sectionTitle2")} />
       <Form
         novalidate
         onSubmit={formik.handleSubmit}
@@ -188,7 +194,7 @@ const AdminReservationDetailsPage = () => {
       >
         <div className="forms-container">
           <Row>
-            <h2>Reservation id: {reservationId}</h2>
+            <h2>{t("reservations.reservationId")}: {reservationId}</h2>
           </Row>
           <Row>
             {formItems.map((item) => (
@@ -204,21 +210,21 @@ const AdminReservationDetailsPage = () => {
               as={Link}
               to={`${routes.adminUsers}/${formik.values.userId}`}
             >
-              Go To Customer
+              {t("reservations.goToCustomer")}
             </Button>
           </div>
           <ButtonGroup>
             <Button disabled={deleting || updating} onClick={handleDelete}>
-              {deleting && <Spinner animation="border" size="sm" />} Delete
+              {deleting && <Spinner animation="border" size="sm" />} {t("reservations.delete")}
             </Button>
             <Button
               type="submit"
               disabled={!(formik.isValid && formik.dirty) || updating}
             >
-              {updating && <Spinner animation="border" size="sm" />} Save
+              {updating && <Spinner animation="border" size="sm" />} {t("reservations.save")}
             </Button>
             <Button onClick={() => navigate(`${routes.adminReservations}`)}>
-              Cancel
+              {t("reservations.cancel")}
             </Button>
           </ButtonGroup>
         </div>

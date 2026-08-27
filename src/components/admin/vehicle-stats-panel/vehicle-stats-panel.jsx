@@ -1,17 +1,19 @@
 import { FaCar, FaKey, FaParking, FaTools } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 import "./vehicle-stats-panel.scss";
 
 const VehicleStatsPanel = ({ stats }) => {
+  const { t } = useTranslation("admin");
   const items = [
-    { label: "Total", value: stats?.total, icon: <FaCar /> },
-    { label: "Rented", value: stats?.rented, icon: <FaKey /> },
-    { label: "Available", value: stats?.available, icon: <FaParking /> },
-    { label: "Out of Service", value: stats?.outOfService, icon: <FaTools /> },
+    { label: t("vehicleStatsPanel.total"), value: stats?.total, icon: <FaCar /> },
+    { label: t("vehicleStatsPanel.rented"), value: stats?.rented, icon: <FaKey /> },
+    { label: t("vehicleStatsPanel.available"), value: stats?.available, icon: <FaParking /> },
+    { label: t("vehicleStatsPanel.outOfService"), value: stats?.outOfService, icon: <FaTools /> },
   ];
 
   return (
     <div className="vehicle-stats-panel">
-      <h3 className="vehicle-stats-panel__title">Vehicles</h3>
+      <h3 className="vehicle-stats-panel__title">{t("vehicleStatsPanel.title")}</h3>
       <div className="vehicle-stats-panel__items">
         {items.map((item) => (
           <div className="vehicle-stats-panel__item" key={item.label}>

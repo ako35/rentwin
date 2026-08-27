@@ -1,0 +1,55 @@
+{
+  "pageTitle": "Our Vehicles",
+  "detailsPageTitle": "Vehicle Details",
+  "loadError": "Vehicle information cannot be loaded",
+  "sections": {
+    "vehicleModels": {
+      "title1": "Vehicle",
+      "title2": "Models",
+      "desc": "Explore our diverse range of high-quality vehicles. Whether you're seeking a fuel-efficient compact for city trips, a robust SUV for outdoor adventures, or a luxury sedan for utmost comfort, our comprehensive fleet is sure to cater to your specific needs."
+    }
+  },
+  "card": {
+    "doors": "doors",
+    "seats": "seats",
+    "rentNow": "Rent Now"
+  },
+  "details": {
+    "pricePerHour": "${{price}} / hour",
+    "propertyHighlights": "Property Higlights",
+    "model": "Model",
+    "doors": "Doors",
+    "seats": "Seats",
+    "luggage": "Luggage",
+    "transmission": "Transmission",
+    "airConditioning": "Air Conditioning",
+    "fuelType": "Fuel Type",
+    "age": "Age",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "booking": {
+    "sectionTitle1": "Book",
+    "sectionTitle2": "Now",
+    "loginAlert": "Please login first to check if the car is available",
+    "pickUpLocation": "Pick Up Location",
+    "dropOffLocation": "Drop Off Location",
+    "pickUpDate": "Pick Up Date",
+    "pickUpTime": "Pick Up Time",
+    "dropOffDate": "Drop Off Date",
+    "dropOffTime": "Drop Off Time",
+    "cardNumber": "Card Number",
+    "cardHolderName": "Card Holder Name",
+    "expiryDate": "Expiry Date",
+    "cvv": "CVV",
+    "termsLabel": "I agree to the terms and conditions",
+    "checkAvailability": "Check If Available",
+    "totalPrice": "Total Price",
+    "edit": "Edit",
+    "bookNow": "Book Now",
+    "successToast": "Reservation created successfully!",
+    "genericError": "There is an error occurred during rent operation!",
+    "dateOrderError": "Pick up date must be minimum 1 hour before drop off date!",
+    "notAvailableError": "Vehicle is not available for the selected dates!"
+  }
+}

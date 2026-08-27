@@ -10,6 +10,7 @@ import {
 import { constants } from "../../../../constants";
 import { useState } from "react";
 import { useFormik } from "formik";
+import { useTranslation } from "react-i18next";
 import { utils } from "../../../../utils";
 import { useNavigate } from "react-router-dom";
 import { CustomForm } from "../../../../components";
@@ -18,80 +19,91 @@ import { services } from "../../../../services";
 
 const { routes } = constants;
 
-const formItems = [
-  {
-    name: "brand",
-    label: "Brand",
-    asGroup: Col,
-  },
-  {
-    name: "model",
-    label: "Model",
-    asGroup: Col,
-  },
-  {
-    name: "licensePlate",
-    label: "License Plate",
-    asGroup: Col,
-  },
-  {
-    name: "doors",
-    label: "Doors",
-    asGroup: Col,
-    type: "number",
-  },
-  {
-    name: "seats",
-    label: "Seats",
-    asGroup: Col,
-    type: "number",
-  },
-  {
-    name: "luggage",
-    label: "Luggage",
-    asGroup: Col,
-    type: "number",
-  },
-  {
-    name: "age",
-    label: "Age",
-    asGroup: Col,
-    type: "number",
-  },
-  {
-    name: "pricePerHour",
-    label: "Price Per Hour",
-    asGroup: Col,
-    type: "number",
-  },
-  {
-    name: "transmission",
-    label: "Transmission",
-    asGroup: Col,
-    type: "select",
-    itemsArr: constants.transmissionTypes,
-  },
-  {
-    name: "airConditioning",
-    label: "Air Conditioner",
-    asGroup: Col,
-    type: "select",
-    itemsArr: constants.airConditioningTypes,
-  },
-  {
-    name: "fuelType",
-    label: "Fuel Type",
-    asGroup: Col,
-    type: "select",
-    itemsArr: constants.fuelTypes,
-  },
-];
-
 const AdminNewVehiclePage = () => {
   const [loading, setLoading] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
+  const { t } = useTranslation("admin");
+  const { t: tCommon } = useTranslation("common");
 
   const navigate = useNavigate();
+
+  const formItems = [
+    {
+      name: "brand",
+      label: t("vehicles.form.brand"),
+      asGroup: Col,
+    },
+    {
+      name: "model",
+      label: t("vehicles.form.model"),
+      asGroup: Col,
+    },
+    {
+      name: "licensePlate",
+      label: t("vehicles.form.licensePlate"),
+      asGroup: Col,
+    },
+    {
+      name: "doors",
+      label: t("vehicles.form.doors"),
+      asGroup: Col,
+      type: "number",
+    },
+    {
+      name: "seats",
+      label: t("vehicles.form.seats"),
+      asGroup: Col,
+      type: "number",
+    },
+    {
+      name: "luggage",
+      label: t("vehicles.form.luggage"),
+      asGroup: Col,
+      type: "number",
+    },
+    {
+      name: "age",
+      label: t("vehicles.form.age"),
+      asGroup: Col,
+      type: "number",
+    },
+    {
+      name: "pricePerHour",
+      label: t("vehicles.form.pricePerHour"),
+      asGroup: Col,
+      type: "number",
+    },
+    {
+      name: "transmission",
+      label: t("vehicles.form.transmission"),
+      asGroup: Col,
+      type: "select",
+      itemsArr: constants.transmissionTypes.map((item) => ({
+        ...item,
+        name: tCommon(`options.transmissionTypes.${item.value}`),
+      })),
+    },
+    {
+      name: "airConditioning",
+      label: t("vehicles.form.airConditioner"),
+      asGroup: Col,
+      type: "select",
+      itemsArr: constants.airConditioningTypes.map((item) => ({
+        ...item,
+        name: tCommon(`options.airConditioning.${item.value ? "yes" : "no"}`),
+      })),
+    },
+    {
+      name: "fuelType",
+      label: t("vehicles.form.fuelType"),
+      asGroup: Col,
+      type: "select",
+      itemsArr: constants.fuelTypes.map((item) => ({
+        ...item,
+        name: tCommon(`options.fuelTypes.${item.value}`),
+      })),
+    },
+  ];
 
   const onSubmit = async (values) => {
     setLoading(true);
@@ -103,11 +115,11 @@ const AdminNewVehiclePage = () => {
       const imageData = await services.vehicle.uploadVehicleImage(formData);
       delete values.image;
       await services.vehicle.addVehicle(imageData.imageId, values);
-      await utils.functions.swalToast("Vehicle created successfully.", "success");
+      await utils.functions.swalToast(t("vehicles.toasts.createSuccess"), "success");
       navigate(`${routes.adminVehicles}`);
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error while creating the vehicle.",
+        t("vehicles.toasts.createError"),
         "error"
       );
     } finally {
@@ -162,7 +174,7 @@ const AdminNewVehiclePage = () => {
                   htmlFor="selectImage"
                   // onClick={handleSelectImage}
                 >
-                  Select Image
+                  {t("vehicles.selectImage")}
                 </Button>
               </div>
             </Form.Group>
@@ -180,7 +192,7 @@ const AdminNewVehiclePage = () => {
               type="switch"
               id="outOfService"
               name="outOfService"
-              label="Out of Service"
+              label={t("vehicles.outOfService")}
               checked={formik.values.outOfService}
               onChange={formik.handleChange}
               className="mt-3"
@@ -190,10 +202,10 @@ const AdminNewVehiclePage = () => {
         <div className="text-end">
           <ButtonGroup>
             <Button onClick={() => navigate(`${routes.adminVehicles}`)}>
-              Cancel
+              {t("vehicles.cancel")}
             </Button>
             <Button type="submit" disabled={!formik.isValid || loading}>
-              {loading && <Spinner animation="border" size="sm" />}{" "} Create
+              {loading && <Spinner animation="border" size="sm" />}{" "} {t("vehicles.create")}
             </Button>
           </ButtonGroup>
         </div>

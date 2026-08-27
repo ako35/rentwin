@@ -1,0 +1,12 @@
+{
+  "notFound": {
+    "code": 404,
+    "title": "Oops! Page Not Found",
+    "desc": "The page you are looking for might have been removed had its name changed or is temporarily unavailable. Please try again later."
+  },
+  "forbidden": {
+    "code": 403,
+    "title": "Oops! Forbidden Access!",
+    "desc": "You don't have permission to access this page. If you think otherwise, please contact the administrator."
+  }
+}

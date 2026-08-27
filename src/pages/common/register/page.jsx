@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
+import { useTranslation } from "react-i18next";
 import { utils } from "../../../utils";
 import { services } from "../../../services";
 import { constants } from "../../../constants";
@@ -10,65 +11,66 @@ import "./style.scss";
 
 const { routes } = constants;
 
-const formItems = [
-  {
-    name: "firstName",
-    label: "First Name",
-    placeholder: "Enter first name",
-  },
-  {
-    name: "lastName",
-    label: "Last Name",
-    placeholder: "Enter last name",
-  },
-  {
-    name: "email",
-    label: "Email",
-    placeholder: "Enter email",
-    type: "email",
-  },
-  {
-    name: "phoneNumber",
-    label: "Phone Number",
-    placeholder: "Enter phone number",
-    asInput: "ReactInputMask",
-    mask: "(999) 999-9999",
-  },
-  {
-    name: "address",
-    label: "Address",
-    placeholder: "Enter address",
-  },
-  {
-    name: "zipCode",
-    label: "Zip Code",
-    placeholder: "Enter zip code",
-    type: "number",
-  },
-];
-
-const passwordItems = [
-  {
-    name: "password",
-    label: "Password",
-    placeholder: "Enter password",
-  },
-  {
-    name: "confirmPassword",
-    label: "Confirm Password",
-    placeholder: "Confirm password",
-  },
-];
-
 const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation("auth");
+
+  const formItems = [
+    {
+      name: "firstName",
+      label: t("register.firstNameLabel"),
+      placeholder: t("register.firstNamePlaceholder"),
+    },
+    {
+      name: "lastName",
+      label: t("register.lastNameLabel"),
+      placeholder: t("register.lastNamePlaceholder"),
+    },
+    {
+      name: "email",
+      label: t("register.emailLabel"),
+      placeholder: t("register.emailPlaceholder"),
+      type: "email",
+    },
+    {
+      name: "phoneNumber",
+      label: t("register.phoneLabel"),
+      placeholder: t("register.phonePlaceholder"),
+      asInput: "ReactInputMask",
+      mask: "(999) 999-9999",
+    },
+    {
+      name: "address",
+      label: t("register.addressLabel"),
+      placeholder: t("register.addressPlaceholder"),
+    },
+    {
+      name: "zipCode",
+      label: t("register.zipCodeLabel"),
+      placeholder: t("register.zipCodePlaceholder"),
+      type: "number",
+    },
+  ];
+
+  const passwordItems = [
+    {
+      name: "password",
+      label: t("register.passwordLabel"),
+      placeholder: t("register.passwordPlaceholder"),
+    },
+    {
+      name: "confirmPassword",
+      label: t("register.confirmPasswordLabel"),
+      placeholder: t("register.confirmPasswordPlaceholder"),
+    },
+  ];
 
   const onSubmit = async (values) => {
     setLoading(true);
     try {
       await services.user.register(values);
-      await utils.functions.swalToast("You have successfully registered", "success");
+      await utils.functions.swalToast(t("register.successToast"), "success");
       navigate(routes.login);
     } catch (error) {
       utils.functions.swalToast(error.response.data.message, "error");
@@ -95,11 +97,11 @@ const RegisterPage = () => {
         disabled={!(formik.dirty && formik.isValid) || loading}
       >
         {loading && <Spinner animation="border" size="sm" />}
-        REGISTER
+        {t("register.registerButton")}
       </Button>
-      <p>Already have an account?</p>
+      <p>{t("register.alreadyHaveAccount")}</p>
       <Button onClick={() => navigate(routes.login)} disabled={loading}>
-        LOGIN
+        {t("register.loginButton")}
       </Button>
     </Form>
   );

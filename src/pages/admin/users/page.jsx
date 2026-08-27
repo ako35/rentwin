@@ -4,6 +4,7 @@ import { Button, Spinner } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import { utils } from "../../../utils";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { services } from "../../../services";
 import { Loading } from "../../../components";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +13,9 @@ import "./style.scss";
 const { routes } = constants;
 
 const AdminUsersPage = () => {
+  const { t } = useTranslation("admin");
+  const { t: tCommon } = useTranslation("common");
+  const columns = utils.tables.getAdminUserColumns(t, tCommon);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [userData, setUserData] = useState([]);
@@ -43,11 +47,11 @@ const AdminUsersPage = () => {
       link.download = "users.xlsx";
       document.body.appendChild(link);
       link.click();
-      utils.functions.swalToast("Your download will start soon", "success");
+      utils.functions.swalToast(t("users.toasts.downloadSuccess"), "success");
       link.remove();
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error while downloading",
+        t("users.toasts.downloadError"),
         "error"
       );
     } finally {
@@ -63,7 +67,7 @@ const AdminUsersPage = () => {
       setTotalRows(data.totalElements);
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error while changing the page",
+        t("users.toasts.pageChangeError"),
         "error"
       );
     }
@@ -85,13 +89,12 @@ const AdminUsersPage = () => {
   return (
     <div className="admin-users-page">
       <Button onClick={handleDownload} disabled={loading}>
-        {downloading && <Spinner animation="border" size="sm" />} Download User
-        Data
+        {downloading && <Spinner animation="border" size="sm" />} {t("users.downloadData")}
       </Button>
       <div className="admin-users-table-container">
         <DataTable
-          title="Users"
-          columns={utils.tables.adminUserColumns}
+          title={t("users.tableTitle")}
+          columns={columns}
           data={userData}
           progressPending={loading}
           progressComponent={<Loading height={500} />}

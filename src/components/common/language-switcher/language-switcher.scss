@@ -1,0 +1,10 @@
+.language-switcher {
+    display: flex;
+    align-items: center;
+
+    .dropdown-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+}

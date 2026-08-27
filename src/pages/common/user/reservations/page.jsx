@@ -6,9 +6,11 @@ import {
   UserReservationsTable,
 } from "../../../../components";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { services } from "../../../../services";
 
 const UserReservationsPage = () => {
+  const { t } = useTranslation("user");
   const [loading, setLoading] = useState(true);
   const [reservations, setReservations] = useState([]);
   const [paging, setPaging] = useState({});
@@ -38,7 +40,7 @@ const UserReservationsPage = () => {
   }, []);
   return (
     <>
-      <PageHeader title="User Reservations" />
+      <PageHeader title={t("reservations.pageTitle")} />
       <Spacer />
       <Container>
         <UserReservationsTable loading={loading} reservations={reservations} />

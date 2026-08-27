@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
 import { services } from "../../../../../services"
 import { useParams } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 import { Loading, PageHeader, Spacer, UserReservationDetailsAccordion, UserReservationDetailsPanel } from "../../../../../components"
 import { Col, Container, Row } from 'react-bootstrap';
 
 const UserReservationDetailsPage = () => {
+  const { t } = useTranslation("user");
 
   const [loading, setLoading] = useState(true);
   const [reservation, setReservation] = useState({})
@@ -27,7 +29,7 @@ const UserReservationDetailsPage = () => {
   }, [])
   return (
     <>
-      <PageHeader title="Reservation Details" />
+      <PageHeader title={t("reservations.detailsPageTitle")} />
       <Spacer />
       <Container>
         {

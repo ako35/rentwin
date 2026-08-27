@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { constants } from "../../../constants";
 import { services } from "../../../services";
 import { IoIosPeople } from "react-icons/io";
@@ -16,6 +17,7 @@ import "./style.scss";
 const { routes } = constants;
 
 const AdminDashboard = () => {
+  const { t } = useTranslation("admin");
   const [loading, setLoading] = useState(true);
   const [fleetStats, setFleetStats] = useState(null);
   const [members, setMembers] = useState(null);
@@ -45,13 +47,13 @@ const AdminDashboard = () => {
 
   const summaryItems = [
     {
-      title: "Members",
+      title: t("dashboard.members"),
       icon: <IoIosPeople />,
       path: routes.adminUsers,
       statistics: members,
     },
     {
-      title: "Reservations",
+      title: t("dashboard.reservations"),
       icon: <MdBookOnline />,
       path: routes.adminReservations,
       statistics: reservations,
@@ -80,12 +82,12 @@ const AdminDashboard = () => {
               <div className="admin-dashboard__gauges">
                 <GaugeChart
                   value={fleetStats?.occupancyRate}
-                  label="Occupancy"
+                  label={t("dashboard.occupancy")}
                   color="#1b7a43"
                 />
                 <GaugeChart
                   value={fleetStats?.outOfServiceRate}
-                  label="Out of Service"
+                  label={t("dashboard.outOfService")}
                   color="#b93a3a"
                 />
               </div>
@@ -94,10 +96,10 @@ const AdminDashboard = () => {
 
           <Row className="gy-3 mt-1">
             <Col xl={6}>
-              <ScheduleTable title="Returns" type="returns" dateField="dropOffTime" />
+              <ScheduleTable title={t("dashboard.returns")} type="returns" dateField="dropOffTime" />
             </Col>
             <Col xl={6}>
-              <ScheduleTable title="Departures" type="departures" dateField="pickUpTime" />
+              <ScheduleTable title={t("dashboard.departures")} type="departures" dateField="pickUpTime" />
             </Col>
           </Row>
         </>

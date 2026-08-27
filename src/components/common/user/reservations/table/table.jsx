@@ -1,11 +1,17 @@
 import { Spinner, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { utils } from "../../../../../utils";
-
-const tableHeaders = ["#", "Vehicle", "Pick Up", "Drop Off"];
 
 const UserReservationsTable = (props) => {
   const navigate = useNavigate();
+  const { t } = useTranslation("user");
+  const tableHeaders = [
+    t("reservations.table.no"),
+    t("reservations.table.vehicle"),
+    t("reservations.table.pickUp"),
+    t("reservations.table.dropOff"),
+  ];
 
   return (
     <Table>

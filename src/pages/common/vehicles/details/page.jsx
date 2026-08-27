@@ -11,12 +11,14 @@ import { utils } from "../../../../utils";
 import { services } from "../../../../services";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { setVehicle } from "../../../../store";
 
 const VehicleDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const { vehicleId } = useParams();
   const dispatch = useDispatch();
+  const { t } = useTranslation("vehicles");
 
   const loadData = async () => {
     try {
@@ -24,7 +26,7 @@ const VehicleDetailsPage = () => {
       dispatch(setVehicle(data));
     } catch (error) {
       utils.functions.swalToast(
-        "Vehicle information cannot be loaded",
+        t("loadError"),
         "error"
       );
     } finally {
@@ -38,7 +40,7 @@ const VehicleDetailsPage = () => {
   }, []);
   return (
     <>
-      <PageHeader title="Vehicle Details" />
+      <PageHeader title={t("detailsPageTitle")} />
       <Spacer />
       <Container className="vehicle-details">
         <Row>

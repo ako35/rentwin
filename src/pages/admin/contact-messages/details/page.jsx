@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { constants } from "../../../../constants";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Loading, SectionHeader, TableRow } from "../../../../components";
 import { Button, ButtonGroup, Spinner } from "react-bootstrap";
 import { utils } from "../../../../utils";
@@ -9,29 +10,30 @@ import "./style.scss";
 
 const { routes } = constants;
 
-const tableItems = [
-  {
-    title: "Name",
-    content: "name",
-  },
-  {
-    title: "Email",
-    content: "email",
-  },
-  {
-    title: "Subject",
-    content: "subject",
-  },
-  {
-    title: "Message",
-    content: "body",
-  },
-];
-
 const AdminContactMessageDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({});
   const [deleting, setDeleting] = useState(false);
+  const { t } = useTranslation("admin");
+
+  const tableItems = [
+    {
+      title: t("contactMessages.name"),
+      content: "name",
+    },
+    {
+      title: t("contactMessages.email"),
+      content: "email",
+    },
+    {
+      title: t("contactMessages.subject"),
+      content: "subject",
+    },
+    {
+      title: t("contactMessages.message"),
+      content: "body",
+    },
+  ];
 
   const { contactMessageId } = useParams();
   const navigate = useNavigate();
@@ -51,10 +53,10 @@ const AdminContactMessageDetailsPage = () => {
     setDeleting(true);
     try {
       await services.contact.deleteMessage(contactMessageId);
-      utils.functions.swalToast("Message deleted successfully.", "success");
+      utils.functions.swalToast(t("contactMessages.toasts.deleteSuccess"), "success");
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error while deleting the message.",
+        t("contactMessages.toasts.deleteError"),
         "error"
       );
     } finally {
@@ -64,8 +66,8 @@ const AdminContactMessageDetailsPage = () => {
 
   const handleDelete = () => {
     utils.functions.swalQuestion(
-      "Are you sure you want to delete this message?",
-      "You won't be able to revert this action!"
+      t("contactMessages.toasts.deleteConfirmTitle"),
+      t("contactMessages.toasts.deleteConfirmText")
     )
     .then((result) => {
       if (result.isConfirmed) {
@@ -82,7 +84,7 @@ const AdminContactMessageDetailsPage = () => {
     <Loading height={500} />
   ) : (
     <div className="admin-contact-message-details-page">
-      <SectionHeader title1="Message" title2="Details" />
+      <SectionHeader title1={t("contactMessages.sectionTitle1")} title2={t("contactMessages.sectionTitle2")} />
       <div className="content">
         <table>
           <tbody>
@@ -99,13 +101,13 @@ const AdminContactMessageDetailsPage = () => {
       <div className="buttons-container">
         <ButtonGroup>
           <Button variant="danger" onClick={handleDelete} disabled={deleting}>
-            {deleting && <Spinner animation="border" size="sm" />} Delete
+            {deleting && <Spinner animation="border" size="sm" />} {t("contactMessages.delete")}
           </Button>
           <Button
             variant="outline-primary"
             onClick={() => navigate(`${routes.adminContactMessages}`)}
           >
-            Cancel
+            {t("contactMessages.cancel")}
           </Button>
         </ButtonGroup>
       </div>

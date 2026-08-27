@@ -1,130 +1,132 @@
 const API_URL = import.meta.env.VITE_APP_API_URL;
 
-export const adminUserColumns = [
+export const getAdminUserColumns = (t, tCommon) => [
     {
-        name: "First Name",
+        name: t("table.user.firstName"),
         selector: (row) => row?.firstName,
     },
     {
-        name: "Last Name",
+        name: t("table.user.lastName"),
         selector: (row) => row?.lastName,
     },
     {
-        name: "Email",
+        name: t("table.user.email"),
         selector: (row) => row?.email,
     },
     {
-        name: "Roles",
-        selector: (row) => row?.roles?.join(" — "),
+        name: t("table.user.roles"),
+        selector: (row) => row?.roles?.map((role) => tCommon(`options.roles.${role}`)).join(" — "),
     },
 ];
 
-export const adminReservationsColumns = [
+export const getAdminReservationsColumns = (t) => [
     {
-        name: "Vehicle",
+        name: t("table.reservation.vehicle"),
         selector: (row) => row?.car?.model,
     },
     {
-        name: "Pickup",
+        name: t("table.reservation.pickup"),
         selector: (row) => row?.pickUpLocation,
     },
     {
-        name: "Dropoff",
+        name: t("table.reservation.dropoff"),
         selector: (row) => row?.dropOffLocation,
     },
     {
-        name: "Price",
+        name: t("table.reservation.price"),
         selector: (row) => `$ ${row?.totalPrice}`,
     },
 ];
 
-export const adminContactMessagesColumns = [
+export const getAdminContactMessagesColumns = (t) => [
     {
-        name: "Sender Name",
+        name: t("table.contactMessage.senderName"),
         selector: (row) => row?.name,
         sortable: true,
     },
     {
-        name: "Sender Email",
+        name: t("table.contactMessage.senderEmail"),
         selector: (row) => row?.email,
         sortable: true,
     },
     {
-        name: "Subject",
+        name: t("table.contactMessage.subject"),
         selector: (row) => row?.subject,
         sortable: true,
     },
 ];
 
-const STATUS_BADGE = {
-    AVAILABLE: { label: "Available", background: "#1b7a43" },
-    RENTED: { label: "Rented", background: "#c98a1f" },
-    OUT_OF_SERVICE: { label: "Out of Service", background: "#b93a3a" },
-};
+export const getAdminVehiclesColumns = (t) => {
+    const STATUS_BADGE = {
+        AVAILABLE: { label: t("vehicleStatus.AVAILABLE"), background: "#1b7a43" },
+        RENTED: { label: t("vehicleStatus.RENTED"), background: "#c98a1f" },
+        OUT_OF_SERVICE: { label: t("vehicleStatus.OUT_OF_SERVICE"), background: "#b93a3a" },
+    };
 
-export const adminVehiclesColumns = [
-    {
-        name: "Image",
-        selector: (row) => (
-            <img
-                src={`${API_URL}/files/display/${row?.image[0]}`}
-                alt={row?.model}
-                title={row?.model}
-                width={80}
-                style={{
-                    pointerEvents: "none",
-                }}
-            />
-        ),
-    },
-    {
-        name: "Brand",
-        selector: (row) => row?.brand,
-    },
-    {
-        name: "Model",
-        selector: (row) => row?.model,
-    },
-    {
-        name: "Plate",
-        selector: (row) => row?.licensePlate,
-    },
-    {
-        name: "Age",
-        selector: (row) => row?.age,
-    },
-    {
-        name: "Transmission",
-        selector: (row) => row?.transmission,
-    },
-    {
-        name: "Fuel",
-        selector: (row) => row?.fuelType,
-    },
-    {
-        name: "Price/hour",
-        selector: (row) => `$ ${row?.pricePerHour}`,
-    },
-    {
-        name: "Status",
-        selector: (row) => {
-            const status = STATUS_BADGE[row?.status];
-            if (!status) return null;
-            return (
-                <span
+    return [
+        {
+            name: t("table.vehicle.image"),
+            selector: (row) => (
+                <img
+                    src={`${API_URL}/files/display/${row?.image[0]}`}
+                    alt={row?.model}
+                    title={row?.model}
+                    width={80}
                     style={{
-                        backgroundColor: status.background,
-                        color: "#fff",
-                        padding: "0.25rem 0.6rem",
-                        borderRadius: "4px",
-                        fontSize: "0.75rem",
-                        fontWeight: 600,
-                        whiteSpace: "nowrap",
+                        pointerEvents: "none",
                     }}
-                >
-                    {status.label}
-                </span>
-            );
+                />
+            ),
         },
-    },
-];
+        {
+            name: t("table.vehicle.brand"),
+            selector: (row) => row?.brand,
+        },
+        {
+            name: t("table.vehicle.model"),
+            selector: (row) => row?.model,
+        },
+        {
+            name: t("table.vehicle.plate"),
+            selector: (row) => row?.licensePlate,
+        },
+        {
+            name: t("table.vehicle.age"),
+            selector: (row) => row?.age,
+        },
+        {
+            name: t("table.vehicle.transmission"),
+            selector: (row) => row?.transmission,
+        },
+        {
+            name: t("table.vehicle.fuel"),
+            selector: (row) => row?.fuelType,
+        },
+        {
+            name: t("table.vehicle.pricePerHour"),
+            selector: (row) => `$ ${row?.pricePerHour}`,
+        },
+        {
+            name: t("table.vehicle.status"),
+            selector: (row) => {
+                const status = STATUS_BADGE[row?.status];
+                if (!status) return null;
+                return (
+                    <span
+                        style={{
+                            backgroundColor: status.background,
+                            color: "#fff",
+                            padding: "0.25rem 0.6rem",
+                            borderRadius: "4px",
+                            fontSize: "0.75rem",
+                            fontWeight: 600,
+                            whiteSpace: "nowrap",
+                        }}
+                    >
+                        {status.label}
+                    </span>
+                );
+            },
+        },
+    ];
+};

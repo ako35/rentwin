@@ -1,0 +1,56 @@
+{
+  "profile": {
+    "pageTitle": "Profile",
+    "builtInWarning": "Warning! This is a built-in user and cannot be updated.",
+    "form": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phoneNumber": "Phone Number",
+      "address": "Address",
+      "zipCode": "Zip Code",
+      "updateButton": "Update Information",
+      "successToast": "User updated successfully!",
+      "errorToast": "Unable to update profile"
+    },
+    "password": {
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "updateButton": "Update Password",
+      "successToast": "Your password has been updated!",
+      "errorToast": "Unable to update profile"
+    }
+  },
+  "reservations": {
+    "pageTitle": "User Reservations",
+    "detailsPageTitle": "Reservation Details",
+    "table": {
+      "no": "#",
+      "vehicle": "Vehicle",
+      "pickUp": "Pick Up",
+      "dropOff": "Drop Off"
+    },
+    "details": {
+      "backButton": "Back To Reservations",
+      "reservationDetails": "Reservation Details",
+      "carDetails": "Car Details",
+      "pickUpLocation": "Pick Up Location",
+      "dropOffLocation": "Drop Off Location",
+      "pickUpTime": "Pick Up Time",
+      "dropOffTime": "Drop Off Time",
+      "status": "Status",
+      "price": "Price",
+      "model": "Model",
+      "doors": "Doors",
+      "seats": "Seats",
+      "luggage": "Luggage",
+      "transmission": "Transmission",
+      "airConditioning": "Air Conditioning",
+      "fuelType": "Fuel Type",
+      "age": "Age",
+      "yes": "Yes",
+      "no": "No"
+    }
+  }
+}

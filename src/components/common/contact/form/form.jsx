@@ -1,40 +1,42 @@
 import { useFormik } from "formik";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { utils } from "../../../../utils";
 import { services } from "../../../../services";
 import { Button, Form, Spinner } from "react-bootstrap";
 import CustomForm from "../../custom-form/custom-form";
 
-const formArray = [
-  {
-      name: "name",
-      label: "Name",
-  },
-  {
-      name: "email",
-      label: "Email",
-      type: "email",
-  },
-  {
-      name: "subject",
-      label: "Subject",
-  },
-  {
-      name: "body",
-      label: "Message",
-      type: "textarea",
-      rows: 5,
-  },
-];
-
 const ContactForm = () => {
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation("contact");
+
+  const formArray = [
+    {
+        name: "name",
+        label: t("form.name"),
+    },
+    {
+        name: "email",
+        label: t("form.email"),
+        type: "email",
+    },
+    {
+        name: "subject",
+        label: t("form.subject"),
+    },
+    {
+        name: "body",
+        label: t("form.message"),
+        type: "textarea",
+        rows: 5,
+    },
+  ];
 
   const onSubmit = async (values) => {
     setLoading(true);
     try {
       await services.contact.sendMessage(values);
-      utils.functions.swalToast("Message sent successfully!", "success");
+      utils.functions.swalToast(t("form.successToast"), "success");
       formik.resetForm();
     } catch (error) {
       utils.functions.swalToast(error.response.data.message, "error");
@@ -58,7 +60,7 @@ const ContactForm = () => {
         {
           loading && <Spinner animation="border" size="sm" />
         }
-        Send
+        {t("form.send")}
       </Button>
     </Form>
   )

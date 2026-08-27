@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { loginFailure, loginSuccess } from "../../../store";
 import { useFormik } from "formik";
 import { services } from "../../../services/";
@@ -16,6 +17,7 @@ const LoginPage = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { t } = useTranslation("auth");
 
     const onSubmit = async (values) => {
         setLoading(true);
@@ -32,7 +34,7 @@ const LoginPage = () => {
             // kullanici bilgilerini merkezi state'e kaydet
             dispatch(loginSuccess(responseUser));
             await utils.functions.swalToast(
-                "You have successfully logged in",
+                t("login.successToast"),
                 "success"
             );
             navigate(
@@ -59,26 +61,26 @@ const LoginPage = () => {
             <CustomForm
                 formik={formik}
                 name="email"
-                label="Email Address"
-                placeholder="johndoe@example.com"
+                label={t("login.emailLabel")}
+                placeholder={t("login.emailPlaceholder")}
                 type="email"
             />
             <PasswordInput
                 formik={formik}
                 name="password"
-                label="Password"
-                placeholder="Enter your password..."
+                label={t("login.passwordLabel")}
+                placeholder={t("login.passwordPlaceholder")}
             />
             <Button
                 type="submit"
                 disabled={!(formik.dirty && formik.isValid) || loading}>
-                {loading && <Spinner animation="border" size="sm" />} LOGIN
+                {loading && <Spinner animation="border" size="sm" />} {t("login.loginButton")}
             </Button>
-            <p>OR</p>
+            <p>{t("login.or")}</p>
             <Button
                 onClick={() => navigate(routes.register)}
                 disabled={loading}>
-                REGISTER
+                {t("login.registerButton")}
             </Button>
         </Form>
     );

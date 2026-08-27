@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { constants } from "../../../../constants";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
+import { useTranslation } from "react-i18next";
 import { utils } from "../../../../utils";
 import { CustomForm, Loading } from "../../../../components";
 import { Form } from "react-router-dom";
@@ -10,40 +11,41 @@ import { services } from "../../../../services";
 
 const { routes } = constants;
 
-const formItems = [
-  {
-    label: "First Name",
-    name: "firstName",
-  },
-  {
-    label: "Last Name",
-    name: "lastName",
-  },
-  {
-    label: "Email",
-    name: "email",
-    type: "email",
-  },
-  {
-    label: "Phone Number",
-    name: "phoneNumber",
-    asInput: "ReactInputMask",
-    mask: "(999) 999-9999",
-  },
-  {
-    label: "Address",
-    name: "address",
-  },
-  {
-    label: "Zip Code",
-    name: "zipCode",
-  },
-];
-
 const AdminUserDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const { t } = useTranslation("admin");
+
+  const formItems = [
+    {
+      label: t("users.form.firstName"),
+      name: "firstName",
+    },
+    {
+      label: t("users.form.lastName"),
+      name: "lastName",
+    },
+    {
+      label: t("users.form.email"),
+      name: "email",
+      type: "email",
+    },
+    {
+      label: t("users.form.phoneNumber"),
+      name: "phoneNumber",
+      asInput: "ReactInputMask",
+      mask: "(999) 999-9999",
+    },
+    {
+      label: t("users.form.address"),
+      name: "address",
+    },
+    {
+      label: t("users.form.zipCode"),
+      name: "zipCode",
+    },
+  ];
 
   const { userId } = useParams();
   const navigate = useNavigate();
@@ -67,10 +69,10 @@ const AdminUserDetailsPage = () => {
     const dto = { ...values, builtIn: false };
     try {
       await services.user.updateUserAdmin(userId, dto)
-      utils.functions.swalToast("User updated successfully.", "success");
+      utils.functions.swalToast(t("users.toasts.updateSuccess"), "success");
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error updating the user.",
+        t("users.toasts.updateError"),
         "error"
       )
     } finally{
@@ -89,11 +91,11 @@ const AdminUserDetailsPage = () => {
     setDeleting(true);
     try {
       await services.user.deleteUser(userId)
-      await utils.functions.swalToast("User deleted successfully.", "success");
+      await utils.functions.swalToast(t("users.toasts.deleteSuccess"), "success");
       navigate(`${routes.adminUsers}`);
     } catch (error) {
       utils.functions.swalToast(
-        "There was an error deleting the user.",
+        t("users.toasts.deleteError"),
         "error"
       );
     } finally{
@@ -104,8 +106,8 @@ const AdminUserDetailsPage = () => {
   const handleDelete = async () => {
     utils.functions
       .swalQuestion(
-        "Are you sure you want to delete this user",
-        "You won't be able to revert this action!"
+        t("users.toasts.deleteConfirmTitle"),
+        t("users.toasts.deleteConfirmText")
       )
       .then((result) => {
         if (result.isConfirmed) {
@@ -156,7 +158,7 @@ const AdminUserDetailsPage = () => {
               ))}
             </Row>
             <Form.Check
-              label="Customer"
+              label={t("users.customer")}
               value="Customer"
               type="checkbox"
               name="roles"
@@ -164,7 +166,7 @@ const AdminUserDetailsPage = () => {
               onChange={() => handleChangeRoles("Customer")}
             />
             <Form.Check
-              label="Admin"
+              label={t("users.admin")}
               value="Administrator"
               type="checkbox"
               name="roles"
@@ -174,12 +176,12 @@ const AdminUserDetailsPage = () => {
           </fieldset>
           {formik.values.builtIn && (
             <Alert variant="warning">
-              Built-in accounts cannot ve deleted or updated.
+              {t("users.builtInWarning")}
             </Alert>
           )}
           <div className="text-end">
             <ButtonGroup>
-              <Button onClick={() => navigate(-1)}>Cancel</Button>
+              <Button onClick={() => navigate(-1)}>{t("users.cancel")}</Button>
               {!formik.values.builtIn && (
                 <>
                   <Button
@@ -187,7 +189,7 @@ const AdminUserDetailsPage = () => {
                     disabled={!(formik.dirty && formik.isValid) || updating}
                   >
                     {updating && <Spinner animation="border" size="sm" />}{" "}
-                    Update
+                    {t("users.update")}
                   </Button>
                   <Button
                     variant="danger"
@@ -195,7 +197,7 @@ const AdminUserDetailsPage = () => {
                     disabled={deleting}
                   >
                     {deleting && <Spinner animation="border" size="sm" />}{" "}
-                    Delete
+                    {t("users.delete")}
                   </Button>
                 </>
               )}

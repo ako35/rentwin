@@ -1,88 +1,91 @@
 import * as Yup from 'yup';
+import i18n from '../../i18n';
+
+const t = (key) => () => i18n.t(key, { ns: 'validation' });
 
 // login form
 export const loginFormValidationSchema = Yup.object({
-    email: Yup.string().email('Invalid email address').required('Please enter your email address'),
-    password: Yup.string().required('Please enter your password'),
+    email: Yup.string().email(t('login.emailInvalid')).required(t('login.emailRequired')),
+    password: Yup.string().required(t('login.passwordRequired')),
 })
 
 // register form
 export const registerFormValidationSchema = Yup.object({
     firstName: Yup.string()
-        .min(2, "First name must be at least 2 characters")
-        .max(50, "First name must be at most 50 characters")
-        .required("Please enter your first name"),
+        .min(2, t("register.firstNameMin"))
+        .max(50, t("register.firstNameMax"))
+        .required(t("register.firstNameRequired")),
     lastName: Yup.string()
-        .min(2, "Last name must be at least 2 characters")
-        .max(50, "Last name must be at most 50 characters")
-        .required("Please enter your last name"),
+        .min(2, t("register.lastNameMin"))
+        .max(50, t("register.lastNameMax"))
+        .required(t("register.lastNameRequired")),
     email: Yup.string()
-        .email("Invalid email address")
-        .required("Please enter your email address"),
+        .email(t("register.emailInvalid"))
+        .required(t("register.emailRequired")),
     password: Yup.string()
-        .min(8, "Password must be at least 8 characters")
-        .max(50, "Password must be at most 50 characters")
-        .matches(/[a-z]+/, "Password must contain at least one lowercase letter")
-        .matches(/[A-Z]+/, "Password must contain at least one uppercase letter")
-        .matches(/\d+/, "Password must contain at least one number")
-        .matches(/[@$!%*#?&.]+/, "Password must contain at least one special character")
-        .required("Please enter your password"),
+        .min(8, t("register.passwordMin"))
+        .max(50, t("register.passwordMax"))
+        .matches(/[a-z]+/, t("register.passwordLower"))
+        .matches(/[A-Z]+/, t("register.passwordUpper"))
+        .matches(/\d+/, t("register.passwordNumber"))
+        .matches(/[@$!%*#?&.]+/, t("register.passwordSpecial"))
+        .required(t("register.passwordRequired")),
     confirmPassword: Yup.string()
-        .oneOf([Yup.ref("password"), null], "Passwords fields doesn't match")
-        .required("Please confirm your password"),
+        .oneOf([Yup.ref("password"), null], t("register.confirmPasswordMatch"))
+        .required(t("register.confirmPasswordRequired")),
     phoneNumber: Yup.string()
-        .matches(/^[\d\s()/-]+$/, "There are invalid characters in your phone number")
-        .min(14, "Phone number must be at least 10 digits")
-        .max(14, "Phone number must be at most 10 digits")
-        .required("Please enter your phone number"),
+        .matches(/^[\d\s()/-]+$/, t("register.phoneInvalid"))
+        .min(14, t("register.phoneMin"))
+        .max(14, t("register.phoneMax"))
+        .required(t("register.phoneRequired")),
     address: Yup.string()
-        .min(5, "Address must be at least 5 characters")
-        .max(50, "Address must be at most 50 characters")
-        .required("Please enter your address"),
+        .min(5, t("register.addressMin"))
+        .max(50, t("register.addressMax"))
+        .required(t("register.addressRequired")),
     zipCode: Yup.string()
-        .min(4, "Zip code must be at least 4 digits")
-        .max(6, "Zip code must be at most 6 digits")
-        .required("Please enter your zip code"),
+        .min(4, t("register.zipMin"))
+        .max(6, t("register.zipMax"))
+        .required(t("register.zipRequired")),
 })
 
 // CONTACT FORM
 export const contactFormValidationSchema = Yup.object({
     name: Yup.string()
-        .min(2, "Name must be at least 2 characters")
-        .max(50, "Name must be at most 50 characters")
-        .required("Please enter your name"),
+        .min(2, t("contact.nameMin"))
+        .max(50, t("contact.nameMax"))
+        .required(t("contact.nameRequired")),
     subject: Yup.string()
-        .min(5, "Subject must be at least 5 characters")
-        .max(50, "Subject must be at most 50 characters")
-        .required("Please enter your subject"),
+        .min(5, t("contact.subjectMin"))
+        .max(50, t("contact.subjectMax"))
+        .required(t("contact.subjectRequired")),
     body: Yup.string()
-        .min(20, "Body must be at least 20 characters")
-        .max(200, "Body must be at most 200 characters")
-        .required("Please enter your body"),
+        .min(20, t("contact.bodyMin"))
+        .max(200, t("contact.bodyMax"))
+        .required(t("contact.bodyRequired")),
     email: Yup.string()
-        .email("Invalid email address")
-        .required("Please enter your email address"),
+        .email(t("contact.emailInvalid"))
+        .required(t("contact.emailRequired")),
 });
 
 // BOOKING FORM
 export const bookingFormValidationSchema = Yup.object({
-    pickUpLocation: Yup.string().required("Enter your pick up location"),
-    dropOffLocation: Yup.string().required("Enter your drop off location"),
-    pickUpDate: Yup.date().required("Enter pick up date"),
-    pickUpTime: Yup.string().required("Enter pick up time"),
-    dropOffDate: Yup.date().required("Enter drop off date"),
-    dropOffTime: Yup.string().required("Enter drop off time"),
+    pickUpLocation: Yup.string().required(t("booking.pickUpLocationRequired")),
+    dropOffLocation: Yup.string().required(t("booking.dropOffLocationRequired")),
+    pickUpDate: Yup.date().required(t("booking.pickUpDateRequired")),
+    pickUpTime: Yup.string().required(t("booking.pickUpTimeRequired")),
+    dropOffDate: Yup.date().required(t("booking.dropOffDateRequired")),
+    dropOffTime: Yup.string().required(t("booking.dropOffTimeRequired")),
     cardNo: Yup.string()
-        .min(15, "Card number must be at least 15 digits")
-        .required("Please enter card number"),
-    cardHolderName: Yup.string().required("Please enter card holder name"),
-    expiryDate: Yup.date().required("Please enter expiry date"),
+        .min(15, t("booking.cardNoMin"))
+        .required(t("booking.cardNoRequired")),
+    cardHolderName: Yup.string().required(t("booking.cardHolderNameRequired")),
+    expiryDate: Yup.date().required(t("booking.expiryDateRequired")),
     cvv: Yup.number()
-        .typeError("CVV must be a number")
+        .typeError(t("booking.cvvType"))
         .min(1)
         .max(999)
-        .required("Please enter CVV"),
-    terms: Yup.bool().oneOf([true], "Please accept terms and conditions")
+        .required(t("booking.cvvRequired")),
+    terms: Yup.bool().oneOf([true], t("booking.termsRequired"))
 });
 
 /////////////// USER VALIDATIONS ///////////////
@@ -90,43 +93,43 @@ export const bookingFormValidationSchema = Yup.object({
 // PROFILE FORM
 export const userProfileFormValidationSchema = Yup.object({
     firstName: Yup.string()
-        .min(2, "First name must be at least 2 characters")
-        .max(50, "First name must be at most 50 characters")
-        .required("Please enter your first name"),
+        .min(2, t("userProfile.firstNameMin"))
+        .max(50, t("userProfile.firstNameMax"))
+        .required(t("userProfile.firstNameRequired")),
     lastName: Yup.string()
-        .min(2, "Last name must be at least 2 characters")
-        .max(50, "Last name must be at most 50 characters")
-        .required("Please enter your last name"),
+        .min(2, t("userProfile.lastNameMin"))
+        .max(50, t("userProfile.lastNameMax"))
+        .required(t("userProfile.lastNameRequired")),
     email: Yup.string()
-        .email("Invalid email address")
-        .required("Please enter your email address"),
+        .email(t("userProfile.emailInvalid"))
+        .required(t("userProfile.emailRequired")),
     phoneNumber: Yup.string()
-        .required("Please enter your phone number"),
+        .required(t("userProfile.phoneRequired")),
     address: Yup.string()
-        .min(5, "Address must be at least 5 characters")
-        .max(50, "Address must be at most 50 characters")
-        .required("Please enter your address"),
+        .min(5, t("userProfile.addressMin"))
+        .max(50, t("userProfile.addressMax"))
+        .required(t("userProfile.addressRequired")),
     zipCode: Yup.string()
-        .matches(/^[0-9]+$/, "Zip code must contain only digits")
-        .min(4, "Zip code must be at least 4 digits")
-        .max(6, "Zip code must be at most 6 digits")
-        .required("Please enter your zip code"),
+        .matches(/^[0-9]+$/, t("userProfile.zipDigitsOnly"))
+        .min(4, t("userProfile.zipMin"))
+        .max(6, t("userProfile.zipMax"))
+        .required(t("userProfile.zipRequired")),
 });
 
 // PASSWORD FORM
 export const userPasswordFormValidationSchema = Yup.object({
     oldPassword: Yup.string()
-        .required("Please enter your current password"),
+        .required(t("userPassword.oldPasswordRequired")),
     newPassword: Yup.string()
-        .min(8, "Password must be at least 8 characters")
-        .matches(/[a-z]+/, "Password must contain at least one lowercase letter")
-        .matches(/[A-Z]+/, "Password must contain at least one uppercase letter")
-        .matches(/\d+/, "Password must contain at least one number")
-        .matches(/[@$!%*#?&.]+/, "Password must contain at least one special character")
-        .required("Please enter your new password"),
+        .min(8, t("userPassword.newPasswordMin"))
+        .matches(/[a-z]+/, t("userPassword.newPasswordLower"))
+        .matches(/[A-Z]+/, t("userPassword.newPasswordUpper"))
+        .matches(/\d+/, t("userPassword.newPasswordNumber"))
+        .matches(/[@$!%*#?&.]+/, t("userPassword.newPasswordSpecial"))
+        .required(t("userPassword.newPasswordRequired")),
     confirmPassword: Yup.string()
-        .oneOf([Yup.ref("newPassword"), null], "Passwords fields doesn't match")
-        .required("Please confirm your new password"),
+        .oneOf([Yup.ref("newPassword"), null], t("userPassword.confirmPasswordMatch"))
+        .required(t("userPassword.confirmPasswordRequired")),
 });
 
 
@@ -134,65 +137,65 @@ export const userPasswordFormValidationSchema = Yup.object({
 
 export const adminUserDetailsFormValidationSchema = Yup.object({
     firstName: Yup.string()
-        .min(2, "First name must be at least 2 characters")
-        .max(50, "First name must be at most 50 characters")
-        .required("Please enter your first name"),
+        .min(2, t("adminUser.firstNameMin"))
+        .max(50, t("adminUser.firstNameMax"))
+        .required(t("adminUser.firstNameRequired")),
     lastName: Yup.string()
-        .min(2, "Last name must be at least 2 characters")
-        .max(50, "Last name must be at most 50 characters")
-        .required("Please enter your last name"),
+        .min(2, t("adminUser.lastNameMin"))
+        .max(50, t("adminUser.lastNameMax"))
+        .required(t("adminUser.lastNameRequired")),
     email: Yup.string()
-        .email("Invalid email address")
-        .required("Please enter your email address"),
+        .email(t("adminUser.emailInvalid"))
+        .required(t("adminUser.emailRequired")),
     phoneNumber: Yup.string()
-        .matches(/\d+/, "Phone number must contain only digits")
-        .required("Please enter your phone number"),
+        .matches(/\d+/, t("adminUser.phoneDigitsOnly"))
+        .required(t("adminUser.phoneRequired")),
     address: Yup.string()
-        .min(5, "Address must be at least 5 characters")
-        .max(50, "Address must be at most 50 characters")
-        .required("Please enter your address"),
+        .min(5, t("adminUser.addressMin"))
+        .max(50, t("adminUser.addressMax"))
+        .required(t("adminUser.addressRequired")),
     zipCode: Yup.string()
-        .matches(/\d+/, "Zip code must contain only digits")
-        .min(5, "Zip code must be at least 5 digits")
-        .max(5, "Zip code must be at most 5 digits")
-        .required("Please enter your zip code"),
+        .matches(/\d+/, t("adminUser.zipDigitsOnly"))
+        .min(5, t("adminUser.zipMin"))
+        .max(5, t("adminUser.zipMax"))
+        .required(t("adminUser.zipRequired")),
 });
 
 // ADMIN RESERVATIONS FORM
 export const adminReservationDetailsFormValidationSchema = Yup.object({
-    pickUpLocation: Yup.string().required("Enter the pick up location"),
-    dropOffLocation: Yup.string().required("Enter the drop off location"),
-    pickUpDate: Yup.string().required("Enter the pick up date"),
-    pickUpTime: Yup.string().required("Enter the pick up time"),
-    dropOffDate: Yup.string().required("Enter the drop off date"),
-    dropOffTime: Yup.string().required("Enter the drop off time"),
-    carId: Yup.string().required("Select a car"),
-    status: Yup.string().required("Select a status"),
+    pickUpLocation: Yup.string().required(t("adminReservation.pickUpLocationRequired")),
+    dropOffLocation: Yup.string().required(t("adminReservation.dropOffLocationRequired")),
+    pickUpDate: Yup.string().required(t("adminReservation.pickUpDateRequired")),
+    pickUpTime: Yup.string().required(t("adminReservation.pickUpTimeRequired")),
+    dropOffDate: Yup.string().required(t("adminReservation.dropOffDateRequired")),
+    dropOffTime: Yup.string().required(t("adminReservation.dropOffTimeRequired")),
+    carId: Yup.string().required(t("adminReservation.carRequired")),
+    status: Yup.string().required(t("adminReservation.statusRequired")),
 });
 
 // ADMIN VEHICLE FORM
 export const adminVehicleFormValidationSchema = Yup.object({
     brand: Yup.string()
-        .required("Enter the vehicle brand"),
+        .required(t("adminVehicle.brandRequired")),
     model: Yup.string()
-        .required("Enter the vehicle model"),
+        .required(t("adminVehicle.modelRequired")),
     licensePlate: Yup.string()
-        .required("Enter the license plate"),
+        .required(t("adminVehicle.licensePlateRequired")),
     doors: Yup.number()
-        .required("Enter the number of doors"),
+        .required(t("adminVehicle.doorsRequired")),
     seats: Yup.number()
-        .required("Enter the number of seats"),
+        .required(t("adminVehicle.seatsRequired")),
     luggage: Yup.number()
-        .required("Enter the number of luggage"),
+        .required(t("adminVehicle.luggageRequired")),
     transmission: Yup.string()
-        .required("Select a transmission type"),
+        .required(t("adminVehicle.transmissionRequired")),
     airConditioning: Yup.string()
-        .required("Please select whether the vehicle has air conditioning or not"),
+        .required(t("adminVehicle.airConditioningRequired")),
     fuelType: Yup.string()
-        .required("Select a fuel type"),
+        .required(t("adminVehicle.fuelTypeRequired")),
     age: Yup.number()
-        .required("Enter the vehicle age"),
+        .required(t("adminVehicle.ageRequired")),
     pricePerHour: Yup.number()
-        .required("Enter the price per hour"),
-    image: Yup.mixed().required("Please upload an image")
+        .required(t("adminVehicle.pricePerHourRequired")),
+    image: Yup.mixed().required(t("adminVehicle.imageRequired"))
 });

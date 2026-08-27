@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, Nav, Spinner, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import moment from "moment/moment";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
@@ -9,15 +10,15 @@ import "./schedule-table.scss";
 
 const { routes } = constants;
 
-const WINDOWS = [
-  { value: "today", label: "Today" },
-  { value: "3", label: "3 Days" },
-  { value: "7", label: "7 Days" },
-  { value: "15", label: "15 Days" },
-  { value: "30", label: "30 Days" },
-];
-
 const ScheduleTable = ({ title, type, dateField }) => {
+  const { t } = useTranslation("admin");
+  const WINDOWS = [
+    { value: "today", label: t("scheduleTable.windows.today") },
+    { value: "3", label: t("scheduleTable.windows.3") },
+    { value: "7", label: t("scheduleTable.windows.7") },
+    { value: "15", label: t("scheduleTable.windows.15") },
+    { value: "30", label: t("scheduleTable.windows.30") },
+  ];
   const [window, setWindow] = useState("7");
   const [excludeCompleted, setExcludeCompleted] = useState(true);
   const [rows, setRows] = useState([]);
@@ -34,7 +35,7 @@ const ScheduleTable = ({ title, type, dateField }) => {
       });
       setRows(data);
     } catch (error) {
-      utils.functions.swalToast("There was an error loading the schedule", "error");
+      utils.functions.swalToast(t("scheduleTable.loadError"), "error");
     } finally {
       setLoading(false);
     }
@@ -60,7 +61,7 @@ const ScheduleTable = ({ title, type, dateField }) => {
       <Form.Check
         type="checkbox"
         id={`${type}-exclude-completed`}
-        label="Exclude Completed"
+        label={t("scheduleTable.excludeCompleted")}
         checked={excludeCompleted}
         onChange={(e) => setExcludeCompleted(e.target.checked)}
         className="schedule-table__filter"
@@ -69,12 +70,12 @@ const ScheduleTable = ({ title, type, dateField }) => {
         <Table hover responsive>
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Vehicle</th>
-              <th>Reservation No</th>
-              <th>Customer</th>
-              <th>Days</th>
+              <th>{t("scheduleTable.date")}</th>
+              <th>{t("scheduleTable.time")}</th>
+              <th>{t("scheduleTable.vehicle")}</th>
+              <th>{t("scheduleTable.reservationNo")}</th>
+              <th>{t("scheduleTable.customer")}</th>
+              <th>{t("scheduleTable.days")}</th>
             </tr>
           </thead>
           <tbody>
@@ -88,7 +89,7 @@ const ScheduleTable = ({ title, type, dateField }) => {
             {!loading && rows.length === 0 && (
               <tr>
                 <td colSpan={6} className="text-center">
-                  No records found
+                  {t("scheduleTable.noRecords")}
                 </td>
               </tr>
             )}

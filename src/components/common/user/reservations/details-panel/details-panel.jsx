@@ -1,10 +1,12 @@
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
 
 const UserReservationDetailsPanel = (props) => {
   const navigate = useNavigate();
+  const { t } = useTranslation("user");
 
   return (
     <>
@@ -16,7 +18,7 @@ const UserReservationDetailsPanel = (props) => {
         className="img-fluid"
       />
       <Button onClick={() => navigate(-1)}>
-        Back To Reservations
+        {t("reservations.details.backButton")}
       </Button>
     </>
   );

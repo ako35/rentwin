@@ -1,11 +1,9 @@
 import { Col, Container, Row } from "react-bootstrap"
 import {OfferItem, SectionHeader} from "../../../"
-import { constants } from "../../../../constants"
+import { useTranslation } from "react-i18next"
 import { MdFamilyRestroom, MdOutlineWorkspacePremium } from "react-icons/md"
 import { GiEcology, GiCarWheel, GiModernCity, GiCircleForest,  } from "react-icons/gi"
 import './best-offers.scss'
-
-const { offers } = constants
 
 const offerIcons = [
   <GiModernCity key={0} />,
@@ -17,10 +15,12 @@ const offerIcons = [
 ]
 
 const BestOffers = () => {
+  const { t } = useTranslation("home");
+  const offers = t("offers", { returnObjects: true });
 
   return (
     <div className="best-offers">
-      <SectionHeader title1="Get Our" title2="Best Offers" />
+      <SectionHeader title1={t("sections.bestOffers.title1")} title2={t("sections.bestOffers.title2")} />
       <div className="offers">
         <Container>
           <Row>
@@ -32,7 +32,7 @@ const BestOffers = () => {
               }
             </Col>
             <Col lg={4}>
-              <img src="/img/vertical_car.png" alt="Vertical Car" className="img-fluid" />
+              <img src="/img/vertical_car.png" alt="" className="img-fluid" />
             </Col>
             <Col lg={4}>
               {

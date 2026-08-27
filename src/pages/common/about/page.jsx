@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next"
 import { BestOffers, PageHeader, Spacer, Team, WhatWeDo, WhoWeAre } from "../../../components"
 
 const AboutPage = () => {
+  const { t } = useTranslation("about");
   return (
     <>
-      <PageHeader title="About Us" />
+      <PageHeader title={t("pageTitle")} />
       <Spacer />
       <WhoWeAre />
       <Spacer />

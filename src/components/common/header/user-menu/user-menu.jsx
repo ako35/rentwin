@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 import './user-menu.scss'
 import { Button, Dropdown } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 import { constants } from "../../../../constants"
 import { Link } from "react-router-dom"
 import { utils } from "../../../../utils"
@@ -17,10 +18,11 @@ const UserMenu = () => {
   const { isLoggedIn, user } = useSelector(state => state.auth)
   const navigate = useNavigate()
   const dispatach = useDispatch()
+  const { t } = useTranslation("common")
 
   const handleLogout = () => {
     utils.functions
-      .swalQuestion('Logout', 'Are you sure you want to logout?')
+      .swalQuestion(t('userMenu.logoutConfirmTitle'), t('userMenu.logoutConfirmText'))
       .then(response => {
         if (response.isConfirmed) {
           dispatach(logout())
@@ -34,32 +36,32 @@ const UserMenu = () => {
         ? (
           <Dropdown align="end">
               <Dropdown.Toggle>
-                {user?.firstName || 'Guest'} {user?.lastName || ''}
+                {user?.firstName || t('userMenu.guest')} {user?.lastName || ''}
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 {
                   user?.roles?.includes('Administrator') && (
                     <>
                       <Dropdown.Item as={Link} to={adminDashboard}>
-                        Admin Panel
+                        {t('userMenu.adminPanel')}
                       </Dropdown.Item>
                       <Dropdown.Divider />
                     </>
                   )
                 }
-                <Dropdown.Item as={Link} to={userProfile}>Profile</Dropdown.Item>
-                <Dropdown.Item as={Link} to={userReservations}>Reservations</Dropdown.Item>
-                <Dropdown.Item as={Link} onClick={handleLogout}>Logout</Dropdown.Item>                
+                <Dropdown.Item as={Link} to={userProfile}>{t('userMenu.profile')}</Dropdown.Item>
+                <Dropdown.Item as={Link} to={userReservations}>{t('userMenu.reservations')}</Dropdown.Item>
+                <Dropdown.Item as={Link} onClick={handleLogout}>{t('userMenu.logout')}</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
         )
         : (
           <>
             <Button className="text-info text-capitalize" onClick={() => navigate(login)}>
-              login
+              {t('userMenu.login')}
             </Button>
             <Button className="text-info text-capitalize" onClick={() => navigate(register)}>
-              register
+              {t('userMenu.register')}
             </Button>
           </>
         )

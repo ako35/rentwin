@@ -1,0 +1,200 @@
+{
+  "sidebar": {
+    "dashboard": "Panel",
+    "users": "Kullanıcılar",
+    "vehicles": "Araçlar",
+    "addVehicle": "Araç Ekle",
+    "vehicleList": "Araç Listesi",
+    "reservations": "Rezervasyonlar",
+    "contactMessages": "İletişim Mesajları",
+    "backToWebsite": "Web Sitesine Dön",
+    "logout": "Çıkış Yap",
+    "logoutConfirmTitle": "Çıkış Yap",
+    "logoutConfirmText": "Çıkış yapmak istediğinizden emin misiniz?"
+  },
+  "dashboard": {
+    "members": "Üyeler",
+    "reservations": "Rezervasyonlar",
+    "occupancy": "Doluluk",
+    "outOfService": "Servis Dışı",
+    "returns": "Dönüşler",
+    "departures": "Çıkışlar"
+  },
+  "vehicleStatsPanel": {
+    "title": "Araçlar",
+    "total": "Toplam",
+    "rented": "Kirada",
+    "available": "Müsait",
+    "outOfService": "Servis Dışı"
+  },
+  "scheduleTable": {
+    "windows": {
+      "today": "Bugün",
+      "3": "3 Gün",
+      "7": "7 Gün",
+      "15": "15 Gün",
+      "30": "30 Gün"
+    },
+    "excludeCompleted": "Tamamlananları Hariç Tut",
+    "date": "Tarih",
+    "time": "Saat",
+    "vehicle": "Araç",
+    "reservationNo": "Rezervasyon No",
+    "customer": "Müşteri",
+    "days": "Gün",
+    "noRecords": "Kayıt bulunamadı",
+    "loadError": "Program yüklenirken bir hata oluştu"
+  },
+  "vehicles": {
+    "newVehicle": "Yeni Araç",
+    "downloadReports": "Araç Raporlarını İndir",
+    "tableTitle": "Araçlar",
+    "selectImage": "Görsel Seç",
+    "outOfService": "Servis Dışı",
+    "cancel": "İptal",
+    "create": "Oluştur",
+    "update": "Güncelle",
+    "delete": "Sil",
+    "builtInWarning": "Yerleşik araçlar silinemez veya güncellenemez.",
+    "form": {
+      "brand": "Marka",
+      "model": "Model",
+      "licensePlate": "Plaka",
+      "doors": "Kapı Sayısı",
+      "seats": "Koltuk Sayısı",
+      "luggage": "Bagaj",
+      "age": "Yaş",
+      "pricePerHour": "Saatlik Fiyat",
+      "transmission": "Vites",
+      "airConditioner": "Klima",
+      "fuelType": "Yakıt Tipi"
+    },
+    "toasts": {
+      "createSuccess": "Araç başarıyla oluşturuldu.",
+      "createError": "Araç oluşturulurken bir hata oluştu.",
+      "updateSuccess": "Araç başarıyla güncellendi.",
+      "updateError": "Araç güncellenirken bir hata oluştu.",
+      "deleteSuccess": "Araç başarıyla silindi.",
+      "deleteError": "Araç silinirken bir hata oluştu.",
+      "downloadSuccess": "Araç verileri başarıyla indirildi!",
+      "downloadError": "Araç verileri indirilirken bir hata oluştu!",
+      "pageChangeError": "Sayfa değiştirilirken bir hata oluştu!",
+      "deleteConfirmTitle": "Bu aracı silmek istediğinizden emin misiniz?",
+      "deleteConfirmText": "Bu işlemi geri alamazsınız!"
+    }
+  },
+  "reservations": {
+    "downloadData": "Rezervasyon Verilerini İndir",
+    "tableTitle": "Rezervasyonlar",
+    "sectionTitle1": "rezervasyon",
+    "sectionTitle2": "detayı",
+    "reservationId": "Rezervasyon No",
+    "goToCustomer": "Müşteriye Git",
+    "delete": "Sil",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "form": {
+      "pickUpLocation": "Alış Konumu",
+      "dropOffLocation": "Bırakış Konumu",
+      "pickUpDate": "Alış Tarihi",
+      "pickUpTime": "Alış Saati",
+      "dropOffDate": "Bırakış Tarihi",
+      "dropOffTime": "Bırakış Saati",
+      "vehicle": "Araç",
+      "status": "Durum"
+    },
+    "toasts": {
+      "downloadSuccess": "İndirmeniz kısa süre içinde başlayacak",
+      "downloadError": "İndirme sırasında bir hata oluştu",
+      "pageChangeError": "Sayfa değiştirilirken bir hata oluştu",
+      "updateSuccess": "Rezervasyon başarıyla güncellendi.",
+      "updateError": "Veriler güncellenirken bir hata oluştu.",
+      "deleteSuccess": "Rezervasyon başarıyla silindi.",
+      "deleteError": "Rezervasyon silinirken bir hata oluştu.",
+      "deleteConfirmTitle": "Bu rezervasyonu silmek istediğinizden emin misiniz?",
+      "deleteConfirmText": "Bu işlemi geri alamazsınız!"
+    }
+  },
+  "users": {
+    "downloadData": "Kullanıcı Verilerini İndir",
+    "tableTitle": "Kullanıcılar",
+    "cancel": "İptal",
+    "update": "Güncelle",
+    "delete": "Sil",
+    "customer": "Müşteri",
+    "admin": "Yönetici",
+    "builtInWarning": "Yerleşik hesaplar silinemez veya güncellenemez.",
+    "form": {
+      "firstName": "Ad",
+      "lastName": "Soyad",
+      "email": "E-posta",
+      "phoneNumber": "Telefon Numarası",
+      "address": "Adres",
+      "zipCode": "Posta Kodu"
+    },
+    "toasts": {
+      "downloadSuccess": "İndirmeniz kısa süre içinde başlayacak",
+      "downloadError": "İndirme sırasında bir hata oluştu",
+      "pageChangeError": "Sayfa değiştirilirken bir hata oluştu",
+      "updateSuccess": "Kullanıcı başarıyla güncellendi.",
+      "updateError": "Kullanıcı güncellenirken bir hata oluştu.",
+      "deleteSuccess": "Kullanıcı başarıyla silindi.",
+      "deleteError": "Kullanıcı silinirken bir hata oluştu.",
+      "deleteConfirmTitle": "Bu kullanıcıyı silmek istediğinizden emin misiniz",
+      "deleteConfirmText": "Bu işlemi geri alamazsınız!"
+    }
+  },
+  "contactMessages": {
+    "tableTitle": "İletişim Mesajları",
+    "sectionTitle1": "Mesaj",
+    "sectionTitle2": "Detayı",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "name": "İsim",
+    "email": "E-posta",
+    "subject": "Konu",
+    "message": "Mesaj",
+    "toasts": {
+      "deleteSuccess": "Mesaj başarıyla silindi.",
+      "deleteError": "Mesaj silinirken bir hata oluştu.",
+      "pageChangeError": "Sayfa değiştirilirken bir hata oluştu",
+      "deleteConfirmTitle": "Bu mesajı silmek istediğinizden emin misiniz?",
+      "deleteConfirmText": "Bu işlemi geri alamazsınız!"
+    }
+  },
+  "table": {
+    "user": {
+      "firstName": "Ad",
+      "lastName": "Soyad",
+      "email": "E-posta",
+      "roles": "Roller"
+    },
+    "reservation": {
+      "vehicle": "Araç",
+      "pickup": "Alış",
+      "dropoff": "Bırakış",
+      "price": "Fiyat"
+    },
+    "contactMessage": {
+      "senderName": "Gönderen Adı",
+      "senderEmail": "Gönderen E-postası",
+      "subject": "Konu"
+    },
+    "vehicle": {
+      "image": "Görsel",
+      "brand": "Marka",
+      "model": "Model",
+      "plate": "Plaka",
+      "age": "Yaş",
+      "transmission": "Vites",
+      "fuel": "Yakıt",
+      "pricePerHour": "Saatlik Fiyat",
+      "status": "Durum"
+    }
+  },
+  "vehicleStatus": {
+    "AVAILABLE": "Müsait",
+    "RENTED": "Kirada",
+    "OUT_OF_SERVICE": "Servis Dışı"
+  }
+}

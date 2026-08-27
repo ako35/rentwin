@@ -3,28 +3,30 @@ import { Button, Form } from "react-bootstrap";
 import { utils } from "../../../../utils";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { services } from "../../../../services";
 import { PasswordInput } from "../../../";
-
-const passwordItems = [
-  {
-    name: "oldPassword",
-    label: "Current Password",
-  },
-  {
-    name: "newPassword",
-    label: "New Password",
-  },
-  {
-    name: "confirmPassword",
-    label: "Confirm Password",
-  },
-];
 
 const UserPasswordForm = () => {
   const [loading, setLoading] = useState(false);
   const { user } = useSelector((state) => state.auth);
   const { builtIn } = user;
+  const { t } = useTranslation("user");
+
+  const passwordItems = [
+    {
+      name: "oldPassword",
+      label: t("profile.password.currentPassword"),
+    },
+    {
+      name: "newPassword",
+      label: t("profile.password.newPassword"),
+    },
+    {
+      name: "confirmPassword",
+      label: t("profile.password.confirmPassword"),
+    },
+  ];
 
   const onSubmit = async (values) => {
     setLoading(true);
@@ -35,10 +37,10 @@ const UserPasswordForm = () => {
     };
     try {
       await services.user.updatePassword(dto);
-      utils.functions.swalToast("Your password has been updated!", "success");
+      utils.functions.swalToast(t("profile.password.successToast"), "success");
       formik.resetForm();
     } catch (error) {
-      utils.functions.swalToast("Unable to update profile", "error");
+      utils.functions.swalToast(t("profile.password.errorToast"), "error");
     } finally {
       setLoading(false);
     }
@@ -61,7 +63,7 @@ const UserPasswordForm = () => {
           disabled={!(formik.isValid && formik.dirty) || loading}
           className="text-uppercase w-100 mt-3"
         >
-          Update Password
+          {t("profile.password.updateButton")}
         </Button>
       </fieldset>
     </Form>

@@ -1,0 +1,12 @@
+{
+  "pageTitle": "Contact Us",
+  "desc": "At Rentwin, we're always ready to assist you. Our customer service team is available 24/7 to help with your queries, bookings, and feedback. Please don't hesitate to reach out to us via any of the following channels. We look forward to serving you and making your car rental experience the best it can be",
+  "form": {
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Message",
+    "send": "Send",
+    "successToast": "Message sent successfully!"
+  }
+}

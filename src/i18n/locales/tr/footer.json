@@ -1,0 +1,11 @@
+{
+  "quickLinks": "Hızlı Bağlantılar",
+  "workingHours": "Çalışma Saatleri",
+  "contactUs": "İletişim",
+  "hours": {
+    "weekdays": "Pzt - Cuma: 09:00 - 21:00",
+    "saturday": "Cumartesi: 09:00 - 19:00",
+    "sunday": "Pazar: 09:00 - 17:00"
+  },
+  "copyright": "© 2023 Rentwin. Tüm hakları saklıdır"
+}

@@ -24,10 +24,10 @@ import {
 
 // TABLES
 import {
-  adminUserColumns,
-  adminReservationsColumns,
-  adminContactMessagesColumns,
-  adminVehiclesColumns,
+  getAdminUserColumns,
+  getAdminReservationsColumns,
+  getAdminContactMessagesColumns,
+  getAdminVehiclesColumns,
 } from "./tables/tables";
 
 // VALIDATIONS
@@ -65,10 +65,10 @@ export const utils = {
     userPasswordFormInitialValues,
   },
   tables: {
-    adminUserColumns,
-    adminReservationsColumns,
-    adminContactMessagesColumns,
-    adminVehiclesColumns,
+    getAdminUserColumns,
+    getAdminReservationsColumns,
+    getAdminContactMessagesColumns,
+    getAdminVehiclesColumns,
   },
   validations: {
     loginFormValidationSchema,

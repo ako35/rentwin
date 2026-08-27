@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "home": "Ana Sayfa",
+    "vehicles": "Araçlar",
+    "about": "Hakkımızda",
+    "contact": "İletişim",
+    "privacyPolicy": "Gizlilik Politikası"
+  },
+  "userMenu": {
+    "guest": "Misafir",
+    "login": "Giriş Yap",
+    "register": "Kayıt Ol",
+    "logout": "Çıkış Yap",
+    "profile": "Profilim",
+    "reservations": "Rezervasyonlarım",
+    "adminPanel": "Yönetim Paneli",
+    "logoutConfirmTitle": "Çıkış Yap",
+    "logoutConfirmText": "Çıkış yapmak istediğinizden emin misiniz?"
+  },
+  "language": {
+    "label": "Dil",
+    "tr": "Türkçe",
+    "en": "English"
+  },
+  "buttons": {
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "add": "Ekle",
+    "search": "Ara",
+    "submit": "Gönder",
+    "back": "Geri",
+    "yes": "Evet",
+    "no": "Hayır",
+    "close": "Kapat",
+    "view": "Görüntüle",
+    "update": "Güncelle",
+    "create": "Oluştur",
+    "export": "Dışa Aktar"
+  },
+  "passwordInput": {
+    "show": "Şifreyi Göster",
+    "hide": "Şifreyi Gizle"
+  },
+  "options": {
+    "fuelTypes": {
+      "Diesel": "Dizel",
+      "Gasoline": "Benzin",
+      "Hybrid": "Hibrit",
+      "Electricity": "Elektrik",
+      "LPG": "LPG",
+      "CNG": "CNG",
+      "Hydrogen": "Hidrojen"
+    },
+    "transmissionTypes": {
+      "Automatic": "Otomatik",
+      "Manual": "Manuel",
+      "Tiptronic": "Tiptronic"
+    },
+    "airConditioning": {
+      "yes": "Evet",
+      "no": "Hayır"
+    },
+    "roles": {
+      "Customer": "Müşteri",
+      "Administrator": "Yönetici"
+    },
+    "reservationStatus": {
+      "CREATED": "Oluşturuldu",
+      "CANCELLED": "İptal Edildi",
+      "DONE": "Tamamlandı"
+    }
+  }
+}

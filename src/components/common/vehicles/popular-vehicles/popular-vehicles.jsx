@@ -1,10 +1,12 @@
 import { Col, Container, Row } from "react-bootstrap";
 import { Loading, SectionHeader, Spacer, VehicleCard } from "../../../";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { services } from "../../../../services";
 import './popular-vehicles.scss'
 
 const PopularVehicles = () => {
+  const { t } = useTranslation("home");
   const [loading, setLoading] = useState(true);
   const [vehicles, setVehicles] = useState([]);
 
@@ -27,9 +29,9 @@ const PopularVehicles = () => {
   return (
     <div className="popular-vehicles">
       <SectionHeader
-        title1="Popular"
-        title2="Cars"
-        desc="To contribute to positive change and achieve our sustainability goals with many extraordinary"
+        title1={t("sections.popularCars.title1")}
+        title2={t("sections.popularCars.title2")}
+        desc={t("sections.popularCars.desc")}
       />
       <Spacer />
       <Container>
