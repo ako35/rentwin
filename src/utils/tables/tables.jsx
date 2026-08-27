@@ -91,6 +91,10 @@ export const getAdminVehiclesColumns = (t) => {
             selector: (row) => row?.licensePlate,
         },
         {
+            name: t("table.vehicle.branch"),
+            selector: (row) => row?.branch?.name || "-",
+        },
+        {
             name: t("table.vehicle.age"),
             selector: (row) => row?.age,
         },

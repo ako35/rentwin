@@ -38,8 +38,10 @@
     "excludeCompleted": "Tamamlananları Hariç Tut",
     "date": "Tarih",
     "time": "Saat",
+    "branchCode": "Şube Kodu",
+    "plate": "Plaka",
     "vehicle": "Araç",
-    "reservationNo": "Rezervasyon No",
+    "reservationNo": "Kontrat No",
     "customer": "Müşteri",
     "days": "Gün",
     "noRecords": "Kayıt bulunamadı",
@@ -59,6 +61,7 @@
     "form": {
       "brand": "Marka",
       "model": "Model",
+      "branch": "Şube",
       "licensePlate": "Plaka",
       "doors": "Kapı Sayısı",
       "seats": "Koltuk Sayısı",
@@ -185,6 +188,7 @@
       "brand": "Marka",
       "model": "Model",
       "plate": "Plaka",
+      "branch": "Şube",
       "age": "Yaş",
       "transmission": "Vites",
       "fuel": "Yakıt",
@@ -196,5 +200,115 @@
     "AVAILABLE": "Müsait",
     "RENTED": "Kirada",
     "OUT_OF_SERVICE": "Servis Dışı"
+  },
+  "topNav": {
+    "home": "Ana Sayfa",
+    "vehicle": "Araç",
+    "vehicleList": "Araç Listesi",
+    "addVehicle": "Araç Ekle",
+    "reservationsAndContracts": "Rez & Kontrat",
+    "reservations": "Rezervasyonlar",
+    "longTerm": "Uzun Dönem",
+    "customer": "Müşteri",
+    "price": "Fiyat",
+    "location": "Lokasyon",
+    "content": "İçerik",
+    "finance": "Finans",
+    "definitions": "Tanım",
+    "system": "Sistem",
+    "announcements": "Duyurular",
+    "backToWebsite": "Web Sitesine Dön",
+    "logout": "Çıkış Yap",
+    "logoutConfirmTitle": "Çıkış Yap",
+    "logoutConfirmText": "Çıkış yapmak istediğinizden emin misiniz?",
+    "report": "Rapor",
+    "quickAccessPlaceholder": "Hızlı Erişim",
+    "moduleSwitcherLabel": "Modül"
+  },
+  "filterBar": {
+    "branch": "Şube",
+    "allBranches": "Hepsi",
+    "announcements": "Duyurular:",
+    "noAnnouncements": "Henüz duyuru yok",
+    "allAnnouncements": "Tüm Duyurular",
+    "manageAnnouncements": "Duyuru Ayarları"
+  },
+  "alertBar": {
+    "maintenance": "Bakım",
+    "inspection": "Muayene / Egzoz",
+    "exchangeRates": "Döviz Kurları",
+    "settings": "Ayarlar",
+    "autoRefresh": "Otomatik Yenileme",
+    "comingSoonToast": "Bu özellik yakında eklenecek"
+  },
+  "footer": {
+    "copyright": "© 2014 - {{year}} Rentwin Yazılım. Tüm Hakları Saklıdır",
+    "requestSupport": "Destek Talep Et"
+  },
+  "locations": {
+    "pageTitle": "Lokasyon / Şube Yönetimi",
+    "addBranch": "Şube Ekle",
+    "editBranch": "Şube Düzenle",
+    "nameLabel": "Şube Adı",
+    "codeLabel": "Şube Kodu",
+    "namePlaceholder": "Örn. İstanbul Şube",
+    "codePlaceholder": "Örn. IST",
+    "table": {
+      "name": "Şube Adı",
+      "code": "Şube Kodu",
+      "vehicleCount": "Araç Sayısı",
+      "actions": "İşlemler"
+    },
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "noBranches": "Henüz şube eklenmedi",
+    "builtInWarning": "Yerleşik şube silinemez.",
+    "toasts": {
+      "createSuccess": "Şube başarıyla oluşturuldu.",
+      "createError": "Şube oluşturulurken bir hata oluştu.",
+      "updateSuccess": "Şube başarıyla güncellendi.",
+      "updateError": "Şube güncellenirken bir hata oluştu.",
+      "deleteSuccess": "Şube başarıyla silindi.",
+      "deleteError": "Şube silinirken bir hata oluştu.",
+      "deleteConfirmTitle": "Bu şubeyi silmek istediğinizden emin misiniz?",
+      "deleteConfirmText": "Bu işlemi geri alamazsınız!"
+    }
+  },
+  "announcementsPage": {
+    "pageTitle": "Duyuru Yönetimi",
+    "addAnnouncement": "Duyuru Ekle",
+    "editAnnouncement": "Duyuru Düzenle",
+    "titleLabel": "Başlık",
+    "bodyLabel": "Metin",
+    "activeLabel": "Aktif",
+    "table": {
+      "title": "Başlık",
+      "status": "Durum",
+      "createdAt": "Oluşturulma Tarihi",
+      "actions": "İşlemler"
+    },
+    "active": "Aktif",
+    "inactive": "Pasif",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "noAnnouncements": "Henüz duyuru eklenmedi",
+    "toasts": {
+      "createSuccess": "Duyuru başarıyla oluşturuldu.",
+      "createError": "Duyuru oluşturulurken bir hata oluştu.",
+      "updateSuccess": "Duyuru başarıyla güncellendi.",
+      "updateError": "Duyuru güncellenirken bir hata oluştu.",
+      "deleteSuccess": "Duyuru başarıyla silindi.",
+      "deleteError": "Duyuru silinirken bir hata oluştu.",
+      "deleteConfirmTitle": "Bu duyuruyu silmek istediğinizden emin misiniz?",
+      "deleteConfirmText": "Bu işlemi geri alamazsınız!"
+    }
+  },
+  "comingSoon": {
+    "title": "Yakında",
+    "desc": "{{module}} modülü üzerinde çalışıyoruz. Bu bölüm yakında kullanıma açılacak."
   }
 }

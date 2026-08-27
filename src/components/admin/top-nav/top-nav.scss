@@ -1,0 +1,84 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+.admin-top-nav {
+    background-color: v.$color5;
+    padding: 0.5rem 1rem;
+
+    &__home {
+        color: v.$color4;
+        font-size: 1.4rem;
+        margin-right: 0.75rem;
+        display: flex;
+
+        &:hover {
+            color: v.$color2;
+        }
+    }
+
+    &__brand {
+        color: v.$color4;
+        font-weight: 700;
+        font-size: 1.2rem;
+        text-decoration: none;
+        margin-right: 1.5rem;
+        white-space: nowrap;
+
+        span {
+            color: v.$color2;
+        }
+    }
+
+    &__menu {
+        @include m.flexbox(row, flex-start, center, 0.25rem);
+        flex-wrap: wrap;
+        flex: 1;
+
+        .nav-link {
+            color: v.$color4-3;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+
+            &:hover,
+            &.active {
+                color: v.$color4;
+                background-color: v.$color1-4;
+                border-radius: 4px;
+            }
+        }
+
+        .dropdown-menu {
+            background-color: v.$color5;
+            border: 1px solid v.$color1-5;
+        }
+
+        .dropdown-item {
+            color: v.$color4-3;
+
+            &:hover {
+                background-color: v.$color1-4;
+                color: v.$color4;
+            }
+        }
+    }
+
+    &__right {
+        @include m.flexbox(row, flex-end, center, 0.5rem);
+        flex-wrap: wrap;
+        position: relative;
+        margin-left: auto;
+
+        @media (max-width: 992px) {
+            margin-top: 0.75rem;
+        }
+    }
+
+    &__search {
+        width: 160px;
+    }
+
+    &__module-select {
+        width: auto;
+    }
+}

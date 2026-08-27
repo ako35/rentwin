@@ -1,0 +1,50 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+.maintenance-alert-bar {
+    @include m.flexbox(row, space-between, center, 1rem);
+    flex-wrap: wrap;
+    background-color: v.$color4;
+    border: 1px solid v.$color1-5;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    margin: 1rem 0;
+
+    &__tabs {
+        @include m.flexbox(row, flex-start, center, 0.5rem);
+        flex-wrap: wrap;
+    }
+
+    &__tab {
+        @include m.flexbox(row, center, center, 0.4rem);
+        background-color: v.$color3;
+        border: 1px solid v.$color1-5;
+        border-radius: 4px;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: v.$color5;
+
+        &:hover {
+            background-color: v.$color1-5;
+        }
+    }
+
+    &__actions {
+        @include m.flexbox(row, flex-end, center, 1rem);
+        flex-wrap: wrap;
+    }
+
+    &__link {
+        background: none;
+        border: none;
+        color: v.$color1;
+        font-size: 0.85rem;
+        font-weight: 600;
+
+        &:hover {
+            color: v.$color2;
+            text-decoration: underline;
+        }
+    }
+}

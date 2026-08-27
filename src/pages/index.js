@@ -1,7 +1,10 @@
 // ADMIN PAGES
+import AdminAnnouncementsPage from "./admin/announcements/page";
+import AdminComingSoonPage from "./admin/coming-soon/page";
 import AdminContactMessagesPage from "./admin/contact-messages/page"
 import AdminContactMessageDetailsPage from "./admin/contact-messages/details/page"
 import AdminDashboard from "./admin/dashboard/page"
+import AdminLocationsPage from "./admin/locations/page";
 import AdminReservationsPage from "./admin/reservations/page"
 import AdminReservationDetailsPage from "./admin/reservations/details/page";
 import AdminUsersPage from "./admin/users/page";
@@ -27,9 +30,12 @@ import VehicleDetailsPage from "./common/vehicles/details/page";
 
 export {
     // ADMIN PAGES
+    AdminAnnouncementsPage,
+    AdminComingSoonPage,
     AdminContactMessagesPage,
     AdminContactMessageDetailsPage,
     AdminDashboard,
+    AdminLocationsPage,
     AdminReservationsPage,
     AdminReservationDetailsPage,
     AdminUsersPage,

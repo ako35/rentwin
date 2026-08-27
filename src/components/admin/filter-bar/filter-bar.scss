@@ -1,0 +1,71 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+.admin-filter-bar {
+    background-color: v.$color3;
+    border-bottom: 1px solid v.$color1-5;
+    padding: 0.6rem 0;
+
+    .container-fluid {
+        @include m.flexbox(row, space-between, center, 1rem);
+        flex-wrap: wrap;
+    }
+
+    &__branch {
+        @include m.flexbox(row, flex-start, center, 0.5rem);
+
+        span {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: v.$color5;
+            white-space: nowrap;
+        }
+
+        select {
+            width: auto;
+        }
+    }
+
+    &__announcements {
+        @include m.flexbox(row, flex-start, center, 0.5rem);
+        flex: 1;
+        min-width: 260px;
+
+        > span:first-child {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: v.$color5;
+            white-space: nowrap;
+        }
+
+        a {
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+    }
+
+    &__ticker {
+        flex: 1;
+        background-color: v.$color4;
+        border: 1px solid v.$color1-5;
+        border-radius: 4px;
+        padding: 0.35rem 0.75rem;
+        overflow: hidden;
+        white-space: nowrap;
+
+        span {
+            font-size: 0.85rem;
+            color: v.$color5-2;
+        }
+    }
+
+    &__settings {
+        font-size: 1.1rem;
+        color: v.$color1;
+        display: flex;
+
+        &:hover {
+            color: v.$color2;
+        }
+    }
+}

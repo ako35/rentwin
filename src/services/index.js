@@ -6,6 +6,10 @@ import { deleteUser, downloadUserReports, getUser, getUserAdmin, getUsersByPage,
 
 import { addVehicle, deleteVehicle, deleteVehicleImage, downloadVehicleReports, getFleetStats, getVehicleById, getVehicles, getVehiclesByPage, getVehiclesByPageAdmin, updateVehicle, uploadVehicleImage } from "./vehicle/vehicle-service";
 
+import { addBranch, deleteBranch, getBranches, updateBranch } from "./branch/branch-service";
+
+import { addAnnouncement, deleteAnnouncement, getActiveAnnouncements, getAnnouncements, updateAnnouncement } from "./announcement/announcement-service";
+
 import { encryptedLocalStorage } from "./encrypt-storage/encrypt-storage";
 import { authHeader } from "./auth-header/auth-header";
 
@@ -61,6 +65,19 @@ export const services = {
         getVehiclesByPageAdmin,
         updateVehicle,
         uploadVehicleImage,
+    },
+    branch: {
+        getBranches,
+        addBranch,
+        updateBranch,
+        deleteBranch,
+    },
+    announcement: {
+        getActiveAnnouncements,
+        getAnnouncements,
+        addAnnouncement,
+        updateAnnouncement,
+        deleteAnnouncement,
     },
     encryptedLocalStorage,
     authHeader

@@ -1,9 +1,12 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import {
   AboutPage,
+  AdminAnnouncementsPage,
+  AdminComingSoonPage,
   AdminContactMessageDetailsPage,
   AdminContactMessagesPage,
   AdminDashboard,
+  AdminLocationsPage,
   AdminNewVehiclePage,
   AdminReservationDetailsPage,
   AdminReservationsPage,
@@ -109,6 +112,18 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <AdminDashboard />,
+      },
+      {
+        path: "announcements",
+        element: <AdminAnnouncementsPage />,
+      },
+      {
+        path: "locations",
+        element: <AdminLocationsPage />,
+      },
+      {
+        path: "coming-soon/:module",
+        element: <AdminComingSoonPage />,
       },
       {
         path: "contact-messages",

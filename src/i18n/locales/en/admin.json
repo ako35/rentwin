@@ -38,8 +38,10 @@
     "excludeCompleted": "Exclude Completed",
     "date": "Date",
     "time": "Time",
+    "branchCode": "Branch Code",
+    "plate": "Plate",
     "vehicle": "Vehicle",
-    "reservationNo": "Reservation No",
+    "reservationNo": "Contract No",
     "customer": "Customer",
     "days": "Days",
     "noRecords": "No records found",
@@ -59,6 +61,7 @@
     "form": {
       "brand": "Brand",
       "model": "Model",
+      "branch": "Branch",
       "licensePlate": "License Plate",
       "doors": "Doors",
       "seats": "Seats",
@@ -185,6 +188,7 @@
       "brand": "Brand",
       "model": "Model",
       "plate": "Plate",
+      "branch": "Branch",
       "age": "Age",
       "transmission": "Transmission",
       "fuel": "Fuel",
@@ -196,5 +200,115 @@
     "AVAILABLE": "Available",
     "RENTED": "Rented",
     "OUT_OF_SERVICE": "Out of Service"
+  },
+  "topNav": {
+    "home": "Home",
+    "vehicle": "Vehicle",
+    "vehicleList": "Vehicle List",
+    "addVehicle": "Add Vehicle",
+    "reservationsAndContracts": "Res & Contract",
+    "reservations": "Reservations",
+    "longTerm": "Long Term",
+    "customer": "Customer",
+    "price": "Price",
+    "location": "Location",
+    "content": "Content",
+    "finance": "Finance",
+    "definitions": "Definitions",
+    "system": "System",
+    "announcements": "Announcements",
+    "backToWebsite": "Back To Website",
+    "logout": "Logout",
+    "logoutConfirmTitle": "Logout",
+    "logoutConfirmText": "Are you sure you want to logout?",
+    "report": "Report",
+    "quickAccessPlaceholder": "Quick Access",
+    "moduleSwitcherLabel": "Module"
+  },
+  "filterBar": {
+    "branch": "Branch",
+    "allBranches": "All",
+    "announcements": "Announcements:",
+    "noAnnouncements": "No announcements yet",
+    "allAnnouncements": "All Announcements",
+    "manageAnnouncements": "Announcement Settings"
+  },
+  "alertBar": {
+    "maintenance": "Maintenance",
+    "inspection": "Inspection / Exhaust",
+    "exchangeRates": "Exchange Rates",
+    "settings": "Settings",
+    "autoRefresh": "Auto Refresh",
+    "comingSoonToast": "This feature is coming soon"
+  },
+  "footer": {
+    "copyright": "© 2014 - {{year}} Rentwin Software. All Rights Reserved",
+    "requestSupport": "Request Support"
+  },
+  "locations": {
+    "pageTitle": "Location / Branch Management",
+    "addBranch": "Add Branch",
+    "editBranch": "Edit Branch",
+    "nameLabel": "Branch Name",
+    "codeLabel": "Branch Code",
+    "namePlaceholder": "e.g. Istanbul Branch",
+    "codePlaceholder": "e.g. IST",
+    "table": {
+      "name": "Branch Name",
+      "code": "Branch Code",
+      "vehicleCount": "Vehicle Count",
+      "actions": "Actions"
+    },
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "noBranches": "No branches added yet",
+    "builtInWarning": "This built-in branch cannot be deleted.",
+    "toasts": {
+      "createSuccess": "Branch created successfully.",
+      "createError": "There was an error creating the branch.",
+      "updateSuccess": "Branch updated successfully.",
+      "updateError": "There was an error updating the branch.",
+      "deleteSuccess": "Branch deleted successfully.",
+      "deleteError": "There was an error deleting the branch.",
+      "deleteConfirmTitle": "Are you sure you want to delete this branch?",
+      "deleteConfirmText": "You won't be able to revert this action!"
+    }
+  },
+  "announcementsPage": {
+    "pageTitle": "Announcement Management",
+    "addAnnouncement": "Add Announcement",
+    "editAnnouncement": "Edit Announcement",
+    "titleLabel": "Title",
+    "bodyLabel": "Body",
+    "activeLabel": "Active",
+    "table": {
+      "title": "Title",
+      "status": "Status",
+      "createdAt": "Created At",
+      "actions": "Actions"
+    },
+    "active": "Active",
+    "inactive": "Inactive",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "noAnnouncements": "No announcements added yet",
+    "toasts": {
+      "createSuccess": "Announcement created successfully.",
+      "createError": "There was an error creating the announcement.",
+      "updateSuccess": "Announcement updated successfully.",
+      "updateError": "There was an error updating the announcement.",
+      "deleteSuccess": "Announcement deleted successfully.",
+      "deleteError": "There was an error deleting the announcement.",
+      "deleteConfirmTitle": "Are you sure you want to delete this announcement?",
+      "deleteConfirmText": "You won't be able to revert this action!"
+    }
+  },
+  "comingSoon": {
+    "title": "Coming Soon",
+    "desc": "We're working on the {{module}} module. This section will be available soon."
   }
 }

@@ -95,8 +95,11 @@ const roles = [
 
 const routes = {
   // ADMIN ROUTES
+  adminAnnouncements: "/admin/announcements",
+  adminComingSoon: "/admin/coming-soon",
   adminContactMessages: "/admin/contact-messages",
   adminDashboard: "/admin",
+  adminLocations: "/admin/locations",
   adminReservations: "/admin/reservations",
   adminUsers: "/admin/users",
   adminVehicles: "/admin/vehicles",

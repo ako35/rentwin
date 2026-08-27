@@ -61,24 +61,47 @@ model VehicleImage {
 }
 
 model Vehicle {
-  id              String         @id @default(uuid())
-  brand           String
-  model           String
-  licensePlate    String         @unique
-  doors           Int
-  seats           Int
-  luggage         Int
-  transmission    Transmission
-  airConditioning Boolean
-  fuelType        FuelType
-  age             Int
-  pricePerHour    Float
-  outOfService    Boolean        @default(false)
-  builtIn         Boolean        @default(false)
-  images          VehicleImage[]
-  reservations    Reservation[]
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id                  String         @id @default(uuid())
+  brand               String
+  model               String
+  licensePlate        String         @unique
+  doors               Int
+  seats               Int
+  luggage             Int
+  transmission        Transmission
+  airConditioning     Boolean
+  fuelType            FuelType
+  age                 Int
+  pricePerHour        Float
+  outOfService        Boolean        @default(false)
+  builtIn             Boolean        @default(false)
+  branchId            String?
+  branch              Branch?        @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  nextMaintenanceDate DateTime?
+  nextInspectionDate  DateTime?
+  images              VehicleImage[]
+  reservations        Reservation[]
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+}
+
+model Branch {
+  id        String    @id @default(uuid())
+  name      String
+  code      String    @unique
+  builtIn   Boolean   @default(false)
+  vehicles  Vehicle[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Announcement {
+  id        String   @id @default(uuid())
+  title     String
+  body      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Reservation {

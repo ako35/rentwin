@@ -72,8 +72,11 @@ export const getVehiclesByPageAdmin = async (
   );
   return response.data;
 };
-export const getFleetStats = async () => {
-  const response = await axios.get(`${API_URL}/car/admin/fleet-stats/auth`, services.authHeader());
+export const getFleetStats = async (branchId) => {
+  const response = await axios.get(
+    `${API_URL}/car/admin/fleet-stats/auth${branchId ? `?branchId=${branchId}` : ""}`,
+    services.authHeader()
+  );
   return response.data;
 };
 export const uploadVehicleImage = async(file) => {

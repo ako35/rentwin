@@ -65,9 +65,9 @@ export const getReservationByIdAdmin = async (id) => {
   return response.data;
 };
 export const getReservationsByPageAdmin = () => {};
-export const getAdminSchedule = async ({ type, window = 7, excludeCompleted = true }) => {
+export const getAdminSchedule = async ({ type, window = 7, excludeCompleted = true, branchId }) => {
   const response = await axios.get(
-    `${API_URL}/reservations/admin/schedule/auth?type=${type}&window=${window}&excludeCompleted=${excludeCompleted}`,
+    `${API_URL}/reservations/admin/schedule/auth?type=${type}&window=${window}&excludeCompleted=${excludeCompleted}${branchId ? `&branchId=${branchId}` : ""}`,
     services.authHeader()
   );
   return response.data;

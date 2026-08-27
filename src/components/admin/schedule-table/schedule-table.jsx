@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Form, Nav, Spinner, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { BsPlusCircle } from "react-icons/bs";
 import moment from "moment/moment";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
@@ -10,7 +11,7 @@ import "./schedule-table.scss";
 
 const { routes } = constants;
 
-const ScheduleTable = ({ title, type, dateField }) => {
+const ScheduleTable = ({ title, type, dateField, branchId }) => {
   const { t } = useTranslation("admin");
   const WINDOWS = [
     { value: "today", label: t("scheduleTable.windows.today") },
@@ -32,6 +33,7 @@ const ScheduleTable = ({ title, type, dateField }) => {
         type,
         window,
         excludeCompleted,
+        branchId,
       });
       setRows(data);
     } catch (error) {
@@ -44,7 +46,7 @@ const ScheduleTable = ({ title, type, dateField }) => {
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [window, excludeCompleted]);
+  }, [window, excludeCompleted, branchId]);
 
   return (
     <div className="schedule-table">
@@ -70,10 +72,13 @@ const ScheduleTable = ({ title, type, dateField }) => {
         <Table hover responsive>
           <thead>
             <tr>
+              <th></th>
               <th>{t("scheduleTable.date")}</th>
               <th>{t("scheduleTable.time")}</th>
-              <th>{t("scheduleTable.vehicle")}</th>
+              <th>{t("scheduleTable.branchCode")}</th>
+              <th>{t("scheduleTable.plate")}</th>
               <th>{t("scheduleTable.reservationNo")}</th>
+              <th>{t("scheduleTable.vehicle")}</th>
               <th>{t("scheduleTable.customer")}</th>
               <th>{t("scheduleTable.days")}</th>
             </tr>
@@ -81,14 +86,14 @@ const ScheduleTable = ({ title, type, dateField }) => {
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={6} className="text-center">
+                <td colSpan={9} className="text-center">
                   <Spinner animation="border" size="sm" />
                 </td>
               </tr>
             )}
             {!loading && rows.length === 0 && (
               <tr>
-                <td colSpan={6} className="text-center">
+                <td colSpan={9} className="text-center">
                   {t("scheduleTable.noRecords")}
                 </td>
               </tr>
@@ -97,16 +102,22 @@ const ScheduleTable = ({ title, type, dateField }) => {
               rows.map((row) => {
                 const target = row[dateField];
                 const daysRemaining = moment(target).startOf("day").diff(moment().startOf("day"), "days");
+                const goToDetails = () => navigate(`${routes.adminReservations}/${row.id}`);
                 return (
                   <tr
                     key={row.id}
-                    onClick={() => navigate(`${routes.adminReservations}/${row.id}`)}
+                    onClick={goToDetails}
                     className={daysRemaining < 0 ? "schedule-table__row--overdue" : ""}
                   >
+                    <td className="schedule-table__action">
+                      <BsPlusCircle />
+                    </td>
                     <td>{utils.functions.getDate(target)}</td>
                     <td>{utils.functions.getTime(target)}</td>
+                    <td>{row.car?.branchCode || "-"}</td>
+                    <td className="schedule-table__plate">{row.car?.licensePlate}</td>
+                    <td className="schedule-table__contract">{row.id.slice(0, 10).toUpperCase()}</td>
                     <td>{row.car?.brand} {row.car?.model}</td>
-                    <td>{row.id.slice(0, 8)}</td>
                     <td>{row.user?.firstName} {row.user?.lastName}</td>
                     <td>{daysRemaining}</td>
                   </tr>

@@ -66,5 +66,8 @@ export const adminNewVehicleFormInitialValues = {
     age: "",
     pricePerHour: "",
     outOfService: false,
+    branchId: "",
+    nextMaintenanceDate: "",
+    nextInspectionDate: "",
     image: "",
 };

@@ -1,0 +1,23 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+.admin-coming-soon {
+    @include m.flexbox(column, center, center, 1rem);
+    text-align: center;
+    padding: 5rem 1rem;
+    color: v.$color5-2;
+
+    &__icon {
+        font-size: 4rem;
+        color: v.$color1-3;
+    }
+
+    h2 {
+        color: v.$color1;
+        margin: 0;
+    }
+
+    p {
+        max-width: 420px;
+    }
+}

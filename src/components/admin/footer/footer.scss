@@ -1,0 +1,35 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+.admin-footer {
+    @include m.flexbox(row, space-between, center, 1rem);
+    flex-wrap: wrap;
+    background-color: v.$color4;
+    border-top: 1px solid v.$color1-5;
+    padding: 0.75rem 1.5rem;
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    color: v.$color5-2;
+
+    &__social {
+        @include m.flexbox(row, center, center, 0.9rem);
+
+        a {
+            color: v.$color1;
+            font-size: 1.1rem;
+
+            &:hover {
+                color: v.$color2;
+            }
+        }
+    }
+
+    &__support {
+        @include m.button(v.$color1, v.$color4, v.$color2, v.$color4);
+        padding: 0.4rem 0.9rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+}

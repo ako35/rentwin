@@ -25,6 +25,11 @@ const API_URL = import.meta.env.VITE_APP_API_URL;
 const AdminVehicleDetailsPage = () => {
   const { t } = useTranslation("admin");
   const { t: tCommon } = useTranslation("common");
+  const [branches, setBranches] = useState([]);
+
+  useEffect(() => {
+    services.branch.getBranches().then(setBranches).catch(() => setBranches([]));
+  }, []);
 
   const formItems = [
     {
@@ -102,6 +107,28 @@ const AdminVehicleDetailsPage = () => {
         name: tCommon(`options.fuelTypes.${item.value}`),
       })),
     },
+    {
+      name: "branchId",
+      label: t("vehicles.form.branch"),
+      asGroup: Col,
+      type: "select",
+      itemsArr: [
+        { id: "", value: "", name: t("filterBar.allBranches") },
+        ...branches.map((branch) => ({ id: branch.id, value: branch.id, name: branch.name })),
+      ],
+    },
+    {
+      name: "nextMaintenanceDate",
+      label: t("alertBar.maintenance"),
+      asGroup: Col,
+      type: "date",
+    },
+    {
+      name: "nextInspectionDate",
+      label: t("alertBar.inspection"),
+      asGroup: Col,
+      type: "date",
+    },
   ];
 
   const [loading, setLoading] = useState(true);
@@ -128,6 +155,9 @@ const AdminVehicleDetailsPage = () => {
     airConditioning: constants.airConditioningTypes[0].value,
     fuelType: constants.fuelTypes[0].value,
     outOfService: false,
+    branchId: "",
+    nextMaintenanceDate: "",
+    nextInspectionDate: "",
     image: [],
   });
 
@@ -199,7 +229,12 @@ const AdminVehicleDetailsPage = () => {
   const loadData = async () => {
     try {
       const response = await services.vehicle.getVehicleById(vehicleId);
-      setInitialValues(response);
+      setInitialValues({
+        ...response,
+        branchId: response.branchId || "",
+        nextMaintenanceDate: response.nextMaintenanceDate ? utils.functions.getDate(response.nextMaintenanceDate) : "",
+        nextInspectionDate: response.nextInspectionDate ? utils.functions.getDate(response.nextInspectionDate) : "",
+      });
       setImageSrc(`${API_URL}/files/display/${response.image[0]}`);
     } catch (error) {
       console.log(error);

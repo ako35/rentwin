@@ -1,8 +1,9 @@
 // admin components
-import AdminCarousel from './admin/carousel/carousel'
-import DashboardCard from './admin/dashboard-card/dashboard-card'
+import AdminFilterBar from './admin/filter-bar/filter-bar'
+import AdminFooter from './admin/footer/footer'
+import AdminTopNav from './admin/top-nav/top-nav'
+import MaintenanceAlertBar from './admin/maintenance-alert-bar/maintenance-alert-bar'
 import ScheduleTable from './admin/schedule-table/schedule-table'
-import Sidebar from './admin/sidebar/sidebar'
 import TableRow from './admin/table-row/table-row'
 import VehicleStatsPanel from './admin/vehicle-stats-panel/vehicle-stats-panel'
 
@@ -47,10 +48,11 @@ import Vehicles from './common/vehicles/vehicles'
 
 export{
     // admin components
-    AdminCarousel,
-    DashboardCard,
+    AdminFilterBar,
+    AdminFooter,
+    AdminTopNav,
+    MaintenanceAlertBar,
     ScheduleTable,
-    Sidebar,
     TableRow,
     VehicleStatsPanel,
 

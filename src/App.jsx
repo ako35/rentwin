@@ -6,7 +6,9 @@ import { useDispatch } from "react-redux";
 import { loginFailure, loginSuccess } from "./store";
 
 const App = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(
+    !!services.encryptedLocalStorage.getItem("rentwintoken")
+  );
   const dispatch = useDispatch();
 
   const loadData = async () => {

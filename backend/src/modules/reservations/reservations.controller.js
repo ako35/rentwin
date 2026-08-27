@@ -149,7 +149,7 @@ const getReservationByIdAdmin = asyncHandler(async (req, res) => {
 // drop-off (returns) or pick-up (departures) falls within a day window
 // from now. Always excludes CANCELLED; optionally excludes DONE too.
 const getAdminSchedule = asyncHandler(async (req, res) => {
-  const { type = "returns", window = "7", excludeCompleted } = req.query;
+  const { type = "returns", window = "7", excludeCompleted, branchId } = req.query;
   const dateField = type === "departures" ? "pickUpTime" : "dropOffTime";
   const { from, to } = resolveWindow(window);
 
@@ -159,9 +159,10 @@ const getAdminSchedule = asyncHandler(async (req, res) => {
     where: {
       [dateField]: { gte: from, lte: to },
       status: excludeCompleted === "true" ? { notIn: ["CANCELLED", "DONE"] } : statusFilter,
+      ...(branchId ? { car: { branchId } } : {}),
     },
     orderBy: { [dateField]: "asc" },
-    include: { car: true, user: true },
+    include: { car: { include: { branch: true } }, user: true },
   });
 
   res.json(reservations.map(serializeScheduleRow));

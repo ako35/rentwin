@@ -26,7 +26,12 @@ const serializeScheduleRow = (reservation) => ({
   dropOffLocation: reservation.dropOffLocation,
   status: reservation.status,
   car: reservation.car
-    ? { model: reservation.car.model, brand: reservation.car.brand, licensePlate: reservation.car.licensePlate }
+    ? {
+        model: reservation.car.model,
+        brand: reservation.car.brand,
+        licensePlate: reservation.car.licensePlate,
+        branchCode: reservation.car.branch?.code || null,
+      }
     : undefined,
   user: reservation.user
     ? { firstName: reservation.user.firstName, lastName: reservation.user.lastName, email: reservation.user.email }

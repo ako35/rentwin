@@ -10,6 +10,8 @@ const filesRoutes = require("./modules/files/files.routes");
 const reservationsRoutes = require("./modules/reservations/reservations.routes");
 const contactMessagesRoutes = require("./modules/contact-messages/contact-messages.routes");
 const excelRoutes = require("./modules/excel/excel.routes");
+const branchesRoutes = require("./modules/branches/branches.routes");
+const announcementsRoutes = require("./modules/announcements/announcements.routes");
 const notFound = require("./middleware/not-found");
 const errorHandler = require("./middleware/error-handler");
 
@@ -42,6 +44,8 @@ app.use(filesRoutes);
 app.use(reservationsRoutes);
 app.use(contactMessagesRoutes);
 app.use(excelRoutes);
+app.use(branchesRoutes);
+app.use(announcementsRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

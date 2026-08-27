@@ -1,38 +1,29 @@
 import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { constants } from "../../../constants";
 import { services } from "../../../services";
-import { IoIosPeople } from "react-icons/io";
-import { MdBookOnline } from "react-icons/md";
 import { Col, Container, Row } from "react-bootstrap";
 import {
-  DashboardCard,
   GaugeChart,
   Loading,
+  MaintenanceAlertBar,
   ScheduleTable,
   VehicleStatsPanel,
 } from "../../../components";
 import "./style.scss";
 
-const { routes } = constants;
+const AUTO_REFRESH_INTERVAL_MS = 60000;
 
 const AdminDashboard = () => {
   const { t } = useTranslation("admin");
+  const { branchId } = useOutletContext() || {};
   const [loading, setLoading] = useState(true);
   const [fleetStats, setFleetStats] = useState(null);
-  const [members, setMembers] = useState(null);
-  const [reservations, setReservations] = useState(null);
+  const [autoRefresh, setAutoRefresh] = useState(false);
 
   const loadData = async () => {
     try {
-      const [userData, reservationsData, stats] = await Promise.all([
-        services.user.getUsersByPage(0),
-        services.reservation.getReservationsByPage(0),
-        services.vehicle.getFleetStats(),
-      ]);
-
-      setMembers(userData?.totalElements);
-      setReservations(reservationsData?.totalElements);
+      const stats = await services.vehicle.getFleetStats(branchId);
       setFleetStats(stats);
     } catch (error) {
       console.log(error);
@@ -43,38 +34,23 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [branchId]);
 
-  const summaryItems = [
-    {
-      title: t("dashboard.members"),
-      icon: <IoIosPeople />,
-      path: routes.adminUsers,
-      statistics: members,
-    },
-    {
-      title: t("dashboard.reservations"),
-      icon: <MdBookOnline />,
-      path: routes.adminReservations,
-      statistics: reservations,
-    },
-  ];
+  useEffect(() => {
+    if (!autoRefresh) return undefined;
+    const interval = setInterval(loadData, AUTO_REFRESH_INTERVAL_MS);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoRefresh, branchId]);
 
   return (
-    <Container className="admin-dashboard">
+    <Container fluid className="admin-dashboard">
       {loading ? (
         <Loading height={500} />
       ) : (
         <>
-          <Row xxl={2} className="gy-3">
-            {summaryItems.map((item, index) => (
-              <Col key={index}>
-                <DashboardCard {...item} />
-              </Col>
-            ))}
-          </Row>
-
-          <Row className="gy-3 mt-1 align-items-stretch">
+          <Row className="gy-3 align-items-stretch">
             <Col xl={5}>
               <VehicleStatsPanel stats={fleetStats} />
             </Col>
@@ -94,12 +70,19 @@ const AdminDashboard = () => {
             </Col>
           </Row>
 
+          <MaintenanceAlertBar
+            maintenanceDue={fleetStats?.maintenanceDue}
+            inspectionDue={fleetStats?.inspectionDue}
+            autoRefresh={autoRefresh}
+            onAutoRefreshChange={setAutoRefresh}
+          />
+
           <Row className="gy-3 mt-1">
             <Col xl={6}>
-              <ScheduleTable title={t("dashboard.returns")} type="returns" dateField="dropOffTime" />
+              <ScheduleTable title={t("dashboard.returns")} type="returns" dateField="dropOffTime" branchId={branchId} />
             </Col>
             <Col xl={6}>
-              <ScheduleTable title={t("dashboard.departures")} type="departures" dateField="pickUpTime" />
+              <ScheduleTable title={t("dashboard.departures")} type="departures" dateField="pickUpTime" branchId={branchId} />
             </Col>
           </Row>
         </>

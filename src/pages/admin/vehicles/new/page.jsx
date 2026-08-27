@@ -8,7 +8,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { constants } from "../../../../constants";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import { utils } from "../../../../utils";
@@ -22,10 +22,15 @@ const { routes } = constants;
 const AdminNewVehiclePage = () => {
   const [loading, setLoading] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
+  const [branches, setBranches] = useState([]);
   const { t } = useTranslation("admin");
   const { t: tCommon } = useTranslation("common");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    services.branch.getBranches().then(setBranches).catch(() => setBranches([]));
+  }, []);
 
   const formItems = [
     {
@@ -102,6 +107,28 @@ const AdminNewVehiclePage = () => {
         ...item,
         name: tCommon(`options.fuelTypes.${item.value}`),
       })),
+    },
+    {
+      name: "branchId",
+      label: t("vehicles.form.branch"),
+      asGroup: Col,
+      type: "select",
+      itemsArr: [
+        { id: "", value: "", name: t("filterBar.allBranches") },
+        ...branches.map((branch) => ({ id: branch.id, value: branch.id, name: branch.name })),
+      ],
+    },
+    {
+      name: "nextMaintenanceDate",
+      label: t("alertBar.maintenance"),
+      asGroup: Col,
+      type: "date",
+    },
+    {
+      name: "nextInspectionDate",
+      label: t("alertBar.inspection"),
+      asGroup: Col,
+      type: "date",
     },
   ];
 

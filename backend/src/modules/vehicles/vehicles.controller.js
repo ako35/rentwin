@@ -5,7 +5,7 @@ const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 
 const ALLOWED_SORT_FIELDS = ["id", "model", "pricePerHour", "age"];
-const IMAGES_INCLUDE = { images: { orderBy: { createdAt: "asc" } } };
+const IMAGES_AND_BRANCH_INCLUDE = { images: { orderBy: { createdAt: "asc" } }, branch: true };
 
 const VEHICLE_FIELDS = [
   "brand",
@@ -20,25 +20,42 @@ const VEHICLE_FIELDS = [
   "age",
   "pricePerHour",
   "outOfService",
+  "branchId",
+  "nextMaintenanceDate",
+  "nextInspectionDate",
 ];
+
+const DATE_FIELDS = ["nextMaintenanceDate", "nextInspectionDate"];
 
 const pickVehicleFields = (body) =>
   VEHICLE_FIELDS.reduce((data, field) => {
-    if (body[field] !== undefined) data[field] = body[field];
+    if (body[field] === undefined) return data;
+    data[field] = DATE_FIELDS.includes(field) && body[field] ? new Date(body[field]) : body[field];
     return data;
   }, {});
+
+// Vehicles due for maintenance/inspection within this many days count toward
+// the dashboard's "Bakim"/"Muayene" alert badges.
+const DUE_SOON_DAYS = 30;
+
+const isDueSoon = (date) => {
+  if (!date) return false;
+  const threshold = new Date();
+  threshold.setDate(threshold.getDate() + DUE_SOON_DAYS);
+  return new Date(date) <= threshold;
+};
 
 const getVehicleById = asyncHandler(async (req, res) => {
   const vehicle = await prisma.vehicle.findUnique({
     where: { id: req.params.id },
-    include: IMAGES_INCLUDE,
+    include: IMAGES_AND_BRANCH_INCLUDE,
   });
   if (!vehicle) throw new HttpError(404, "Vehicle not found.");
   res.json(serializeVehicle(vehicle));
 });
 
 const getAllVehicles = asyncHandler(async (req, res) => {
-  const vehicles = await prisma.vehicle.findMany({ include: IMAGES_INCLUDE });
+  const vehicles = await prisma.vehicle.findMany({ include: IMAGES_AND_BRANCH_INCLUDE });
   res.json(vehicles.map(serializeVehicle));
 });
 
@@ -53,7 +70,7 @@ const getVehiclesByPage = asyncHandler(async (req, res) => {
       skip: page * size,
       take: size,
       orderBy: { [sortField]: direction },
-      include: IMAGES_INCLUDE,
+      include: IMAGES_AND_BRANCH_INCLUDE,
     }),
     prisma.vehicle.count(),
   ]);
@@ -103,7 +120,7 @@ const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
       skip: page * size,
       take: size,
       orderBy: { [sortField]: direction },
-      include: IMAGES_INCLUDE,
+      include: IMAGES_AND_BRANCH_INCLUDE,
     }),
     prisma.vehicle.count(),
   ]);
@@ -125,8 +142,15 @@ const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
 });
 
 const getFleetStats = asyncHandler(async (req, res) => {
+  const { branchId } = req.query;
   const vehicles = await prisma.vehicle.findMany({
-    select: { id: true, outOfService: true },
+    where: branchId ? { branchId } : undefined,
+    select: {
+      id: true,
+      outOfService: true,
+      nextMaintenanceDate: true,
+      nextInspectionDate: true,
+    },
   });
 
   const outOfService = vehicles.filter((v) => v.outOfService).length;
@@ -137,6 +161,8 @@ const getFleetStats = asyncHandler(async (req, res) => {
   const rented = rentedIds.size;
   const available = total - outOfService - rented;
   const rate = (count) => (total > 0 ? Math.round((count / total) * 100) : 0);
+  const maintenanceDue = vehicles.filter((v) => isDueSoon(v.nextMaintenanceDate)).length;
+  const inspectionDue = vehicles.filter((v) => isDueSoon(v.nextInspectionDate)).length;
 
   res.json({
     total,
@@ -145,6 +171,8 @@ const getFleetStats = asyncHandler(async (req, res) => {
     outOfService,
     occupancyRate: rate(rented),
     outOfServiceRate: rate(outOfService),
+    maintenanceDue,
+    inspectionDue,
   });
 });
 
@@ -158,7 +186,7 @@ const addVehicle = asyncHandler(async (req, res) => {
       builtIn: false,
       images: { connect: { id: image.id } },
     },
-    include: IMAGES_INCLUDE,
+    include: IMAGES_AND_BRANCH_INCLUDE,
   });
 
   res.status(201).json(serializeVehicle(vehicle));
@@ -181,7 +209,7 @@ const updateVehicle = asyncHandler(async (req, res) => {
   const vehicle = await prisma.vehicle.update({
     where: { id },
     data: pickVehicleFields(req.body),
-    include: IMAGES_INCLUDE,
+    include: IMAGES_AND_BRANCH_INCLUDE,
   });
 
   res.json(serializeVehicle(vehicle));

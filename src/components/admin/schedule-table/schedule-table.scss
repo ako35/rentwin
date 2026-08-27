@@ -63,4 +63,21 @@
     &__row--overdue {
         background-color: rgba(185, 58, 58, 0.12);
     }
+
+    &__action {
+        color: v.$color1;
+        width: 1.5rem;
+    }
+
+    &__plate {
+        color: #b93a3a;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    &__contract {
+        color: #2f7ea8;
+        font-weight: 600;
+        white-space: nowrap;
+    }
 }
