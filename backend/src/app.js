@@ -35,17 +35,24 @@ app.use(
 
 app.use(express.json());
 
-app.get("/health", (req, res) => res.json({ status: "ok" }));
+// Mounted under /api so this app can be deployed alongside the frontend in a
+// single Vercel project (api/index.js at the repo root) without route
+// collisions against SPA paths like /user or /auth/login.
+const api = express.Router();
 
-app.use(authRoutes);
-app.use(usersRoutes);
-app.use(vehiclesRoutes);
-app.use(filesRoutes);
-app.use(reservationsRoutes);
-app.use(contactMessagesRoutes);
-app.use(excelRoutes);
-app.use(branchesRoutes);
-app.use(announcementsRoutes);
+api.get("/health", (req, res) => res.json({ status: "ok" }));
+
+api.use(authRoutes);
+api.use(usersRoutes);
+api.use(vehiclesRoutes);
+api.use(filesRoutes);
+api.use(reservationsRoutes);
+api.use(contactMessagesRoutes);
+api.use(excelRoutes);
+api.use(branchesRoutes);
+api.use(announcementsRoutes);
+
+app.use("/api", api);
 
 app.use(notFound);
 app.use(errorHandler);

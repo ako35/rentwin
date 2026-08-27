@@ -1,10 +1,14 @@
 {
   "slider": [
     {
+      "id": 1,
+      "image": "slider1.jpg",
       "title": "City Escape: Embrace the Green Oasis",
       "subtitle": "Embark on an urban adventure with our luxurious SUVs. Navigate charming cobblestone streets, surrounded by lush greenery, as you escape the city's chaos. Discover hidden gems and embrace the tranquil oasis within the metropolis."
     },
     {
+      "id": 2,
+      "image": "slider2.jpg",
       "title": "Unleash the Power of Performance",
       "subtitle": "Experience the exhilaration of our high-performance cars as you conquer winding roads, surrounded by the picturesque beauty of nature. With precision engineering and advanced safety features, our vehicles deliver a driving experience that combines excitement and professionalism."
     }
