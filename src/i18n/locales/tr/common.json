@@ -70,6 +70,30 @@
       "CREATED": "Oluşturuldu",
       "CANCELLED": "İptal Edildi",
       "DONE": "Tamamlandı"
+    },
+    "ownershipTypes": {
+      "Owned": "Öz Mal",
+      "Rented": "Kiralık",
+      "OperationalLease": "Operasyonel Kiralama"
+    },
+    "insuranceTypes": {
+      "Traffic": "Trafik Sigortası",
+      "Kasko": "Kasko"
+    },
+    "maintenanceTypes": {
+      "Periodic": "Periyodik Bakım",
+      "Repair": "Tamir",
+      "Tire": "Lastik",
+      "Other": "Diğer"
+    },
+    "inspectionTypes": {
+      "Periodic": "Araç Muayenesi",
+      "Emission": "Egzoz Emisyon"
+    },
+    "inspectionResults": {
+      "Pass": "Geçti",
+      "Fail": "Kaldı",
+      "Defective": "Kusurlu"
     }
   }
 }

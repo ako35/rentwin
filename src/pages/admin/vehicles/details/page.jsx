@@ -1,163 +1,37 @@
-import {
-  Alert,
-  Badge,
-  Button,
-  ButtonGroup,
-  Col,
-  Form,
-  Row,
-  Spinner,
-} from "react-bootstrap";
-import { constants } from "../../../../constants";
 import { useEffect, useRef, useState } from "react";
+import { Button, ButtonGroup, Form, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
+import { constants } from "../../../../constants";
 import { utils } from "../../../../utils";
-import { CustomForm, Loading } from "../../../../components";
-import "./style.scss";
+import { Loading, VehicleForm } from "../../../../components";
 import { services } from "../../../../services";
+import "./style.scss";
 
 const { routes } = constants;
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
 
+const toDateInput = (value) => (value ? utils.functions.getDate(value) : "");
+const toText = (value) => value ?? "";
+
 const AdminVehicleDetailsPage = () => {
   const { t } = useTranslation("admin");
-  const { t: tCommon } = useTranslation("common");
-  const [branches, setBranches] = useState([]);
-
-  useEffect(() => {
-    services.branch.getBranches().then(setBranches).catch(() => setBranches([]));
-  }, []);
-
-  const formItems = [
-    {
-      name: "brand",
-      label: t("vehicles.form.brand"),
-      asGroup: Col,
-    },
-    {
-      name: "model",
-      label: t("vehicles.form.model"),
-      asGroup: Col,
-    },
-    {
-      name: "licensePlate",
-      label: t("vehicles.form.licensePlate"),
-      asGroup: Col,
-    },
-    {
-      name: "doors",
-      label: t("vehicles.form.doors"),
-      asGroup: Col,
-      type: "number",
-    },
-    {
-      name: "seats",
-      label: t("vehicles.form.seats"),
-      asGroup: Col,
-      type: "number",
-    },
-    {
-      name: "luggage",
-      label: t("vehicles.form.luggage"),
-      asGroup: Col,
-      type: "number",
-    },
-    {
-      name: "age",
-      label: t("vehicles.form.age"),
-      asGroup: Col,
-      type: "number",
-    },
-    {
-      name: "pricePerHour",
-      label: t("vehicles.form.pricePerHour"),
-      asGroup: Col,
-      type: "number",
-    },
-    {
-      name: "transmission",
-      label: t("vehicles.form.transmission"),
-      asGroup: Col,
-      type: "select",
-      itemsArr: constants.transmissionTypes.map((item) => ({
-        ...item,
-        name: tCommon(`options.transmissionTypes.${item.value}`),
-      })),
-    },
-    {
-      name: "airConditioning",
-      label: t("vehicles.form.airConditioner"),
-      asGroup: Col,
-      type: "select",
-      itemsArr: constants.airConditioningTypes.map((item) => ({
-        ...item,
-        name: tCommon(`options.airConditioning.${item.value ? "yes" : "no"}`),
-      })),
-    },
-    {
-      name: "fuelType",
-      label: t("vehicles.form.fuelType"),
-      asGroup: Col,
-      type: "select",
-      itemsArr: constants.fuelTypes.map((item) => ({
-        ...item,
-        name: tCommon(`options.fuelTypes.${item.value}`),
-      })),
-    },
-    {
-      name: "branchId",
-      label: t("vehicles.form.branch"),
-      asGroup: Col,
-      type: "select",
-      itemsArr: [
-        { id: "", value: "", name: t("filterBar.allBranches") },
-        ...branches.map((branch) => ({ id: branch.id, value: branch.id, name: branch.name })),
-      ],
-    },
-    {
-      name: "nextMaintenanceDate",
-      label: t("alertBar.maintenance"),
-      asGroup: Col,
-      type: "date",
-    },
-    {
-      name: "nextInspectionDate",
-      label: t("alertBar.inspection"),
-      asGroup: Col,
-      type: "date",
-    },
-  ];
 
   const [loading, setLoading] = useState(true);
-  const [loaded, setLoaded] = useState(false);
   const [imageChanged, setImageChanged] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [vehicle, setVehicle] = useState(null);
 
   const fileImageRef = useRef();
   const { vehicleId } = useParams();
   const navigate = useNavigate();
 
   const [initialValues, setInitialValues] = useState({
-    brand: "",
-    model: "",
-    licensePlate: "",
-    doors: "",
-    seats: "",
-    luggage: "",
-    age: "",
-    pricePerHour: "",
-    transmission: constants.transmissionTypes[0].value,
-    airConditioning: constants.airConditioningTypes[0].value,
-    fuelType: constants.fuelTypes[0].value,
-    outOfService: false,
-    branchId: "",
-    nextMaintenanceDate: "",
-    nextInspectionDate: "",
+    ...utils.initialValues.adminNewVehicleFormInitialValues,
     image: [],
   });
 
@@ -171,10 +45,8 @@ const AdminVehicleDetailsPage = () => {
           values.image.array.forEach(async (image) => {
             await services.vehicle.deleteVehicleImage(image);
           });
-        } else {
-          if (imageId) {
-            await services.vehicle.deleteVehicleImage(imageId);
-          }
+        } else if (imageId) {
+          await services.vehicle.deleteVehicleImage(imageId);
         }
 
         const newImageFile = fileImageRef.current.files[0];
@@ -193,10 +65,7 @@ const AdminVehicleDetailsPage = () => {
       await services.vehicle.updateVehicle(vehicleId, imageId, payload);
       utils.functions.swalToast(t("vehicles.toasts.updateSuccess"), "success");
     } catch (error) {
-      utils.functions.swalToast(
-        t("vehicles.toasts.updateError"),
-        "error"
-      );
+      utils.functions.swalToast(t("vehicles.toasts.updateError"), "error");
     } finally {
       setUpdating(false);
     }
@@ -209,13 +78,8 @@ const AdminVehicleDetailsPage = () => {
     enableReinitialize: true,
   });
 
-  // const handleSelectImage = () => {
-  //   fileImageRef.current.click();
-  // };
-
   const handleImageChange = () => {
     const file = fileImageRef.current.files[0];
-
     if (!file) return;
 
     const reader = new FileReader();
@@ -229,11 +93,23 @@ const AdminVehicleDetailsPage = () => {
   const loadData = async () => {
     try {
       const response = await services.vehicle.getVehicleById(vehicleId);
+      setVehicle(response);
       setInitialValues({
+        ...utils.initialValues.adminNewVehicleFormInitialValues,
         ...response,
-        branchId: response.branchId || "",
-        nextMaintenanceDate: response.nextMaintenanceDate ? utils.functions.getDate(response.nextMaintenanceDate) : "",
-        nextInspectionDate: response.nextInspectionDate ? utils.functions.getDate(response.nextInspectionDate) : "",
+        branchId: toText(response.branchId),
+        ownershipType: toText(response.ownershipType),
+        chassisNo: toText(response.chassisNo),
+        engineNo: toText(response.engineNo),
+        color: toText(response.color),
+        notes: toText(response.notes),
+        registrationSerialNo: toText(response.registrationSerialNo),
+        modelYear: response.modelYear ?? "",
+        currentKm: response.currentKm ?? "",
+        registrationDate: toDateInput(response.registrationDate),
+        nextMaintenanceDate: toDateInput(response.nextMaintenanceDate),
+        nextInspectionDate: toDateInput(response.nextInspectionDate),
+        image: response.image,
       });
       setImageSrc(`${API_URL}/files/display/${response.image[0]}`);
     } catch (error) {
@@ -243,16 +119,14 @@ const AdminVehicleDetailsPage = () => {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     utils.functions
       .swalQuestion(
         t("vehicles.toasts.deleteConfirmTitle"),
         t("vehicles.toasts.deleteConfirmText")
       )
       .then((result) => {
-        if (result.isConfirmed) {
-          removeVehicle();
-        }
+        if (result.isConfirmed) removeVehicle();
       });
   };
 
@@ -263,10 +137,7 @@ const AdminVehicleDetailsPage = () => {
       await utils.functions.swalToast(t("vehicles.toasts.deleteSuccess"), "success");
       navigate(`${routes.adminVehicles}`);
     } catch (error) {
-      utils.functions.swalToast(
-        t("vehicles.toasts.deleteError"),
-        "error"
-      );
+      utils.functions.swalToast(t("vehicles.toasts.deleteError"), "error");
     } finally {
       setDeleting(false);
     }
@@ -276,98 +147,41 @@ const AdminVehicleDetailsPage = () => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return loading ? (
-    <Loading height={500} />
-  ) : (
+
+  if (loading) return <Loading height={500} />;
+
+  return (
     <Form noValidate onSubmit={formik.handleSubmit}>
-      <div className="admin-vehicle-details-form">
-        <fieldset disabled={formik.values.builtIn}>
-          <Row className="align-items-center">
-            <Col xl={3} className="image-area">
-              {!loaded && <Loading height={200} />}
-              {imageSrc && (
-                <img
-                  src={imageSrc}
-                  alt={formik?.values?.model}
-                  title={formik?.values?.model}
-                  style={{ display: loaded ? "block" : "none" }}
-                  onLoad={() => setLoaded(true)}
-                />
-              )}
-              <Form.Group>
-                <Form.Control
-                  type="file"
-                  name="image"
-                  accept=".jpg,.png,.jpeg"
-                  ref={fileImageRef}
-                  onChange={handleImageChange}
-                  id="selectImage"
-                />
-                <div className="cover">
-                  <Button
-                    as={Form.Label}
-                    htmlFor="selectImage"
-                    // onClick={handleSelectImage}
-                  >
-                    {t("vehicles.selectImage")}
-                  </Button>
-                </div>
-              </Form.Group>
-              <Badge bg="danger" className="image-error">
-                {formik.errors.image}
-              </Badge>
-            </Col>
-            <Col xl={9}>
-              <Row className="row-cols-1 row-cols-md-2 row-cols-lg-3">
-                {formItems.map((item) => (
-                  <CustomForm key={item.name} formik={formik} {...item} />
-                ))}
-              </Row>
-              <Form.Check
-                type="switch"
-                id="outOfService"
-                name="outOfService"
-                label={t("vehicles.outOfService")}
-                checked={formik.values.outOfService}
-                onChange={formik.handleChange}
-                className="mt-3"
-              />
-            </Col>
-          </Row>
-        </fieldset>
-        {formik.values.builtIn && (
-          <Alert variant="warning" className="mt-5">
-            {t("vehicles.builtInWarning")}
-          </Alert>
-        )}
-        <div className="text-end">
-          <ButtonGroup>
-            <Button onClick={() => navigate(`${routes.adminVehicles}`)}>
-              {t("vehicles.cancel")}
-            </Button>
-            {!formik.values.builtIn && (
-              <>
-                <Button
-                  type="submit"
-                  disabled={
-                    (!imageChanged && !(formik.dirty && formik.isValid)) ||
-                    updating
-                  }
-                >
-                  {updating && <Spinner animation="border" size="sm" />}{" "} {t("vehicles.update")}
-                </Button>
-                <Button
-                  variant="danger"
-                  disabled={deleting}
-                  onClick={handleDelete}
-                >
-                  {deleting && <Spinner animation="border" size="sm" />}{" "} {t("vehicles.delete")}
-                </Button>
-              </>
-            )}
-          </ButtonGroup>
-        </div>
-      </div>
+      <VehicleForm
+        mode="edit"
+        formik={formik}
+        vehicleId={vehicleId}
+        vehicle={vehicle}
+        imageSrc={imageSrc}
+        fileImageRef={fileImageRef}
+        onImageChange={handleImageChange}
+        disabled={formik.values.builtIn}
+        builtInWarning={formik.values.builtIn}
+      >
+        <ButtonGroup>
+          <Button variant="outline-primary" onClick={() => navigate(`${routes.adminVehicles}`)}>
+            {t("vehicles.cancel")}
+          </Button>
+          {!formik.values.builtIn && (
+            <>
+              <Button
+                type="submit"
+                disabled={(!imageChanged && !(formik.dirty && formik.isValid)) || updating}
+              >
+                {updating && <Spinner animation="border" size="sm" />} {t("vehicles.update")}
+              </Button>
+              <Button variant="danger" disabled={deleting} onClick={handleDelete}>
+                {deleting && <Spinner animation="border" size="sm" />} {t("vehicles.delete")}
+              </Button>
+            </>
+          )}
+        </ButtonGroup>
+      </VehicleForm>
     </Form>
   );
 };

@@ -69,5 +69,55 @@ export const adminNewVehicleFormInitialValues = {
     branchId: "",
     nextMaintenanceDate: "",
     nextInspectionDate: "",
+    modelYear: "",
+    chassisNo: "",
+    engineNo: "",
+    currentKm: "",
+    registrationSerialNo: "",
+    registrationDate: "",
+    ownershipType: "",
+    color: "",
+    notes: "",
     image: "",
+};
+
+// VEHICLE SUB-RECORD FORMS (insurance / tax / maintenance / inspection)
+export const vehicleInsuranceInitialValues = {
+    type: constants.insuranceTypes[0].value,
+    company: "",
+    policyNo: "",
+    startDate: "",
+    endDate: "",
+    premium: "",
+    notes: "",
+};
+
+export const vehicleTaxInitialValues = {
+    period: new Date().getFullYear(),
+    installment: constants.taxInstallments[0].value,
+    amount: "",
+    dueDate: "",
+    paidDate: "",
+    notes: "",
+};
+
+export const vehicleMaintenanceInitialValues = {
+    type: constants.maintenanceTypes[0].value,
+    date: "",
+    odometer: "",
+    vendor: "",
+    description: "",
+    cost: "",
+    nextDate: "",
+    nextOdometer: "",
+};
+
+export const vehicleInspectionInitialValues = {
+    type: constants.inspectionTypes[0].value,
+    date: "",
+    result: constants.inspectionResults[0].value,
+    expiryDate: "",
+    station: "",
+    cost: "",
+    notes: "",
 };

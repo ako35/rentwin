@@ -35,6 +35,35 @@ enum ReservationStatus {
   DONE
 }
 
+enum OwnershipType {
+  Owned
+  Rented
+  OperationalLease
+}
+
+enum InsuranceType {
+  Traffic
+  Kasko
+}
+
+enum MaintenanceType {
+  Periodic
+  Repair
+  Tire
+  Other
+}
+
+enum InspectionType {
+  Periodic
+  Emission
+}
+
+enum InspectionResult {
+  Pass
+  Fail
+  Defective
+}
+
 model User {
   id           String        @id @default(uuid())
   firstName    String
@@ -61,28 +90,101 @@ model VehicleImage {
 }
 
 model Vehicle {
-  id                  String         @id @default(uuid())
-  brand               String
-  model               String
-  licensePlate        String         @unique
-  doors               Int
-  seats               Int
-  luggage             Int
-  transmission        Transmission
-  airConditioning     Boolean
-  fuelType            FuelType
-  age                 Int
-  pricePerHour        Float
-  outOfService        Boolean        @default(false)
-  builtIn             Boolean        @default(false)
-  branchId            String?
-  branch              Branch?        @relation(fields: [branchId], references: [id], onDelete: SetNull)
-  nextMaintenanceDate DateTime?
-  nextInspectionDate  DateTime?
-  images              VehicleImage[]
-  reservations        Reservation[]
-  createdAt           DateTime       @default(now())
-  updatedAt           DateTime       @updatedAt
+  id                   String               @id @default(uuid())
+  brand                String
+  model                String
+  licensePlate         String               @unique
+  doors                Int
+  seats                Int
+  luggage              Int
+  transmission         Transmission
+  airConditioning      Boolean
+  fuelType             FuelType
+  age                  Int
+  pricePerHour         Float
+  outOfService         Boolean              @default(false)
+  builtIn              Boolean              @default(false)
+  branchId             String?
+  branch               Branch?              @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  nextMaintenanceDate  DateTime?
+  nextInspectionDate   DateTime?
+  modelYear            Int?
+  chassisNo            String?
+  engineNo             String?
+  currentKm            Int?
+  registrationSerialNo String?
+  registrationDate     DateTime?
+  ownershipType        OwnershipType?
+  color                String?
+  notes                String?
+  images               VehicleImage[]
+  reservations         Reservation[]
+  insurances           VehicleInsurance[]
+  taxes                VehicleTax[]
+  maintenances         VehicleMaintenance[]
+  inspections          VehicleInspection[]
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+}
+
+model VehicleInsurance {
+  id        String        @id @default(uuid())
+  vehicleId String
+  vehicle   Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  type      InsuranceType
+  company   String
+  policyNo  String
+  startDate DateTime
+  endDate   DateTime
+  premium   Float?
+  notes     String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model VehicleTax {
+  id          String    @id @default(uuid())
+  vehicleId   String
+  vehicle     Vehicle   @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  period      Int
+  installment Int
+  amount      Float
+  dueDate     DateTime?
+  paidDate    DateTime?
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model VehicleMaintenance {
+  id           String          @id @default(uuid())
+  vehicleId    String
+  vehicle      Vehicle         @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  type         MaintenanceType @default(Periodic)
+  date         DateTime
+  odometer     Int?
+  vendor       String?
+  description  String
+  cost         Float?
+  nextDate     DateTime?
+  nextOdometer Int?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model VehicleInspection {
+  id         String           @id @default(uuid())
+  vehicleId  String
+  vehicle    Vehicle          @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  type       InspectionType   @default(Periodic)
+  date       DateTime
+  result     InspectionResult @default(Pass)
+  expiryDate DateTime?
+  station    String?
+  cost       Float?
+  notes      String?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
 }
 
 model Branch {

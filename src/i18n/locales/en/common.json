@@ -70,6 +70,30 @@
       "CREATED": "Created",
       "CANCELLED": "Cancelled",
       "DONE": "Done"
+    },
+    "ownershipTypes": {
+      "Owned": "Owned",
+      "Rented": "Rented",
+      "OperationalLease": "Operational Lease"
+    },
+    "insuranceTypes": {
+      "Traffic": "Traffic Insurance",
+      "Kasko": "Comprehensive (Kasko)"
+    },
+    "maintenanceTypes": {
+      "Periodic": "Periodic Maintenance",
+      "Repair": "Repair",
+      "Tire": "Tire",
+      "Other": "Other"
+    },
+    "inspectionTypes": {
+      "Periodic": "Vehicle Inspection",
+      "Emission": "Emission Test"
+    },
+    "inspectionResults": {
+      "Pass": "Pass",
+      "Fail": "Fail",
+      "Defective": "Defective"
     }
   }
 }

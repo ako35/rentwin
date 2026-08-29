@@ -5,6 +5,7 @@ import AdminTopNav from './admin/top-nav/top-nav'
 import MaintenanceAlertBar from './admin/maintenance-alert-bar/maintenance-alert-bar'
 import ScheduleTable from './admin/schedule-table/schedule-table'
 import TableRow from './admin/table-row/table-row'
+import VehicleForm from './admin/vehicle-form/vehicle-form'
 import VehicleStatsPanel from './admin/vehicle-stats-panel/vehicle-stats-panel'
 
 
@@ -54,6 +55,7 @@ export{
     MaintenanceAlertBar,
     ScheduleTable,
     TableRow,
+    VehicleForm,
     VehicleStatsPanel,
 
     // common components

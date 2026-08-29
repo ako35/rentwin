@@ -173,6 +173,70 @@ export const adminReservationDetailsFormValidationSchema = Yup.object({
     status: Yup.string().required(t("adminReservation.statusRequired")),
 });
 
+// VEHICLE SUB-RECORD FORMS (insurance / tax / maintenance / inspection)
+const tRec = (key) => () => i18n.t(`vehicleRecords.${key}`, { ns: "validation" });
+
+const optionalNumber = () =>
+    Yup.number()
+        .transform((value, original) => (original === "" || original === null ? undefined : value))
+        .typeError(tRec("numberInvalid"))
+        .min(0, tRec("numberMin"))
+        .nullable();
+
+const optionalDate = () =>
+    Yup.date()
+        .transform((value, original) => (original === "" || original === null ? undefined : value))
+        .typeError(tRec("dateInvalid"))
+        .nullable();
+
+export const vehicleInsuranceValidationSchema = Yup.object({
+    type: Yup.string().required(tRec("required")),
+    company: Yup.string().trim().required(tRec("required")),
+    policyNo: Yup.string().trim().required(tRec("required")),
+    startDate: Yup.date().typeError(tRec("dateInvalid")).required(tRec("required")),
+    endDate: Yup.date()
+        .typeError(tRec("dateInvalid"))
+        .min(Yup.ref("startDate"), tRec("endAfterStart"))
+        .required(tRec("required")),
+    premium: optionalNumber(),
+    notes: Yup.string(),
+});
+
+export const vehicleTaxValidationSchema = Yup.object({
+    period: Yup.number()
+        .typeError(tRec("numberInvalid"))
+        .integer(tRec("numberInvalid"))
+        .min(1900, tRec("numberInvalid"))
+        .max(2999, tRec("numberInvalid"))
+        .required(tRec("required")),
+    installment: Yup.number().oneOf([1, 2], tRec("required")).required(tRec("required")),
+    amount: Yup.number().typeError(tRec("numberInvalid")).min(0, tRec("numberMin")).required(tRec("required")),
+    dueDate: optionalDate(),
+    paidDate: optionalDate(),
+    notes: Yup.string(),
+});
+
+export const vehicleMaintenanceValidationSchema = Yup.object({
+    type: Yup.string().required(tRec("required")),
+    date: Yup.date().typeError(tRec("dateInvalid")).required(tRec("required")),
+    odometer: optionalNumber(),
+    vendor: Yup.string(),
+    description: Yup.string().trim().required(tRec("required")),
+    cost: optionalNumber(),
+    nextDate: optionalDate(),
+    nextOdometer: optionalNumber(),
+});
+
+export const vehicleInspectionValidationSchema = Yup.object({
+    type: Yup.string().required(tRec("required")),
+    date: Yup.date().typeError(tRec("dateInvalid")).required(tRec("required")),
+    result: Yup.string().required(tRec("required")),
+    expiryDate: optionalDate(),
+    station: Yup.string(),
+    cost: optionalNumber(),
+    notes: Yup.string(),
+});
+
 // ADMIN VEHICLE FORM
 export const adminVehicleFormValidationSchema = Yup.object({
     brand: Yup.string()

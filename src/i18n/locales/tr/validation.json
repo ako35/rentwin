@@ -132,5 +132,12 @@
     "ageRequired": "Aracın yaşını girin",
     "pricePerHourRequired": "Saatlik fiyatı girin",
     "imageRequired": "Lütfen bir görsel yükleyin"
+  },
+  "vehicleRecords": {
+    "required": "Bu alan zorunlu",
+    "numberInvalid": "Geçerli bir sayı girin",
+    "numberMin": "Değer 0 veya daha büyük olmalı",
+    "dateInvalid": "Geçerli bir tarih girin",
+    "endAfterStart": "Bitiş tarihi başlangıçtan sonra olmalı"
   }
 }

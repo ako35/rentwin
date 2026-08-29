@@ -6,6 +6,8 @@ import { deleteUser, downloadUserReports, getUser, getUserAdmin, getUsersByPage,
 
 import { addVehicle, deleteVehicle, deleteVehicleImage, downloadVehicleReports, getFleetStats, getVehicleById, getVehicles, getVehiclesByPage, getVehiclesByPageAdmin, updateVehicle, uploadVehicleImage } from "./vehicle/vehicle-service";
 
+import { addVehicleRecord, deleteVehicleRecord, getVehicleRecords, updateVehicleRecord } from "./vehicle/vehicle-records-service";
+
 import { addBranch, deleteBranch, getBranches, updateBranch } from "./branch/branch-service";
 
 import { addAnnouncement, deleteAnnouncement, getActiveAnnouncements, getAnnouncements, updateAnnouncement } from "./announcement/announcement-service";
@@ -65,6 +67,11 @@ export const services = {
         getVehiclesByPageAdmin,
         updateVehicle,
         uploadVehicleImage,
+        // VEHICLE SUB-RECORDS (insurance / tax / maintenance / inspection)
+        getVehicleRecords,
+        addVehicleRecord,
+        updateVehicleRecord,
+        deleteVehicleRecord,
     },
     branch: {
         getBranches,

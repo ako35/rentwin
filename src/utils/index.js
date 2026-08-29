@@ -20,6 +20,10 @@ import {
   bookingFormInitialValues,
   contactFormInitialValues,
   userPasswordFormInitialValues,
+  vehicleInsuranceInitialValues,
+  vehicleTaxInitialValues,
+  vehicleMaintenanceInitialValues,
+  vehicleInspectionInitialValues,
 } from "./initial-values/initial-values";
 
 // TABLES
@@ -41,6 +45,10 @@ import {
   adminUserDetailsFormValidationSchema,
   bookingFormValidationSchema,
   contactFormValidationSchema,
+  vehicleInsuranceValidationSchema,
+  vehicleTaxValidationSchema,
+  vehicleMaintenanceValidationSchema,
+  vehicleInspectionValidationSchema,
 } from "./validations/validations";
 
 export const utils = {
@@ -63,6 +71,10 @@ export const utils = {
     bookingFormInitialValues,
     contactFormInitialValues,
     userPasswordFormInitialValues,
+    vehicleInsuranceInitialValues,
+    vehicleTaxInitialValues,
+    vehicleMaintenanceInitialValues,
+    vehicleInspectionInitialValues,
   },
   tables: {
     getAdminUserColumns,
@@ -80,5 +92,9 @@ export const utils = {
     contactFormValidationSchema,
     userPasswordFormValidationSchema,
     userProfileFormValidationSchema,
+    vehicleInsuranceValidationSchema,
+    vehicleTaxValidationSchema,
+    vehicleMaintenanceValidationSchema,
+    vehicleInspectionValidationSchema,
   },
 };

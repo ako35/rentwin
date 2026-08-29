@@ -55,9 +55,25 @@
     "outOfService": "Out of Service",
     "cancel": "Cancel",
     "create": "Create",
+    "save": "Save",
     "update": "Update",
     "delete": "Delete",
     "builtInWarning": "Built-in vehicles cannot be deleted or updated.",
+    "newTitle": "New Vehicle",
+    "createdAt": "Created",
+    "updatedAt": "Last updated",
+    "tabs": {
+      "vehicle": "Vehicle",
+      "insurance": "Insurance",
+      "tax": "Road Tax",
+      "maintenance": "Maintenance",
+      "inspection": "Inspection"
+    },
+    "sections": {
+      "identity": "Vehicle Details",
+      "registration": "Registration & Ownership",
+      "operational": "Operations"
+    },
     "form": {
       "brand": "Brand",
       "model": "Model",
@@ -70,7 +86,88 @@
       "pricePerHour": "Price Per Hour",
       "transmission": "Transmission",
       "airConditioner": "Air Conditioner",
-      "fuelType": "Fuel Type"
+      "fuelType": "Fuel Type",
+      "modelYear": "Model Year",
+      "chassisNo": "Chassis No",
+      "engineNo": "Engine No",
+      "currentKm": "Current Odometer",
+      "color": "Color",
+      "ownershipType": "Ownership",
+      "registrationSerialNo": "Registration Serial / No",
+      "registrationDate": "Registration Date",
+      "nextMaintenanceDate": "Next Maintenance Date",
+      "nextInspectionDate": "Next Inspection Date",
+      "notes": "Notes"
+    },
+    "records": {
+      "add": "Add",
+      "new": "New Record",
+      "editTitle": "Edit Record",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "actions": "Actions",
+      "empty": "No records yet.",
+      "saveVehicleFirst": "Save the vehicle first to use this tab.",
+      "deleteConfirmTitle": "Are you sure you want to delete this record?",
+      "deleteConfirmText": "You won't be able to revert this action!",
+      "toasts": {
+        "loadError": "There was an error while loading the records.",
+        "createSuccess": "Record added successfully.",
+        "createError": "There was an error while adding the record.",
+        "updateSuccess": "Record updated successfully.",
+        "updateError": "There was an error while updating the record.",
+        "deleteSuccess": "Record deleted successfully.",
+        "deleteError": "There was an error while deleting the record."
+      },
+      "insurance": {
+        "title": "Insurance / Comprehensive Policies",
+        "fields": {
+          "type": "Type",
+          "company": "Insurer",
+          "policyNo": "Policy No",
+          "startDate": "Start Date",
+          "endDate": "End Date",
+          "premium": "Premium",
+          "notes": "Notes"
+        }
+      },
+      "tax": {
+        "title": "Road Tax Records",
+        "fields": {
+          "period": "Period (Year)",
+          "installment": "Installment",
+          "amount": "Amount",
+          "dueDate": "Due Date",
+          "paidDate": "Paid Date",
+          "notes": "Notes"
+        }
+      },
+      "maintenance": {
+        "title": "Maintenance / Repair Records",
+        "fields": {
+          "type": "Type",
+          "date": "Date",
+          "odometer": "Odometer",
+          "vendor": "Service / Vendor",
+          "description": "Work Done",
+          "cost": "Cost",
+          "nextDate": "Next Maintenance Date",
+          "nextOdometer": "Next Maintenance Odometer"
+        }
+      },
+      "inspection": {
+        "title": "Inspection / Emission Records",
+        "fields": {
+          "type": "Type",
+          "date": "Date",
+          "result": "Result",
+          "expiryDate": "Valid Until / Next Date",
+          "station": "Station",
+          "cost": "Fee",
+          "notes": "Notes"
+        }
+      }
     },
     "toasts": {
       "createSuccess": "Vehicle created successfully.",

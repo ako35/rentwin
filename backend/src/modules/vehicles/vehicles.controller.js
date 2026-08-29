@@ -23,14 +23,47 @@ const VEHICLE_FIELDS = [
   "branchId",
   "nextMaintenanceDate",
   "nextInspectionDate",
+  "modelYear",
+  "chassisNo",
+  "engineNo",
+  "currentKm",
+  "registrationSerialNo",
+  "registrationDate",
+  "ownershipType",
+  "color",
+  "notes",
 ];
 
-const DATE_FIELDS = ["nextMaintenanceDate", "nextInspectionDate"];
+const DATE_FIELDS = ["nextMaintenanceDate", "nextInspectionDate", "registrationDate"];
+// Optional numeric columns: an empty-string form value must land as null, not NaN.
+const NULLABLE_NUMBER_FIELDS = ["modelYear", "currentKm"];
+// Optional string/enum columns: an empty-string form value must land as null.
+const NULLABLE_STRING_FIELDS = [
+  "chassisNo",
+  "engineNo",
+  "registrationSerialNo",
+  "ownershipType",
+  "color",
+  "notes",
+  "branchId",
+];
 
 const pickVehicleFields = (body) =>
   VEHICLE_FIELDS.reduce((data, field) => {
     if (body[field] === undefined) return data;
-    data[field] = DATE_FIELDS.includes(field) && body[field] ? new Date(body[field]) : body[field];
+
+    const value = body[field];
+
+    if (DATE_FIELDS.includes(field)) {
+      data[field] = value ? new Date(value) : null;
+    } else if (NULLABLE_NUMBER_FIELDS.includes(field)) {
+      data[field] = value === "" || value === null ? null : Number(value);
+    } else if (NULLABLE_STRING_FIELDS.includes(field)) {
+      data[field] = value === "" ? null : value;
+    } else {
+      data[field] = value;
+    }
+
     return data;
   }, {});
 

@@ -132,5 +132,12 @@
     "ageRequired": "Enter the vehicle age",
     "pricePerHourRequired": "Enter the price per hour",
     "imageRequired": "Please upload an image"
+  },
+  "vehicleRecords": {
+    "required": "This field is required",
+    "numberInvalid": "Enter a valid number",
+    "numberMin": "Value must be 0 or greater",
+    "dateInvalid": "Enter a valid date",
+    "endAfterStart": "End date must be after the start date"
   }
 }

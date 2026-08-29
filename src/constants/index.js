@@ -62,6 +62,40 @@ const fuelTypes = [
   },
 ];
 
+const ownershipTypes = [
+  { id: 1, name: "Owned", value: "Owned" },
+  { id: 2, name: "Rented", value: "Rented" },
+  { id: 3, name: "OperationalLease", value: "OperationalLease" },
+];
+
+const insuranceTypes = [
+  { id: 1, name: "Traffic", value: "Traffic" },
+  { id: 2, name: "Kasko", value: "Kasko" },
+];
+
+const maintenanceTypes = [
+  { id: 1, name: "Periodic", value: "Periodic" },
+  { id: 2, name: "Repair", value: "Repair" },
+  { id: 3, name: "Tire", value: "Tire" },
+  { id: 4, name: "Other", value: "Other" },
+];
+
+const inspectionTypes = [
+  { id: 1, name: "Periodic", value: "Periodic" },
+  { id: 2, name: "Emission", value: "Emission" },
+];
+
+const inspectionResults = [
+  { id: 1, name: "Pass", value: "Pass" },
+  { id: 2, name: "Fail", value: "Fail" },
+  { id: 3, name: "Defective", value: "Defective" },
+];
+
+const taxInstallments = [
+  { id: 1, name: "1", value: 1 },
+  { id: 2, name: "2", value: 2 },
+];
+
 const reservationStatus = [
   {
     id: 1,
@@ -156,9 +190,15 @@ export const constants = {
   airConditioningTypes,
   fuelTypes,
   errors,
+  inspectionResults,
+  inspectionTypes,
+  insuranceTypes,
+  maintenanceTypes,
+  ownershipTypes,
   reservationStatus,
   roles,
   routes,
+  taxInstallments,
   transmissionTypes,
   website,
 };

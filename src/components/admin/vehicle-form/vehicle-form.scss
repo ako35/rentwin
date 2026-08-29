@@ -1,0 +1,178 @@
+@use "../../../styles/variables" as v;
+@use "../../../styles/mixins" as m;
+
+$breakpointxl: 1200px;
+
+.vehicle-form {
+  box-shadow: 0 0 5px v.$color1_4;
+  border-radius: 5px;
+  background-color: #fff;
+  overflow: hidden;
+
+  &__header {
+    @include m.flexbox(row, space-between, center, 1rem);
+    flex-wrap: wrap;
+    padding: 1rem 1.5rem;
+    background-color: v.$color4;
+    border-bottom: 1px solid v.$color3;
+  }
+
+  &__title {
+    @include m.flexbox(row, flex-start, baseline, 0.75rem);
+    flex-wrap: wrap;
+  }
+
+  &__plate {
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    padding: 0.15rem 0.6rem;
+    border: 2px solid v.$color1;
+    border-radius: 4px;
+    color: v.$color1;
+    background-color: #fff;
+    text-transform: uppercase;
+  }
+
+  &__name {
+    font-weight: 600;
+    color: v.$color5;
+  }
+
+  &__meta {
+    @include m.flexbox(column, center, flex-end, 0.1rem);
+    font-size: 0.78rem;
+    color: v.$color5_3;
+  }
+
+  &__tabs.nav-tabs {
+    padding: 0 1rem;
+    background-color: v.$color4;
+    border-bottom: 1px solid v.$color3;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+
+    .nav-link {
+      white-space: nowrap;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: v.$color5_2;
+      font-weight: 600;
+
+      &:hover {
+        border-bottom-color: v.$color2_4;
+      }
+
+      &.active {
+        background-color: transparent;
+        color: v.$color1;
+        border-bottom-color: v.$color1;
+      }
+    }
+  }
+
+  &__body {
+    padding: 1.5rem;
+  }
+
+  &__section {
+    margin-bottom: 0.5rem;
+
+    h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: v.$color1;
+      border-bottom: 1px solid v.$color3;
+      padding-bottom: 0.35rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__footer {
+    @include m.flexbox(row, flex-end, center, 0.5rem);
+    flex-wrap: wrap;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid v.$color3;
+    background-color: v.$color4;
+  }
+
+  .image-area {
+    background-color: v.$color4;
+    box-shadow: 0 0 5px v.$color1_5;
+    border-radius: 5px;
+    position: relative;
+    z-index: 1;
+    min-height: 220px;
+    margin-bottom: 1.5rem;
+    @include m.flexbox(row, center, center);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 5px;
+    }
+
+    .cover {
+      @include m.flexbox(row, center, center);
+      position: absolute;
+      inset: 0;
+      background-color: rgba(51, 64, 58, 0.45);
+      opacity: 0;
+      z-index: 100;
+      transition: opacity 0.3s ease-in-out;
+
+      label.form-label {
+        @include m.button(v.$color1, v.$color4, v.$color2, v.$color4);
+        border: 1px solid v.$color1;
+        margin: 0;
+        cursor: pointer;
+      }
+    }
+
+    &:hover .cover {
+      opacity: 1;
+    }
+
+    .image-error {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 50%);
+    }
+  }
+}
+
+.vehicle-records-panel {
+  &__head {
+    @include m.flexbox(row, space-between, center, 1rem);
+    margin-bottom: 1rem;
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: v.$color5;
+      margin: 0;
+    }
+  }
+
+  &__table {
+    font-size: 0.88rem;
+
+    th {
+      white-space: nowrap;
+      color: v.$color5_2;
+      font-weight: 600;
+    }
+  }
+
+  &__actions {
+    white-space: nowrap;
+
+    .btn {
+      margin-left: 0.35rem;
+    }
+  }
+}

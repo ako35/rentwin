@@ -55,9 +55,25 @@
     "outOfService": "Servis Dışı",
     "cancel": "İptal",
     "create": "Oluştur",
+    "save": "Kaydet",
     "update": "Güncelle",
     "delete": "Sil",
     "builtInWarning": "Yerleşik araçlar silinemez veya güncellenemez.",
+    "newTitle": "Yeni Araç",
+    "createdAt": "Oluşturulma",
+    "updatedAt": "Son Güncelleme",
+    "tabs": {
+      "vehicle": "Araç",
+      "insurance": "Sigorta / Kasko",
+      "tax": "MTV",
+      "maintenance": "Bakım / Tamir",
+      "inspection": "Muayene / Egzoz"
+    },
+    "sections": {
+      "identity": "Araç Bilgileri",
+      "registration": "Ruhsat & Sahiplik",
+      "operational": "Operasyon"
+    },
     "form": {
       "brand": "Marka",
       "model": "Model",
@@ -70,7 +86,88 @@
       "pricePerHour": "Saatlik Fiyat",
       "transmission": "Vites",
       "airConditioner": "Klima",
-      "fuelType": "Yakıt Tipi"
+      "fuelType": "Yakıt Tipi",
+      "modelYear": "Model Yılı",
+      "chassisNo": "Şasi No",
+      "engineNo": "Motor No",
+      "currentKm": "Güncel KM",
+      "color": "Renk",
+      "ownershipType": "Sahiplik",
+      "registrationSerialNo": "Ruhsat Seri / No",
+      "registrationDate": "Tescil Tarihi",
+      "nextMaintenanceDate": "Sonraki Bakım Tarihi",
+      "nextInspectionDate": "Sonraki Muayene Tarihi",
+      "notes": "Açıklama"
+    },
+    "records": {
+      "add": "Ekle",
+      "new": "Yeni Kayıt",
+      "editTitle": "Kaydı Düzenle",
+      "save": "Kaydet",
+      "cancel": "Vazgeç",
+      "delete": "Sil",
+      "actions": "İşlem",
+      "empty": "Kayıt bulunmuyor.",
+      "saveVehicleFirst": "Bu sekmeyi kullanmak için önce aracı kaydedin.",
+      "deleteConfirmTitle": "Bu kaydı silmek istediğinizden emin misiniz?",
+      "deleteConfirmText": "Bu işlemi geri alamazsınız!",
+      "toasts": {
+        "loadError": "Kayıtlar yüklenirken bir hata oluştu.",
+        "createSuccess": "Kayıt başarıyla eklendi.",
+        "createError": "Kayıt eklenirken bir hata oluştu.",
+        "updateSuccess": "Kayıt başarıyla güncellendi.",
+        "updateError": "Kayıt güncellenirken bir hata oluştu.",
+        "deleteSuccess": "Kayıt başarıyla silindi.",
+        "deleteError": "Kayıt silinirken bir hata oluştu."
+      },
+      "insurance": {
+        "title": "Sigorta / Kasko Poliçeleri",
+        "fields": {
+          "type": "Tip",
+          "company": "Sigorta Şirketi",
+          "policyNo": "Poliçe No",
+          "startDate": "Başlangıç Tarihi",
+          "endDate": "Bitiş Tarihi",
+          "premium": "Prim Tutarı",
+          "notes": "Açıklama"
+        }
+      },
+      "tax": {
+        "title": "MTV Kayıtları",
+        "fields": {
+          "period": "Dönem (Yıl)",
+          "installment": "Taksit",
+          "amount": "Tutar",
+          "dueDate": "Son Ödeme Tarihi",
+          "paidDate": "Ödeme Tarihi",
+          "notes": "Açıklama"
+        }
+      },
+      "maintenance": {
+        "title": "Bakım / Tamir Kayıtları",
+        "fields": {
+          "type": "Tip",
+          "date": "Tarih",
+          "odometer": "KM",
+          "vendor": "Servis / Yetkili",
+          "description": "Yapılan İşlem",
+          "cost": "Tutar",
+          "nextDate": "Sonraki Bakım Tarihi",
+          "nextOdometer": "Sonraki Bakım KM"
+        }
+      },
+      "inspection": {
+        "title": "Muayene / Egzoz Kayıtları",
+        "fields": {
+          "type": "Tip",
+          "date": "Tarih",
+          "result": "Sonuç",
+          "expiryDate": "Geçerlilik / Sonraki Tarih",
+          "station": "İstasyon",
+          "cost": "Ücret",
+          "notes": "Açıklama"
+        }
+      }
     },
     "toasts": {
       "createSuccess": "Araç başarıyla oluşturuldu.",

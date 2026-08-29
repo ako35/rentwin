@@ -58,7 +58,6 @@ const AdminTopNav = () => {
             <Nav.Link as={Link} to={routes.adminReservations} active={pathname.startsWith(routes.adminReservations)}>
               {t("topNav.reservationsAndContracts")}
             </Nav.Link>
-            <Nav.Link onClick={comingSoon("uzun-donem")}>{t("topNav.longTerm")}</Nav.Link>
             <Nav.Link as={Link} to={routes.adminUsers} active={pathname.startsWith(routes.adminUsers)}>
               {t("topNav.customer")}
             </Nav.Link>
@@ -66,9 +65,7 @@ const AdminTopNav = () => {
             <Nav.Link as={Link} to={routes.adminLocations} active={pathname.startsWith(routes.adminLocations)}>
               {t("topNav.location")}
             </Nav.Link>
-            <Nav.Link onClick={comingSoon("icerik")}>{t("topNav.content")}</Nav.Link>
             <Nav.Link onClick={comingSoon("finans")}>{t("topNav.finance")}</Nav.Link>
-            <Nav.Link onClick={comingSoon("tanim")}>{t("topNav.definitions")}</Nav.Link>
             <NavDropdown title={t("topNav.system")} active={pathname.startsWith(routes.adminAnnouncements)}>
               <NavDropdown.Item as={Link} to={routes.adminAnnouncements}>{t("topNav.announcements")}</NavDropdown.Item>
               <NavDropdown.Item as={Link} to={routes.home}>{t("topNav.backToWebsite")}</NavDropdown.Item>
