@@ -14,6 +14,7 @@ const CustomForm = (props) => {
         list,
         mask,
         name,
+        onFieldChange,
         placeholder,
         rows,
         type = "text",
@@ -23,11 +24,21 @@ const CustomForm = (props) => {
     // Native combobox: <input list> + <datalist> — click shows suggestions, free text still allowed.
     const listId = list && list.length ? `${name}-datalist` : undefined;
 
+    const fieldProps = formik.getFieldProps(name);
+
     let properties = {
-        ...formik.getFieldProps(name),
+        ...fieldProps,
         ...utils.functions.validCheck(name, formik),
         disabled,
     };
+
+    // Let callers react to a change (e.g. auto-fill a sibling field) without losing formik's handler.
+    if (onFieldChange) {
+        properties.onChange = (event) => {
+            fieldProps.onChange(event);
+            onFieldChange(event);
+        };
+    }
 
     if (["text", "date", "month", "time", "number", "email"].includes(type)) {
         properties = {

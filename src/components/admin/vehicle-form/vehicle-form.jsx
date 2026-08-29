@@ -53,6 +53,23 @@ const VehicleForm = ({
       .map((c) => ({ value: c.model, label: c.name }));
   }, [classes, selectedBrand]);
 
+  // Picking a model that belongs to exactly one brand auto-fills Marka.
+  const handleModelChange = (event) => {
+    const model = event.target.value.trim().toLowerCase();
+    if (!model) return;
+    const matchedBrands = [
+      ...new Set(
+        classes
+          .filter((c) => c.model.trim().toLowerCase() === model)
+          .map((c) => c.brand)
+          .filter(Boolean)
+      ),
+    ];
+    if (matchedBrands.length === 1 && matchedBrands[0] !== formik.values.brand) {
+      formik.setFieldValue("brand", matchedBrands[0]);
+    }
+  };
+
   const sections = useMemo(() => {
     const withNames = (arr, resolve) => arr.map((item) => ({ ...item, name: resolve(item) }));
 
@@ -61,7 +78,7 @@ const VehicleForm = ({
         key: "identity",
         items: [
           { name: "brand", list: brandOptions },
-          { name: "model", list: modelOptions },
+          { name: "model", list: modelOptions, autofillBrand: true },
           { name: "licensePlate" },
           { name: "modelYear", type: "number" },
           { name: "chassisNo" },
@@ -218,6 +235,7 @@ const VehicleForm = ({
                           type={item.type || "text"}
                           itemsArr={item.itemsArr || []}
                           list={item.list}
+                          onFieldChange={item.autofillBrand ? handleModelChange : undefined}
                         />
                       ))}
                     </Row>
