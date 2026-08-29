@@ -27,11 +27,31 @@ const VehicleForm = ({
   const { t } = useTranslation("admin");
   const { t: tCommon } = useTranslation("common");
   const [branches, setBranches] = useState([]);
+  const [classes, setClasses] = useState([]);
   const [tab, setTab] = useState("vehicle");
 
   useEffect(() => {
     services.branch.getBranches().then(setBranches).catch(() => setBranches([]));
+    services.vehicleClass.getVehicleClasses().then(setClasses).catch(() => setClasses([]));
   }, []);
+
+  const selectedBrand = (formik.values.brand || "").trim().toLowerCase();
+
+  const brandOptions = useMemo(
+    () => [...new Set(classes.map((c) => c.brand).filter(Boolean))].sort(),
+    [classes]
+  );
+
+  // Models suggested for the currently entered brand; falls back to every model
+  // when the brand doesn't match a defined class.
+  const modelOptions = useMemo(() => {
+    const forBrand = classes.filter((c) => c.brand.trim().toLowerCase() === selectedBrand);
+    const source = forBrand.length ? forBrand : classes;
+    const seen = new Set();
+    return source
+      .filter((c) => c.model && !seen.has(c.model) && seen.add(c.model))
+      .map((c) => ({ value: c.model, label: c.name }));
+  }, [classes, selectedBrand]);
 
   const sections = useMemo(() => {
     const withNames = (arr, resolve) => arr.map((item) => ({ ...item, name: resolve(item) }));
@@ -40,8 +60,8 @@ const VehicleForm = ({
       {
         key: "identity",
         items: [
-          { name: "brand" },
-          { name: "model" },
+          { name: "brand", list: brandOptions },
+          { name: "model", list: modelOptions },
           { name: "licensePlate" },
           { name: "modelYear", type: "number" },
           { name: "chassisNo" },
@@ -107,7 +127,7 @@ const VehicleForm = ({
         ],
       },
     ];
-  }, [branches, t, tCommon]);
+  }, [branches, brandOptions, modelOptions, t, tCommon]);
 
   const title =
     [formik.values.brand, formik.values.model].filter(Boolean).join(" ") || t("vehicles.newTitle");
@@ -197,6 +217,7 @@ const VehicleForm = ({
                           label={t(`vehicles.form.${item.name}`)}
                           type={item.type || "text"}
                           itemsArr={item.itemsArr || []}
+                          list={item.list}
                         />
                       ))}
                     </Row>

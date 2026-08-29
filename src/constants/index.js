@@ -137,6 +137,7 @@ const routes = {
   adminReservations: "/admin/reservations",
   adminUsers: "/admin/users",
   adminVehicles: "/admin/vehicles",
+  adminVehicleClasses: "/admin/vehicle-classes",
 
   // COMMON ROUTES
   about: "/about",

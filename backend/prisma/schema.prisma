@@ -197,6 +197,18 @@ model Branch {
   updatedAt DateTime  @updatedAt
 }
 
+// Picklist source for the vehicle form's Marka/Model fields. Not linked to
+// Vehicle by FK — vehicles keep their own brand/model strings.
+model VehicleClass {
+  id        String   @id @default(uuid())
+  name      String
+  brand     String
+  model     String
+  builtIn   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Announcement {
   id        String   @id @default(uuid())
   title     String

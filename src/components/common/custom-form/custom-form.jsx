@@ -11,6 +11,7 @@ const CustomForm = (props) => {
         formik,
         itemsArr = [],
         label,
+        list,
         mask,
         name,
         placeholder,
@@ -18,6 +19,9 @@ const CustomForm = (props) => {
         type = "text",
         min
     } = props;
+
+    // Native combobox: <input list> + <datalist> — click shows suggestions, free text still allowed.
+    const listId = list && list.length ? `${name}-datalist` : undefined;
 
     let properties = {
         ...formik.getFieldProps(name),
@@ -32,7 +36,8 @@ const CustomForm = (props) => {
             mask: mask,
             placeholder: placeholder,
             type: type,
-            min: min
+            min: min,
+            list: listId
         };
     } else if (type === "textarea") {
         properties = {
@@ -53,6 +58,15 @@ const CustomForm = (props) => {
             return floating ? (
                 <FloatingLabel label={label} className="mb-3">
                     <Form.Control {...properties} />
+                    {listId && (
+                        <datalist id={listId}>
+                            {list.map((option) => (
+                                <option key={option.value ?? option} value={option.value ?? option}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </datalist>
+                    )}
                     <Form.Control.Feedback type="invalid">
                         {formik.errors[name]}
                     </Form.Control.Feedback>
@@ -61,6 +75,15 @@ const CustomForm = (props) => {
                 <Form.Group as={asGroup} className="mb-3">
                     <Form.Label>{label}</Form.Label>
                     <Form.Control {...properties} />
+                    {listId && (
+                        <datalist id={listId}>
+                            {list.map((option) => (
+                                <option key={option.value ?? option} value={option.value ?? option}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </datalist>
+                    )}
                     <Form.Control.Feedback type="invalid">
                         {formik.errors[name]}
                     </Form.Control.Feedback>
