@@ -1,6 +1,6 @@
 import { deleteMessage, getMessage, getMessagesByPage, sendMessage } from "./contact/contact-service";
 
-import { createReservation, deleteReservation, downloadReservationReports, getAdminSchedule, getReservationById, getReservationByIdAdmin, getReservationsByPage, getReservationsByPageAdmin, isVehicleAvailable, updateReservation } from "./reservation/reservation-service";
+import { createReservation, createInvoice, deleteReservation, downloadReservationReports, extendReservation, getAdminSchedule, getReservationById, getReservationByIdAdmin, getReservationsByPage, getReservationsByPageAdmin, isVehicleAvailable, updateReservation } from "./reservation/reservation-service";
 
 import { addReservationRecord, deleteReservationRecord, getReservationRecords, updateReservationRecord } from "./reservation/reservation-record-service";
 
@@ -43,6 +43,8 @@ export const services = {
         getReservationByIdAdmin,
         getReservationsByPageAdmin,
         updateReservation,
+        extendReservation,
+        createInvoice,
         getRecords: getReservationRecords,
         addRecord: addReservationRecord,
         updateRecord: updateReservationRecord,

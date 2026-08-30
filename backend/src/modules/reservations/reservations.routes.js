@@ -9,6 +9,8 @@ const {
   deleteReservationAdmin,
   updateReservationAdmin,
   getReservationByIdAdmin,
+  extendReservation,
+  createInvoice,
   getAdminSchedule,
 } = require("./reservations.controller");
 
@@ -23,5 +25,7 @@ router.get("/reservations/:id/admin", authenticate, requireAdmin, getReservation
 
 router.delete("/reservations/admin/:id/auth", authenticate, requireAdmin, deleteReservationAdmin);
 router.put("/reservations/admin/auth", authenticate, requireAdmin, updateReservationAdmin);
+router.post("/reservations/admin/:id/extend/auth", authenticate, requireAdmin, extendReservation);
+router.post("/reservations/admin/:id/invoice/auth", authenticate, requireAdmin, createInvoice);
 
 module.exports = router;

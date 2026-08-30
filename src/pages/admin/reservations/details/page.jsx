@@ -63,6 +63,11 @@ const AdminReservationDetailsPage = () => {
   const [savingCorp, setSavingCorp] = useState(false);
   const [payments, setPayments] = useState([]);
   const [catalog, setCatalog] = useState([]);
+  const [extensions, setExtensions] = useState([]);
+  const [invoice, setInvoice] = useState(null);
+  const [extForm, setExtForm] = useState({ date: "", time: "", extraAmount: "", note: "" });
+  const [extending, setExtending] = useState(false);
+  const [invoicing, setInvoicing] = useState(false);
 
   const loadPayments = () =>
     services.reservation
@@ -131,6 +136,8 @@ const AdminReservationDetailsPage = () => {
       setBranches(branchesData || []);
       setCorporates(corporatesData || []);
       setCatalog(catalogData || []);
+      setExtensions(reservation.extensions || []);
+      setInvoice(reservation.invoice || null);
       loadPayments();
       setCustomer(reservation.customer || null);
       setCustomerType(reservation.corporateId ? "corporate" : "individual");
@@ -235,7 +242,39 @@ const AdminReservationDetailsPage = () => {
   }, [formik.values, billableDays]);
 
   const collected = payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
-  const extensionTotal = 0; // extensions — Phase 7
+  const extensionTotal = extensions.reduce((sum, e) => sum + (Number(e.extraAmount) || 0), 0);
+
+  const doExtend = async () => {
+    if (!extForm.date) return;
+    setExtending(true);
+    try {
+      await services.reservation.extendReservation(reservationId, {
+        newDropOff: utils.functions.combineDateAndTime(extForm.date, extForm.time || "10:00"),
+        extraAmount: extForm.extraAmount,
+        note: extForm.note,
+      });
+      utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
+      setExtForm({ date: "", time: "", extraAmount: "", note: "" });
+      loadData();
+    } catch (error) {
+      utils.functions.swalToast(t("reservations.contract.records.error"), "error");
+    } finally {
+      setExtending(false);
+    }
+  };
+
+  const doInvoice = async () => {
+    setInvoicing(true);
+    try {
+      const created = await services.reservation.createInvoice(reservationId);
+      setInvoice(created);
+      utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
+    } catch (error) {
+      utils.functions.swalToast(t("reservations.contract.records.error"), "error");
+    } finally {
+      setInvoicing(false);
+    }
+  };
 
   const branchNames = branches.map((b) => b.name);
   const vehicleOptions = vehicles.map((veh) => ({
@@ -323,6 +362,8 @@ const AdminReservationDetailsPage = () => {
               <Nav.Item><Nav.Link eventKey="drivers">{c("tabs.drivers")}</Nav.Link></Nav.Item>
               <Nav.Item><Nav.Link eventKey="extras">{c("tabs.extras")}</Nav.Link></Nav.Item>
               <Nav.Item><Nav.Link eventKey="payments">{c("tabs.payments")}</Nav.Link></Nav.Item>
+              <Nav.Item><Nav.Link eventKey="extension">{c("tabs.extension")}</Nav.Link></Nav.Item>
+              <Nav.Item><Nav.Link eventKey="invoice">{c("tabs.invoice")}</Nav.Link></Nav.Item>
               <Nav.Item><Nav.Link eventKey="summary">{c("tabs.summary")}</Nav.Link></Nav.Item>
             </Nav>
 
@@ -511,6 +552,85 @@ const AdminReservationDetailsPage = () => {
                     deleteConfirmText: c("records.deleteConfirmText"),
                   }}
                 />
+              </>
+            )}
+
+            {tab === "extension" && (
+              <>
+                <div className="contract-records__form">
+                  <div className="contract-records__fields">
+                    <Form.Group>
+                      <Form.Label>{c("extension.newDropOffDate")}</Form.Label>
+                      <Form.Control type="date" value={extForm.date}
+                        min={formik.values.dropOffDate}
+                        onChange={(e) => setExtForm({ ...extForm, date: e.target.value })} />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>{c("extension.newDropOffTime")}</Form.Label>
+                      <Form.Control type="time" value={extForm.time}
+                        onChange={(e) => setExtForm({ ...extForm, time: e.target.value })} />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>{c("extension.extraAmount")}</Form.Label>
+                      <Form.Control type="number" value={extForm.extraAmount}
+                        onChange={(e) => setExtForm({ ...extForm, extraAmount: e.target.value })} />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>{c("extension.note")}</Form.Label>
+                      <Form.Control value={extForm.note}
+                        onChange={(e) => setExtForm({ ...extForm, note: e.target.value })} />
+                    </Form.Group>
+                  </div>
+                  <div className="contract-records__form-actions">
+                    <Button type="button" size="sm" disabled={extending || !extForm.date} onClick={doExtend}>
+                      {extending && <Spinner animation="border" size="sm" />} {c("extension.extend")}
+                    </Button>
+                  </div>
+                </div>
+
+                {extensions.length > 0 && (
+                  <>
+                    <h5 className="mt-3">{c("extension.history")}</h5>
+                    {extensions.map((ext) => (
+                      <div className="contract-page__ro" key={ext.id}>
+                        <span>
+                          {c("extension.range")
+                            .replace("{{from}}", utils.functions.getDate(ext.previousDropOff))
+                            .replace("{{to}}", utils.functions.getDate(ext.newDropOff))}
+                          {" · "}
+                          {c("extension.days").replace("{{count}}", ext.extraDays)}
+                        </span>
+                        <strong>{money(ext.extraAmount)} TL</strong>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </>
+            )}
+
+            {tab === "invoice" && (
+              <>
+                {invoice ? (
+                  <div className="contract-page__invoice">
+                    {ro(c("invoice.number"), invoice.number)}
+                    {ro(c("invoice.issuedAt"), utils.functions.getDate(invoice.issuedAt))}
+                    {ro(c("invoice.customer"), invoice.customerTitle)}
+                    {ro(c("invoice.taxNo"), invoice.taxNo)}
+                    {ro(c("invoice.net"), `${money(invoice.netAmount)} TL`)}
+                    {ro(c("invoice.tax"), `${money(invoice.taxAmount)} TL`)}
+                    {ro(c("invoice.gross"), `${money(invoice.grossAmount)} TL`)}
+                    <Button variant="warning" size="sm" className="mt-2" onClick={() => window.print()}>
+                      {c("print")}
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-muted">{c("invoice.none")}</p>
+                    <Button size="sm" disabled={invoicing} onClick={doInvoice}>
+                      {invoicing && <Spinner animation="border" size="sm" />} {c("invoice.create")}
+                    </Button>
+                  </>
+                )}
               </>
             )}
 

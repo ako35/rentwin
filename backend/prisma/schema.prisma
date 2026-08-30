@@ -224,8 +224,39 @@ model Reservation {
   drivers         ReservationDriver[]
   payments        ReservationPayment[]
   extras          ReservationExtra[]
+  extensions      ReservationExtension[]
+  invoice         Invoice?
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
+}
+
+// A contract extension: pushes the drop-off out and adds an amount.
+model ReservationExtension {
+  id              String      @id @default(uuid())
+  reservationId   String
+  reservation     Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  previousDropOff DateTime
+  newDropOff      DateTime
+  extraDays       Int         @default(0)
+  extraAmount     Float       @default(0)
+  note            String?
+  createdAt       DateTime    @default(now())
+}
+
+// One invoice per contract, numbered per year.
+model Invoice {
+  id            String      @id @default(uuid())
+  reservationId String      @unique
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  number        String      @unique
+  issuedAt      DateTime    @default(now())
+  netAmount     Float       @default(0)
+  taxAmount     Float       @default(0)
+  grossAmount   Float       @default(0)
+  customerTitle String?
+  taxNo         String?
+  note          String?
+  createdAt     DateTime    @default(now())
 }
 
 // Additional named drivers on a rental contract.

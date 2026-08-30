@@ -194,6 +194,8 @@ const getReservationByIdAdmin = asyncHandler(async (req, res) => {
       ...CAR_INCLUDE,
       user: { select: { id: true, firstName: true, lastName: true, email: true, phoneNumber: true } },
       corporate: true,
+      extensions: { orderBy: { createdAt: "desc" } },
+      invoice: true,
     },
   });
   if (!reservation) throw new HttpError(404, "Reservation not found.");
@@ -205,6 +207,82 @@ const getReservationByIdAdmin = asyncHandler(async (req, res) => {
     userId: reservation.userId,
     customer: user,
   });
+});
+
+const extendReservation = asyncHandler(async (req, res) => {
+  const reservation = await prisma.reservation.findUnique({ where: { id: req.params.id } });
+  if (!reservation) throw new HttpError(404, "Reservation not found.");
+
+  const newDropOff = parseFrontendDateTime(req.body.newDropOff);
+  if (!newDropOff || newDropOff <= reservation.dropOffTime) {
+    throw new HttpError(400, "New drop-off must be after the current drop-off.");
+  }
+
+  const extraDays = Math.max(1, Math.ceil(hoursBetween(reservation.dropOffTime, newDropOff) / 24));
+  const extraAmount =
+    num(req.body.extraAmount) ?? round2((num(reservation.dailyPrice) || 0) * extraDays);
+
+  await prisma.reservationExtension.create({
+    data: {
+      reservationId: reservation.id,
+      previousDropOff: reservation.dropOffTime,
+      newDropOff,
+      extraDays,
+      extraAmount,
+      note: req.body.note || null,
+    },
+  });
+
+  const updated = await prisma.reservation.update({
+    where: { id: reservation.id },
+    data: {
+      dropOffTime: newDropOff,
+      totalPrice: computeTotal(reservation, reservation.pickUpTime, newDropOff),
+    },
+    include: CAR_INCLUDE,
+  });
+  res.json(serializeReservation(updated));
+});
+
+const createInvoice = asyncHandler(async (req, res) => {
+  const reservation = await prisma.reservation.findUnique({
+    where: { id: req.params.id },
+    include: {
+      corporate: true,
+      user: { select: { firstName: true, lastName: true } },
+    },
+  });
+  if (!reservation) throw new HttpError(404, "Reservation not found.");
+
+  const existing = await prisma.invoice.findUnique({ where: { reservationId: reservation.id } });
+  if (existing) throw new HttpError(409, "Invoice already exists for this contract.");
+
+  const year = new Date().getFullYear();
+  const countThisYear = await prisma.invoice.count({
+    where: { createdAt: { gte: new Date(`${year}-01-01T00:00:00Z`) } },
+  });
+  const number = `RW-${year}-${String(countThisYear + 1).padStart(5, "0")}`;
+
+  const gross = round2(reservation.totalPrice || 0);
+  const rate = reservation.vatRate ?? 20;
+  const net = round2(gross / (1 + rate / 100));
+  const tax = round2(gross - net);
+
+  const invoice = await prisma.invoice.create({
+    data: {
+      reservationId: reservation.id,
+      number,
+      netAmount: net,
+      taxAmount: tax,
+      grossAmount: gross,
+      customerTitle:
+        reservation.corporate?.title ||
+        `${reservation.user.firstName} ${reservation.user.lastName}`.trim(),
+      taxNo: reservation.corporate?.taxNo || null,
+      note: req.body.note || null,
+    },
+  });
+  res.status(201).json(invoice);
 });
 
 // Admin dashboard "Returns"/"Departures" tables: reservations whose
@@ -238,5 +316,7 @@ module.exports = {
   deleteReservationAdmin,
   updateReservationAdmin,
   getReservationByIdAdmin,
+  extendReservation,
+  createInvoice,
   getAdminSchedule,
 };

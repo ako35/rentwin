@@ -204,8 +204,29 @@
     "contract": {
       "title": "Kontrat",
       "leftTitle": "Alış / Bırakış ve Araç Bilgileri",
-      "tabs": { "customer": "Müşteri", "drivers": "Sürücüler", "extras": "Ekstralar", "payments": "Tahsilat", "summary": "Özet" },
+      "tabs": { "customer": "Müşteri", "drivers": "Sürücüler", "extras": "Ekstralar", "payments": "Tahsilat", "extension": "Uzatma", "invoice": "Fatura", "summary": "Özet" },
       "customer": "Müşteri",
+      "extension": {
+        "newDropOffDate": "Yeni Bırakış Tarihi",
+        "newDropOffTime": "Yeni Bırakış Saati",
+        "extraAmount": "Uzatma Tutarı (TL, boş = otomatik)",
+        "note": "Açıklama",
+        "extend": "Uzat",
+        "history": "Geçmiş Uzatmalar",
+        "range": "{{from}} → {{to}}",
+        "days": "{{count}} gün"
+      },
+      "invoice": {
+        "number": "Fatura No",
+        "issuedAt": "Tarih",
+        "net": "Matrah",
+        "tax": "KDV",
+        "gross": "Genel Toplam",
+        "customer": "Müşteri / Ünvan",
+        "taxNo": "Vergi No",
+        "create": "Fatura Oluştur",
+        "none": "Bu kontrat için henüz fatura oluşturulmadı."
+      },
       "extrasFields": {
         "name": "Ekstra",
         "unitPrice": "Birim Fiyat",

@@ -204,8 +204,29 @@
     "contract": {
       "title": "Contract",
       "leftTitle": "Pick-up / Drop-off and Vehicle Details",
-      "tabs": { "customer": "Customer", "drivers": "Drivers", "extras": "Extras", "payments": "Payments", "summary": "Summary" },
+      "tabs": { "customer": "Customer", "drivers": "Drivers", "extras": "Extras", "payments": "Payments", "extension": "Extension", "invoice": "Invoice", "summary": "Summary" },
       "customer": "Customer",
+      "extension": {
+        "newDropOffDate": "New Drop-off Date",
+        "newDropOffTime": "New Drop-off Time",
+        "extraAmount": "Extension Amount (TL, blank = auto)",
+        "note": "Note",
+        "extend": "Extend",
+        "history": "Past Extensions",
+        "range": "{{from}} → {{to}}",
+        "days": "{{count}} days"
+      },
+      "invoice": {
+        "number": "Invoice No",
+        "issuedAt": "Date",
+        "net": "Net",
+        "tax": "VAT",
+        "gross": "Grand Total",
+        "customer": "Customer / Title",
+        "taxNo": "Tax No",
+        "create": "Create Invoice",
+        "none": "No invoice has been created for this contract yet."
+      },
       "extrasFields": {
         "name": "Extra",
         "unitPrice": "Unit Price",

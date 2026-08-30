@@ -80,3 +80,19 @@ export const updateReservation = async (carId, reservationId, payload) => {
   );
   return response.data;
 };
+export const extendReservation = async (id, payload) => {
+  const response = await axios.post(
+    `${API_URL}/reservations/admin/${id}/extend/auth`,
+    payload,
+    services.authHeader()
+  );
+  return response.data;
+};
+export const createInvoice = async (id, payload = {}) => {
+  const response = await axios.post(
+    `${API_URL}/reservations/admin/${id}/invoice/auth`,
+    payload,
+    services.authHeader()
+  );
+  return response.data;
+};
