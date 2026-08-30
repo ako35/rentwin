@@ -1,22 +1,16 @@
 import { BiHeadphone } from "react-icons/bi";
-import { AiOutlineMobile } from "react-icons/ai";
 import { MdEmail } from "react-icons/md";
 import { HiLocationMarker } from "react-icons/hi";
 import { constants } from "../../../../constants";
 import './info.scss';
 
-const { website: { address, email, phone, phone2, mapUrl } } = constants;
+const { website: { address, email, phone, mapUrl } } = constants;
 
 const contactInfoItems = [
   {
-    direct: `tel:${phone}`,
+    direct: `tel:${phone.replace(/\s/g, "")}`,
     icon: <BiHeadphone />,
     text: phone,
-  },
-  {
-    direct: `tel:${phone2}`,
-    icon: <AiOutlineMobile />,
-    text: phone2,
   },
   {
     direct: mapUrl,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Nav, Spinner, Table } from "react-bootstrap";
+import { Nav, Spinner, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BsPlusCircle } from "react-icons/bs";
@@ -21,7 +21,6 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
     { value: "30", label: t("scheduleTable.windows.30") },
   ];
   const [window, setWindow] = useState("7");
-  const [excludeCompleted, setExcludeCompleted] = useState(true);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -32,7 +31,7 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
       const data = await services.reservation.getAdminSchedule({
         type,
         window,
-        excludeCompleted,
+        excludeCompleted: true,
         branchId,
       });
       setRows(data);
@@ -46,7 +45,7 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [window, excludeCompleted, branchId]);
+  }, [window, branchId]);
 
   return (
     <div className="schedule-table">
@@ -60,14 +59,6 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
           ))}
         </Nav>
       </div>
-      <Form.Check
-        type="checkbox"
-        id={`${type}-exclude-completed`}
-        label={t("scheduleTable.excludeCompleted")}
-        checked={excludeCompleted}
-        onChange={(e) => setExcludeCompleted(e.target.checked)}
-        className="schedule-table__filter"
-      />
       <div className="schedule-table__table-container">
         <Table hover responsive>
           <thead>

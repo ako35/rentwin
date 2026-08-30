@@ -48,7 +48,7 @@ const TopMenu = () => {
       <ul className="contact-bar">
         <li>
           <a
-            href={`tel:${phone}`}
+            href={`tel:${phone.replace(/\s/g, "")}`}
             rel="noopener noreferrer"
             className="d-none d-sm-inline"
           >
