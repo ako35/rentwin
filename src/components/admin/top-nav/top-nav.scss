@@ -3,7 +3,11 @@
 
 .admin-top-nav {
     background-color: v.$color5;
-    padding: 0.3rem 1rem;
+    padding: 0.25rem 1rem;
+
+    .navbar-collapse {
+        align-items: center;
+    }
 
     &__home {
         color: v.$color4;
@@ -65,20 +69,26 @@
 
     &__right {
         @include m.flexbox(row, flex-end, center, 0.5rem);
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         position: relative;
         margin-left: auto;
 
         @media (max-width: 992px) {
-            margin-top: 0.75rem;
+            margin-top: 0.5rem;
+            margin-left: 0;
+            width: 100%;
+            justify-content: flex-start;
+            flex-wrap: wrap;
         }
     }
 
-    &__search {
-        width: 160px;
+    &__search.form-control {
+        width: 170px;
+        flex: 0 0 auto;
     }
 
-    &__module-select {
+    &__module-select.form-select {
         width: auto;
+        flex: 0 0 auto;
     }
 }
