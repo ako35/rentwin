@@ -67,6 +67,24 @@ export const contactFormValidationSchema = Yup.object({
         .required(t("contact.emailRequired")),
 });
 
+// HOMEPAGE RESERVATION SEARCH
+const tSearch = (key) => () => i18n.t(`reservationSearch.${key}`, { ns: "validation" });
+
+export const reservationSearchValidationSchema = Yup.object({
+    pickUpLocation: Yup.string().trim().required(tSearch("pickUpLocationRequired")),
+    dropOffLocation: Yup.string().trim().required(tSearch("dropOffLocationRequired")),
+    pickUpDate: Yup.string().required(tSearch("pickUpDateRequired")),
+    pickUpTime: Yup.string().required(tSearch("pickUpTimeRequired")),
+    dropOffDate: Yup.string().required(tSearch("dropOffDateRequired")),
+    dropOffTime: Yup.string()
+        .required(tSearch("dropOffTimeRequired"))
+        .test("after-pickup", tSearch("dropOffAfterPickUp"), function () {
+            const { pickUpDate, pickUpTime, dropOffDate, dropOffTime } = this.parent;
+            if (!pickUpDate || !pickUpTime || !dropOffDate || !dropOffTime) return true;
+            return new Date(`${dropOffDate}T${dropOffTime}`) > new Date(`${pickUpDate}T${pickUpTime}`);
+        }),
+});
+
 // BOOKING FORM
 export const bookingFormValidationSchema = Yup.object({
     pickUpLocation: Yup.string().required(t("booking.pickUpLocationRequired")),

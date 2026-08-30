@@ -28,8 +28,13 @@ const BookingForm = () => {
 
   const {
     auth: { isLoggedIn },
-    reservation: { vehicle },
+    reservation: { vehicle, searchCriteria },
   } = useSelector((state) => state);
+
+  // Pre-fill from the homepage reservation search, if the user came through it.
+  const initialValues = searchCriteria
+    ? { ...utils.initialValues.bookingFormInitialValues, ...searchCriteria }
+    : utils.initialValues.bookingFormInitialValues;
 
   const navigate = useNavigate();
 
@@ -181,7 +186,8 @@ const BookingForm = () => {
   };
 
   const formik = useFormik({
-    initialValues: utils.initialValues.bookingFormInitialValues,
+    initialValues,
+    enableReinitialize: true,
     validationSchema: utils.validations.bookingFormValidationSchema,
     onSubmit,
   });

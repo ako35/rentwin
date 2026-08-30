@@ -32,6 +32,7 @@ import Header from './common/header/header'
 import Loading from './common/loading/loading'
 import PageHeader from './common/page-header/page-header'
 import PasswordInput from './common/password-input/password-input'
+import ReservationSearch from './common/reservation-search/reservation-search'
 import SectionHeader from './common/section-header/section-header'
 import Slider from './common/slider/slider'
 import Spacer from './common/spacer/spacer'
@@ -81,6 +82,7 @@ export{
     Loading,
     PageHeader,
     PasswordInput,
+    ReservationSearch,
     SectionHeader,
     Slider,
     Spacer,

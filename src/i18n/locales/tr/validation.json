@@ -46,6 +46,15 @@
     "emailInvalid": "Geçersiz e-posta adresi",
     "emailRequired": "Lütfen e-posta adresinizi girin"
   },
+  "reservationSearch": {
+    "pickUpLocationRequired": "Alış yerini seçin",
+    "dropOffLocationRequired": "İade yerini seçin",
+    "pickUpDateRequired": "Alış tarihini seçin",
+    "pickUpTimeRequired": "Alış saatini seçin",
+    "dropOffDateRequired": "Bırakış tarihini seçin",
+    "dropOffTimeRequired": "Bırakış saatini seçin",
+    "dropOffAfterPickUp": "Bırakış zamanı alıştan sonra olmalıdır"
+  },
   "booking": {
     "pickUpLocationRequired": "Alış konumunuzu girin",
     "dropOffLocationRequired": "Bırakış konumunuzu girin",

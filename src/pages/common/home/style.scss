@@ -1,0 +1,10 @@
+$breakpoint: 992px;
+
+.home-hero {
+    position: relative;
+
+    @media (max-width: $breakpoint) {
+        // let the reservation-search card sit below the slider and overlap slightly
+        margin-bottom: 1rem;
+    }
+}

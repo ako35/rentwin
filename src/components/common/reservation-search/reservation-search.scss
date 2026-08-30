@@ -1,0 +1,131 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+$breakpoint: 992px;
+
+.reservation-search {
+    // Desktop: floating card overlaid on the right half of the slider.
+    position: absolute;
+    z-index: 10;
+    top: 50%;
+    right: max(3vw, calc((100vw - 1180px) / 2));
+    transform: translateY(-50%);
+    width: 430px;
+    max-width: calc(100vw - 2rem);
+
+    @include m.flexbox(column, flex-start, stretch, 0.6rem);
+    padding: 1.4rem;
+    background-color: v.$color4_2;
+    backdrop-filter: blur(4px);
+    border-radius: 16px;
+    box-shadow: 0 20px 45px -12px v.$color5_3;
+
+    @media (max-width: $breakpoint) {
+        position: static;
+        transform: none;
+        width: auto;
+        max-width: none;
+        margin: -3rem 1rem 0;
+        backdrop-filter: none;
+        background-color: v.$color4;
+    }
+
+    &__title {
+        margin: 0 0 0.2rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: v.$color1;
+    }
+
+    &__row {
+        @include m.flexbox(row, flex-start, stretch, 0.5rem);
+
+        @media (max-width: 380px) {
+            flex-wrap: wrap;
+        }
+    }
+
+    &__field {
+        @include m.flexbox(row, flex-start, center, 0.4rem);
+        padding: 0.55rem 0.7rem;
+        background-color: v.$color4;
+        border: 1px solid v.$color3;
+        border-radius: 9px;
+
+        &:focus-within {
+            border-color: v.$color2;
+        }
+
+        input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: v.$color5;
+
+            &:focus {
+                outline: none;
+            }
+
+            &::placeholder {
+                font-weight: 500;
+                color: v.$color5_4;
+            }
+
+            &.is-invalid {
+                color: #c0392b;
+            }
+        }
+
+        &--location {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        &--date {
+            flex: 0 0 7.5rem;
+        }
+
+        &--time {
+            flex: 0 0 5rem;
+        }
+
+        @media (max-width: 380px) {
+            &--location,
+            &--date,
+            &--time {
+                flex: 1 1 100%;
+            }
+        }
+    }
+
+    &__icon {
+        flex-shrink: 0;
+        font-size: 1rem;
+        color: v.$color2;
+    }
+
+    &__error {
+        margin: 0;
+        font-size: 0.8rem;
+        color: #c0392b;
+    }
+
+    &__submit {
+        margin-top: 0.2rem;
+        padding: 0.85rem;
+        border: none;
+        border-radius: 9px;
+        background-color: v.$color1;
+        color: v.$color4;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+
+        &:hover {
+            background-color: v.$color2;
+        }
+    }
+}

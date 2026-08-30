@@ -1,4 +1,14 @@
 {
+  "reservationSearch": {
+    "title": "Find an Available Car",
+    "pickUpLocationPlaceholder": "Select pick-up location",
+    "dropOffLocationPlaceholder": "Select drop-off location",
+    "pickUpDate": "Pick-up date",
+    "pickUpTime": "Pick-up time",
+    "dropOffDate": "Drop-off date",
+    "dropOffTime": "Drop-off time",
+    "submit": "Show Cars"
+  },
   "slider": [
     {
       "id": 1,

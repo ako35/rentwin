@@ -1,10 +1,17 @@
 const { Router } = require("express");
 const authenticate = require("../../middleware/authenticate");
 const requireAdmin = require("../../middleware/require-admin");
-const { getAllBranches, createBranch, updateBranch, deleteBranch } = require("./branches.controller");
+const {
+  getPublicBranches,
+  getAllBranches,
+  createBranch,
+  updateBranch,
+  deleteBranch,
+} = require("./branches.controller");
 
 const router = Router();
 
+router.get("/branches", getPublicBranches);
 router.get("/branches/admin/auth", authenticate, requireAdmin, getAllBranches);
 router.post("/branches/admin/auth", authenticate, requireAdmin, createBranch);
 router.put("/branches/admin/:id/auth", authenticate, requireAdmin, updateBranch);

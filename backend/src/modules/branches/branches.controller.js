@@ -2,6 +2,16 @@ const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const asyncHandler = require("../../middleware/async-handler");
 
+// Public list used by the homepage reservation search (location suggestions).
+// No vehicle counts, no auth.
+const getPublicBranches = asyncHandler(async (req, res) => {
+  const branches = await prisma.branch.findMany({
+    orderBy: { name: "asc" },
+    select: { id: true, name: true, code: true },
+  });
+  res.json(branches);
+});
+
 const getAllBranches = asyncHandler(async (req, res) => {
   const branches = await prisma.branch.findMany({
     orderBy: { name: "asc" },
@@ -42,4 +52,4 @@ const deleteBranch = asyncHandler(async (req, res) => {
   res.json({ message: "Branch deleted." });
 });
 
-module.exports = { getAllBranches, createBranch, updateBranch, deleteBranch };
+module.exports = { getPublicBranches, getAllBranches, createBranch, updateBranch, deleteBranch };

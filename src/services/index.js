@@ -10,7 +10,7 @@ import { addVehicleRecord, deleteVehicleRecord, getVehicleRecords, updateVehicle
 
 import { addVehicleClass, deleteVehicleClass, getVehicleClasses, updateVehicleClass } from "./vehicle/vehicle-class-service";
 
-import { addBranch, deleteBranch, getBranches, updateBranch } from "./branch/branch-service";
+import { addBranch, deleteBranch, getBranches, getPublicBranches, updateBranch } from "./branch/branch-service";
 
 import { addAnnouncement, deleteAnnouncement, getActiveAnnouncements, getAnnouncements, updateAnnouncement } from "./announcement/announcement-service";
 
@@ -77,6 +77,7 @@ export const services = {
     },
     branch: {
         getBranches,
+        getPublicBranches,
         addBranch,
         updateBranch,
         deleteBranch,

@@ -1,3 +1,4 @@
+import moment from "moment/moment";
 import { constants } from "../../constants";
 
 // LOGIN FORM
@@ -25,6 +26,16 @@ export const contactFormInitialValues = {
     body: "",
     email: "",
 };
+
+// HOMEPAGE RESERVATION SEARCH
+export const reservationSearchInitialValues = () => ({
+    pickUpLocation: "",
+    dropOffLocation: "",
+    pickUpDate: moment().format("YYYY-MM-DD"),
+    pickUpTime: "10:00",
+    dropOffDate: moment().add(3, "days").format("YYYY-MM-DD"),
+    dropOffTime: "10:00",
+});
 
 // BOOKING FORM
 export const bookingFormInitialValues = {

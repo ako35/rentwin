@@ -1,9 +1,13 @@
-import { Spacer, Slider, PopularVehicles, BestOffers, Team, WhatWeDo } from '../../../components'
+import { Spacer, Slider, ReservationSearch, PopularVehicles, BestOffers, Team, WhatWeDo } from '../../../components'
+import './style.scss'
 
 const HomePage = () => {
   return (
     <>
-      <Slider />
+      <div className="home-hero">
+        <Slider />
+        <ReservationSearch />
+      </div>
       <Spacer />
       <PopularVehicles />
       <Spacer />

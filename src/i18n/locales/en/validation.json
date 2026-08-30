@@ -46,6 +46,15 @@
     "emailInvalid": "Invalid email address",
     "emailRequired": "Please enter your email address"
   },
+  "reservationSearch": {
+    "pickUpLocationRequired": "Select a pick-up location",
+    "dropOffLocationRequired": "Select a drop-off location",
+    "pickUpDateRequired": "Select a pick-up date",
+    "pickUpTimeRequired": "Select a pick-up time",
+    "dropOffDateRequired": "Select a drop-off date",
+    "dropOffTimeRequired": "Select a drop-off time",
+    "dropOffAfterPickUp": "Drop-off must be after pick-up"
+  },
   "booking": {
     "pickUpLocationRequired": "Enter your pick up location",
     "dropOffLocationRequired": "Enter your drop off location",

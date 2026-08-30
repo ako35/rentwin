@@ -2,6 +2,12 @@
   "pageTitle": "Our Vehicles",
   "detailsPageTitle": "Vehicle Details",
   "loadError": "Vehicle information cannot be loaded",
+  "searchSummary": {
+    "title": "Your search",
+    "range": "{{pickUp}} → {{dropOff}}",
+    "clear": "Clear",
+    "hint": "Pick a vehicle and the booking form will be pre-filled."
+  },
   "sections": {
     "vehicleModels": {
       "title1": "Vehicle",

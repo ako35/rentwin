@@ -7,6 +7,11 @@ export const getBranches = async () => {
   const response = await axios.get(`${API_URL}/branches/admin/auth`, services.authHeader());
   return response.data;
 };
+// Public – homepage reservation search location suggestions
+export const getPublicBranches = async () => {
+  const response = await axios.get(`${API_URL}/branches`);
+  return response.data;
+};
 export const addBranch = async (payload) => {
   const response = await axios.post(`${API_URL}/branches/admin/auth`, payload, services.authHeader());
   return response.data;

@@ -2,6 +2,12 @@
   "pageTitle": "Araçlarımız",
   "detailsPageTitle": "Araç Detayı",
   "loadError": "Araç bilgileri yüklenemedi",
+  "searchSummary": {
+    "title": "Arama kriterlerin",
+    "range": "{{pickUp}} → {{dropOff}}",
+    "clear": "Temizle",
+    "hint": "Bir araç seç, rezervasyon formu bu bilgilerle dolacak."
+  },
   "sections": {
     "vehicleModels": {
       "title1": "Araç",

@@ -1,4 +1,14 @@
 {
+  "reservationSearch": {
+    "title": "Müsait Araç Ara",
+    "pickUpLocationPlaceholder": "Alış yeri seçiniz",
+    "dropOffLocationPlaceholder": "İade yeri seçiniz",
+    "pickUpDate": "Alış tarihi",
+    "pickUpTime": "Alış saati",
+    "dropOffDate": "İade tarihi",
+    "dropOffTime": "İade saati",
+    "submit": "Araçları Göster"
+  },
   "slider": [
     {
       "id": 1,
