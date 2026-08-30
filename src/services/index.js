@@ -8,8 +8,6 @@ import { addVehicle, deleteVehicle, deleteVehicleImage, downloadVehicleReports, 
 
 import { addVehicleRecord, deleteVehicleRecord, getVehicleRecords, updateVehicleRecord } from "./vehicle/vehicle-records-service";
 
-import { addVehicleClass, deleteVehicleClass, getVehicleClasses, updateVehicleClass } from "./vehicle/vehicle-class-service";
-
 import { addBranch, deleteBranch, getBranches, getPublicBranches, updateBranch } from "./branch/branch-service";
 
 import { addAnnouncement, deleteAnnouncement, getActiveAnnouncements, getAnnouncements, updateAnnouncement } from "./announcement/announcement-service";
@@ -81,12 +79,6 @@ export const services = {
         addBranch,
         updateBranch,
         deleteBranch,
-    },
-    vehicleClass: {
-        getVehicleClasses,
-        addVehicleClass,
-        updateVehicleClass,
-        deleteVehicleClass,
     },
     announcement: {
         getActiveAnnouncements,

@@ -53,14 +53,10 @@ const AdminTopNav = () => {
           <Nav className="admin-top-nav__menu">
             <NavDropdown
               title={t("topNav.vehicle")}
-              active={
-                pathname.startsWith(routes.adminVehicles) ||
-                pathname.startsWith(routes.adminVehicleClasses)
-              }
+              active={pathname.startsWith(routes.adminVehicles)}
             >
               <NavDropdown.Item as={Link} to={routes.adminVehicles}>{t("topNav.vehicleList")}</NavDropdown.Item>
               <NavDropdown.Item as={Link} to={`${routes.adminVehicles}/new`}>{t("topNav.addVehicle")}</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to={routes.adminVehicleClasses}>{t("topNav.vehicleClasses")}</NavDropdown.Item>
             </NavDropdown>
             <Nav.Link as={Link} to={routes.adminReservations} active={pathname.startsWith(routes.adminReservations)}>
               {t("topNav.reservationsAndContracts")}

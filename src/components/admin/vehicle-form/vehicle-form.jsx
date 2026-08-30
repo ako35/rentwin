@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Badge, Button, Col, Form, Nav, Row } from "react-bootstrap";
 import CustomForm from "../../common/custom-form/custom-form";
+import EditableSelectField from "./editable-select-field";
 import { constants } from "../../../constants";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
@@ -27,42 +28,46 @@ const VehicleForm = ({
   const { t } = useTranslation("admin");
   const { t: tCommon } = useTranslation("common");
   const [branches, setBranches] = useState([]);
-  const [classes, setClasses] = useState([]);
+  // Distinct brand/model pairs already present in the fleet — the picklist source.
+  const [fleet, setFleet] = useState([]);
   const [tab, setTab] = useState("vehicle");
 
   useEffect(() => {
     services.branch.getBranches().then(setBranches).catch(() => setBranches([]));
-    services.vehicleClass.getVehicleClasses().then(setClasses).catch(() => setClasses([]));
+    services.vehicle
+      .getVehicles()
+      .then((list) =>
+        setFleet(
+          (list || [])
+            .map((v) => ({ brand: (v.brand || "").trim(), model: (v.model || "").trim() }))
+            .filter((v) => v.brand || v.model)
+        )
+      )
+      .catch(() => setFleet([]));
   }, []);
 
   const selectedBrand = (formik.values.brand || "").trim().toLowerCase();
 
   const brandOptions = useMemo(
-    () => [...new Set(classes.map((c) => c.brand).filter(Boolean))].sort(),
-    [classes]
+    () => [...new Set(fleet.map((v) => v.brand).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
+    [fleet]
   );
 
-  // Models suggested for the currently entered brand; falls back to every model
-  // when the brand doesn't match a defined class.
+  // Models already used for the selected brand; falls back to every known model
+  // when the brand is new / unmatched.
   const modelOptions = useMemo(() => {
-    const forBrand = classes.filter((c) => c.brand.trim().toLowerCase() === selectedBrand);
-    const source = forBrand.length ? forBrand : classes;
-    const seen = new Set();
-    return source
-      .filter((c) => c.model && !seen.has(c.model) && seen.add(c.model))
-      .map((c) => ({ value: c.model, label: c.name }));
-  }, [classes, selectedBrand]);
+    const forBrand = fleet.filter((v) => v.brand.toLowerCase() === selectedBrand && v.model);
+    const source = forBrand.length ? forBrand : fleet;
+    return [...new Set(source.map((v) => v.model).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+  }, [fleet, selectedBrand]);
 
-  // Picking a model that belongs to exactly one brand auto-fills Marka.
-  const handleModelChange = (event) => {
-    const model = event.target.value.trim().toLowerCase();
-    if (!model) return;
+  // Picking a model that belongs to exactly one brand in the fleet auto-fills Marka.
+  const handleModelPicked = (model) => {
+    const key = model.trim().toLowerCase();
+    if (!key) return;
     const matchedBrands = [
       ...new Set(
-        classes
-          .filter((c) => c.model.trim().toLowerCase() === model)
-          .map((c) => c.brand)
-          .filter(Boolean)
+        fleet.filter((v) => v.model.toLowerCase() === key).map((v) => v.brand).filter(Boolean)
       ),
     ];
     if (matchedBrands.length === 1 && matchedBrands[0] !== formik.values.brand) {
@@ -77,8 +82,8 @@ const VehicleForm = ({
       {
         key: "identity",
         items: [
-          { name: "brand", list: brandOptions },
-          { name: "model", list: modelOptions, autofillBrand: true },
+          { name: "brand", editableSelect: true, options: brandOptions },
+          { name: "model", editableSelect: true, options: modelOptions, autofillBrand: true },
           { name: "licensePlate" },
           { name: "modelYear", type: "number" },
           { name: "chassisNo" },
@@ -225,19 +230,29 @@ const VehicleForm = ({
                   <div key={section.key} className="vehicle-form__section">
                     <h4>{t(`vehicles.sections.${section.key}`)}</h4>
                     <Row className="row-cols-1 row-cols-md-2 row-cols-xl-3">
-                      {section.items.map((item) => (
-                        <CustomForm
-                          key={item.name}
-                          formik={formik}
-                          asGroup={Col}
-                          name={item.name}
-                          label={t(`vehicles.form.${item.name}`)}
-                          type={item.type || "text"}
-                          itemsArr={item.itemsArr || []}
-                          list={item.list}
-                          onFieldChange={item.autofillBrand ? handleModelChange : undefined}
-                        />
-                      ))}
+                      {section.items.map((item) =>
+                        item.editableSelect ? (
+                          <EditableSelectField
+                            key={item.name}
+                            formik={formik}
+                            name={item.name}
+                            label={t(`vehicles.form.${item.name}`)}
+                            options={item.options}
+                            onValuePicked={item.autofillBrand ? handleModelPicked : undefined}
+                          />
+                        ) : (
+                          <CustomForm
+                            key={item.name}
+                            formik={formik}
+                            asGroup={Col}
+                            name={item.name}
+                            label={t(`vehicles.form.${item.name}`)}
+                            type={item.type || "text"}
+                            itemsArr={item.itemsArr || []}
+                            list={item.list}
+                          />
+                        )
+                      )}
                     </Row>
                   </div>
                 ))}

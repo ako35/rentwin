@@ -96,7 +96,9 @@
       "registrationDate": "Tescil Tarihi",
       "nextMaintenanceDate": "Sonraki Bakım Tarihi",
       "nextInspectionDate": "Sonraki Muayene Tarihi",
-      "notes": "Açıklama"
+      "notes": "Açıklama",
+      "enterNew": "+ Yeni gir…",
+      "pickFromList": "Listeden seç"
     },
     "records": {
       "add": "Ekle",
@@ -302,7 +304,6 @@
     "vehicle": "Araç",
     "vehicleList": "Araç Listesi",
     "addVehicle": "Araç Ekle",
-    "vehicleClasses": "Sınıflar",
     "reservationsAndContracts": "Rez & Kontrat",
     "reservations": "Rezervasyonlar",
     "longTerm": "Uzun Dönem",
@@ -370,38 +371,6 @@
       "deleteSuccess": "Şube başarıyla silindi.",
       "deleteError": "Şube silinirken bir hata oluştu.",
       "deleteConfirmTitle": "Bu şubeyi silmek istediğinizden emin misiniz?",
-      "deleteConfirmText": "Bu işlemi geri alamazsınız!"
-    }
-  },
-  "vehicleClasses": {
-    "pageTitle": "Araç Sınıfları",
-    "addClass": "Sınıf Ekle",
-    "editClass": "Sınıf Düzenle",
-    "nameLabel": "Sınıf Adı",
-    "brandLabel": "Marka",
-    "modelLabel": "Model",
-    "namePlaceholder": "Örn. Fiat Doblo Combi",
-    "brandPlaceholder": "Örn. Fiat",
-    "modelPlaceholder": "Örn. Doblo",
-    "table": {
-      "name": "Sınıf Adı",
-      "brand": "Marka",
-      "model": "Model",
-      "actions": "İşlemler"
-    },
-    "edit": "Düzenle",
-    "delete": "Sil",
-    "save": "Kaydet",
-    "cancel": "İptal",
-    "noClasses": "Henüz sınıf eklenmedi",
-    "toasts": {
-      "createSuccess": "Sınıf başarıyla oluşturuldu.",
-      "createError": "Sınıf oluşturulurken bir hata oluştu.",
-      "updateSuccess": "Sınıf başarıyla güncellendi.",
-      "updateError": "Sınıf güncellenirken bir hata oluştu.",
-      "deleteSuccess": "Sınıf başarıyla silindi.",
-      "deleteError": "Sınıf silinirken bir hata oluştu.",
-      "deleteConfirmTitle": "Bu sınıfı silmek istediğinizden emin misiniz?",
       "deleteConfirmText": "Bu işlemi geri alamazsınız!"
     }
   },
