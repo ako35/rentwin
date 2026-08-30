@@ -114,13 +114,19 @@
       },
       "insurance": {
         "title": "Insurance / Comprehensive Policies",
+        "groups": {
+          "sigorta": "Insurance",
+          "kasko": "Comprehensive",
+          "sigortaTotal": "Total Insurance",
+          "kaskoTotal": "Total Comprehensive"
+        },
         "fields": {
           "type": "Type",
-          "company": "Insurer",
+          "company": "Company",
           "policyNo": "Policy No",
-          "startDate": "Start Date",
-          "endDate": "End Date",
-          "premium": "Premium",
+          "startDate": "Start",
+          "endDate": "End",
+          "premium": "Policy Amount",
           "notes": "Notes"
         }
       },
@@ -325,6 +331,13 @@
   "alertBar": {
     "maintenance": "Maintenance",
     "inspection": "Inspection / Exhaust",
+    "insurance": "Insurance",
+    "kasko": "Comprehensive",
+    "tax": "Road Tax",
+    "dueWithin": "within {{days}} days / overdue",
+    "daysLeft": "{{days}} days left",
+    "daysOverdue": "{{days}} days overdue",
+    "none": "Nothing upcoming",
     "exchangeRates": "Exchange Rates",
     "settings": "Settings",
     "autoRefresh": "Auto Refresh",

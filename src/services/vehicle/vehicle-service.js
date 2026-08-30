@@ -79,6 +79,13 @@ export const getFleetStats = async (branchId) => {
   );
   return response.data;
 };
+export const getExpiryAlerts = async (branchId) => {
+  const response = await axios.get(
+    `${API_URL}/car/admin/expiry-alerts/auth${branchId ? `?branchId=${branchId}` : ""}`,
+    services.authHeader()
+  );
+  return response.data;
+};
 export const uploadVehicleImage = async(file) => {
   const response = await axios.post(`${API_URL}/files/upload`, file, {
     headers: {

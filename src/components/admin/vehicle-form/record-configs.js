@@ -10,6 +10,21 @@ export const RECORD_CONFIGS = {
     tabKey: "insurance",
     initialValues: utils.initialValues.vehicleInsuranceInitialValues,
     schema: utils.validations.vehicleInsuranceValidationSchema,
+    // Two-pane layout (kolayCAR style): left = Sigorta + Kasko lists with totals,
+    // right = inline add/edit form.
+    twoPane: true,
+    typeField: "type",
+    totalField: "premium",
+    groups: [
+      { key: "sigorta", type: "Traffic" },
+      { key: "kasko", type: "Kasko" },
+    ],
+    listColumns: [
+      { key: "policyNo" },
+      { key: "startDate", kind: "date" },
+      { key: "endDate", kind: "date" },
+      { key: "premium", kind: "money" },
+    ],
     columns: [
       { key: "type", kind: "option", optionNs: "insuranceTypes" },
       { key: "company" },

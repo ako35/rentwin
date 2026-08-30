@@ -114,13 +114,19 @@
       },
       "insurance": {
         "title": "Sigorta / Kasko Poliçeleri",
+        "groups": {
+          "sigorta": "Sigorta",
+          "kasko": "Kasko",
+          "sigortaTotal": "Toplam Sigorta Tutarı",
+          "kaskoTotal": "Toplam Kasko Tutarı"
+        },
         "fields": {
           "type": "Tip",
-          "company": "Sigorta Şirketi",
+          "company": "Firma",
           "policyNo": "Poliçe No",
-          "startDate": "Başlangıç Tarihi",
-          "endDate": "Bitiş Tarihi",
-          "premium": "Prim Tutarı",
+          "startDate": "Başlangıç",
+          "endDate": "Bitiş",
+          "premium": "Poliçe Tutarı",
           "notes": "Açıklama"
         }
       },
@@ -325,6 +331,13 @@
   "alertBar": {
     "maintenance": "Bakım",
     "inspection": "Muayene / Egzoz",
+    "insurance": "Sigorta",
+    "kasko": "Kasko",
+    "tax": "MTV",
+    "dueWithin": "{{days}} gün içinde / süresi geçmiş",
+    "daysLeft": "{{days}} gün kaldı",
+    "daysOverdue": "{{days}} gün geçti",
+    "none": "Yaklaşan kayıt yok",
     "exchangeRates": "Döviz Kurları",
     "settings": "Ayarlar",
     "autoRefresh": "Otomatik Yenileme",

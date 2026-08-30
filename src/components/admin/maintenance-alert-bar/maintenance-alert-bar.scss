@@ -2,13 +2,16 @@
 @use '../../../styles/mixins' as m;
 
 .maintenance-alert-bar {
-    @include m.flexbox(row, space-between, center, 1rem);
-    flex-wrap: wrap;
     background-color: v.$color4;
     border: 1px solid v.$color1-5;
     border-radius: 5px;
-    padding: 0.5rem 1rem;
     margin: 1rem 0;
+
+    &__row {
+        @include m.flexbox(row, space-between, center, 1rem);
+        flex-wrap: wrap;
+        padding: 0.5rem 1rem;
+    }
 
     &__tabs {
         @include m.flexbox(row, flex-start, center, 0.5rem);
@@ -20,13 +23,30 @@
         background-color: v.$color3;
         border: 1px solid v.$color1-5;
         border-radius: 4px;
-        padding: 0.4rem 0.9rem;
-        font-size: 0.85rem;
+        padding: 0.35rem 0.85rem;
+        font-size: 0.83rem;
         font-weight: 600;
         color: v.$color5;
 
         &:hover {
             background-color: v.$color1-5;
+        }
+
+        &--due {
+            border-color: v.$color1;
+            color: v.$color1;
+        }
+
+        &--overdue {
+            background-color: #fdecea;
+            border-color: #c0392b;
+            color: #c0392b;
+        }
+
+        &--active {
+            background-color: v.$color1;
+            border-color: v.$color1;
+            color: v.$color4;
         }
     }
 
@@ -39,12 +59,75 @@
         background: none;
         border: none;
         color: v.$color1;
-        font-size: 0.85rem;
+        font-size: 0.83rem;
         font-weight: 600;
 
         &:hover {
             color: v.$color2;
             text-decoration: underline;
+        }
+    }
+
+    &__panel {
+        border-top: 1px solid v.$color1-5;
+        padding: 0.6rem 1rem 0.8rem;
+    }
+
+    &__panel-head {
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: v.$color1;
+        margin-bottom: 0.4rem;
+    }
+
+    &__empty {
+        font-size: 0.85rem;
+        color: v.$color5-3;
+    }
+
+    &__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+            @include m.flexbox(row, flex-start, center, 0.75rem);
+            flex-wrap: wrap;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid v.$color3;
+            font-size: 0.85rem;
+
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+    }
+
+    &__plate {
+        font-weight: 700;
+        color: v.$color1;
+        min-width: 92px;
+    }
+
+    &__name {
+        flex: 1;
+        min-width: 120px;
+        color: v.$color5;
+    }
+
+    &__date {
+        color: v.$color5-3;
+        min-width: 90px;
+    }
+
+    &__days {
+        font-weight: 600;
+        color: v.$color5;
+
+        &--overdue {
+            color: #c0392b;
         }
     }
 }

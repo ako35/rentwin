@@ -19,12 +19,17 @@ const AdminDashboard = () => {
   const { branchId } = useOutletContext() || {};
   const [loading, setLoading] = useState(true);
   const [fleetStats, setFleetStats] = useState(null);
+  const [expiryAlerts, setExpiryAlerts] = useState(null);
   const [autoRefresh, setAutoRefresh] = useState(false);
 
   const loadData = async () => {
     try {
-      const stats = await services.vehicle.getFleetStats(branchId);
+      const [stats, alerts] = await Promise.all([
+        services.vehicle.getFleetStats(branchId),
+        services.vehicle.getExpiryAlerts(branchId),
+      ]);
       setFleetStats(stats);
+      setExpiryAlerts(alerts);
     } catch (error) {
       console.log(error);
     } finally {
@@ -71,8 +76,7 @@ const AdminDashboard = () => {
           </Row>
 
           <MaintenanceAlertBar
-            maintenanceDue={fleetStats?.maintenanceDue}
-            inspectionDue={fleetStats?.inspectionDue}
+            alerts={expiryAlerts}
             autoRefresh={autoRefresh}
             onAutoRefreshChange={setAutoRefresh}
           />
