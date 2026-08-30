@@ -14,9 +14,9 @@ enum Role {
 }
 
 enum Transmission {
-  Automatic
   Manual
-  Tiptronic
+  SemiAutomatic
+  Automatic
 }
 
 enum FuelType {
@@ -94,14 +94,8 @@ model Vehicle {
   brand                String
   model                String
   licensePlate         String               @unique
-  doors                Int
-  seats                Int
-  luggage              Int
   transmission         Transmission
-  airConditioning      Boolean
   fuelType             FuelType
-  age                  Int
-  pricePerHour         Float
   outOfService         Boolean              @default(false)
   builtIn              Boolean              @default(false)
   branchId             String?

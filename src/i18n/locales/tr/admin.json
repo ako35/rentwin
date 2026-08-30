@@ -70,21 +70,15 @@
     },
     "sections": {
       "identity": "Araç Bilgileri",
-      "registration": "Ruhsat & Sahiplik",
-      "operational": "Operasyon"
+      "registration": "Ruhsat & Sahiplik"
     },
     "form": {
       "brand": "Marka",
       "model": "Model",
       "branch": "Şube",
+      "branchId": "Şube",
       "licensePlate": "Plaka",
-      "doors": "Kapı Sayısı",
-      "seats": "Koltuk Sayısı",
-      "luggage": "Bagaj",
-      "age": "Yaş",
-      "pricePerHour": "Saatlik Fiyat",
       "transmission": "Vites",
-      "airConditioner": "Klima",
       "fuelType": "Yakıt Tipi",
       "modelYear": "Model Yılı",
       "chassisNo": "Şasi No",
@@ -94,8 +88,6 @@
       "ownershipType": "Sahiplik",
       "registrationSerialNo": "Ruhsat Seri / No",
       "registrationDate": "Tescil Tarihi",
-      "nextMaintenanceDate": "Sonraki Bakım Tarihi",
-      "nextInspectionDate": "Sonraki Muayene Tarihi",
       "notes": "Açıklama",
       "enterNew": "+ Yeni gir…",
       "pickFromList": "Listeden seç"

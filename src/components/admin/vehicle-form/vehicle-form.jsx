@@ -90,10 +90,6 @@ const VehicleForm = ({
           { name: "engineNo" },
           { name: "color" },
           { name: "currentKm", type: "number" },
-          { name: "doors", type: "number" },
-          { name: "seats", type: "number" },
-          { name: "luggage", type: "number" },
-          { name: "age", type: "number" },
           {
             name: "transmission",
             type: "select",
@@ -106,14 +102,6 @@ const VehicleForm = ({
             type: "select",
             itemsArr: withNames(constants.fuelTypes, (i) => tCommon(`options.fuelTypes.${i.value}`)),
           },
-          {
-            name: "airConditioning",
-            type: "select",
-            itemsArr: withNames(constants.airConditioningTypes, (i) =>
-              tCommon(`options.airConditioning.${i.value ? "yes" : "no"}`)
-            ),
-          },
-          { name: "pricePerHour", type: "number" },
         ],
       },
       {
@@ -139,13 +127,6 @@ const VehicleForm = ({
               ...branches.map((branch) => ({ id: branch.id, value: branch.id, name: branch.name })),
             ],
           },
-        ],
-      },
-      {
-        key: "operational",
-        items: [
-          { name: "nextMaintenanceDate", type: "date" },
-          { name: "nextInspectionDate", type: "date" },
         ],
       },
     ];

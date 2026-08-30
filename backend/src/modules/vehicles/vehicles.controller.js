@@ -4,21 +4,15 @@ const { serializeVehicle } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 
-const ALLOWED_SORT_FIELDS = ["id", "model", "pricePerHour", "age"];
+const ALLOWED_SORT_FIELDS = ["id", "model"];
 const IMAGES_AND_BRANCH_INCLUDE = { images: { orderBy: { createdAt: "asc" } }, branch: true };
 
 const VEHICLE_FIELDS = [
   "brand",
   "model",
   "licensePlate",
-  "doors",
-  "seats",
-  "luggage",
   "transmission",
-  "airConditioning",
   "fuelType",
-  "age",
-  "pricePerHour",
   "outOfService",
   "branchId",
   "nextMaintenanceDate",

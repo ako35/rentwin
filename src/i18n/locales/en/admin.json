@@ -70,21 +70,15 @@
     },
     "sections": {
       "identity": "Vehicle Details",
-      "registration": "Registration & Ownership",
-      "operational": "Operations"
+      "registration": "Registration & Ownership"
     },
     "form": {
       "brand": "Brand",
       "model": "Model",
       "branch": "Branch",
+      "branchId": "Branch",
       "licensePlate": "License Plate",
-      "doors": "Doors",
-      "seats": "Seats",
-      "luggage": "Luggage",
-      "age": "Age",
-      "pricePerHour": "Price Per Hour",
       "transmission": "Transmission",
-      "airConditioner": "Air Conditioner",
       "fuelType": "Fuel Type",
       "modelYear": "Model Year",
       "chassisNo": "Chassis No",
@@ -94,8 +88,6 @@
       "ownershipType": "Ownership",
       "registrationSerialNo": "Registration Serial / No",
       "registrationDate": "Registration Date",
-      "nextMaintenanceDate": "Next Maintenance Date",
-      "nextInspectionDate": "Next Inspection Date",
       "notes": "Notes",
       "enterNew": "+ Enter new…",
       "pickFromList": "Pick from list"

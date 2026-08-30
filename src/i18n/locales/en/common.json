@@ -54,13 +54,9 @@
       "Hydrogen": "Hydrogen"
     },
     "transmissionTypes": {
-      "Automatic": "Automatic",
       "Manual": "Manual",
-      "Tiptronic": "Tiptronic"
-    },
-    "airConditioning": {
-      "yes": "Yes",
-      "no": "No"
+      "SemiAutomatic": "Semi-Automatic",
+      "Automatic": "Automatic"
     },
     "roles": {
       "Customer": "Customer",

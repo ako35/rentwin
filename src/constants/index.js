@@ -1,16 +1,3 @@
-const airConditioningTypes = [
-  {
-    id: 0,
-    name: "No",
-    value: false,
-  },
-  {
-    id: 1,
-    name: "Yes",
-    value: true,
-  },
-];
-
 const errors = {
   notFound: {
     code: 404,
@@ -170,23 +157,22 @@ const website = {
 const transmissionTypes = [
   {
     id: 1,
-    name: "Automatic",
-    value: "Automatic",
-  },
-  {
-    id: 2,
     name: "Manual",
     value: "Manual",
   },
   {
+    id: 2,
+    name: "SemiAutomatic",
+    value: "SemiAutomatic",
+  },
+  {
     id: 3,
-    name: "Tiptronic",
-    value: "Tiptronic",
+    name: "Automatic",
+    value: "Automatic",
   },
 ];
 
 export const constants = {
-  airConditioningTypes,
   fuelTypes,
   errors,
   inspectionResults,

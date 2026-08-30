@@ -72,21 +72,48 @@ $breakpointxl: 1200px;
   }
 
   &__body {
-    padding: 1.5rem;
+    padding: 1.15rem 1.35rem;
+
+    .form-label {
+      margin-bottom: 0.15rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: v.$color5_2;
+    }
+
+    .form-control,
+    .form-select {
+      padding-top: 0.3rem;
+      padding-bottom: 0.3rem;
+      font-size: 0.88rem;
+    }
+
+    .mb-3 {
+      margin-bottom: 0.55rem !important;
+    }
+
+    .form-text {
+      font-size: 0.72rem;
+      cursor: pointer;
+    }
   }
 
   &__section {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
+
+    .row {
+      --bs-gutter-x: 1rem;
+    }
 
     h4 {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: v.$color1;
       border-bottom: 1px solid v.$color3;
-      padding-bottom: 0.35rem;
-      margin-bottom: 1rem;
+      padding-bottom: 0.25rem;
+      margin-bottom: 0.7rem;
     }
   }
 
@@ -104,8 +131,8 @@ $breakpointxl: 1200px;
     border-radius: 5px;
     position: relative;
     z-index: 1;
-    min-height: 220px;
-    margin-bottom: 1.5rem;
+    min-height: 170px;
+    margin-bottom: 1rem;
     @include m.flexbox(row, center, center);
 
     img {

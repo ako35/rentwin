@@ -95,20 +95,12 @@ export const getAdminVehiclesColumns = (t) => {
             selector: (row) => row?.branch?.name || "-",
         },
         {
-            name: t("table.vehicle.age"),
-            selector: (row) => row?.age,
-        },
-        {
             name: t("table.vehicle.transmission"),
             selector: (row) => row?.transmission,
         },
         {
             name: t("table.vehicle.fuel"),
             selector: (row) => row?.fuelType,
-        },
-        {
-            name: t("table.vehicle.pricePerHour"),
-            selector: (row) => `$ ${row?.pricePerHour}`,
         },
         {
             name: t("table.vehicle.status"),

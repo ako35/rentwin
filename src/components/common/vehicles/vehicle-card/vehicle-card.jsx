@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { constants } from "../../../../constants"
-import { GiCarDoor, GiCarSeat, GiGasPump, GiGearStick } from "react-icons/gi"
+import { GiGasPump, GiGearStick } from "react-icons/gi"
 import { Button } from "react-bootstrap"
 import './vehicle-card.scss'
 
@@ -26,12 +26,6 @@ const VehicleCard = (props) => {
           </div>
           <div>
             <GiGasPump /> {tCommon(`options.fuelTypes.${props.fuelType}`)}
-          </div>
-          <div>
-            <GiCarDoor /> {props.doors} {t("card.doors")}
-          </div>
-          <div>
-            <GiCarSeat /> {props.seats} {t("card.seats")}
           </div>
         </div>
         <Button>{t("card.rentNow")}</Button>

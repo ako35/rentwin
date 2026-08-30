@@ -23,7 +23,6 @@ const { routes } = constants;
 const BookingForm = () => {
   const [loading, setLoading] = useState(false);
   const [vehicleAvailable, setVehicleAvailable] = useState(false);
-  const [totalPrice, setTotalPrice] = useState(0);
   const { t } = useTranslation("vehicles");
 
   const {
@@ -169,8 +168,7 @@ const BookingForm = () => {
         );
 
       const data = await services.reservation.isVehicleAvailable(dto);
-      const { available, totalPrice } = data;
-      setTotalPrice(totalPrice);
+      const { available } = data;
       setVehicleAvailable(available);
       if(!available) {
         utils.functions.swalToast(t("booking.notAvailableError"), "error");
@@ -225,7 +223,6 @@ const BookingForm = () => {
           className={`mt-5 ${vehicleAvailable && isLoggedIn} || 'd-none'`}
         >
           <Alert variant="success">
-            <h2>{t("booking.totalPrice")}: {totalPrice}</h2>
             {formItems.slice(6, 10).map((item) => (
               <CustomForm key={item.name} formik={formik} {...item} />
             ))}

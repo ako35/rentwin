@@ -10,7 +10,6 @@ const UserReservationDetailsAccordion = (props) => {
         pickUpTime,
         dropOffTime,
         status,
-        totalPrice,
         car,
     } = props;
     const { t } = useTranslation("user");
@@ -41,10 +40,6 @@ const UserReservationDetailsAccordion = (props) => {
                     label: t("reservations.details.status"),
                     value: tCommon(`options.reservationStatus.${status}`),
                 },
-                {
-                    label: t("reservations.details.price"),
-                    value: `$${totalPrice}`,
-                },
             ],
         },
         {
@@ -56,32 +51,12 @@ const UserReservationDetailsAccordion = (props) => {
                     value: car.model,
                 },
                 {
-                    label: t("reservations.details.doors"),
-                    value: car.doors,
-                },
-                {
-                    label: t("reservations.details.seats"),
-                    value: car.seats,
-                },
-                {
-                    label: t("reservations.details.luggage"),
-                    value: car.luggage,
-                },
-                {
                     label: t("reservations.details.transmission"),
                     value: tCommon(`options.transmissionTypes.${car.transmission}`),
                 },
                 {
-                    label: t("reservations.details.airConditioning"),
-                    value: car.airConditioning ? t("reservations.details.yes") : t("reservations.details.no"),
-                },
-                {
                     label: t("reservations.details.fuelType"),
                     value: tCommon(`options.fuelTypes.${car.fuelType}`),
-                },
-                {
-                    label: t("reservations.details.age"),
-                    value: car.age,
                 },
             ],
         },

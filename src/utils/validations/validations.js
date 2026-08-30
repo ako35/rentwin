@@ -262,21 +262,9 @@ export const adminVehicleFormValidationSchema = Yup.object({
         .required(t("adminVehicle.modelRequired")),
     licensePlate: Yup.string()
         .required(t("adminVehicle.licensePlateRequired")),
-    doors: Yup.number()
-        .required(t("adminVehicle.doorsRequired")),
-    seats: Yup.number()
-        .required(t("adminVehicle.seatsRequired")),
-    luggage: Yup.number()
-        .required(t("adminVehicle.luggageRequired")),
     transmission: Yup.string()
         .required(t("adminVehicle.transmissionRequired")),
-    airConditioning: Yup.string()
-        .required(t("adminVehicle.airConditioningRequired")),
     fuelType: Yup.string()
         .required(t("adminVehicle.fuelTypeRequired")),
-    age: Yup.number()
-        .required(t("adminVehicle.ageRequired")),
-    pricePerHour: Yup.number()
-        .required(t("adminVehicle.pricePerHourRequired")),
     image: Yup.mixed().required(t("adminVehicle.imageRequired"))
 });

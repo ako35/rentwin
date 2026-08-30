@@ -54,13 +54,9 @@
       "Hydrogen": "Hidrojen"
     },
     "transmissionTypes": {
-      "Automatic": "Otomatik",
       "Manual": "Manuel",
-      "Tiptronic": "Tiptronic"
-    },
-    "airConditioning": {
-      "yes": "Evet",
-      "no": "Hayır"
+      "SemiAutomatic": "Yarı Otomatik",
+      "Automatic": "Otomatik"
     },
     "roles": {
       "Customer": "Müşteri",
