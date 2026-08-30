@@ -215,12 +215,30 @@ model Reservation {
   extrasTotal     Float?
   oneWayFee       Float?
   discount        Float?
+  discountIsPercent Boolean         @default(false)
   deposit         Float?
+  returnExtraAmount Float?
   kmLimit         Int?
   unlimitedKm     Boolean           @default(true)
   vatRate         Float             @default(20)
+  drivers         ReservationDriver[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
+}
+
+// Additional named drivers on a rental contract.
+model ReservationDriver {
+  id            String      @id @default(uuid())
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  firstName     String
+  lastName      String
+  licenseNo     String?
+  licenseDate   DateTime?
+  birthDate     DateTime?
+  phone         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 // "Cari" — corporate customer a contract can be billed to.

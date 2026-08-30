@@ -7,7 +7,7 @@ import moment from "moment/moment";
 import { constants } from "../../../../constants";
 import { utils } from "../../../../utils";
 import { services } from "../../../../services";
-import { CustomForm, Loading } from "../../../../components";
+import { ContractRecords, CustomForm, Loading } from "../../../../components";
 import "./style.scss";
 
 const { routes } = constants;
@@ -30,7 +30,9 @@ const EMPTY = {
   dailyPrice: "",
   extrasTotal: "",
   oneWayFee: "",
+  returnExtraAmount: "",
   discount: "",
+  discountIsPercent: false,
   deposit: "",
   kmLimit: "",
   unlimitedKm: true,
@@ -82,7 +84,9 @@ const AdminReservationDetailsPage = () => {
       dailyPrice: values.dailyPrice,
       extrasTotal: values.extrasTotal,
       oneWayFee: values.oneWayFee,
+      returnExtraAmount: values.returnExtraAmount,
       discount: values.discount,
+      discountIsPercent: values.discountIsPercent,
       deposit: values.deposit,
       kmLimit: values.unlimitedKm ? "" : values.kmLimit,
       unlimitedKm: values.unlimitedKm,
@@ -135,7 +139,9 @@ const AdminReservationDetailsPage = () => {
         dailyPrice: reservation.dailyPrice ?? "",
         extrasTotal: reservation.extrasTotal ?? "",
         oneWayFee: reservation.oneWayFee ?? "",
+        returnExtraAmount: reservation.returnExtraAmount ?? "",
         discount: reservation.discount ?? "",
+        discountIsPercent: reservation.discountIsPercent ?? false,
         deposit: reservation.deposit ?? "",
         kmLimit: reservation.kmLimit ?? "",
         unlimitedKm: reservation.unlimitedKm ?? true,
@@ -185,7 +191,7 @@ const AdminReservationDetailsPage = () => {
       setCorpModal(false);
       setCorpForm(EMPTY_CORPORATE);
     } catch (error) {
-      utils.functions.swalToast(t("reservations.toasts.updateError"), "error");
+      utils.functions.swalToast(t("reservations.contract.records.error"), "error");
     } finally {
       setSavingCorp(false);
     }
@@ -207,19 +213,24 @@ const AdminReservationDetailsPage = () => {
 
   const pricing = useMemo(() => {
     const n = (v) => Number(v) || 0;
-    const rental = n(formik.values.dailyPrice) * billableDays;
-    const subtotal =
-      rental + n(formik.values.extrasTotal) + n(formik.values.oneWayFee) - n(formik.values.discount);
-    const vat = formik.values.vatRate === "" ? 20 : n(formik.values.vatRate);
+    const v = formik.values;
+    const rental = n(v.dailyPrice) * billableDays;
+    const base = rental + n(v.extrasTotal) + n(v.oneWayFee) + n(v.returnExtraAmount);
+    const discountAmount = v.discountIsPercent ? (base * n(v.discount)) / 100 : n(v.discount);
+    const subtotal = base - discountAmount;
+    const vat = v.vatRate === "" ? 20 : n(v.vatRate);
     const total = subtotal * (1 + vat / 100);
-    return { rental, subtotal, total };
+    return { rental, base, discountAmount, subtotal, total };
   }, [formik.values, billableDays]);
 
+  const collected = 0; // payments — Phase 5
+  const extensionTotal = 0; // extensions — Phase 7
+
   const branchNames = branches.map((b) => b.name);
-  const vehicleOptions = vehicles.map((v) => ({
-    id: v.id,
-    value: v.id,
-    name: `${v.brand} ${v.model} — ${v.licensePlate}`,
+  const vehicleOptions = vehicles.map((veh) => ({
+    id: veh.id,
+    value: veh.id,
+    name: `${veh.brand} ${veh.model} — ${veh.licensePlate}`,
   }));
   const statusOptions = constants.reservationStatus.map((s) => ({
     ...s,
@@ -233,6 +244,19 @@ const AdminReservationDetailsPage = () => {
     <div className="contract-page__ro">
       <span>{label}</span>
       <strong>{value || "—"}</strong>
+    </div>
+  );
+  const setV = (name) => (e) => formik.setFieldValue(name, e.target.value);
+  const priceInput = (name, label) => (
+    <div className="contract-page__price-row">
+      <label>{label}</label>
+      <Form.Control type="number" value={formik.values[name]} onChange={setV(name)} />
+    </div>
+  );
+  const priceRO = (label, value, strong) => (
+    <div className={`contract-page__price-row${strong ? " contract-page__price-row--total" : ""}`}>
+      <label>{label}</label>
+      <span>{value}</span>
     </div>
   );
 
@@ -252,178 +276,210 @@ const AdminReservationDetailsPage = () => {
         </div>
       </div>
 
-      <Form noValidate onSubmit={formik.handleSubmit} className="contract-page__grid">
-        {/* LEFT — pickup/dropoff + vehicle */}
-        <section className="contract-card">
-          <h3>{c("leftTitle")}</h3>
+      <Form noValidate onSubmit={formik.handleSubmit}>
+        <div className="contract-page__grid">
+          {/* LEFT */}
+          <section className="contract-card">
+            <h3>{c("leftTitle")}</h3>
+            <CustomForm formik={formik} name="pickUpLocation" label={c("pickUpLocation")} list={branchNames} />
+            <CustomForm formik={formik} name="dropOffLocation" label={c("dropOffLocation")} list={branchNames} />
+            <div className="contract-page__pair">
+              <CustomForm formik={formik} name="pickUpDate" label={c("pickUpDate")} type="date" />
+              <CustomForm formik={formik} name="pickUpTime" label={t("reservations.form.pickUpTime")} type="time" />
+            </div>
+            <div className="contract-page__pair">
+              <CustomForm formik={formik} name="dropOffDate" label={c("dropOffDate")} type="date" />
+              <CustomForm formik={formik} name="dropOffTime" label={t("reservations.form.dropOffTime")} type="time" />
+            </div>
+            {ro(c("duration"), c("durationDays").replace("{{count}}", billableDays))}
+            <CustomForm formik={formik} name="carId" label={c("vehicle")} type="select" itemsArr={vehicleOptions} />
+            {ro(c("class"), selectedCar ? `${selectedCar.brand} ${selectedCar.model}` : "")}
+            {ro(
+              c("fuelTransmission"),
+              selectedCar
+                ? `${tCommon(`options.fuelTypes.${selectedCar.fuelType}`)} / ${tCommon(
+                    `options.transmissionTypes.${selectedCar.transmission}`
+                  )}`
+                : ""
+            )}
+            {ro(c("plate"), selectedCar?.licensePlate)}
+          </section>
 
-          <CustomForm formik={formik} name="pickUpLocation" label={c("pickUpLocation")} list={branchNames} />
-          <CustomForm formik={formik} name="dropOffLocation" label={c("dropOffLocation")} list={branchNames} />
+          {/* RIGHT */}
+          <section className="contract-card">
+            <Nav variant="tabs" activeKey={tab} onSelect={(k) => k && setTab(k)} className="mb-3">
+              <Nav.Item><Nav.Link eventKey="customer">{c("tabs.customer")}</Nav.Link></Nav.Item>
+              <Nav.Item><Nav.Link eventKey="drivers">{c("tabs.drivers")}</Nav.Link></Nav.Item>
+              <Nav.Item><Nav.Link eventKey="summary">{c("tabs.summary")}</Nav.Link></Nav.Item>
+            </Nav>
 
-          <div className="contract-page__pair">
-            <CustomForm formik={formik} name="pickUpDate" label={c("pickUpDate")} type="date" />
-            <CustomForm formik={formik} name="pickUpTime" label={t("reservations.form.pickUpTime")} type="time" />
-          </div>
-          <div className="contract-page__pair">
-            <CustomForm formik={formik} name="dropOffDate" label={c("dropOffDate")} type="date" />
-            <CustomForm formik={formik} name="dropOffTime" label={t("reservations.form.dropOffTime")} type="time" />
-          </div>
+            {tab === "customer" && (
+              <>
+                <div className="contract-page__radios mb-2">
+                  <Form.Check inline type="radio" id="ctype-individual" label={c("individual")}
+                    checked={customerType === "individual"} onChange={() => setCustomerType("individual")} />
+                  <Form.Check inline type="radio" id="ctype-corporate" label={c("corporate")}
+                    checked={customerType === "corporate"} onChange={() => setCustomerType("corporate")} />
+                </div>
+                {ro(c("customerName"), customer ? `${customer.firstName} ${customer.lastName}` : "")}
+                {ro(c("customerEmail"), customer?.email)}
+                {ro(c("customerPhone"), customer?.phoneNumber)}
+                {formik.values.userId && (
+                  <Link className="contract-page__link" to={`${routes.adminUsers}/${formik.values.userId}`}>
+                    {c("openCustomer")}
+                  </Link>
+                )}
+                {customerType === "corporate" && (
+                  <>
+                    <hr />
+                    <div className="contract-page__corp-head">
+                      <Form.Label className="mb-0">{c("corporateSelect")}</Form.Label>
+                      <button type="button" className="contract-page__link" onClick={() => setCorpModal(true)}>
+                        + {c("newCorporate")}
+                      </button>
+                    </div>
+                    <Form.Control list="corp-list" autoComplete="off" placeholder={c("corporateSearch")}
+                      defaultValue={selectedCorp?.title || ""}
+                      onChange={(e) => {
+                        const match = corporates.find((cx) => cx.title === e.target.value);
+                        formik.setFieldValue("corporateId", match ? match.id : "");
+                      }}
+                      className="mb-2" />
+                    <datalist id="corp-list">
+                      {corporates.map((cx) => <option key={cx.id} value={cx.title} />)}
+                    </datalist>
+                    {selectedCorp && (
+                      <>
+                        {ro(c("taxOffice"), selectedCorp.taxOffice)}
+                        {ro(c("taxNo"), selectedCorp.taxNo)}
+                        {ro(c("customerPhone"), selectedCorp.phone)}
+                        {ro(c("customerEmail"), selectedCorp.email)}
+                      </>
+                    )}
+                  </>
+                )}
+                <hr />
+                <CustomForm formik={formik} name="flightNo" label={c("flightNo")} />
+                <CustomForm formik={formik} name="referenceNo" label={c("referenceNo")} />
+              </>
+            )}
 
-          {ro(c("duration"), c("durationDays").replace("{{count}}", billableDays))}
-
-          <CustomForm formik={formik} name="carId" label={c("vehicle")} type="select" itemsArr={vehicleOptions} />
-
-          {ro(c("class"), selectedCar ? `${selectedCar.brand} ${selectedCar.model}` : "")}
-          {ro(
-            c("fuelTransmission"),
-            selectedCar
-              ? `${tCommon(`options.fuelTypes.${selectedCar.fuelType}`)} / ${tCommon(
-                  `options.transmissionTypes.${selectedCar.transmission}`
-                )}`
-              : ""
-          )}
-          {ro(c("plate"), selectedCar?.licensePlate)}
-        </section>
-
-        {/* RIGHT — tabs */}
-        <section className="contract-card">
-          <Nav variant="tabs" activeKey={tab} onSelect={(k) => k && setTab(k)} className="mb-3">
-            <Nav.Item><Nav.Link eventKey="customer">{c("tabs.customer")}</Nav.Link></Nav.Item>
-            <Nav.Item><Nav.Link eventKey="pricing">{c("tabs.pricing")}</Nav.Link></Nav.Item>
-            <Nav.Item><Nav.Link eventKey="summary">{c("tabs.summary")}</Nav.Link></Nav.Item>
-          </Nav>
-
-          {tab === "customer" && (
-            <>
-              <div className="contract-page__radios mb-2">
-                <Form.Check
-                  inline
-                  type="radio"
-                  id="ctype-individual"
-                  label={c("individual")}
-                  checked={customerType === "individual"}
-                  onChange={() => setCustomerType("individual")}
-                />
-                <Form.Check
-                  inline
-                  type="radio"
-                  id="ctype-corporate"
-                  label={c("corporate")}
-                  checked={customerType === "corporate"}
-                  onChange={() => setCustomerType("corporate")}
-                />
-              </div>
-
-              {ro(c("customerName"), customer ? `${customer.firstName} ${customer.lastName}` : "")}
-              {ro(c("customerEmail"), customer?.email)}
-              {ro(c("customerPhone"), customer?.phoneNumber)}
-              {formik.values.userId && (
-                <Link className="contract-page__link" to={`${routes.adminUsers}/${formik.values.userId}`}>
-                  {c("openCustomer")}
-                </Link>
-              )}
-
-              {customerType === "corporate" && (
-                <>
-                  <hr />
-                  <div className="contract-page__corp-head">
-                    <Form.Label className="mb-0">{c("corporateSelect")}</Form.Label>
-                    <button type="button" className="contract-page__link" onClick={() => setCorpModal(true)}>
-                      + {c("newCorporate")}
-                    </button>
-                  </div>
-                  <Form.Control
-                    list="corp-list"
-                    autoComplete="off"
-                    placeholder={c("corporateSearch")}
-                    defaultValue={selectedCorp?.title || ""}
-                    onChange={(e) => {
-                      const match = corporates.find((cx) => cx.title === e.target.value);
-                      formik.setFieldValue("corporateId", match ? match.id : "");
-                    }}
-                    className="mb-2"
-                  />
-                  <datalist id="corp-list">
-                    {corporates.map((cx) => (
-                      <option key={cx.id} value={cx.title} />
-                    ))}
-                  </datalist>
-                  {selectedCorp && (
-                    <>
-                      {ro(c("taxOffice"), selectedCorp.taxOffice)}
-                      {ro(c("taxNo"), selectedCorp.taxNo)}
-                      {ro(c("customerPhone"), selectedCorp.phone)}
-                      {ro(c("customerEmail"), selectedCorp.email)}
-                    </>
-                  )}
-                </>
-              )}
-
-              <hr />
-              <CustomForm formik={formik} name="flightNo" label={c("flightNo")} />
-              <CustomForm formik={formik} name="referenceNo" label={c("referenceNo")} />
-            </>
-          )}
-
-          {tab === "pricing" && (
-            <>
-              <CustomForm formik={formik} name="dailyPrice" label={c("dailyPrice")} type="number" />
-              {ro(
-                c("rentalAmount"),
-                `${money(formik.values.dailyPrice)} × ${billableDays} ${c("day")} = ${money(pricing.rental)}`
-              )}
-              <CustomForm formik={formik} name="extrasTotal" label={c("extrasTotal")} type="number" />
-              <CustomForm formik={formik} name="oneWayFee" label={c("oneWayFee")} type="number" />
-              <CustomForm formik={formik} name="discount" label={c("discount")} type="number" />
-              {ro(c("subtotal"), `${money(pricing.subtotal)} TL`)}
-              <CustomForm formik={formik} name="vatRate" label={c("vatRate")} type="number" />
-              {ro(c("grandTotal"), `${money(pricing.total)} TL`)}
-              <hr />
-              <CustomForm formik={formik} name="deposit" label={c("deposit")} type="number" />
-              <Form.Check
-                type="checkbox"
-                id="unlimitedKm"
-                className="mb-2"
-                label={c("unlimitedKm")}
-                checked={formik.values.unlimitedKm}
-                onChange={(e) => formik.setFieldValue("unlimitedKm", e.target.checked)}
+            {tab === "drivers" && (
+              <ContractRecords
+                reservationId={reservationId}
+                resource="drivers"
+                initial={{ firstName: "", lastName: "", licenseNo: "", licenseDate: "", birthDate: "", phone: "" }}
+                columns={[
+                  { key: "firstName", label: c("drivers.firstName") },
+                  { key: "lastName", label: c("drivers.lastName") },
+                  { key: "licenseNo", label: c("drivers.licenseNo") },
+                  { key: "phone", label: c("drivers.phone") },
+                ]}
+                fields={[
+                  { name: "firstName", label: c("drivers.firstName") },
+                  { name: "lastName", label: c("drivers.lastName") },
+                  { name: "licenseNo", label: c("drivers.licenseNo") },
+                  { name: "licenseDate", label: c("drivers.licenseDate"), type: "date" },
+                  { name: "birthDate", label: c("drivers.birthDate"), type: "date" },
+                  { name: "phone", label: c("drivers.phone") },
+                ]}
+                labels={{
+                  actions: c("records.actions"),
+                  add: c("records.add"),
+                  save: c("records.save"),
+                  cancel: c("records.cancel"),
+                  edit: c("records.edit"),
+                  delete: c("records.delete"),
+                  empty: c("records.empty"),
+                  error: c("records.error"),
+                  deleteConfirm: c("records.deleteConfirm"),
+                  deleteConfirmText: c("records.deleteConfirmText"),
+                }}
               />
-              {!formik.values.unlimitedKm && (
-                <CustomForm formik={formik} name="kmLimit" label={c("kmLimit")} type="number" />
-              )}
-            </>
-          )}
+            )}
 
-          {tab === "summary" && (
-            <>
-              {ro(
-                c("currentVehicle"),
-                selectedCar ? `${selectedCar.brand} ${selectedCar.model} (${selectedCar.licensePlate})` : ""
-              )}
-              {ro(
-                "Alış - Bırakış",
-                `${formik.values.pickUpDate} ${formik.values.pickUpTime} → ${formik.values.dropOffDate} ${formik.values.dropOffTime} (${c(
-                  "durationDays"
-                ).replace("{{count}}", billableDays)})`
-              )}
-              {ro(c("route"), `${formik.values.pickUpLocation || "—"} → ${formik.values.dropOffLocation || "—"}`)}
-              {ro(c("customer"), selectedCorp ? selectedCorp.title : customer ? `${customer.firstName} ${customer.lastName}` : "")}
-              {ro(c("grandTotal"), `${money(pricing.total)} TL`)}
-              {meta.createdAt && ro(c("createdAt"), utils.functions.formatDateTime(meta.createdAt))}
-              <CustomForm formik={formik} name="status" label={c("status")} type="select" itemsArr={statusOptions} />
-              <hr />
-              <CustomForm formik={formik} name="customerNote" label={c("customerNote")} type="textarea" rows={2} />
-              <CustomForm formik={formik} name="adminNote" label={c("adminNote")} type="textarea" rows={2} />
-            </>
-          )}
+            {tab === "summary" && (
+              <>
+                {ro(c("currentVehicle"), selectedCar ? `${selectedCar.brand} ${selectedCar.model} (${selectedCar.licensePlate})` : "")}
+                {ro("Alış - Bırakış", `${formik.values.pickUpDate} ${formik.values.pickUpTime} → ${formik.values.dropOffDate} ${formik.values.dropOffTime} (${c("durationDays").replace("{{count}}", billableDays)})`)}
+                {ro(c("route"), `${formik.values.pickUpLocation || "—"} → ${formik.values.dropOffLocation || "—"}`)}
+                {ro(c("customer"), selectedCorp ? selectedCorp.title : customer ? `${customer.firstName} ${customer.lastName}` : "")}
+                {ro(c("grandTotal"), `${money(pricing.total)} TL`)}
+                {meta.createdAt && ro(c("createdAt"), utils.functions.formatDateTime(meta.createdAt))}
+                <CustomForm formik={formik} name="status" label={c("status")} type="select" itemsArr={statusOptions} />
+                <hr />
+                <CustomForm formik={formik} name="customerNote" label={c("customerNote")} type="textarea" rows={2} />
+                <CustomForm formik={formik} name="adminNote" label={c("adminNote")} type="textarea" rows={2} />
+              </>
+            )}
+          </section>
+        </div>
+
+        {/* BOTTOM — pricing / payment */}
+        <section className="contract-card contract-page__pricing">
+          <h3>{c("pricingTitle")}</h3>
+          <div className="contract-page__price-grid">
+            {priceInput("dailyPrice", c("dailyPrice"))}
+            {priceRO(c("rentalAmount"), `${money(pricing.rental)} TL`)}
+            {priceInput("extrasTotal", c("extrasTotal"))}
+            {priceInput("oneWayFee", c("oneWayFee"))}
+            {priceInput("returnExtraAmount", c("returnExtraAmount"))}
+            {priceRO(c("subtotal"), `${money(pricing.base)} TL`)}
+
+            <div className="contract-page__price-row">
+              <label>{c("discount")}</label>
+              <div className="contract-page__discount">
+                <Form.Check inline type="radio" id="disc-flat" label={c("discountFlat")}
+                  checked={!formik.values.discountIsPercent}
+                  onChange={() => formik.setFieldValue("discountIsPercent", false)} />
+                <Form.Check inline type="radio" id="disc-pct" label={c("discountPercent")}
+                  checked={formik.values.discountIsPercent}
+                  onChange={() => formik.setFieldValue("discountIsPercent", true)} />
+                <Form.Control type="number" value={formik.values.discount} onChange={setV("discount")} />
+              </div>
+            </div>
+
+            {priceInput("vatRate", c("vatRate"))}
+
+            <div className="contract-page__price-row">
+              <label>{c("kmLimit")}</label>
+              <div className="contract-page__km">
+                <Form.Control type="number" value={formik.values.kmLimit} onChange={setV("kmLimit")}
+                  disabled={formik.values.unlimitedKm} />
+                <Form.Check type="checkbox" id="unlimitedKm" label={c("unlimitedKm")}
+                  checked={formik.values.unlimitedKm}
+                  onChange={(e) => formik.setFieldValue("unlimitedKm", e.target.checked)} />
+              </div>
+            </div>
+
+            {priceRO(c("uzatmaAmount"), `${money(extensionTotal)} TL`)}
+            {priceRO(c("contractAmount"), `${money(pricing.subtotal)} TL`)}
+            {priceRO(c("grandTotal"), `${money(pricing.total)} TL`, true)}
+            {priceInput("deposit", c("deposit"))}
+          </div>
+          <div className="contract-page__price-actions">
+            <Button type="submit" variant="outline-primary" size="sm" disabled={updating}>
+              {c("calc")}
+            </Button>
+          </div>
         </section>
+
+        <div className="contract-page__balance">
+          <strong>{money(collected - pricing.total)} TL</strong>
+          <span>{c("balance").toUpperCase()}</span>
+        </div>
 
         <div className="contract-page__actions">
-          <Button variant="outline-danger" type="button" disabled={deleting || updating} onClick={handleDelete}>
-            {deleting && <Spinner animation="border" size="sm" />} {t("reservations.delete")}
+          <Button variant="info" type="button"
+            onClick={() => utils.functions.swalToast(t("alertBar.comingSoonToast"), "info")}>
+            {c("vehicleReturn")}
           </Button>
-          <Button variant="outline-secondary" type="button" onClick={() => navigate(routes.adminReservations)}>
-            {t("reservations.cancel")}
+          <span className="contract-page__actions-spacer" />
+          <Button variant="outline-danger" type="button" disabled={deleting || updating} onClick={handleDelete}>
+            {deleting && <Spinner animation="border" size="sm" />} {c("cancelContract")}
+          </Button>
+          <Button variant="warning" type="button" onClick={() => window.print()}>
+            {c("print")}
           </Button>
           <Button type="submit" disabled={!(formik.isValid && formik.dirty) || updating}>
             {updating && <Spinner animation="border" size="sm" />} {t("reservations.save")}
@@ -445,10 +501,8 @@ const AdminReservationDetailsPage = () => {
           ].map(([field, labelKey]) => (
             <Form.Group className="mb-2" key={field}>
               <Form.Label>{c(labelKey)}</Form.Label>
-              <Form.Control
-                value={corpForm[field]}
-                onChange={(e) => setCorpForm({ ...corpForm, [field]: e.target.value })}
-              />
+              <Form.Control value={corpForm[field]}
+                onChange={(e) => setCorpForm({ ...corpForm, [field]: e.target.value })} />
             </Form.Group>
           ))}
         </Modal.Body>

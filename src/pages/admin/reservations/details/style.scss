@@ -114,10 +114,106 @@
     margin-bottom: 0.25rem;
   }
 
-  &__actions {
-    grid-column: 1 / -1;
+  &__pricing {
+    margin-top: 1.25rem;
+  }
+
+  &__price-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem 1.5rem;
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__price-row {
+    @include m.flexbox(row, space-between, center, 1rem);
+    padding: 0.25rem 0;
+    border-bottom: 1px dashed v.$color3;
+    font-size: 0.85rem;
+
+    label {
+      color: v.$color5_3;
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    > span {
+      font-weight: 600;
+      color: v.$color5;
+    }
+
+    .form-control {
+      max-width: 130px;
+      text-align: right;
+    }
+
+    &--total {
+      border-bottom: none;
+
+      label {
+        font-weight: 700;
+        color: v.$color5;
+      }
+
+      > span {
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: v.$color1;
+      }
+    }
+  }
+
+  &__discount,
+  &__km {
     @include m.flexbox(row, flex-end, center, 0.5rem);
     flex-wrap: wrap;
+
+    .form-control {
+      max-width: 110px;
+    }
+
+    .form-check {
+      margin: 0;
+      white-space: nowrap;
+    }
+  }
+
+  &__price-actions {
+    @include m.flexbox(row, flex-end, center, 0.5rem);
+    margin-top: 0.6rem;
+  }
+
+  &__balance {
+    @include m.flexbox(column, center, flex-start, 0.1rem);
+    border-left: 4px solid #e0a800;
+    background-color: v.$color4;
+    border-radius: 4px;
+    padding: 0.6rem 1rem;
+    margin: 1rem 0;
+
+    strong {
+      font-size: 1.3rem;
+      color: #d9822b;
+    }
+
+    span {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: v.$color5_3;
+    }
+  }
+
+  &__actions {
+    @include m.flexbox(row, flex-start, center, 0.5rem);
+    flex-wrap: wrap;
     margin-top: 0.25rem;
+  }
+
+  &__actions-spacer {
+    flex: 1;
   }
 }

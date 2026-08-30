@@ -2,6 +2,8 @@ import { deleteMessage, getMessage, getMessagesByPage, sendMessage } from "./con
 
 import { createReservation, deleteReservation, downloadReservationReports, getAdminSchedule, getReservationById, getReservationByIdAdmin, getReservationsByPage, getReservationsByPageAdmin, isVehicleAvailable, updateReservation } from "./reservation/reservation-service";
 
+import { addReservationRecord, deleteReservationRecord, getReservationRecords, updateReservationRecord } from "./reservation/reservation-record-service";
+
 import { deleteUser, downloadUserReports, getUser, getUserAdmin, getUsersByPage, login, register, updatePassword, updateUser, updateUserAdmin } from "./user/user-service";
 
 import { addVehicle, deleteVehicle, deleteVehicleImage, downloadVehicleReports, getExpiryAlerts, getFleetStats, getVehicleById, getVehicles, getVehiclesByPage, getVehiclesByPageAdmin, updateVehicle, uploadVehicleImage } from "./vehicle/vehicle-service";
@@ -39,6 +41,10 @@ export const services = {
         getReservationByIdAdmin,
         getReservationsByPageAdmin,
         updateReservation,
+        getRecords: getReservationRecords,
+        addRecord: addReservationRecord,
+        updateRecord: updateReservationRecord,
+        deleteRecord: deleteReservationRecord,
     },
     user: {
         // COMMON ENDPOINTS

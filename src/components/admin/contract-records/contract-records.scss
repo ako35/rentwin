@@ -1,0 +1,48 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+.contract-records {
+  &__actions {
+    white-space: nowrap;
+
+    button {
+      border: none;
+      background: none;
+      padding: 0 0.35rem;
+      font-size: 0.8rem;
+      color: v.$color1;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      & + button {
+        color: #c0392b;
+      }
+    }
+  }
+
+  &__form {
+    border: 1px dashed v.$color3;
+    border-radius: 8px;
+    padding: 0.75rem;
+    background-color: v.$color4;
+  }
+
+  &__fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem 0.75rem;
+
+    .form-label {
+      margin-bottom: 0.1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+  }
+
+  &__form-actions {
+    @include m.flexbox(row, flex-end, center, 0.5rem);
+    margin-top: 0.6rem;
+  }
+}

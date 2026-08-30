@@ -104,7 +104,16 @@ const deleteReservationAdmin = asyncHandler(async (req, res) => {
 });
 
 const CONTRACT_NOTE_FIELDS = ["customerNote", "adminNote", "referenceNo", "flightNo"];
-const CONTRACT_NUMBER_FIELDS = ["dailyPrice", "extrasTotal", "oneWayFee", "discount", "deposit", "kmLimit", "vatRate"];
+const CONTRACT_NUMBER_FIELDS = [
+  "dailyPrice",
+  "extrasTotal",
+  "oneWayFee",
+  "returnExtraAmount",
+  "discount",
+  "deposit",
+  "kmLimit",
+  "vatRate",
+];
 
 const num = (value) => {
   if (value === "" || value === null || value === undefined) return null;
@@ -121,16 +130,23 @@ const pickContractFields = (body) => {
     if (field in body) data[field] = num(body[field]);
   });
   if ("unlimitedKm" in body) data.unlimitedKm = Boolean(body.unlimitedKm);
+  if ("discountIsPercent" in body) data.discountIsPercent = Boolean(body.discountIsPercent);
   if ("corporateId" in body) data.corporateId = body.corporateId || null;
   return data;
 };
 
-// Contract grand total: daily price x rental days + extras + one-way - discount, then VAT.
-const computeTotal = ({ dailyPrice, extrasTotal, oneWayFee, discount, vatRate }, pickUp, dropOff) => {
+// Contract grand total: (daily price x rental days + extras + one-way + return extras)
+// minus discount (flat or %), plus VAT.
+const computeTotal = (r, pickUp, dropOff) => {
   const days = Math.max(1, Math.ceil(hoursBetween(pickUp, dropOff) / 24));
-  const rental = (num(dailyPrice) || 0) * days;
-  const subtotal = rental + (num(extrasTotal) || 0) + (num(oneWayFee) || 0) - (num(discount) || 0);
-  const rate = num(vatRate);
+  const rental = (num(r.dailyPrice) || 0) * days;
+  const base =
+    rental + (num(r.extrasTotal) || 0) + (num(r.oneWayFee) || 0) + (num(r.returnExtraAmount) || 0);
+  const discount = r.discountIsPercent
+    ? (base * (num(r.discount) || 0)) / 100
+    : num(r.discount) || 0;
+  const subtotal = base - discount;
+  const rate = num(r.vatRate);
   return round2(subtotal * (1 + (rate === null ? 20 : rate) / 100));
 };
 
