@@ -92,8 +92,26 @@
   &__link {
     display: inline-block;
     margin: 0.15rem 0 0.5rem;
+    padding: 0;
+    background: none;
+    border: none;
+    color: v.$color1;
     font-size: 0.85rem;
     font-weight: 600;
+
+    &:hover {
+      color: v.$color2;
+      text-decoration: underline;
+    }
+  }
+
+  &__radios {
+    @include m.flexbox(row, flex-start, center, 1rem);
+  }
+
+  &__corp-head {
+    @include m.flexbox(row, space-between, center, 0.5rem);
+    margin-bottom: 0.25rem;
   }
 
   &__actions {

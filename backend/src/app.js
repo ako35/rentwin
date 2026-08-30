@@ -12,6 +12,7 @@ const reservationsRoutes = require("./modules/reservations/reservations.routes")
 const contactMessagesRoutes = require("./modules/contact-messages/contact-messages.routes");
 const excelRoutes = require("./modules/excel/excel.routes");
 const branchesRoutes = require("./modules/branches/branches.routes");
+const corporatesRoutes = require("./modules/corporates/corporates.routes");
 const announcementsRoutes = require("./modules/announcements/announcements.routes");
 const notFound = require("./middleware/not-found");
 const errorHandler = require("./middleware/error-handler");
@@ -52,6 +53,7 @@ api.use(reservationsRoutes);
 api.use(contactMessagesRoutes);
 api.use(excelRoutes);
 api.use(branchesRoutes);
+api.use(corporatesRoutes);
 api.use(announcementsRoutes);
 
 app.use("/api", api);

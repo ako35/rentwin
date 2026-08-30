@@ -1,6 +1,6 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
-const { parseFrontendDateTime, resolveWindow } = require("../../lib/dates");
+const { parseFrontendDateTime, resolveWindow, hoursBetween, round2 } = require("../../lib/dates");
 const { checkAvailability } = require("../../lib/availability");
 const { serializeReservation, serializeScheduleRow } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
@@ -104,12 +104,35 @@ const deleteReservationAdmin = asyncHandler(async (req, res) => {
 });
 
 const CONTRACT_NOTE_FIELDS = ["customerNote", "adminNote", "referenceNo", "flightNo"];
+const CONTRACT_NUMBER_FIELDS = ["dailyPrice", "extrasTotal", "oneWayFee", "discount", "deposit", "kmLimit", "vatRate"];
 
-const pickContractNotes = (body) =>
-  CONTRACT_NOTE_FIELDS.reduce((data, field) => {
+const num = (value) => {
+  if (value === "" || value === null || value === undefined) return null;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+};
+
+const pickContractFields = (body) => {
+  const data = {};
+  CONTRACT_NOTE_FIELDS.forEach((field) => {
     if (field in body) data[field] = body[field] === "" ? null : body[field];
-    return data;
-  }, {});
+  });
+  CONTRACT_NUMBER_FIELDS.forEach((field) => {
+    if (field in body) data[field] = num(body[field]);
+  });
+  if ("unlimitedKm" in body) data.unlimitedKm = Boolean(body.unlimitedKm);
+  if ("corporateId" in body) data.corporateId = body.corporateId || null;
+  return data;
+};
+
+// Contract grand total: daily price x rental days + extras + one-way - discount, then VAT.
+const computeTotal = ({ dailyPrice, extrasTotal, oneWayFee, discount, vatRate }, pickUp, dropOff) => {
+  const days = Math.max(1, Math.ceil(hoursBetween(pickUp, dropOff) / 24));
+  const rental = (num(dailyPrice) || 0) * days;
+  const subtotal = rental + (num(extrasTotal) || 0) + (num(oneWayFee) || 0) - (num(discount) || 0);
+  const rate = num(vatRate);
+  return round2(subtotal * (1 + (rate === null ? 20 : rate) / 100));
+};
 
 const updateReservationAdmin = asyncHandler(async (req, res) => {
   const { carId, reservationId } = req.query;
@@ -122,9 +145,13 @@ const updateReservationAdmin = asyncHandler(async (req, res) => {
   const parsedDropOff = parseFrontendDateTime(dropOffTime);
   const targetCarId = carId || existing.carId;
 
-  const { totalPrice } = await checkAvailability(targetCarId, parsedPickUp, parsedDropOff, {
+  // Validates the date range and that the vehicle exists.
+  await checkAvailability(targetCarId, parsedPickUp, parsedDropOff, {
     excludeReservationId: existing.id,
   });
+
+  const contractFields = pickContractFields(req.body);
+  const totalPrice = computeTotal({ ...existing, ...contractFields }, parsedPickUp, parsedDropOff);
 
   const reservation = await prisma.reservation.update({
     where: { id: existing.id },
@@ -136,7 +163,7 @@ const updateReservationAdmin = asyncHandler(async (req, res) => {
       dropOffTime: parsedDropOff,
       status,
       totalPrice,
-      ...pickContractNotes(req.body),
+      ...contractFields,
     },
     include: CAR_INCLUDE,
   });
@@ -150,6 +177,7 @@ const getReservationByIdAdmin = asyncHandler(async (req, res) => {
     include: {
       ...CAR_INCLUDE,
       user: { select: { id: true, firstName: true, lastName: true, email: true, phoneNumber: true } },
+      corporate: true,
     },
   });
   if (!reservation) throw new HttpError(404, "Reservation not found.");

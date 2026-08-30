@@ -10,6 +10,8 @@ import { addVehicleRecord, deleteVehicleRecord, getVehicleRecords, updateVehicle
 
 import { addBranch, deleteBranch, getBranches, getPublicBranches, updateBranch } from "./branch/branch-service";
 
+import { addCorporate, deleteCorporate, getCorporate, getCorporates, updateCorporate } from "./corporate/corporate-service";
+
 import { addAnnouncement, deleteAnnouncement, getActiveAnnouncements, getAnnouncements, updateAnnouncement } from "./announcement/announcement-service";
 
 import { encryptedLocalStorage } from "./encrypt-storage/encrypt-storage";
@@ -80,6 +82,13 @@ export const services = {
         addBranch,
         updateBranch,
         deleteBranch,
+    },
+    corporate: {
+        getCorporates,
+        getCorporate,
+        addCorporate,
+        updateCorporate,
+        deleteCorporate,
     },
     announcement: {
         getActiveAnnouncements,

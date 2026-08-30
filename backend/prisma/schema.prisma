@@ -205,12 +205,37 @@ model Reservation {
   user            User              @relation(fields: [userId], references: [id])
   carId           String
   car             Vehicle           @relation(fields: [carId], references: [id], onDelete: Restrict)
+  corporateId     String?
+  corporate       Corporate?        @relation(fields: [corporateId], references: [id], onDelete: SetNull)
   customerNote    String?
   adminNote       String?
   referenceNo     String?
   flightNo        String?
+  dailyPrice      Float?
+  extrasTotal     Float?
+  oneWayFee       Float?
+  discount        Float?
+  deposit         Float?
+  kmLimit         Int?
+  unlimitedKm     Boolean           @default(true)
+  vatRate         Float             @default(20)
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
+}
+
+// "Cari" — corporate customer a contract can be billed to.
+model Corporate {
+  id           String        @id @default(uuid())
+  title        String
+  taxOffice    String?
+  taxNo        String?
+  phone        String?
+  email        String?
+  note         String?
+  blacklisted  Boolean       @default(false)
+  reservations Reservation[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 model ContactMessage {
