@@ -4,8 +4,8 @@
 $breakpoint: 992px;
 
 .reservation-search {
-    // Desktop: full-width bar sitting below the slider text, near the bottom
-    // of the hero, with a margin on each side.
+    // Desktop: single full-width row sitting below the slider text, near the
+    // bottom of the hero, with a margin on each side.
     position: absolute;
     z-index: 10;
     left: 50%;
@@ -14,9 +14,11 @@ $breakpoint: 992px;
     width: calc(100% - 4rem);
     max-width: 1240px;
 
-    @include m.flexbox(row, flex-start, stretch, 0.6rem);
+    display: flex;
     flex-wrap: wrap;
-    padding: 1.1rem 1.3rem;
+    align-items: stretch;
+    gap: 0.6rem;
+    padding: 0.85rem 1rem;
     background-color: v.$color4_2;
     backdrop-filter: blur(4px);
     border-radius: 16px;
@@ -32,37 +34,43 @@ $breakpoint: 992px;
         background-color: v.$color4;
     }
 
-    &__title {
-        flex-basis: 100%;
-        margin: 0;
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: v.$color1;
-    }
-
-    &__row {
-        @include m.flexbox(row, flex-start, stretch, 0.5rem);
-        flex: 1 1 340px;
-
-        @media (max-width: $breakpoint) {
-            flex-basis: 100%;
-        }
-
-        @media (max-width: 420px) {
-            flex-wrap: wrap;
-        }
-    }
-
     &__field {
-        @include m.flexbox(row, flex-start, center, 0.4rem);
-        padding: 0.55rem 0.7rem;
+        @include m.flexbox(column, center, stretch, 0.1rem);
+        flex: 1 1 140px;
+        min-width: 0;
+        padding: 0.45rem 0.8rem;
         background-color: v.$color4;
         border: 1px solid v.$color3;
-        border-radius: 9px;
+        border-radius: 10px;
 
         &:focus-within {
             border-color: v.$color2;
         }
+
+        label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: v.$color5_3;
+            letter-spacing: 0.02em;
+        }
+
+        &--location {
+            flex: 3 1 220px;
+        }
+
+        &--pickUpDate,
+        &--dropOffDate {
+            flex: 1.3 1 155px;
+        }
+
+        @media (max-width: $breakpoint) {
+            flex-basis: 100%;
+        }
+    }
+
+    &__control {
+        @include m.flexbox(row, flex-start, center, 0.4rem);
+        min-width: 0;
 
         input {
             border: none;
@@ -85,32 +93,11 @@ $breakpoint: 992px;
                 color: #c0392b;
             }
         }
-
-        &--location {
-            flex: 1 1 auto;
-            min-width: 0;
-        }
-
-        &--date {
-            flex: 0 0 8rem;
-        }
-
-        &--time {
-            flex: 0 0 5.25rem;
-        }
-
-        @media (max-width: 420px) {
-            &--location,
-            &--date,
-            &--time {
-                flex: 1 1 100%;
-            }
-        }
     }
 
     &__icon {
         flex-shrink: 0;
-        font-size: 1rem;
+        font-size: 0.95rem;
         color: v.$color2;
     }
 
@@ -122,14 +109,14 @@ $breakpoint: 992px;
     }
 
     &__submit {
-        flex: 1 1 200px;
-        padding: 0.85rem 1.5rem;
+        flex: 0 0 auto;
+        padding: 0 1.9rem;
         border: none;
-        border-radius: 9px;
+        border-radius: 10px;
         background-color: v.$color1;
         color: v.$color4;
         font-weight: 700;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.03em;
         white-space: nowrap;
         cursor: pointer;
         transition: background-color 0.15s ease;
@@ -140,6 +127,7 @@ $breakpoint: 992px;
 
         @media (max-width: $breakpoint) {
             flex-basis: 100%;
+            padding: 0.9rem;
         }
     }
 }

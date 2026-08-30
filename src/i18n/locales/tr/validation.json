@@ -47,8 +47,7 @@
     "emailRequired": "Lütfen e-posta adresinizi girin"
   },
   "reservationSearch": {
-    "pickUpLocationRequired": "Alış yerini seçin",
-    "dropOffLocationRequired": "İade yerini seçin",
+    "locationRequired": "Alış yerini seçin",
     "pickUpDateRequired": "Alış tarihini seçin",
     "pickUpTimeRequired": "Alış saatini seçin",
     "dropOffDateRequired": "Bırakış tarihini seçin",

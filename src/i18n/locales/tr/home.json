@@ -1,13 +1,12 @@
 {
   "reservationSearch": {
-    "title": "Müsait Araç Ara",
-    "pickUpLocationPlaceholder": "Alış yeri seçiniz",
-    "dropOffLocationPlaceholder": "İade yeri seçiniz",
-    "pickUpDate": "Alış tarihi",
-    "pickUpTime": "Alış saati",
-    "dropOffDate": "İade tarihi",
-    "dropOffTime": "İade saati",
-    "submit": "Araçları Göster"
+    "locationLabel": "Alış Yeri",
+    "locationPlaceholder": "Şube / konum seçin",
+    "pickUpDate": "Alış Tarihi",
+    "pickUpTime": "Alış Saati",
+    "dropOffDate": "Bırakış Tarihi",
+    "dropOffTime": "Bırakış Saati",
+    "submit": "ARAÇ ARA"
   },
   "slider": [
     {

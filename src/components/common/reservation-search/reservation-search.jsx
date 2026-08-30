@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { BsGeoAlt } from "react-icons/bs";
+import { BsCalendarEvent, BsClock, BsGeoAlt } from "react-icons/bs";
 import { utils } from "../../../utils";
 import { services } from "../../../services";
 import { constants } from "../../../constants";
@@ -29,53 +29,36 @@ const ReservationSearch = () => {
     initialValues: utils.initialValues.reservationSearchInitialValues(),
     validationSchema: utils.validations.reservationSearchValidationSchema,
     onSubmit: (values) => {
-      dispatch(setSearchCriteria(values));
+      dispatch(
+        setSearchCriteria({
+          pickUpLocation: values.location.trim(),
+          dropOffLocation: values.location.trim(),
+          pickUpDate: values.pickUpDate,
+          pickUpTime: values.pickUpTime,
+          dropOffDate: values.dropOffDate,
+          dropOffTime: values.dropOffTime,
+        })
+      );
       navigate(routes.vehicles);
     },
   });
 
   const invalid = (name) => (formik.touched[name] && formik.errors[name] ? "is-invalid" : "");
-
   const firstError = Object.keys(formik.errors).find((k) => formik.touched[k]);
 
-  const row = (locationName, dateName, timeName, placeholder) => (
-    <div className="reservation-search__row">
-      <div className="reservation-search__field reservation-search__field--location">
-        <BsGeoAlt className="reservation-search__icon" />
+  const field = (name, labelKey, icon, extraProps) => (
+    <div className={`reservation-search__field reservation-search__field--${name}`}>
+      <label htmlFor={`rs-${name}`}>{t(`reservationSearch.${labelKey}`)}</label>
+      <div className="reservation-search__control">
+        {icon}
         <input
-          name={locationName}
-          list="rs-branches"
-          autoComplete="off"
-          placeholder={placeholder}
-          value={formik.values[locationName]}
+          id={`rs-${name}`}
+          name={name}
+          value={formik.values[name]}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          className={invalid(locationName)}
-        />
-      </div>
-      <div className="reservation-search__field reservation-search__field--date">
-        <input
-          type="date"
-          name={dateName}
-          min={
-            dateName === "dropOffDate"
-              ? formik.values.pickUpDate || utils.functions.getCurrentDate()
-              : utils.functions.getCurrentDate()
-          }
-          value={formik.values[dateName]}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          className={invalid(dateName)}
-        />
-      </div>
-      <div className="reservation-search__field reservation-search__field--time">
-        <input
-          type="time"
-          name={timeName}
-          value={formik.values[timeName]}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          className={invalid(timeName)}
+          className={invalid(name)}
+          {...extraProps}
         />
       </div>
     </div>
@@ -83,10 +66,29 @@ const ReservationSearch = () => {
 
   return (
     <form className="reservation-search" onSubmit={formik.handleSubmit} noValidate>
-      <h3 className="reservation-search__title">{t("reservationSearch.title")}</h3>
+      {field("location", "locationLabel", <BsGeoAlt className="reservation-search__icon" />, {
+        list: "rs-branches",
+        autoComplete: "off",
+        placeholder: t("reservationSearch.locationPlaceholder"),
+      })}
+      {field("pickUpDate", "pickUpDate", <BsCalendarEvent className="reservation-search__icon" />, {
+        type: "date",
+        min: utils.functions.getCurrentDate(),
+      })}
+      {field("pickUpTime", "pickUpTime", <BsClock className="reservation-search__icon" />, {
+        type: "time",
+      })}
+      {field("dropOffDate", "dropOffDate", <BsCalendarEvent className="reservation-search__icon" />, {
+        type: "date",
+        min: formik.values.pickUpDate || utils.functions.getCurrentDate(),
+      })}
+      {field("dropOffTime", "dropOffTime", <BsClock className="reservation-search__icon" />, {
+        type: "time",
+      })}
 
-      {row("pickUpLocation", "pickUpDate", "pickUpTime", t("reservationSearch.pickUpLocationPlaceholder"))}
-      {row("dropOffLocation", "dropOffDate", "dropOffTime", t("reservationSearch.dropOffLocationPlaceholder"))}
+      <button type="submit" className="reservation-search__submit">
+        {t("reservationSearch.submit")}
+      </button>
 
       <datalist id="rs-branches">
         {branches.map((b) => (
@@ -95,10 +97,6 @@ const ReservationSearch = () => {
       </datalist>
 
       {firstError && <p className="reservation-search__error">{formik.errors[firstError]}</p>}
-
-      <button type="submit" className="reservation-search__submit">
-        {t("reservationSearch.submit")}
-      </button>
     </form>
   );
 };

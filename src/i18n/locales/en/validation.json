@@ -47,8 +47,7 @@
     "emailRequired": "Please enter your email address"
   },
   "reservationSearch": {
-    "pickUpLocationRequired": "Select a pick-up location",
-    "dropOffLocationRequired": "Select a drop-off location",
+    "locationRequired": "Select a pick-up location",
     "pickUpDateRequired": "Select a pick-up date",
     "pickUpTimeRequired": "Select a pick-up time",
     "dropOffDateRequired": "Select a drop-off date",
