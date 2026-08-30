@@ -103,6 +103,14 @@ const deleteReservationAdmin = asyncHandler(async (req, res) => {
   res.json({ message: "Reservation deleted." });
 });
 
+const CONTRACT_NOTE_FIELDS = ["customerNote", "adminNote", "referenceNo", "flightNo"];
+
+const pickContractNotes = (body) =>
+  CONTRACT_NOTE_FIELDS.reduce((data, field) => {
+    if (field in body) data[field] = body[field] === "" ? null : body[field];
+    return data;
+  }, {});
+
 const updateReservationAdmin = asyncHandler(async (req, res) => {
   const { carId, reservationId } = req.query;
   const { pickUpTime, dropOffTime, pickUpLocation, dropOffLocation, status } = req.body;
@@ -128,6 +136,7 @@ const updateReservationAdmin = asyncHandler(async (req, res) => {
       dropOffTime: parsedDropOff,
       status,
       totalPrice,
+      ...pickContractNotes(req.body),
     },
     include: CAR_INCLUDE,
   });
@@ -138,11 +147,20 @@ const updateReservationAdmin = asyncHandler(async (req, res) => {
 const getReservationByIdAdmin = asyncHandler(async (req, res) => {
   const reservation = await prisma.reservation.findUnique({
     where: { id: req.params.id },
-    include: CAR_INCLUDE,
+    include: {
+      ...CAR_INCLUDE,
+      user: { select: { id: true, firstName: true, lastName: true, email: true, phoneNumber: true } },
+    },
   });
   if (!reservation) throw new HttpError(404, "Reservation not found.");
 
-  res.json({ ...serializeReservation(reservation), carId: reservation.carId, userId: reservation.userId });
+  const { user, ...rest } = reservation;
+  res.json({
+    ...serializeReservation(rest),
+    carId: reservation.carId,
+    userId: reservation.userId,
+    customer: user,
+  });
 });
 
 // Admin dashboard "Returns"/"Departures" tables: reservations whose

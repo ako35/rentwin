@@ -1,70 +1,105 @@
 @use '../../../../styles/variables' as v;
 @use '../../../../styles/mixins' as m;
 
-$breakpointsm: 550px;
-$breakpointxs: 400px;
+.contract-page {
+  &__ribbon {
+    @include m.flexbox(row, space-between, center, 1rem);
+    flex-wrap: wrap;
+    background-color: v.$color1;
+    color: v.$color4;
+    border-radius: 6px;
+    padding: 0.55rem 1rem;
+    margin-bottom: 1rem;
+  }
 
-.admin-reservation-details-page{
-    padding: 0 1rem;
-    margin-top: 2rem;
+  &__ribbon-id {
+    font-weight: 700;
+    margin-right: 0.9rem;
+  }
 
-    .forms-container{
-        border: 1px solid v.$color1-5;
-        border-radius: 5px;
-        padding: 1rem;
-        margin-bottom: 1rem;
+  &__ribbon-status {
+    background-color: v.$color4;
+    color: v.$color1;
+    border-radius: 999px;
+    padding: 0.1rem 0.7rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
 
-        h2{
-            text-transform: uppercase;
-            color: v.$color1;
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-        }
+  &__ribbon-meta {
+    font-size: 0.78rem;
+    opacity: 0.9;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    align-items: start;
+
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .contract-card {
+    border: 1px solid v.$color3;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: #fff;
+
+    h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: v.$color1;
+      border-bottom: 1px solid v.$color3;
+      padding-bottom: 0.4rem;
+      margin-bottom: 0.8rem;
     }
 
-    .buttons-container{
-        @include m.flexbox(row, space-between, center);
-        flex-wrap: wrap;
-
-        .go-to-customer{
-
-            a[role="button"]{
-                @include m.button(v.$color4, v.$color1, v.$color1-2, v.$color4);
-                border: 1px solid v.$color1;
-                text-transform: uppercase;
-            }
-        }
-        
-        .btn-group{
-
-            button.btn{
-                text-transform: uppercase;
-
-                &:nth-child(odd){
-                    @include m.button(v.$color1, v.$color4, v.$color1-2, v.$color4);
-                }
-
-                &:nth-child(even){
-                    @include m.button(v.$color4, v.$color1, v.$color1-2, v.$color4);
-                    border: 1px solid v.$color1;
-                }
-            }
-
-            @media (max-width: $breakpointxs) {
-                @include m.flexbox(column, center, center, 5px);
-
-                *{
-                    border-radius: 5px !important;
-                }
-            }
-        }
-
-        @media (max-width: $breakpointsm) {
-            @include m.flexbox(column, center, center, 1rem);
-            
-            *{
-                width: 100%;
-            }
-        }
+    hr {
+      margin: 0.6rem 0;
+      border-color: v.$color3;
     }
+  }
+
+  &__pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+  }
+
+  &__ro {
+    @include m.flexbox(row, space-between, baseline, 1rem);
+    padding: 0.35rem 0;
+    border-bottom: 1px dashed v.$color3;
+    font-size: 0.85rem;
+
+    span {
+      color: v.$color5_3;
+      white-space: nowrap;
+    }
+
+    strong {
+      color: v.$color5;
+      text-align: right;
+    }
+  }
+
+  &__link {
+    display: inline-block;
+    margin: 0.15rem 0 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  &__actions {
+    grid-column: 1 / -1;
+    @include m.flexbox(row, flex-end, center, 0.5rem);
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+  }
 }

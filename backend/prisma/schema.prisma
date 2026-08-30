@@ -205,6 +205,10 @@ model Reservation {
   user            User              @relation(fields: [userId], references: [id])
   carId           String
   car             Vehicle           @relation(fields: [carId], references: [id], onDelete: Restrict)
+  customerNote    String?
+  adminNote       String?
+  referenceNo     String?
+  flightNo        String?
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 }
