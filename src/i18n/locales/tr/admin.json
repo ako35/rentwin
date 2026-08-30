@@ -204,8 +204,20 @@
     "contract": {
       "title": "Kontrat",
       "leftTitle": "Alış / Bırakış ve Araç Bilgileri",
-      "tabs": { "customer": "Müşteri", "drivers": "Sürücüler", "summary": "Özet" },
+      "tabs": { "customer": "Müşteri", "drivers": "Sürücüler", "payments": "Tahsilat", "summary": "Özet" },
       "customer": "Müşteri",
+      "payments": {
+        "amount": "Tutar (TL)",
+        "method": "Ödeme Şekli",
+        "paidAt": "Tarih",
+        "note": "Açıklama"
+      },
+      "paymentMethods": {
+        "Cash": "Nakit",
+        "CreditCard": "Kredi Kartı",
+        "Transfer": "Havale / EFT",
+        "Other": "Diğer"
+      },
       "drivers": {
         "firstName": "Ad",
         "lastName": "Soyad",

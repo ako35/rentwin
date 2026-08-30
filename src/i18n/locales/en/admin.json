@@ -204,8 +204,20 @@
     "contract": {
       "title": "Contract",
       "leftTitle": "Pick-up / Drop-off and Vehicle Details",
-      "tabs": { "customer": "Customer", "drivers": "Drivers", "summary": "Summary" },
+      "tabs": { "customer": "Customer", "drivers": "Drivers", "payments": "Payments", "summary": "Summary" },
       "customer": "Customer",
+      "payments": {
+        "amount": "Amount (TL)",
+        "method": "Method",
+        "paidAt": "Date",
+        "note": "Note"
+      },
+      "paymentMethods": {
+        "Cash": "Cash",
+        "CreditCard": "Credit Card",
+        "Transfer": "Bank Transfer",
+        "Other": "Other"
+      },
       "drivers": {
         "firstName": "First Name",
         "lastName": "Last Name",

@@ -61,6 +61,13 @@ const AdminReservationDetailsPage = () => {
   const [corpModal, setCorpModal] = useState(false);
   const [corpForm, setCorpForm] = useState(EMPTY_CORPORATE);
   const [savingCorp, setSavingCorp] = useState(false);
+  const [payments, setPayments] = useState([]);
+
+  const loadPayments = () =>
+    services.reservation
+      .getRecords(reservationId, "payments")
+      .then((data) => setPayments(Array.isArray(data) ? data : []))
+      .catch(() => setPayments([]));
 
   const money = (value) =>
     Number(value || 0).toLocaleString(i18n.language, {
@@ -121,6 +128,7 @@ const AdminReservationDetailsPage = () => {
       setVehicles(vehiclesData || []);
       setBranches(branchesData || []);
       setCorporates(corporatesData || []);
+      loadPayments();
       setCustomer(reservation.customer || null);
       setCustomerType(reservation.corporateId ? "corporate" : "individual");
       setMeta({ createdAt: reservation.createdAt, updatedAt: reservation.updatedAt });
@@ -223,7 +231,7 @@ const AdminReservationDetailsPage = () => {
     return { rental, base, discountAmount, subtotal, total };
   }, [formik.values, billableDays]);
 
-  const collected = 0; // payments — Phase 5
+  const collected = payments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
   const extensionTotal = 0; // extensions — Phase 7
 
   const branchNames = branches.map((b) => b.name);
@@ -310,6 +318,7 @@ const AdminReservationDetailsPage = () => {
             <Nav variant="tabs" activeKey={tab} onSelect={(k) => k && setTab(k)} className="mb-3">
               <Nav.Item><Nav.Link eventKey="customer">{c("tabs.customer")}</Nav.Link></Nav.Item>
               <Nav.Item><Nav.Link eventKey="drivers">{c("tabs.drivers")}</Nav.Link></Nav.Item>
+              <Nav.Item><Nav.Link eventKey="payments">{c("tabs.payments")}</Nav.Link></Nav.Item>
               <Nav.Item><Nav.Link eventKey="summary">{c("tabs.summary")}</Nav.Link></Nav.Item>
             </Nav>
 
@@ -396,6 +405,54 @@ const AdminReservationDetailsPage = () => {
                   deleteConfirmText: c("records.deleteConfirmText"),
                 }}
               />
+            )}
+
+            {tab === "payments" && (
+              <>
+                <div className="contract-page__pay-summary">
+                  {ro(c("grandTotal"), `${money(pricing.total)} TL`)}
+                  {ro(c("collected"), `${money(collected)} TL`)}
+                  {ro(c("balance"), `${money(collected - pricing.total)} TL`)}
+                </div>
+                <ContractRecords
+                  reservationId={reservationId}
+                  resource="payments"
+                  onChange={loadPayments}
+                  initial={{ amount: "", method: "Cash", paidAt: "", note: "" }}
+                  columns={[
+                    { key: "paidAt", label: c("payments.paidAt"), kind: "date" },
+                    { key: "method", label: c("payments.method"), format: (v) => c(`paymentMethods.${v}`) },
+                    { key: "amount", label: c("payments.amount"), kind: "money" },
+                    { key: "note", label: c("payments.note") },
+                  ]}
+                  fields={[
+                    { name: "amount", label: c("payments.amount"), type: "number" },
+                    {
+                      name: "method",
+                      label: c("payments.method"),
+                      type: "select",
+                      options: ["Cash", "CreditCard", "Transfer", "Other"].map((m) => ({
+                        value: m,
+                        label: c(`paymentMethods.${m}`),
+                      })),
+                    },
+                    { name: "paidAt", label: c("payments.paidAt"), type: "date" },
+                    { name: "note", label: c("payments.note") },
+                  ]}
+                  labels={{
+                    actions: c("records.actions"),
+                    add: c("records.add"),
+                    save: c("records.save"),
+                    cancel: c("records.cancel"),
+                    edit: c("records.edit"),
+                    delete: c("records.delete"),
+                    empty: c("records.empty"),
+                    error: c("records.error"),
+                    deleteConfirm: c("records.deleteConfirm"),
+                    deleteConfirmText: c("records.deleteConfirmText"),
+                  }}
+                />
+              </>
             )}
 
             {tab === "summary" && (

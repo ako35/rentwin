@@ -118,6 +118,14 @@
     margin-top: 1.25rem;
   }
 
+  &__pay-summary {
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background-color: v.$color4;
+    border: 1px solid v.$color3;
+    border-radius: 6px;
+  }
+
   &__price-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;

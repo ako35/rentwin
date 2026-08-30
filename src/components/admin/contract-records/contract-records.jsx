@@ -94,6 +94,7 @@ const ContractRecords = ({ reservationId, resource, columns, fields, initial, on
 
   const cell = (col, value) => {
     if (value === null || value === undefined || value === "") return "—";
+    if (col.format) return col.format(value);
     if (col.kind === "date") return utils.functions.getDate(value);
     if (col.kind === "money")
       return Number(value).toLocaleString(i18n.language, {
