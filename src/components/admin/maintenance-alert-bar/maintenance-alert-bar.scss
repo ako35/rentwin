@@ -87,44 +87,60 @@
         color: v.$color5-3;
     }
 
-    &__list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
+    &__table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+        table-layout: fixed;
 
-        li {
-            @include m.flexbox(row, flex-start, center, 0.75rem);
-            flex-wrap: wrap;
-            padding: 0.3rem 0;
+        th,
+        td {
+            padding: 0.32rem 0.6rem;
+            text-align: left;
             border-bottom: 1px solid v.$color3;
-            font-size: 0.85rem;
+            vertical-align: middle;
+        }
 
-            &:last-child {
-                border-bottom: none;
-            }
+        th {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: v.$color5-3;
+            border-bottom: 1px solid v.$color1-5;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        // Plaka | Araç | Tarih | Kalan Süre
+        th:nth-child(1),
+        td:nth-child(1) { width: 22%; }
+        th:nth-child(2),
+        td:nth-child(2) { width: 38%; }
+        th:nth-child(3),
+        td:nth-child(3) { width: 20%; }
+        th:nth-child(4),
+        td:nth-child(4) { width: 20%; }
+
+        td:nth-child(2) {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     }
 
     &__plate {
         font-weight: 700;
         color: v.$color1;
-        min-width: 92px;
-    }
-
-    &__name {
-        flex: 1;
-        min-width: 120px;
-        color: v.$color5;
-    }
-
-    &__date {
-        color: v.$color5-3;
-        min-width: 90px;
+        white-space: nowrap;
     }
 
     &__days {
         font-weight: 600;
         color: v.$color5;
+        white-space: nowrap;
 
         &--overdue {
             color: #c0392b;

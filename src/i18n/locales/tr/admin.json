@@ -338,6 +338,12 @@
     "daysLeft": "{{days}} gün kaldı",
     "daysOverdue": "{{days}} gün geçti",
     "none": "Yaklaşan kayıt yok",
+    "col": {
+      "plate": "Plaka",
+      "vehicle": "Araç",
+      "date": "Bitiş Tarihi",
+      "remaining": "Kalan Süre"
+    },
     "exchangeRates": "Döviz Kurları",
     "settings": "Ayarlar",
     "autoRefresh": "Otomatik Yenileme",

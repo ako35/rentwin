@@ -338,6 +338,12 @@
     "daysLeft": "{{days}} days left",
     "daysOverdue": "{{days}} days overdue",
     "none": "Nothing upcoming",
+    "col": {
+      "plate": "Plate",
+      "vehicle": "Vehicle",
+      "date": "Expiry Date",
+      "remaining": "Remaining"
+    },
     "exchangeRates": "Exchange Rates",
     "settings": "Settings",
     "autoRefresh": "Auto Refresh",

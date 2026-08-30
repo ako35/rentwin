@@ -72,27 +72,35 @@ const MaintenanceAlertBar = ({ alerts, autoRefresh, onAutoRefreshChange }) => {
           {activeList.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.none")}</div>
           ) : (
-            <ul className="maintenance-alert-bar__list">
-              {activeList.map((item) => (
-                <li key={item.vehicleId + item.date}>
-                  <span className="maintenance-alert-bar__plate">{item.plate}</span>
-                  <span className="maintenance-alert-bar__name">{item.name}</span>
-                  <span className="maintenance-alert-bar__date">
-                    {utils.functions.getDate(item.date)}
-                  </span>
-                  <span
-                    className={
-                      "maintenance-alert-bar__days" +
-                      (item.daysLeft < 0 ? " maintenance-alert-bar__days--overdue" : "")
-                    }
-                  >
-                    {item.daysLeft < 0
-                      ? t("alertBar.daysOverdue", { days: Math.abs(item.daysLeft) })
-                      : t("alertBar.daysLeft", { days: item.daysLeft })}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <table className="maintenance-alert-bar__table">
+              <thead>
+                <tr>
+                  <th>{t("alertBar.col.plate")}</th>
+                  <th>{t("alertBar.col.vehicle")}</th>
+                  <th>{t("alertBar.col.date")}</th>
+                  <th>{t("alertBar.col.remaining")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {activeList.map((item) => (
+                  <tr key={item.vehicleId + item.date}>
+                    <td className="maintenance-alert-bar__plate">{item.plate}</td>
+                    <td>{item.name}</td>
+                    <td>{utils.functions.getDate(item.date)}</td>
+                    <td
+                      className={
+                        "maintenance-alert-bar__days" +
+                        (item.daysLeft < 0 ? " maintenance-alert-bar__days--overdue" : "")
+                      }
+                    >
+                      {item.daysLeft < 0
+                        ? t("alertBar.daysOverdue", { days: Math.abs(item.daysLeft) })
+                        : t("alertBar.daysLeft", { days: item.daysLeft })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
         </div>
       )}
