@@ -4,7 +4,7 @@
 .admin-filter-bar {
     background-color: v.$color3;
     border-bottom: 1px solid v.$color1-5;
-    padding: 0.6rem 0;
+    padding: 0.4rem 0;
 
     .container-fluid {
         @include m.flexbox(row, space-between, center, 1rem);

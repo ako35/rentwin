@@ -6,11 +6,131 @@
     min-height: 100vh;
 
     .admin-layout__content {
-        padding: 1.5rem;
+        padding: 1rem 1.15rem;
         flex: 1;
 
         @media (max-width: 500px) {
-            padding: 1.5rem 0.75rem;
+            padding: 0.85rem 0.55rem;
         }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Compact overrides – keep the whole admin panel dense.               */
+    /* Scoped to .admin-layout so the public site is untouched.            */
+    /* ------------------------------------------------------------------ */
+
+    // page wrappers stack their content with a large flex gap
+    > .admin-layout__content > [class*="-page"] {
+        gap: 1.15rem;
+    }
+
+    // headings
+    h1 { font-size: 1.35rem; }
+    h2 { font-size: 1.1rem; }
+    h3 { font-size: 1rem; }
+    h4 { font-size: 0.9rem; }
+    h5 { font-size: 0.85rem; }
+
+    [class$="__toolbar"] {
+        margin-bottom: 0.7rem;
+
+        h2 { font-size: 1.1rem; }
+    }
+
+    .forms-container {
+        padding: 0.85rem !important;
+        margin-bottom: 0.85rem !important;
+
+        h2 {
+            font-size: 1.05rem !important;
+            margin-bottom: 0.9rem !important;
+        }
+    }
+
+    // form controls
+    .form-label {
+        margin-bottom: 0.15rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .form-control,
+    .form-select {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.88rem;
+    }
+
+    textarea.form-control {
+        min-height: unset;
+    }
+
+    .mb-3 { margin-bottom: 0.6rem !important; }
+    .mb-4,
+    .my-4 { margin-bottom: 0.85rem !important; }
+    .mt-3 { margin-top: 0.6rem !important; }
+    .mt-4 { margin-top: 0.85rem !important; }
+    .mt-5 { margin-top: 1.25rem !important; }
+    .input-group { margin-bottom: 0.6rem !important; }
+
+    .form-check {
+        margin-bottom: 0.3rem;
+        min-height: unset;
+    }
+
+    // buttons
+    .btn {
+        padding: 0.35rem 0.85rem;
+        font-size: 0.88rem;
+    }
+    .btn-sm {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    // react-data-table
+    [role="table"] {
+        [role="columnheader"],
+        [role="cell"] {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        [role="row"] {
+            min-height: 40px;
+        }
+    }
+
+    // bootstrap <Table>
+    .table {
+        font-size: 0.85rem;
+
+        > :not(caption) > * > * {
+            padding: 0.4rem 0.5rem;
+        }
+    }
+
+    // cards / modals / accordions
+    .card-body { padding: 0.85rem; }
+    .modal-body { padding: 1rem 1.15rem; }
+    .modal-header { padding: 0.7rem 1.15rem; }
+    .modal-footer { padding: 0.55rem 1.15rem; }
+    .accordion-button {
+        padding: 0.6rem 0.85rem;
+        font-size: 0.9rem;
+    }
+    .accordion-body { padding: 0.85rem; }
+
+    // nav (tabs / pills used on dashboard + vehicle form)
+    .nav-link {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.88rem;
+    }
+
+    // alerts
+    .alert {
+        padding: 0.6rem 0.85rem;
+        margin-bottom: 0.7rem;
+        font-size: 0.88rem;
     }
 }
