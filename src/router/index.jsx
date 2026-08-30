@@ -6,6 +6,7 @@ import {
   AdminContactMessageDetailsPage,
   AdminContactMessagesPage,
   AdminDashboard,
+  AdminExtrasPage,
   AdminLocationsPage,
   AdminNewVehiclePage,
   AdminReservationDetailsPage,
@@ -120,6 +121,10 @@ const router = createBrowserRouter([
       {
         path: "locations",
         element: <AdminLocationsPage />,
+      },
+      {
+        path: "extras",
+        element: <AdminExtrasPage />,
       },
       {
         path: "coming-soon/:module",

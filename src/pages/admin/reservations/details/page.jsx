@@ -62,6 +62,7 @@ const AdminReservationDetailsPage = () => {
   const [corpForm, setCorpForm] = useState(EMPTY_CORPORATE);
   const [savingCorp, setSavingCorp] = useState(false);
   const [payments, setPayments] = useState([]);
+  const [catalog, setCatalog] = useState([]);
 
   const loadPayments = () =>
     services.reservation
@@ -119,15 +120,17 @@ const AdminReservationDetailsPage = () => {
 
   const loadData = async () => {
     try {
-      const [reservation, vehiclesData, branchesData, corporatesData] = await Promise.all([
+      const [reservation, vehiclesData, branchesData, corporatesData, catalogData] = await Promise.all([
         services.reservation.getReservationByIdAdmin(reservationId),
         services.vehicle.getVehicles(),
         services.branch.getBranches().catch(() => []),
         services.corporate.getCorporates().catch(() => []),
+        services.extra.getExtras().catch(() => []),
       ]);
       setVehicles(vehiclesData || []);
       setBranches(branchesData || []);
       setCorporates(corporatesData || []);
+      setCatalog(catalogData || []);
       loadPayments();
       setCustomer(reservation.customer || null);
       setCustomerType(reservation.corporateId ? "corporate" : "individual");
@@ -318,6 +321,7 @@ const AdminReservationDetailsPage = () => {
             <Nav variant="tabs" activeKey={tab} onSelect={(k) => k && setTab(k)} className="mb-3">
               <Nav.Item><Nav.Link eventKey="customer">{c("tabs.customer")}</Nav.Link></Nav.Item>
               <Nav.Item><Nav.Link eventKey="drivers">{c("tabs.drivers")}</Nav.Link></Nav.Item>
+              <Nav.Item><Nav.Link eventKey="extras">{c("tabs.extras")}</Nav.Link></Nav.Item>
               <Nav.Item><Nav.Link eventKey="payments">{c("tabs.payments")}</Nav.Link></Nav.Item>
               <Nav.Item><Nav.Link eventKey="summary">{c("tabs.summary")}</Nav.Link></Nav.Item>
             </Nav>
@@ -404,6 +408,61 @@ const AdminReservationDetailsPage = () => {
                   deleteConfirm: c("records.deleteConfirm"),
                   deleteConfirmText: c("records.deleteConfirmText"),
                 }}
+              />
+            )}
+
+            {tab === "extras" && (
+              <ContractRecords
+                reservationId={reservationId}
+                resource="extras"
+                onChange={loadData}
+                catalog={catalog.map((x) => ({
+                  label: `${x.name} (${x.unitPrice} TL${x.perDay ? "/gün" : ""})`,
+                  values: { name: x.name, unitPrice: x.unitPrice, perDay: x.perDay, quantity: 1 },
+                }))}
+                initial={{ name: "", unitPrice: "", perDay: true, quantity: 1 }}
+                columns={[
+                  { key: "name", label: c("extrasFields.name") },
+                  { key: "unitPrice", label: c("extrasFields.unitPrice"), kind: "money" },
+                  { key: "quantity", label: c("extrasFields.quantity") },
+                  {
+                    key: "perDay",
+                    label: c("extrasFields.perDay"),
+                    format: (v) => (v ? "✓" : "—"),
+                  },
+                ]}
+                fields={[
+                  { name: "name", label: c("extrasFields.name") },
+                  { name: "unitPrice", label: c("extrasFields.unitPrice"), type: "number" },
+                  { name: "quantity", label: c("extrasFields.quantity"), type: "number" },
+                  {
+                    name: "perDay",
+                    label: c("extrasFields.perDay"),
+                    type: "select",
+                    options: [
+                      { value: "true", label: "✓" },
+                      { value: "", label: "—" },
+                    ],
+                  },
+                ]}
+                labels={{
+                  actions: c("records.actions"),
+                  add: c("records.add"),
+                  save: c("records.save"),
+                  cancel: c("records.cancel"),
+                  edit: c("records.edit"),
+                  delete: c("records.delete"),
+                  empty: c("records.empty"),
+                  error: c("records.error"),
+                  deleteConfirm: c("records.deleteConfirm"),
+                  deleteConfirmText: c("records.deleteConfirmText"),
+                }}
+                footer={
+                  <div className="contract-page__ro" style={{ marginTop: "0.5rem" }}>
+                    <span>{c("extrasTotal")}</span>
+                    <strong>{money(formik.values.extrasTotal)} TL</strong>
+                  </div>
+                }
               />
             )}
 

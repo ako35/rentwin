@@ -64,7 +64,9 @@ const AdminTopNav = () => {
             <Nav.Link as={Link} to={routes.adminUsers} active={pathname.startsWith(routes.adminUsers)}>
               {t("topNav.customer")}
             </Nav.Link>
-            <Nav.Link onClick={comingSoon("fiyat")}>{t("topNav.price")}</Nav.Link>
+            <NavDropdown title={t("topNav.price")} active={pathname.startsWith(routes.adminExtras)}>
+              <NavDropdown.Item as={Link} to={routes.adminExtras}>{t("topNav.extras")}</NavDropdown.Item>
+            </NavDropdown>
             <Nav.Link as={Link} to={routes.adminLocations} active={pathname.startsWith(routes.adminLocations)}>
               {t("topNav.location")}
             </Nav.Link>

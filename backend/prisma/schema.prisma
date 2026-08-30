@@ -222,6 +222,8 @@ model Reservation {
   unlimitedKm     Boolean           @default(true)
   vatRate         Float             @default(20)
   drivers         ReservationDriver[]
+  payments        ReservationPayment[]
+  extras          ReservationExtra[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 }
@@ -237,6 +239,42 @@ model ReservationDriver {
   licenseDate   DateTime?
   birthDate     DateTime?
   phone         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model ReservationPayment {
+  id            String      @id @default(uuid())
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  amount        Float
+  method        String      @default("Cash")
+  paidAt        DateTime    @default(now())
+  note          String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+// Catalogue of billable extras (child seat, extra driver, GPS, ...).
+model Extra {
+  id        String   @id @default(uuid())
+  name      String
+  unitPrice Float    @default(0)
+  perDay    Boolean  @default(true)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// An extra selected on a specific contract (values snapshotted from the catalogue).
+model ReservationExtra {
+  id            String      @id @default(uuid())
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  name          String
+  unitPrice     Float       @default(0)
+  perDay        Boolean     @default(true)
+  quantity      Int         @default(1)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }

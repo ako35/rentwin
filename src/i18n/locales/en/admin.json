@@ -204,8 +204,14 @@
     "contract": {
       "title": "Contract",
       "leftTitle": "Pick-up / Drop-off and Vehicle Details",
-      "tabs": { "customer": "Customer", "drivers": "Drivers", "payments": "Payments", "summary": "Summary" },
+      "tabs": { "customer": "Customer", "drivers": "Drivers", "extras": "Extras", "payments": "Payments", "summary": "Summary" },
       "customer": "Customer",
+      "extrasFields": {
+        "name": "Extra",
+        "unitPrice": "Unit Price",
+        "quantity": "Qty",
+        "perDay": "Per Day"
+      },
       "payments": {
         "amount": "Amount (TL)",
         "method": "Method",
@@ -394,6 +400,7 @@
     "vehicle": "Vehicle",
     "vehicleList": "Vehicle List",
     "addVehicle": "Add Vehicle",
+    "extras": "Extras",
     "reservationsAndContracts": "Res & Contract",
     "reservations": "Reservations",
     "longTerm": "Long Term",
@@ -445,6 +452,29 @@
   "footer": {
     "copyright": "© 2014 - {{year}} Rentwin Software. All Rights Reserved",
     "requestSupport": "Request Support"
+  },
+  "extras": {
+    "pageTitle": "Extra Definitions",
+    "add": "Add Extra",
+    "editTitle": "Edit Extra",
+    "name": "Name",
+    "unitPrice": "Unit Price (TL)",
+    "billing": "Billing",
+    "perDay": "Per Day",
+    "perRental": "Per Rental",
+    "active": "Active",
+    "actions": "Action",
+    "empty": "No extras defined",
+    "save": "Save",
+    "cancel": "Cancel",
+    "toasts": {
+      "saveSuccess": "Extra saved.",
+      "saveError": "There was an error while saving the extra.",
+      "deleteSuccess": "Extra deleted.",
+      "deleteError": "There was an error while deleting the extra.",
+      "deleteConfirm": "Are you sure you want to delete this extra?",
+      "deleteConfirmText": "You won't be able to revert this action!"
+    }
   },
   "locations": {
     "pageTitle": "Location / Branch Management",

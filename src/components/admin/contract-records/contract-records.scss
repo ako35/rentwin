@@ -2,6 +2,27 @@
 @use '../../../styles/mixins' as m;
 
 .contract-records {
+  &__catalog {
+    @include m.flexbox(row, flex-start, center, 0.4rem);
+    flex-wrap: wrap;
+    margin-bottom: 0.6rem;
+
+    button {
+      border: 1px solid v.$color2;
+      background-color: v.$color4;
+      color: v.$color1;
+      border-radius: 999px;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+
+      &:hover {
+        background-color: v.$color2;
+        color: v.$color4;
+      }
+    }
+  }
+
   &__actions {
     white-space: nowrap;
 

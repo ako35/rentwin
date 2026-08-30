@@ -14,6 +14,8 @@ import { addBranch, deleteBranch, getBranches, getPublicBranches, updateBranch }
 
 import { addCorporate, deleteCorporate, getCorporate, getCorporates, updateCorporate } from "./corporate/corporate-service";
 
+import { addExtra, deleteExtra, getExtras, updateExtra } from "./extra/extra-service";
+
 import { addAnnouncement, deleteAnnouncement, getActiveAnnouncements, getAnnouncements, updateAnnouncement } from "./announcement/announcement-service";
 
 import { encryptedLocalStorage } from "./encrypt-storage/encrypt-storage";
@@ -95,6 +97,12 @@ export const services = {
         addCorporate,
         updateCorporate,
         deleteCorporate,
+    },
+    extra: {
+        getExtras,
+        addExtra,
+        updateExtra,
+        deleteExtra,
     },
     announcement: {
         getActiveAnnouncements,

@@ -115,6 +115,7 @@ const routes = {
   adminComingSoon: "/admin/coming-soon",
   adminContactMessages: "/admin/contact-messages",
   adminDashboard: "/admin",
+  adminExtras: "/admin/extras",
   adminLocations: "/admin/locations",
   adminReservations: "/admin/reservations",
   adminUsers: "/admin/users",

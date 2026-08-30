@@ -14,6 +14,7 @@ const contactMessagesRoutes = require("./modules/contact-messages/contact-messag
 const excelRoutes = require("./modules/excel/excel.routes");
 const branchesRoutes = require("./modules/branches/branches.routes");
 const corporatesRoutes = require("./modules/corporates/corporates.routes");
+const extrasRoutes = require("./modules/extras/extras.routes");
 const announcementsRoutes = require("./modules/announcements/announcements.routes");
 const notFound = require("./middleware/not-found");
 const errorHandler = require("./middleware/error-handler");
@@ -56,6 +57,7 @@ api.use(contactMessagesRoutes);
 api.use(excelRoutes);
 api.use(branchesRoutes);
 api.use(corporatesRoutes);
+api.use(extrasRoutes);
 api.use(announcementsRoutes);
 
 app.use("/api", api);

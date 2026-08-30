@@ -1,6 +1,7 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const asyncHandler = require("../../middleware/async-handler");
+const { hoursBetween, round2 } = require("../../lib/dates");
 
 // Generic CRUD for records that hang off a reservation (contract).
 // URL segment -> Prisma model + accepted payload shape.
@@ -21,6 +22,38 @@ const RESOURCES = {
     numberFields: ["amount"],
     orderBy: [{ paidAt: "desc" }],
   },
+  extras: {
+    model: "reservationExtra",
+    fields: ["name", "unitPrice", "perDay", "quantity"],
+    required: ["name"],
+    dateFields: [],
+    numberFields: ["unitPrice", "quantity"],
+    boolFields: ["perDay"],
+    orderBy: [{ createdAt: "asc" }],
+    // After any change, cache the summed line totals on Reservation.extrasTotal.
+    recomputeExtrasTotal: true,
+  },
+};
+
+// billable days for the contract; matches reservations.controller computeTotal.
+const contractDays = (reservation) =>
+  Math.max(1, Math.ceil(hoursBetween(reservation.pickUpTime, reservation.dropOffTime) / 24));
+
+const syncExtrasTotal = async (reservationId) => {
+  const reservation = await prisma.reservation.findUnique({
+    where: { id: reservationId },
+    select: { id: true, pickUpTime: true, dropOffTime: true },
+  });
+  if (!reservation) return;
+  const rows = await prisma.reservationExtra.findMany({ where: { reservationId } });
+  const days = contractDays(reservation);
+  const total = rows.reduce(
+    (sum, r) => sum + r.unitPrice * r.quantity * (r.perDay ? days : 1),
+    0
+  );
+  await prisma.reservation
+    .update({ where: { id: reservationId }, data: { extrasTotal: round2(total) } })
+    .catch(() => {});
 };
 
 const getResource = (name) => {
@@ -33,13 +66,16 @@ const isBlank = (v) => v === undefined || v === null || v === "";
 
 const buildData = (resource, body, { partial } = {}) => {
   const data = {};
+  const boolFields = resource.boolFields || [];
   resource.fields.forEach((field) => {
     if (partial && !(field in body)) return;
     const raw = body[field];
-    if (resource.dateFields.includes(field)) {
+    if (boolFields.includes(field)) {
+      data[field] = Boolean(raw);
+    } else if (resource.dateFields.includes(field)) {
       data[field] = isBlank(raw) ? null : new Date(raw);
     } else if (resource.numberFields.includes(field)) {
-      data[field] = isBlank(raw) ? null : Number(raw);
+      data[field] = isBlank(raw) ? (field === "quantity" ? 1 : 0) : Number(raw);
     } else {
       data[field] = isBlank(raw) ? null : raw;
     }
@@ -80,6 +116,7 @@ const createRecord = asyncHandler(async (req, res) => {
   const record = await prisma[resource.model].create({
     data: { ...buildData(resource, req.body), reservationId: req.params.reservationId },
   });
+  if (resource.recomputeExtrasTotal) await syncExtrasTotal(req.params.reservationId);
   res.status(201).json(record);
 });
 
@@ -91,6 +128,7 @@ const updateRecord = asyncHandler(async (req, res) => {
     where: { id: req.params.id },
     data: buildData(resource, req.body, { partial: true }),
   });
+  if (resource.recomputeExtrasTotal) await syncExtrasTotal(target.reservationId);
   res.json(record);
 });
 
@@ -99,6 +137,7 @@ const deleteRecord = asyncHandler(async (req, res) => {
   const target = await prisma[resource.model].findUnique({ where: { id: req.params.id } });
   if (!target) throw new HttpError(404, "Record not found.");
   await prisma[resource.model].delete({ where: { id: req.params.id } });
+  if (resource.recomputeExtrasTotal) await syncExtrasTotal(target.reservationId);
   res.json({ message: "Record deleted." });
 });
 

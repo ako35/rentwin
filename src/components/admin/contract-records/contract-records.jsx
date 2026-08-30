@@ -15,7 +15,17 @@ import "./contract-records.scss";
  * @param onChange  called after any mutation (parent can refresh totals)
  * @param labels    { add, save, cancel, edit, delete, empty }
  */
-const ContractRecords = ({ reservationId, resource, columns, fields, initial, onChange, labels }) => {
+const ContractRecords = ({
+  reservationId,
+  resource,
+  columns,
+  fields,
+  initial,
+  onChange,
+  labels,
+  catalog,
+  footer,
+}) => {
   const { i18n } = useTranslation();
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,6 +89,19 @@ const ContractRecords = ({ reservationId, resource, columns, fields, initial, on
     }
   };
 
+  const quickAdd = async (values) => {
+    setSaving(true);
+    try {
+      await services.reservation.addRecord(reservationId, resource, values);
+      await load();
+      onChange?.();
+    } catch {
+      utils.functions.swalToast(labels.error, "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const remove = (row) => {
     utils.functions.swalQuestion(labels.deleteConfirm, labels.deleteConfirmText).then(async (r) => {
       if (!r.isConfirmed) return;
@@ -106,6 +129,21 @@ const ContractRecords = ({ reservationId, resource, columns, fields, initial, on
 
   return (
     <div className="contract-records">
+      {catalog && catalog.length > 0 && (
+        <div className="contract-records__catalog">
+          {catalog.map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              disabled={saving}
+              onClick={() => quickAdd(item.values)}
+            >
+              + {item.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       <Table hover size="sm" className="mb-2">
         <thead>
           <tr>
@@ -186,6 +224,8 @@ const ContractRecords = ({ reservationId, resource, columns, fields, initial, on
           </Button>
         </div>
       </form>
+
+      {footer}
     </div>
   );
 };

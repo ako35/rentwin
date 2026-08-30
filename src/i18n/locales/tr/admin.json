@@ -204,8 +204,14 @@
     "contract": {
       "title": "Kontrat",
       "leftTitle": "Alış / Bırakış ve Araç Bilgileri",
-      "tabs": { "customer": "Müşteri", "drivers": "Sürücüler", "payments": "Tahsilat", "summary": "Özet" },
+      "tabs": { "customer": "Müşteri", "drivers": "Sürücüler", "extras": "Ekstralar", "payments": "Tahsilat", "summary": "Özet" },
       "customer": "Müşteri",
+      "extrasFields": {
+        "name": "Ekstra",
+        "unitPrice": "Birim Fiyat",
+        "quantity": "Adet",
+        "perDay": "Günlük"
+      },
       "payments": {
         "amount": "Tutar (TL)",
         "method": "Ödeme Şekli",
@@ -394,6 +400,7 @@
     "vehicle": "Araç",
     "vehicleList": "Araç Listesi",
     "addVehicle": "Araç Ekle",
+    "extras": "Ekstralar",
     "reservationsAndContracts": "Rez & Kontrat",
     "reservations": "Rezervasyonlar",
     "longTerm": "Uzun Dönem",
@@ -445,6 +452,29 @@
   "footer": {
     "copyright": "© 2014 - {{year}} Rentwin Yazılım. Tüm Hakları Saklıdır",
     "requestSupport": "Destek Talep Et"
+  },
+  "extras": {
+    "pageTitle": "Ekstra Tanımları",
+    "add": "Ekstra Ekle",
+    "editTitle": "Ekstra Düzenle",
+    "name": "Ad",
+    "unitPrice": "Birim Fiyat (TL)",
+    "billing": "Ücretlendirme",
+    "perDay": "Günlük",
+    "perRental": "Kiralama Başına",
+    "active": "Aktif",
+    "actions": "İşlem",
+    "empty": "Ekstra tanımlanmadı",
+    "save": "Kaydet",
+    "cancel": "Vazgeç",
+    "toasts": {
+      "saveSuccess": "Ekstra kaydedildi.",
+      "saveError": "Ekstra kaydedilirken bir hata oluştu.",
+      "deleteSuccess": "Ekstra silindi.",
+      "deleteError": "Ekstra silinirken bir hata oluştu.",
+      "deleteConfirm": "Bu ekstrayı silmek istediğinizden emin misiniz?",
+      "deleteConfirmText": "Bu işlemi geri alamazsınız!"
+    }
   },
   "locations": {
     "pageTitle": "Lokasyon / Şube Yönetimi",
