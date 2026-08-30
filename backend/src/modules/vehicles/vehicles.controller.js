@@ -23,7 +23,6 @@ const VEHICLE_FIELDS = [
   "currentKm",
   "registrationSerialNo",
   "registrationDate",
-  "ownershipType",
   "color",
   "notes",
 ];
@@ -36,7 +35,6 @@ const NULLABLE_STRING_FIELDS = [
   "chassisNo",
   "engineNo",
   "registrationSerialNo",
-  "ownershipType",
   "color",
   "notes",
   "branchId",

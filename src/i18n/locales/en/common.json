@@ -67,11 +67,6 @@
       "CANCELLED": "Cancelled",
       "DONE": "Done"
     },
-    "ownershipTypes": {
-      "Owned": "Owned",
-      "Rented": "Rented",
-      "OperationalLease": "Operational Lease"
-    },
     "insuranceTypes": {
       "Traffic": "Traffic Insurance",
       "Kasko": "Comprehensive (Kasko)"

@@ -35,12 +35,6 @@ enum ReservationStatus {
   DONE
 }
 
-enum OwnershipType {
-  Owned
-  Rented
-  OperationalLease
-}
-
 enum InsuranceType {
   Traffic
   Kasko
@@ -108,7 +102,6 @@ model Vehicle {
   currentKm            Int?
   registrationSerialNo String?
   registrationDate     DateTime?
-  ownershipType        OwnershipType?
   color                String?
   notes                String?
   images               VehicleImage[]

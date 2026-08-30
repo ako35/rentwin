@@ -98,7 +98,6 @@ const AdminVehicleDetailsPage = () => {
         ...utils.initialValues.adminNewVehicleFormInitialValues,
         ...response,
         branchId: toText(response.branchId),
-        ownershipType: toText(response.ownershipType),
         chassisNo: toText(response.chassisNo),
         engineNo: toText(response.engineNo),
         color: toText(response.color),

@@ -77,7 +77,6 @@ export const adminNewVehicleFormInitialValues = {
     currentKm: "",
     registrationSerialNo: "",
     registrationDate: "",
-    ownershipType: "",
     color: "",
     notes: "",
     image: "",

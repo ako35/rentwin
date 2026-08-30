@@ -107,16 +107,6 @@ const VehicleForm = ({
       {
         key: "registration",
         items: [
-          {
-            name: "ownershipType",
-            type: "select",
-            itemsArr: [
-              { id: "none", value: "", name: "—" },
-              ...withNames(constants.ownershipTypes, (i) =>
-                tCommon(`options.ownershipTypes.${i.value}`)
-              ),
-            ],
-          },
           { name: "registrationSerialNo" },
           { name: "registrationDate", type: "date" },
           {

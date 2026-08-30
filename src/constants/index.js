@@ -49,11 +49,6 @@ const fuelTypes = [
   },
 ];
 
-const ownershipTypes = [
-  { id: 1, name: "Owned", value: "Owned" },
-  { id: 2, name: "Rented", value: "Rented" },
-  { id: 3, name: "OperationalLease", value: "OperationalLease" },
-];
 
 const insuranceTypes = [
   { id: 1, name: "Traffic", value: "Traffic" },
@@ -179,7 +174,6 @@ export const constants = {
   inspectionTypes,
   insuranceTypes,
   maintenanceTypes,
-  ownershipTypes,
   reservationStatus,
   roles,
   routes,

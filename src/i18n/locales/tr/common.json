@@ -67,11 +67,6 @@
       "CANCELLED": "İptal Edildi",
       "DONE": "Tamamlandı"
     },
-    "ownershipTypes": {
-      "Owned": "Öz Mal",
-      "Rented": "Kiralık",
-      "OperationalLease": "Operasyonel Kiralama"
-    },
     "insuranceTypes": {
       "Traffic": "Trafik Sigortası",
       "Kasko": "Kasko"
