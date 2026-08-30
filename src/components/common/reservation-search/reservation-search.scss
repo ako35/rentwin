@@ -4,17 +4,19 @@
 $breakpoint: 992px;
 
 .reservation-search {
-    // Desktop: floating card overlaid on the right half of the slider.
+    // Desktop: full-width bar sitting below the slider text, near the bottom
+    // of the hero, with a margin on each side.
     position: absolute;
     z-index: 10;
-    top: 50%;
-    right: max(3vw, calc((100vw - 1180px) / 2));
-    transform: translateY(-50%);
-    width: 430px;
-    max-width: calc(100vw - 2rem);
+    left: 50%;
+    bottom: 6%;
+    transform: translateX(-50%);
+    width: calc(100% - 4rem);
+    max-width: 1240px;
 
-    @include m.flexbox(column, flex-start, stretch, 0.6rem);
-    padding: 1.4rem;
+    @include m.flexbox(row, flex-start, stretch, 0.6rem);
+    flex-wrap: wrap;
+    padding: 1.1rem 1.3rem;
     background-color: v.$color4_2;
     backdrop-filter: blur(4px);
     border-radius: 16px;
@@ -25,22 +27,28 @@ $breakpoint: 992px;
         transform: none;
         width: auto;
         max-width: none;
-        margin: -3rem 1rem 0;
+        margin: -2.5rem 1rem 0;
         backdrop-filter: none;
         background-color: v.$color4;
     }
 
     &__title {
-        margin: 0 0 0.2rem;
-        font-size: 1.1rem;
+        flex-basis: 100%;
+        margin: 0;
+        font-size: 1.05rem;
         font-weight: 700;
         color: v.$color1;
     }
 
     &__row {
         @include m.flexbox(row, flex-start, stretch, 0.5rem);
+        flex: 1 1 340px;
 
-        @media (max-width: 380px) {
+        @media (max-width: $breakpoint) {
+            flex-basis: 100%;
+        }
+
+        @media (max-width: 420px) {
             flex-wrap: wrap;
         }
     }
@@ -84,14 +92,14 @@ $breakpoint: 992px;
         }
 
         &--date {
-            flex: 0 0 7.5rem;
+            flex: 0 0 8rem;
         }
 
         &--time {
-            flex: 0 0 5rem;
+            flex: 0 0 5.25rem;
         }
 
-        @media (max-width: 380px) {
+        @media (max-width: 420px) {
             &--location,
             &--date,
             &--time {
@@ -107,25 +115,31 @@ $breakpoint: 992px;
     }
 
     &__error {
+        flex-basis: 100%;
         margin: 0;
         font-size: 0.8rem;
         color: #c0392b;
     }
 
     &__submit {
-        margin-top: 0.2rem;
-        padding: 0.85rem;
+        flex: 1 1 200px;
+        padding: 0.85rem 1.5rem;
         border: none;
         border-radius: 9px;
         background-color: v.$color1;
         color: v.$color4;
         font-weight: 700;
         letter-spacing: 0.02em;
+        white-space: nowrap;
         cursor: pointer;
         transition: background-color 0.15s ease;
 
         &:hover {
             background-color: v.$color2;
+        }
+
+        @media (max-width: $breakpoint) {
+            flex-basis: 100%;
         }
     }
 }
