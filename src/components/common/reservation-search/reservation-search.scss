@@ -4,12 +4,12 @@
 $breakpoint: 992px;
 
 .reservation-search {
-    // Desktop: single full-width row sitting below the slider text, near the
-    // bottom of the hero, with a margin on each side.
+    // Desktop: single full-width row sitting just below the slider text,
+    // around the vertical middle of the hero, with a margin on each side.
     position: absolute;
     z-index: 10;
     left: 50%;
-    bottom: 6%;
+    top: 55%;
     transform: translateX(-50%);
     width: calc(100% - 4rem);
     max-width: 1240px;
