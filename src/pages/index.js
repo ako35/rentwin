@@ -13,7 +13,6 @@ import AdminUserDetailsPage from "./admin/users/details/page";
 import AdminVehiclesPage from "./admin/vehicles/page";
 import AdminVehicleDetailsPage from "./admin/vehicles/details/page";
 import AdminNewVehiclePage from "./admin/vehicles/new/page";
-import AdminNewContractPage from "./admin/reservations/new/page";
 import AdminNewCustomerPage from "./admin/users/new/page";
 
 // COMMON PAGES
@@ -47,7 +46,6 @@ export {
     AdminVehiclesPage,
     AdminVehicleDetailsPage,
     AdminNewVehiclePage,
-    AdminNewContractPage,
     AdminNewCustomerPage,
 
     // COMMON PAGES

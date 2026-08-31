@@ -5,7 +5,7 @@ import { Button, Form, Spinner } from "react-bootstrap";
 import { constants } from "../../../../constants";
 import { services } from "../../../../services";
 import { utils } from "../../../../utils";
-import "../../reservations/new/style.scss";
+import "./style.scss";
 
 const { routes } = constants;
 
