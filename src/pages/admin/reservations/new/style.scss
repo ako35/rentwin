@@ -1,0 +1,40 @@
+@use '../../../../styles/variables' as v;
+@use '../../../../styles/mixins' as m;
+
+.new-contract-page {
+  max-width: 720px;
+
+  h2 {
+    font-size: 1.2rem;
+    color: v.$color1;
+    margin-bottom: 1rem;
+  }
+
+  &__card {
+    border: 1px solid v.$color3;
+    border-radius: 8px;
+    padding: 1.15rem;
+    background-color: #fff;
+  }
+
+  &__vehicle-info {
+    margin: -0.5rem 0 0.9rem;
+    font-size: 0.82rem;
+    color: v.$color5_3;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 0.9rem;
+
+    @media (max-width: 560px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__actions {
+    @include m.flexbox(row, flex-end, center, 0.5rem);
+    margin-top: 1rem;
+  }
+}

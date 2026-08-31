@@ -64,7 +64,25 @@ export const getReservationByIdAdmin = async (id) => {
   );
   return response.data;
 };
-export const getReservationsByPageAdmin = () => {};
+export const getReservationsByPageAdmin = async (page = 0, size = 10, filters = {}) => {
+  const params = new URLSearchParams({ page, size });
+  ["branchId", "status", "plate", "customer"].forEach((key) => {
+    if (filters[key]) params.set(key, filters[key]);
+  });
+  const response = await axios.get(
+    `${API_URL}/reservations/admin/all/auth?${params.toString()}`,
+    services.authHeader()
+  );
+  return response.data;
+};
+export const createReservationAdmin = async (payload) => {
+  const response = await axios.post(
+    `${API_URL}/reservations/admin/auth`,
+    payload,
+    services.authHeader()
+  );
+  return response.data;
+};
 export const getAdminSchedule = async ({ type, window = 7, excludeCompleted = true, branchId }) => {
   const response = await axios.get(
     `${API_URL}/reservations/admin/schedule/auth?type=${type}&window=${window}&excludeCompleted=${excludeCompleted}${branchId ? `&branchId=${branchId}` : ""}`,

@@ -187,6 +187,25 @@
     "sectionTitle1": "reservation",
     "sectionTitle2": "details",
     "reservationId": "Reservation id",
+    "contractList": {
+      "title": "Contract List",
+      "new": "New",
+      "exportExcel": "Export Excel",
+      "plate": "Plate",
+      "customerDriver": "Customer / Driver",
+      "filter": "Filter",
+      "dropOffDate": "Drop-off Date",
+      "dropOffTime": "Drop-off Time",
+      "contractNo": "Contract No",
+      "customer": "Customer",
+      "branchCode": "Branch",
+      "vehicle": "Vehicle",
+      "days": "Days",
+      "amount": "Amount",
+      "balance": "Balance",
+      "status": "Status",
+      "empty": "No records found"
+    },
     "goToCustomer": "Go To Customer",
     "delete": "Delete",
     "save": "Save",
@@ -423,6 +442,10 @@
     "addVehicle": "Add Vehicle",
     "extras": "Extras",
     "reservationsAndContracts": "Res & Contract",
+    "addReservation": "Add Reservation",
+    "reservationList": "Reservation List",
+    "addContract": "Add Contract",
+    "contractList": "Contract List",
     "reservations": "Reservations",
     "longTerm": "Long Term",
     "customer": "Customer",
@@ -473,6 +496,15 @@
   "footer": {
     "copyright": "© 2014 - {{year}} Rentwin Software. All Rights Reserved",
     "requestSupport": "Request Support"
+  },
+  "newContract": {
+    "title": "New Contract",
+    "vehicle": "Vehicle",
+    "selectVehicle": "Select vehicle",
+    "customer": "Customer",
+    "selectCustomer": "Select customer",
+    "create": "Create and Open",
+    "error": "Something went wrong while creating the contract"
   },
   "extras": {
     "pageTitle": "Extra Definitions",

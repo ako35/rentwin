@@ -58,9 +58,16 @@ const AdminTopNav = () => {
               <NavDropdown.Item as={Link} to={routes.adminVehicles}>{t("topNav.vehicleList")}</NavDropdown.Item>
               <NavDropdown.Item as={Link} to={`${routes.adminVehicles}/new`}>{t("topNav.addVehicle")}</NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link as={Link} to={routes.adminReservations} active={pathname.startsWith(routes.adminReservations)}>
-              {t("topNav.reservationsAndContracts")}
-            </Nav.Link>
+            <NavDropdown
+              title={t("topNav.reservationsAndContracts")}
+              active={pathname.startsWith(routes.adminReservations)}
+            >
+              <NavDropdown.Item as={Link} to={`${routes.adminReservations}/new`}>{t("topNav.addReservation")}</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminReservations}>{t("topNav.reservationList")}</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item as={Link} to={`${routes.adminReservations}/new`}>{t("topNav.addContract")}</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminReservations}>{t("topNav.contractList")}</NavDropdown.Item>
+            </NavDropdown>
             <Nav.Link as={Link} to={routes.adminUsers} active={pathname.startsWith(routes.adminUsers)}>
               {t("topNav.customer")}
             </Nav.Link>

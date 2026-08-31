@@ -187,6 +187,25 @@
     "sectionTitle1": "rezervasyon",
     "sectionTitle2": "detayı",
     "reservationId": "Rezervasyon No",
+    "contractList": {
+      "title": "Kontrat Listesi",
+      "new": "Yeni",
+      "exportExcel": "Excel'e Aktar",
+      "plate": "Plaka",
+      "customerDriver": "Müşteri / Sürücü",
+      "filter": "Filtrele",
+      "dropOffDate": "Bırakış Tarihi",
+      "dropOffTime": "Bırakış Saati",
+      "contractNo": "Kontrat No",
+      "customer": "Müşteri",
+      "branchCode": "Şube",
+      "vehicle": "Araç",
+      "days": "Gün",
+      "amount": "Tutar",
+      "balance": "Bakiye",
+      "status": "Durum",
+      "empty": "Kayıt bulunamadı"
+    },
     "goToCustomer": "Müşteriye Git",
     "delete": "Sil",
     "save": "Kaydet",
@@ -423,6 +442,10 @@
     "addVehicle": "Araç Ekle",
     "extras": "Ekstralar",
     "reservationsAndContracts": "Rez & Kontrat",
+    "addReservation": "Rezervasyon Ekle",
+    "reservationList": "Rezervasyon Listesi",
+    "addContract": "Kontrat Ekle",
+    "contractList": "Kontrat Listesi",
     "reservations": "Rezervasyonlar",
     "longTerm": "Uzun Dönem",
     "customer": "Müşteri",
@@ -473,6 +496,15 @@
   "footer": {
     "copyright": "© 2014 - {{year}} Rentwin Yazılım. Tüm Hakları Saklıdır",
     "requestSupport": "Destek Talep Et"
+  },
+  "newContract": {
+    "title": "Yeni Kontrat",
+    "vehicle": "Araç",
+    "selectVehicle": "Araç seçin",
+    "customer": "Müşteri",
+    "selectCustomer": "Müşteri seçin",
+    "create": "Oluştur ve Aç",
+    "error": "Kontrat oluşturulurken bir hata oluştu"
   },
   "extras": {
     "pageTitle": "Ekstra Tanımları",

@@ -1,56 +1,93 @@
 @use '../../../styles/variables' as v;
 @use '../../../styles/mixins' as m;
 
-.admin-reservations-page{
-    @include m.flexbox(column, flex-start, center, 3rem);
+.contract-list {
+  &__toolbar {
+    @include m.flexbox(row, space-between, center, 1rem);
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
 
-    button.btn{
-        @include m.button(v.$color1, v.$color4, v.$color2, v.$color4);
-        align-self: flex-end;
+    h2 {
+      font-size: 1.15rem;
+      color: v.$color1;
+      margin: 0;
+    }
+  }
+
+  &__toolbar-actions {
+    @include m.flexbox(row, flex-end, center, 0.5rem);
+    flex-wrap: wrap;
+  }
+
+  &__filters {
+    @include m.flexbox(row, flex-start, center, 0.5rem);
+    flex-wrap: wrap;
+    padding: 0.5rem 0.6rem;
+    background-color: v.$color3-4;
+    border: 1px solid v.$color3;
+    border-radius: 6px 6px 0 0;
+
+    .form-select { width: auto; }
+    .form-control { max-width: 200px; }
+  }
+
+  &__count {
+    font-size: 0.82rem;
+    color: v.$color5-3;
+    white-space: nowrap;
+  }
+
+  &__table-wrap {
+    border: 1px solid v.$color3;
+    border-top: none;
+  }
+
+  &__table {
+    margin: 0;
+    font-size: 0.83rem;
+
+    thead th {
+      background-color: v.$color1;
+      color: v.$color4;
+      font-weight: 600;
+      white-space: nowrap;
+      border-color: v.$color1;
     }
 
-    .admin-reservations-table-container{
-        width: 100%;
-        border-radius: 5px;
-        box-shadow: 0 0 10px v.$color1;
-
-        [role="row"]{
-            cursor: pointer;
-        }
-
-        > div {
-
-            &:nth-child(1){
-                border-radius: 5px 5px 0 0;
-                background-color: v.$color1;
-                color: v.$color4;
-                text-transform: uppercase;
-            }
-
-            &:nth-child(2){
-
-                [role="table"]{
-                    
-                    [role="rowgroup"]{
-
-                        &:nth-child(1){
-
-                            [role="row"]{
-                                font-size: 0.9rem;
-                                border-bottom: 1px solid v.$color1;
-                            }
-                        }
-                    }
-                }
-            }
-
-            &:nth-child(3){
-
-                nav{
-                    border-top: 1px solid v.$color1;
-                    border-radius: 0 0 5px 5px;
-                }
-            }
-        }
+    tbody tr {
+      cursor: pointer;
     }
+
+    td {
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+  }
+
+  &__plate {
+    font-weight: 700;
+    color: #c0392b;
+  }
+
+  &__no {
+    font-family: monospace;
+    color: v.$color1;
+  }
+
+  &__customer {
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__neg {
+    color: #c0392b;
+    font-weight: 600;
+  }
+
+  &__pager {
+    @include m.flexbox(row, flex-end, center, 0.35rem);
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+  }
 }

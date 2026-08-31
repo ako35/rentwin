@@ -8,6 +8,7 @@ import {
   AdminDashboard,
   AdminExtrasPage,
   AdminLocationsPage,
+  AdminNewContractPage,
   AdminNewVehiclePage,
   AdminReservationDetailsPage,
   AdminReservationsPage,
@@ -149,6 +150,10 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <AdminReservationsPage />,
+          },
+          {
+            path: "new",
+            element: <AdminNewContractPage />,
           },
           {
             path: ":reservationId",
