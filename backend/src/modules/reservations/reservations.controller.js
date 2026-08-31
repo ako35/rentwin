@@ -235,21 +235,22 @@ const pickContractFields = (body) => {
   });
   if ("unlimitedKm" in body) data.unlimitedKm = Boolean(body.unlimitedKm);
   if ("discountIsPercent" in body) data.discountIsPercent = Boolean(body.discountIsPercent);
+  if ("discountDailyOnly" in body) data.discountDailyOnly = Boolean(body.discountDailyOnly);
   if ("corporateId" in body) data.corporateId = body.corporateId || null;
   return data;
 };
 
 // Contract grand total: (daily price x rental days + extras + one-way + return extras)
-// minus discount (flat or %), plus VAT.
+// minus discount (flat or %, optionally applied only to the rental part), plus VAT.
 const computeTotal = (r, pickUp, dropOff) => {
   const days = Math.max(1, Math.ceil(hoursBetween(pickUp, dropOff) / 24));
   const rental = (num(r.dailyPrice) || 0) * days;
-  const base =
-    rental + (num(r.extrasTotal) || 0) + (num(r.oneWayFee) || 0) + (num(r.returnExtraAmount) || 0);
+  const addOns = (num(r.extrasTotal) || 0) + (num(r.oneWayFee) || 0) + (num(r.returnExtraAmount) || 0);
+  const discountBase = r.discountDailyOnly ? rental : rental + addOns;
   const discount = r.discountIsPercent
-    ? (base * (num(r.discount) || 0)) / 100
+    ? (discountBase * (num(r.discount) || 0)) / 100
     : num(r.discount) || 0;
-  const subtotal = base - discount;
+  const subtotal = rental + addOns - discount;
   const rate = num(r.vatRate);
   return round2(subtotal * (1 + (rate === null ? 20 : rate) / 100));
 };

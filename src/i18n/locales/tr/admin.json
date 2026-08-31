@@ -338,7 +338,31 @@
       "customerNote": "Müşteri Notu",
       "adminNote": "Yönetici Notu",
       "route": "Güzergah",
-      "currentVehicle": "Geçerli Araç"
+      "currentVehicle": "Geçerli Araç",
+      "contractNo": "Sözleşme No",
+      "detailTitle": "Kontrat Detayı",
+      "createdBy": "Oluşturan",
+      "kur": "Kur",
+      "kurLine": "Kontrat: {{c}} / Güncel: {{g}}",
+      "topTabs": { "customer": "Müşteri", "drivers": "Sürücüler", "invoice": "Fatura" },
+      "subTabs": {
+        "summary": "Özet",
+        "deposit": "Depozito",
+        "payments": "Tahsilat",
+        "returnExtra": "Dönüş Ekstra",
+        "reference": "Referans",
+        "extension": "Uzatma"
+      },
+      "currentClass": "Geçerli Sınıf",
+      "changeVehicle": "Değiştir",
+      "firstPickUpDropOff": "İlk Alış - Bırakış",
+      "pickUpDropOff": "Alış - Bırakış",
+      "selectedExtras": "Seçili Ekstralar",
+      "discountDailyOnly": "Sadece Günlük Fiyata",
+      "totalAmount": "Toplam Tutar",
+      "recalc": "Tutar Hesapla",
+      "acilis": "Alış",
+      "ekstralarTitle": "Ekstralar"
     },
     "toasts": {
       "downloadSuccess": "İndirmeniz kısa süre içinde başlayacak",

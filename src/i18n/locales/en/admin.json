@@ -338,7 +338,31 @@
       "customerNote": "Customer Note",
       "adminNote": "Admin Note",
       "route": "Route",
-      "currentVehicle": "Current Vehicle"
+      "currentVehicle": "Current Vehicle",
+      "contractNo": "Agreement No",
+      "detailTitle": "Contract Detail",
+      "createdBy": "Created by",
+      "kur": "Rate",
+      "kurLine": "Contract: {{c}} / Current: {{g}}",
+      "topTabs": { "customer": "Customer", "drivers": "Drivers", "invoice": "Invoice" },
+      "subTabs": {
+        "summary": "Summary",
+        "deposit": "Deposit",
+        "payments": "Payments",
+        "returnExtra": "Return Extra",
+        "reference": "Reference",
+        "extension": "Extension"
+      },
+      "currentClass": "Current Class",
+      "changeVehicle": "Change",
+      "firstPickUpDropOff": "First Pick-up - Drop-off",
+      "pickUpDropOff": "Pick-up - Drop-off",
+      "selectedExtras": "Selected Extras",
+      "discountDailyOnly": "Daily price only",
+      "totalAmount": "Total Amount",
+      "recalc": "Recalculate",
+      "acilis": "Pick-up",
+      "ekstralarTitle": "Extras"
     },
     "toasts": {
       "downloadSuccess": "Your download will start soon",

@@ -216,6 +216,7 @@ model Reservation {
   oneWayFee       Float?
   discount        Float?
   discountIsPercent Boolean         @default(false)
+  discountDailyOnly Boolean         @default(true)
   deposit         Float?
   returnExtraAmount Float?
   kmLimit         Int?
