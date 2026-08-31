@@ -446,11 +446,15 @@
     "reservationList": "Rezervasyon Listesi",
     "addContract": "Kontrat Ekle",
     "contractList": "Kontrat Listesi",
+    "addCustomer": "Yeni Müşteri",
+    "customerList": "Müşteri Listesi",
+    "addBranch": "Şube Ekle",
+    "branchList": "Şube Listesi",
     "reservations": "Rezervasyonlar",
     "longTerm": "Uzun Dönem",
     "customer": "Müşteri",
     "price": "Fiyat",
-    "location": "Lokasyon",
+    "location": "Şube",
     "content": "İçerik",
     "finance": "Finans",
     "definitions": "Tanım",
@@ -496,6 +500,15 @@
   "footer": {
     "copyright": "© 2014 - {{year}} Rentwin Yazılım. Tüm Hakları Saklıdır",
     "requestSupport": "Destek Talep Et"
+  },
+  "newCustomer": {
+    "title": "Yeni Müşteri",
+    "password": "Şifre",
+    "passwordHint": "Boş bırakılırsa varsayılan şifre atanır (Rentwin123.), müşteri sonradan değiştirebilir.",
+    "create": "Oluştur",
+    "success": "Müşteri oluşturuldu.",
+    "error": "Müşteri oluşturulurken bir hata oluştu.",
+    "emailExists": "Bu e-posta ile bir hesap zaten var."
   },
   "newContract": {
     "title": "Yeni Kontrat",

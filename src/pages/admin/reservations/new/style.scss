@@ -33,6 +33,12 @@
     }
   }
 
+  &__hint {
+    margin: 0.6rem 0 0;
+    font-size: 0.78rem;
+    color: v.$color5_3;
+  }
+
   &__actions {
     @include m.flexbox(row, flex-end, center, 0.5rem);
     margin-top: 1rem;

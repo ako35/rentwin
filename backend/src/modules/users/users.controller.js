@@ -71,6 +71,35 @@ const getUsersByPageAdmin = asyncHandler(async (req, res) => {
   );
 });
 
+const createUserAdmin = asyncHandler(async (req, res) => {
+  const { firstName, lastName, email, phoneNumber, address, zipCode, roles, password } = req.body;
+
+  if (!firstName || !lastName || !email) {
+    throw new HttpError(400, "First name, last name and email are required.");
+  }
+
+  const existing = await prisma.user.findUnique({ where: { email } });
+  if (existing) throw new HttpError(409, "An account with this email already exists.");
+
+  // Admin-created customers get a default password they can reset later.
+  const passwordHash = await hashPassword(password || "Rentwin123.");
+
+  const user = await prisma.user.create({
+    data: {
+      firstName,
+      lastName,
+      email,
+      phoneNumber: phoneNumber || "",
+      address: address || "",
+      zipCode: zipCode ? String(zipCode) : "",
+      passwordHash,
+      roles: Array.isArray(roles) && roles.length ? roles : ["Customer"],
+      builtIn: false,
+    },
+  });
+  res.status(201).json(serializeUser(user));
+});
+
 const updateUserAdmin = asyncHandler(async (req, res) => {
   const target = await prisma.user.findUnique({ where: { id: req.params.id } });
   if (!target) throw new HttpError(404, "User not found.");
@@ -102,6 +131,7 @@ module.exports = {
   changePassword,
   getUserAdmin,
   getUsersByPageAdmin,
+  createUserAdmin,
   updateUserAdmin,
   deleteUserAdmin,
 };

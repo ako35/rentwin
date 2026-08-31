@@ -67,6 +67,13 @@
         }
     }
 
+    &__item-icon {
+        margin-right: 0.5rem;
+        font-size: 0.85rem;
+        opacity: 0.85;
+        vertical-align: -1px;
+    }
+
     &__right {
         @include m.flexbox(row, flex-end, center, 0.5rem);
         flex-wrap: nowrap;

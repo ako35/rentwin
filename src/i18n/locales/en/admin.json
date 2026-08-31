@@ -446,11 +446,15 @@
     "reservationList": "Reservation List",
     "addContract": "Add Contract",
     "contractList": "Contract List",
+    "addCustomer": "New Customer",
+    "customerList": "Customer List",
+    "addBranch": "Add Branch",
+    "branchList": "Branch List",
     "reservations": "Reservations",
     "longTerm": "Long Term",
     "customer": "Customer",
     "price": "Price",
-    "location": "Location",
+    "location": "Branch",
     "content": "Content",
     "finance": "Finance",
     "definitions": "Definitions",
@@ -496,6 +500,15 @@
   "footer": {
     "copyright": "© 2014 - {{year}} Rentwin Software. All Rights Reserved",
     "requestSupport": "Request Support"
+  },
+  "newCustomer": {
+    "title": "New Customer",
+    "password": "Password",
+    "passwordHint": "If left blank a default password is set (Rentwin123.); the customer can change it later.",
+    "create": "Create",
+    "success": "Customer created.",
+    "error": "Something went wrong while creating the customer.",
+    "emailExists": "An account with this email already exists."
   },
   "newContract": {
     "title": "New Contract",

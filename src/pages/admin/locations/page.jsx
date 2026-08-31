@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Modal, Table } from "react-bootstrap";
 import { BsPencil, BsTrash } from "react-icons/bs";
@@ -29,6 +30,8 @@ const AdminLocationsPage = () => {
     }
   };
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
   useEffect(() => {
     loadData();
   }, []);
@@ -38,6 +41,14 @@ const AdminLocationsPage = () => {
     setForm(EMPTY_FORM);
     setShowModal(true);
   };
+
+  useEffect(() => {
+    if (searchParams.get("new") === "1") {
+      openCreate();
+      setSearchParams({}, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const openEdit = (branch) => {
     setEditingId(branch.id);

@@ -55,6 +55,11 @@ export const getUsersByPage = async (page = 0, size = 20, sort = "id", direction
     return response.data;
 };
 
+export const createUserAdmin = async (payload) => {
+    const response = await axios.post(`${API_URL}/user/auth`, payload, services.authHeader());
+    return response.data;
+};
+
 export const updateUserAdmin = async (id, payload) => {
     const response = await axios.put(`${API_URL}/user/${id}/auth`, payload, services.authHeader());
     return response.data;

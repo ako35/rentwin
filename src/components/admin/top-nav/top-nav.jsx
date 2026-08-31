@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Container, Form, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { AiOutlineHome } from "react-icons/ai";
+import { BsListUl, BsPlusLg, BsTag, BsMegaphone, BsGlobe2, BsBoxArrowRight } from "react-icons/bs";
 import { utils } from "../../../utils";
 import { logout } from "../../../store";
 import { services } from "../../../services";
@@ -55,34 +56,64 @@ const AdminTopNav = () => {
               title={t("topNav.vehicle")}
               active={pathname.startsWith(routes.adminVehicles)}
             >
-              <NavDropdown.Item as={Link} to={routes.adminVehicles}>{t("topNav.vehicleList")}</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to={`${routes.adminVehicles}/new`}>{t("topNav.addVehicle")}</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminVehicles}>
+                <BsListUl className="admin-top-nav__item-icon" /> {t("topNav.vehicleList")}
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={`${routes.adminVehicles}/new`}>
+                <BsPlusLg className="admin-top-nav__item-icon" /> {t("topNav.addVehicle")}
+              </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown
               title={t("topNav.reservationsAndContracts")}
               active={pathname.startsWith(routes.adminReservations)}
             >
-              <NavDropdown.Item as={Link} to={`${routes.adminReservations}/new`}>{t("topNav.addReservation")}</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to={routes.adminReservations}>{t("topNav.reservationList")}</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={`${routes.adminReservations}/new`}>
+                <BsPlusLg className="admin-top-nav__item-icon" /> {t("topNav.addReservation")}
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminReservations}>
+                <BsListUl className="admin-top-nav__item-icon" /> {t("topNav.reservationList")}
+              </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item as={Link} to={`${routes.adminReservations}/new`}>{t("topNav.addContract")}</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to={routes.adminReservations}>{t("topNav.contractList")}</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={`${routes.adminReservations}/new`}>
+                <BsPlusLg className="admin-top-nav__item-icon" /> {t("topNav.addContract")}
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminReservations}>
+                <BsListUl className="admin-top-nav__item-icon" /> {t("topNav.contractList")}
+              </NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link as={Link} to={routes.adminUsers} active={pathname.startsWith(routes.adminUsers)}>
-              {t("topNav.customer")}
-            </Nav.Link>
+            <NavDropdown title={t("topNav.customer")} active={pathname.startsWith(routes.adminUsers)}>
+              <NavDropdown.Item as={Link} to={`${routes.adminUsers}/new`}>
+                <BsPlusLg className="admin-top-nav__item-icon" /> {t("topNav.addCustomer")}
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminUsers}>
+                <BsListUl className="admin-top-nav__item-icon" /> {t("topNav.customerList")}
+              </NavDropdown.Item>
+            </NavDropdown>
             <NavDropdown title={t("topNav.price")} active={pathname.startsWith(routes.adminExtras)}>
-              <NavDropdown.Item as={Link} to={routes.adminExtras}>{t("topNav.extras")}</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminExtras}>
+                <BsTag className="admin-top-nav__item-icon" /> {t("topNav.extras")}
+              </NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link as={Link} to={routes.adminLocations} active={pathname.startsWith(routes.adminLocations)}>
-              {t("topNav.location")}
-            </Nav.Link>
+            <NavDropdown title={t("topNav.location")} active={pathname.startsWith(routes.adminLocations)}>
+              <NavDropdown.Item as={Link} to={`${routes.adminLocations}?new=1`}>
+                <BsPlusLg className="admin-top-nav__item-icon" /> {t("topNav.addBranch")}
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminLocations}>
+                <BsListUl className="admin-top-nav__item-icon" /> {t("topNav.branchList")}
+              </NavDropdown.Item>
+            </NavDropdown>
             <Nav.Link onClick={comingSoon("finans")}>{t("topNav.finance")}</Nav.Link>
             <NavDropdown title={t("topNav.system")} active={pathname.startsWith(routes.adminAnnouncements)}>
-              <NavDropdown.Item as={Link} to={routes.adminAnnouncements}>{t("topNav.announcements")}</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to={routes.home}>{t("topNav.backToWebsite")}</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminAnnouncements}>
+                <BsMegaphone className="admin-top-nav__item-icon" /> {t("topNav.announcements")}
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.home}>
+                <BsGlobe2 className="admin-top-nav__item-icon" /> {t("topNav.backToWebsite")}
+              </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item onClick={handleLogout}>{t("topNav.logout")}</NavDropdown.Item>
+              <NavDropdown.Item onClick={handleLogout}>
+                <BsBoxArrowRight className="admin-top-nav__item-icon" /> {t("topNav.logout")}
+              </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link onClick={comingSoon("rapor")}>{t("topNav.report")}</Nav.Link>
           </Nav>
