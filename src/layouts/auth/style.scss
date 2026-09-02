@@ -25,6 +25,8 @@ $breakpointsm: 576px;
             top: 50%;
             left: 25%;
             transform: translate(-50%, -50%);
+            width: min(340px, 26vw);
+            height: auto;
             z-index: 1;
         }
 
