@@ -116,6 +116,38 @@
     .form-label { margin-bottom: 0.1rem; }
   }
 
+  &__typeahead {
+    position: relative;
+  }
+
+  &__typeahead-list {
+    @include m.reset-list;
+    position: absolute;
+    z-index: 20;
+    left: 0;
+    right: 0;
+    top: calc(100% + 2px);
+    max-height: 240px;
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid v.$color3;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px v.$color1-5;
+
+    li {
+      padding: 0.35rem 0.6rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+
+      &:hover { background-color: v.$color4; }
+    }
+
+    .contract-page__typeahead-add {
+      color: v.$color1;
+      font-weight: 600;
+    }
+  }
+
   &__subtabs {
     gap: 0.25rem;
     flex-wrap: wrap;

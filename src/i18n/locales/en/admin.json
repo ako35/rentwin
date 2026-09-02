@@ -377,7 +377,9 @@
       "custNationalId": "National ID / Passport No",
       "custAddress": "Address",
       "custBalance": "Account Balance",
-      "updateCustomer": "Update Customer"
+      "updateCustomer": "Update Customer",
+      "customerSearch": "Search customer (name, email, ID/tax no, phone)…",
+      "customerNotFoundAdd": "No matching customer — Add New Customer"
     },
     "toasts": {
       "downloadSuccess": "Your download will start soon",

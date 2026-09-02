@@ -377,7 +377,9 @@
       "custNationalId": "TC No / Pasaport No",
       "custAddress": "Adres",
       "custBalance": "Cari Bakiye",
-      "updateCustomer": "Müşteriyi Güncelle"
+      "updateCustomer": "Müşteriyi Güncelle",
+      "customerSearch": "Müşteri ara (ad, e-posta, TC/vergi no, telefon)…",
+      "customerNotFoundAdd": "Kayıtlı müşteri yok — Yeni Müşteri Ekle"
     },
     "toasts": {
       "downloadSuccess": "İndirmeniz kısa süre içinde başlayacak",

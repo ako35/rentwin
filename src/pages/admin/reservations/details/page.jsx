@@ -47,6 +47,8 @@ const AdminReservationDetailsPage = () => {
   const [savingCorp, setSavingCorp] = useState(false);
   const [custEdit, setCustEdit] = useState(null);
   const [savingCust, setSavingCust] = useState(false);
+  const [custQuery, setCustQuery] = useState("");
+  const [custOpen, setCustOpen] = useState(false);
   const [availableCars, setAvailableCars] = useState([]);
   const [payments, setPayments] = useState([]);
   const [catalog, setCatalog] = useState([]);
@@ -282,10 +284,14 @@ const AdminReservationDetailsPage = () => {
     return () => window.removeEventListener("focus", onFocus);
   }, [isCreate]);
 
-  // Load the picked customer into an editable copy.
+  const custLabel = (u) =>
+    `${(u.companyTitle || `${u.firstName} ${u.lastName}`).trim()} — ${u.email}`;
+
+  // Load the picked customer into an editable copy + keep the search box in sync.
   useEffect(() => {
     const sc = customers.find((cx) => cx.id === formik.values.userId);
     setCustEdit(sc ? { ...sc } : null);
+    if (sc) setCustQuery(`${(sc.companyTitle || `${sc.firstName} ${sc.lastName}`).trim()} — ${sc.email}`);
   }, [formik.values.userId, customers]);
 
   const setCE = (key) => (e) => setCustEdit((c0) => ({ ...c0, [key]: e.target.value }));
@@ -424,17 +430,54 @@ const AdminReservationDetailsPage = () => {
           </a>
         </span>
       </div>
-      <Form.Group className="mb-2">
-        <Form.Select size="sm" value={formik.values.userId}
-          onChange={(e) => formik.setFieldValue("userId", e.target.value)}>
-          <option value="">{t("newContract.selectCustomer")}</option>
-          {customers.map((u) => (
-            <option key={u.id} value={u.id}>
-              {(u.companyTitle || `${u.firstName} ${u.lastName}`).trim()} — {u.email}
-            </option>
-          ))}
-        </Form.Select>
-      </Form.Group>
+      {(() => {
+        const q = custQuery.trim().toLowerCase();
+        const matches = customers
+          .filter((u) => {
+            if (!q || u.id === formik.values.userId) return true;
+            return [u.firstName, u.lastName, u.companyTitle, u.email, u.nationalId, u.phoneNumber]
+              .some((f) => (f || "").toLowerCase().includes(q));
+          })
+          .slice(0, 25);
+        return (
+          <div className="contract-page__typeahead mb-2">
+            <Form.Control
+              size="sm"
+              autoComplete="off"
+              placeholder={c("customerSearch")}
+              value={custQuery}
+              onChange={(e) => {
+                setCustQuery(e.target.value);
+                setCustOpen(true);
+                if (formik.values.userId) formik.setFieldValue("userId", "");
+              }}
+              onFocus={() => setCustOpen(true)}
+              onBlur={() => setTimeout(() => setCustOpen(false), 150)}
+            />
+            {custOpen && (
+              <ul className="contract-page__typeahead-list">
+                {matches.map((u) => (
+                  <li key={u.id} onMouseDown={() => {
+                    formik.setFieldValue("userId", u.id);
+                    setCustQuery(custLabel(u));
+                    setCustOpen(false);
+                  }}>
+                    {custLabel(u)}
+                  </li>
+                ))}
+                {matches.length === 0 && (
+                  <li className="contract-page__typeahead-add" onMouseDown={() => {
+                    window.open(`${routes.adminUsers}/new`, "_blank", "noopener");
+                    setCustOpen(false);
+                  }}>
+                    + {c("customerNotFoundAdd")}
+                  </li>
+                )}
+              </ul>
+            )}
+          </div>
+        );
+      })()}
       {custEdit && (() => {
         const isCorp = (custEdit.customerType || "Bireysel") === "Kurumsal";
         const ci = (name, label, type = "text") => (
@@ -445,12 +488,7 @@ const AdminReservationDetailsPage = () => {
         );
         return (
           <div className="contract-page__cust-edit">
-            <div className="contract-page__radios mb-2">
-              <Form.Check inline type="radio" id="ce-ind" label={c("individual")}
-                checked={!isCorp} onChange={() => setCustEdit((x) => ({ ...x, customerType: "Bireysel" }))} />
-              <Form.Check inline type="radio" id="ce-corp" label={c("corporate")}
-                checked={isCorp} onChange={() => setCustEdit((x) => ({ ...x, customerType: "Kurumsal" }))} />
-            </div>
+            {ro(c("custType"), isCorp ? c("corporate") : c("individual"))}
             <div className="contract-page__pair">
               {isCorp ? (
                 <>
