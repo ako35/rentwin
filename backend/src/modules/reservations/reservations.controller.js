@@ -2,7 +2,7 @@ const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const { parseFrontendDateTime, resolveWindow, hoursBetween, round2 } = require("../../lib/dates");
 const { checkAvailability } = require("../../lib/availability");
-const { serializeReservation, serializeScheduleRow } = require("../../lib/serializers");
+const { serializeReservation, serializeScheduleRow, serializeVehicle } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 
@@ -197,6 +197,37 @@ const checkVehicleAvailability = asyncHandler(async (req, res) => {
   );
 
   res.json({ available, totalPrice });
+});
+
+// Vehicles free for [pickUpTime, dropOffTime): no overlapping non-CANCELLED
+// reservation and not out of service. Feeds the contract screen's vehicle
+// picker so admins only see cars they can actually book for the chosen dates.
+const getAvailableCarsAdmin = asyncHandler(async (req, res) => {
+  const { pickUpTime, dropOffTime, excludeReservationId } = req.query;
+  const pickUp = parseFrontendDateTime(pickUpTime);
+  const dropOff = parseFrontendDateTime(dropOffTime);
+  if (!pickUp || !dropOff || dropOff <= pickUp) {
+    throw new HttpError(400, "Invalid pick-up/drop-off time range.");
+  }
+
+  const overlapping = await prisma.reservation.findMany({
+    where: {
+      status: { not: "CANCELLED" },
+      id: excludeReservationId ? { not: excludeReservationId } : undefined,
+      pickUpTime: { lt: dropOff },
+      dropOffTime: { gt: pickUp },
+    },
+    select: { carId: true },
+  });
+  const busy = new Set(overlapping.map((r) => r.carId));
+
+  const cars = await prisma.vehicle.findMany({
+    where: { outOfService: false },
+    orderBy: [{ brand: "asc" }, { model: "asc" }],
+    include: { images: { orderBy: { createdAt: "asc" } }, branch: true },
+  });
+
+  res.json(cars.filter((car) => !busy.has(car.id)).map(serializeVehicle));
 });
 
 const deleteReservationAdmin = asyncHandler(async (req, res) => {
@@ -420,6 +451,7 @@ module.exports = {
   getMyReservationsByPage,
   getReservationsByPageAdmin,
   checkVehicleAvailability,
+  getAvailableCarsAdmin,
   deleteReservationAdmin,
   updateReservationAdmin,
   getReservationByIdAdmin,

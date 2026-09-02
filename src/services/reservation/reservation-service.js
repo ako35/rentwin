@@ -83,6 +83,15 @@ export const createReservationAdmin = async (payload) => {
   );
   return response.data;
 };
+export const getAvailableCarsAdmin = async ({ pickUpTime, dropOffTime, excludeReservationId } = {}) => {
+  const params = new URLSearchParams({ pickUpTime, dropOffTime });
+  if (excludeReservationId) params.set("excludeReservationId", excludeReservationId);
+  const response = await axios.get(
+    `${API_URL}/reservations/admin/available-cars/auth?${params.toString()}`,
+    services.authHeader()
+  );
+  return response.data;
+};
 export const getAdminSchedule = async ({ type, window = 7, excludeCompleted = true, branchId }) => {
   const response = await axios.get(
     `${API_URL}/reservations/admin/schedule/auth?type=${type}&window=${window}&excludeCompleted=${excludeCompleted}${branchId ? `&branchId=${branchId}` : ""}`,

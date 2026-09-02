@@ -8,6 +8,7 @@ const {
   getMyReservationsByPage,
   getReservationsByPageAdmin,
   checkVehicleAvailability,
+  getAvailableCarsAdmin,
   deleteReservationAdmin,
   updateReservationAdmin,
   getReservationByIdAdmin,
@@ -23,6 +24,7 @@ router.get("/reservations/auth/all", authenticate, getMyReservationsByPage);
 router.get("/reservations/auth", authenticate, checkVehicleAvailability);
 router.get("/reservations/admin/schedule/auth", authenticate, requireAdmin, getAdminSchedule);
 router.get("/reservations/admin/all/auth", authenticate, requireAdmin, getReservationsByPageAdmin);
+router.get("/reservations/admin/available-cars/auth", authenticate, requireAdmin, getAvailableCarsAdmin);
 router.get("/reservations/:id/auth", authenticate, getReservationById);
 router.get("/reservations/:id/admin", authenticate, requireAdmin, getReservationByIdAdmin);
 

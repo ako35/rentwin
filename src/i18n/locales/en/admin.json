@@ -367,7 +367,10 @@
       "createSave": "Create and Open",
       "createdSuccess": "Contract created.",
       "saveFirstHint": "This section becomes available after the contract is saved.",
-      "discard": "Discard"
+      "discard": "Discard",
+      "newCustomerBtn": "New Customer",
+      "branch": "Branch",
+      "noAvailableCars": "No vehicle available for the selected date range."
     },
     "toasts": {
       "downloadSuccess": "Your download will start soon",

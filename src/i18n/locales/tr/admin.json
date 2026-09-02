@@ -367,7 +367,10 @@
       "createSave": "Oluştur ve Aç",
       "createdSuccess": "Kontrat oluşturuldu.",
       "saveFirstHint": "Bu bölüm kontrat kaydedildikten sonra kullanılabilir.",
-      "discard": "Vazgeç"
+      "discard": "Vazgeç",
+      "newCustomerBtn": "Yeni Müşteri",
+      "branch": "Şube",
+      "noAvailableCars": "Seçili tarih aralığında müsait araç yok."
     },
     "toasts": {
       "downloadSuccess": "İndirmeniz kısa süre içinde başlayacak",

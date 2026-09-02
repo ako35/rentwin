@@ -1,6 +1,6 @@
 import { deleteMessage, getMessage, getMessagesByPage, sendMessage } from "./contact/contact-service";
 
-import { createReservation, createInvoice, deleteReservation, downloadReservationReports, extendReservation, getAdminSchedule, getReservationById, getReservationByIdAdmin, getReservationsByPage, getReservationsByPageAdmin, isVehicleAvailable, updateReservation } from "./reservation/reservation-service";
+import { createReservation, createReservationAdmin, createInvoice, deleteReservation, downloadReservationReports, extendReservation, getAdminSchedule, getAvailableCarsAdmin, getReservationById, getReservationByIdAdmin, getReservationsByPage, getReservationsByPageAdmin, isVehicleAvailable, updateReservation } from "./reservation/reservation-service";
 
 import { addReservationRecord, deleteReservationRecord, getReservationRecords, updateReservationRecord } from "./reservation/reservation-record-service";
 
@@ -37,6 +37,8 @@ export const services = {
         getReservationsByPage,
         isVehicleAvailable,
         // ADMIN ENDPOINTS
+        createReservationAdmin,
+        getAvailableCarsAdmin,
         deleteReservation,
         downloadReservationReports,
         getAdminSchedule,

@@ -21,6 +21,7 @@ const EMPTY = {
   deposit: "", kmLimit: "", unlimitedKm: true, vatRate: 20,
 };
 const EMPTY_CORP = { title: "", taxOffice: "", taxNo: "", phone: "", email: "" };
+const EMPTY_CUST = { firstName: "", lastName: "", email: "", phoneNumber: "" };
 
 const AdminReservationDetailsPage = () => {
   const { reservationId } = useParams();
@@ -45,6 +46,10 @@ const AdminReservationDetailsPage = () => {
   const [corpModal, setCorpModal] = useState(false);
   const [corpForm, setCorpForm] = useState(EMPTY_CORP);
   const [savingCorp, setSavingCorp] = useState(false);
+  const [custModal, setCustModal] = useState(false);
+  const [custForm, setCustForm] = useState(EMPTY_CUST);
+  const [savingCust, setSavingCust] = useState(false);
+  const [availableCars, setAvailableCars] = useState([]);
   const [payments, setPayments] = useState([]);
   const [catalog, setCatalog] = useState([]);
   const [extensions, setExtensions] = useState([]);
@@ -199,6 +204,31 @@ const AdminReservationDetailsPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Create mode: keep the vehicle picker limited to cars actually free for the
+  // chosen date range (and not out of service). Refetch whenever the range changes.
+  const { pickUpDate, pickUpTime, dropOffDate, dropOffTime } = formik.values;
+  useEffect(() => {
+    if (!isCreate || !pickUpDate || !dropOffDate) return;
+    if (!moment(`${dropOffDate} ${dropOffTime || "00:00"}`).isAfter(`${pickUpDate} ${pickUpTime || "00:00"}`)) return;
+    let cancelled = false;
+    services.reservation
+      .getAvailableCarsAdmin({
+        pickUpTime: utils.functions.combineDateAndTime(pickUpDate, pickUpTime || "00:00"),
+        dropOffTime: utils.functions.combineDateAndTime(dropOffDate, dropOffTime || "00:00"),
+      })
+      .then((list) => {
+        if (cancelled) return;
+        const cars = Array.isArray(list) ? list : [];
+        setAvailableCars(cars);
+        if (formik.values.carId && !cars.some((c) => c.id === formik.values.carId)) {
+          formik.setFieldValue("carId", "");
+        }
+      })
+      .catch(() => !cancelled && setAvailableCars([]));
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCreate, pickUpDate, pickUpTime, dropOffDate, dropOffTime]);
+
   const handleDelete = () => {
     utils.functions
       .swalQuestion(t("reservations.toasts.deleteConfirmTitle"), t("reservations.toasts.deleteConfirmText"))
@@ -233,9 +263,29 @@ const AdminReservationDetailsPage = () => {
     }
   };
 
+  const saveCustomer = async () => {
+    if (!custForm.firstName.trim() || !custForm.lastName.trim() || !custForm.email.trim()) return;
+    setSavingCust(true);
+    try {
+      const created = await services.user.createUserAdmin(custForm);
+      const list = await services.user.getUsersByPage(0, 300);
+      setCustomers((list?.content || []).filter((x) => x.roles?.includes("Customer")));
+      formik.setFieldValue("userId", created.id);
+      setCustModal(false);
+      setCustForm(EMPTY_CUST);
+    } catch (error) {
+      utils.functions.swalToast(
+        error?.response?.status === 409 ? t("newCustomer.emailExists") : t("newCustomer.error"),
+        "error"
+      );
+    } finally {
+      setSavingCust(false);
+    }
+  };
+
   const selectedCar = useMemo(
-    () => vehicles.find((v) => v.id === formik.values.carId),
-    [vehicles, formik.values.carId]
+    () => [...vehicles, ...availableCars].find((v) => v.id === formik.values.carId),
+    [vehicles, availableCars, formik.values.carId]
   );
   const selectedCorp = corporates.find((cx) => cx.id === formik.values.corporateId);
 
@@ -295,10 +345,12 @@ const AdminReservationDetailsPage = () => {
   };
 
   const branchNames = branches.map((b) => b.name);
+  const carList = isCreate ? availableCars : vehicles;
   const vehicleOptions = [
     ...(isCreate ? [{ id: "__none", value: "", name: `— ${t("newContract.selectVehicle")} —` }] : []),
-    ...vehicles.map((veh) => ({
-      id: veh.id, value: veh.id, name: `${veh.brand} ${veh.model} — ${veh.licensePlate}`,
+    ...carList.map((veh) => ({
+      id: veh.id, value: veh.id,
+      name: `${veh.brand} ${veh.model} — ${veh.licensePlate}${veh.branch ? ` · ${veh.branch.name}` : ""}`,
     })),
   ];
   const statusOptions = constants.reservationStatus.map((s) => ({
@@ -326,8 +378,13 @@ const AdminReservationDetailsPage = () => {
   const saveFirst = <p className="text-muted mb-0">{c("saveFirstHint")}</p>;
   const createCustomerPicker = (
     <>
+      <div className="contract-page__corp-head">
+        <Form.Label className="mb-0">* {c("customerName")}</Form.Label>
+        <button type="button" className="contract-page__link" onClick={() => setCustModal(true)}>
+          + {c("newCustomerBtn")}
+        </button>
+      </div>
       <Form.Group className="mb-2">
-        <Form.Label className="mb-1">* {c("customerName")}</Form.Label>
         <Form.Select size="sm" value={formik.values.userId}
           onChange={(e) => formik.setFieldValue("userId", e.target.value)}>
           <option value="">{t("newContract.selectCustomer")}</option>
@@ -404,9 +461,12 @@ const AdminReservationDetailsPage = () => {
                 <CustomForm formik={formik} name="dropOffDate" label={`* ${c("dropOffDate")}`} type="date" />
                 <CustomForm formik={formik} name="dropOffTime" label={t("reservations.form.dropOffTime")} type="time" />
               </div>
-              {ro(c("kur"), c("kurLine", { c: "1,00 TL", g: "1,00 TL" }))}
               {ro(c("currentClass"), selectedCar ? `${selectedCar.brand} ${selectedCar.model}` : "")}
               <CustomForm formik={formik} name="carId" label={c("vehicle")} type="select" itemsArr={vehicleOptions} />
+              {isCreate && !availableCars.length && (
+                <p className="text-muted mb-2" style={{ fontSize: "0.8rem" }}>{c("noAvailableCars")}</p>
+              )}
+              {isCreate && selectedCar?.branch && ro(c("branch"), selectedCar.branch.name)}
               {ro(
                 c("fuelTransmission"),
                 selectedCar
@@ -785,6 +845,34 @@ const AdminReservationDetailsPage = () => {
           <Button variant="outline-secondary" onClick={() => setCorpModal(false)}>{t("reservations.cancel")}</Button>
           <Button onClick={saveCorporate} disabled={savingCorp || !corpForm.title.trim()}>
             {savingCorp && <Spinner animation="border" size="sm" />} {t("reservations.save")}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={custModal} onHide={() => setCustModal(false)}>
+        <Modal.Header closeButton><Modal.Title>{t("newCustomer.title")}</Modal.Title></Modal.Header>
+        <Modal.Body>
+          {[["firstName", "firstName"], ["lastName", "lastName"], ["email", "email"], ["phoneNumber", "phoneNumber"]].map(
+            ([field, lk]) => (
+              <Form.Group className="mb-2" key={field}>
+                <Form.Label>{t(`users.form.${lk}`)}</Form.Label>
+                <Form.Control
+                  type={field === "email" ? "email" : "text"}
+                  value={custForm[field]}
+                  onChange={(e) => setCustForm({ ...custForm, [field]: e.target.value })}
+                />
+              </Form.Group>
+            )
+          )}
+          <p className="text-muted mb-0" style={{ fontSize: "0.8rem" }}>{t("newCustomer.passwordHint")}</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="outline-secondary" onClick={() => setCustModal(false)}>{t("reservations.cancel")}</Button>
+          <Button
+            onClick={saveCustomer}
+            disabled={savingCust || !custForm.firstName.trim() || !custForm.lastName.trim() || !custForm.email.trim()}
+          >
+            {savingCust && <Spinner animation="border" size="sm" />} {t("reservations.save")}
           </Button>
         </Modal.Footer>
       </Modal>
