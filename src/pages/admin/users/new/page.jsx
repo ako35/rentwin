@@ -44,7 +44,6 @@ const AdminNewCustomerPage = () => {
     } catch (error) {
       const status = error?.response?.status;
       const message = error?.response?.data?.message;
-      // eslint-disable-next-line no-console
       console.error("[newCustomer] create failed", {
         status,
         code: error?.code,
