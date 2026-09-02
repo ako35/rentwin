@@ -116,6 +116,14 @@
     .form-label { margin-bottom: 0.1rem; }
   }
 
+  &__newcust-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem 1rem;
+
+    @media (max-width: 576px) { grid-template-columns: 1fr; }
+  }
+
   &__typeahead {
     position: relative;
   }

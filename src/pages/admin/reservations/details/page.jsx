@@ -21,6 +21,11 @@ const EMPTY = {
   deposit: "", kmLimit: "", unlimitedKm: true, vatRate: 20,
 };
 const EMPTY_CORP = { title: "", taxOffice: "", taxNo: "", phone: "", email: "" };
+const EMPTY_NEW_CUST = {
+  customerType: "Bireysel", companyTitle: "", taxOffice: "",
+  firstName: "", lastName: "", nationalId: "",
+  email: "", phoneNumber: "", address: "", zipCode: "",
+};
 
 const AdminReservationDetailsPage = () => {
   const { reservationId } = useParams();
@@ -49,6 +54,9 @@ const AdminReservationDetailsPage = () => {
   const [savingCust, setSavingCust] = useState(false);
   const [custQuery, setCustQuery] = useState("");
   const [custOpen, setCustOpen] = useState(false);
+  const [newCustModal, setNewCustModal] = useState(false);
+  const [newCust, setNewCust] = useState(EMPTY_NEW_CUST);
+  const [savingNewCust, setSavingNewCust] = useState(false);
   const [availableCars, setAvailableCars] = useState([]);
   const [payments, setPayments] = useState([]);
   const [catalog, setCatalog] = useState([]);
@@ -323,6 +331,38 @@ const AdminReservationDetailsPage = () => {
     }
   };
 
+  const openNewCust = () => {
+    const q = custQuery.trim();
+    setNewCust({
+      ...EMPTY_NEW_CUST,
+      ...(q.includes("@") ? { email: q } : q ? { firstName: q } : {}),
+    });
+    setCustOpen(false);
+    setNewCustModal(true);
+  };
+
+  const saveNewCust = async () => {
+    setSavingNewCust(true);
+    try {
+      const created = await services.user.createUserAdmin(newCust);
+      const list = await services.user.getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" });
+      setCustomers(list?.content || []);
+      formik.setFieldValue("userId", created.id);
+      setNewCustModal(false);
+      setNewCust(EMPTY_NEW_CUST);
+      utils.functions.swalToast(t("newCustomer.success"), "success");
+    } catch (error) {
+      utils.functions.swalToast(
+        error?.response?.status === 409
+          ? t("newCustomer.emailExists")
+          : error?.response?.data?.message || t("newCustomer.error"),
+        "error"
+      );
+    } finally {
+      setSavingNewCust(false);
+    }
+  };
+
   const selectedCar = useMemo(
     () => [...vehicles, ...availableCars].find((v) => v.id === formik.values.carId),
     [vehicles, availableCars, formik.values.carId]
@@ -425,9 +465,9 @@ const AdminReservationDetailsPage = () => {
             ↻ {c("refresh")}
           </button>
           {"  "}
-          <a className="contract-page__link" href={`${routes.adminUsers}/new`} target="_blank" rel="noreferrer">
+          <button type="button" className="contract-page__link" onClick={openNewCust}>
             + {c("newCustomerBtn")}
-          </a>
+          </button>
         </span>
       </div>
       {(() => {
@@ -466,10 +506,7 @@ const AdminReservationDetailsPage = () => {
                   </li>
                 ))}
                 {matches.length === 0 && (
-                  <li className="contract-page__typeahead-add" onMouseDown={() => {
-                    window.open(`${routes.adminUsers}/new`, "_blank", "noopener");
-                    setCustOpen(false);
-                  }}>
+                  <li className="contract-page__typeahead-add" onMouseDown={openNewCust}>
                     + {c("customerNotFoundAdd")}
                   </li>
                 )}
@@ -954,6 +991,49 @@ const AdminReservationDetailsPage = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {(() => {
+        const isCorp = newCust.customerType === "Kurumsal";
+        const setNC = (k) => (e) => setNewCust((f) => ({ ...f, [k]: e.target.value }));
+        const canSave =
+          newCust.email.trim() &&
+          (isCorp ? newCust.companyTitle.trim() : newCust.firstName.trim() && newCust.lastName.trim());
+        const nf = (name, label, type = "text") => (
+          <Form.Group className="mb-2" key={name}>
+            <Form.Label>{label}</Form.Label>
+            <Form.Control type={type} value={newCust[name]} onChange={setNC(name)} />
+          </Form.Group>
+        );
+        return (
+          <Modal show={newCustModal} size="lg" onHide={() => setNewCustModal(false)}>
+            <Modal.Header closeButton><Modal.Title>{t("newCustomer.title")}</Modal.Title></Modal.Header>
+            <Modal.Body>
+              <div className="contract-page__radios mb-3">
+                <Form.Check inline type="radio" id="ncm-ind" label={c("individual")}
+                  checked={!isCorp} onChange={() => setNewCust((f) => ({ ...f, customerType: "Bireysel" }))} />
+                <Form.Check inline type="radio" id="ncm-corp" label={c("corporate")}
+                  checked={isCorp} onChange={() => setNewCust((f) => ({ ...f, customerType: "Kurumsal" }))} />
+              </div>
+              <div className="contract-page__newcust-grid">
+                {isCorp
+                  ? [nf("companyTitle", `* ${c("corporateTitle")}`), nf("taxOffice", c("taxOffice")), nf("nationalId", c("taxNo"))]
+                  : [nf("firstName", `* ${t("users.form.firstName")}`), nf("lastName", `* ${t("users.form.lastName")}`), nf("nationalId", c("custNationalId"))]}
+                {nf("email", `* ${c("customerEmail")}`, "email")}
+                {nf("phoneNumber", c("customerPhone"))}
+                {nf("address", c("custAddress"))}
+                {nf("zipCode", t("users.form.zipCode"))}
+              </div>
+              <p className="text-muted mb-0" style={{ fontSize: "0.8rem" }}>{t("newCustomer.autoPasswordHint")}</p>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="outline-secondary" onClick={() => setNewCustModal(false)}>{t("reservations.cancel")}</Button>
+              <Button onClick={saveNewCust} disabled={savingNewCust || !canSave}>
+                {savingNewCust && <Spinner animation="border" size="sm" />} {t("newCustomer.create")}
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        );
+      })()}
     </div>
   );
 };
