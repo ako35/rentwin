@@ -461,12 +461,11 @@ const AdminReservationDetailsPage = () => {
                 <CustomForm formik={formik} name="dropOffDate" label={`* ${c("dropOffDate")}`} type="date" />
                 <CustomForm formik={formik} name="dropOffTime" label={t("reservations.form.dropOffTime")} type="time" />
               </div>
-              {ro(c("currentClass"), selectedCar ? `${selectedCar.brand} ${selectedCar.model}` : "")}
               <CustomForm formik={formik} name="carId" label={c("vehicle")} type="select" itemsArr={vehicleOptions} />
               {isCreate && !availableCars.length && (
                 <p className="text-muted mb-2" style={{ fontSize: "0.8rem" }}>{c("noAvailableCars")}</p>
               )}
-              {isCreate && selectedCar?.branch && ro(c("branch"), selectedCar.branch.name)}
+              {selectedCar?.branch && ro(c("branch"), selectedCar.branch.name)}
               {ro(
                 c("fuelTransmission"),
                 selectedCar
