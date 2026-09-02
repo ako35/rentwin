@@ -50,8 +50,11 @@ export const getUserAdmin = async (id) => {
     return response.data;
 };
 
-export const getUsersByPage = async (page = 0, size = 20, sort = "id", direction = "DESC") => {
-    const response = await axios.get(`${API_URL}/user/auth/pages?page=${page}&size=${size}&sort=${sort}&direction=${direction}`, services.authHeader());
+export const getUsersByPage = async (page = 0, size = 20, sort = "id", direction = "DESC", filters = {}) => {
+    const params = new URLSearchParams({ page, size, sort, direction });
+    if (filters.role) params.set("role", filters.role);
+    if (filters.q) params.set("q", filters.q);
+    const response = await axios.get(`${API_URL}/user/auth/pages?${params.toString()}`, services.authHeader());
     return response.data;
 };
 

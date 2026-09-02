@@ -387,6 +387,7 @@
   "users": {
     "downloadData": "Download User Data",
     "tableTitle": "Users",
+    "listTitle": "Customer List",
     "cancel": "Cancel",
     "update": "Update",
     "delete": "Delete",
@@ -396,10 +397,28 @@
     "form": {
       "firstName": "First Name",
       "lastName": "Last Name",
+      "customerCode": "Customer Code",
+      "nationalId": "National ID / Passport No",
       "email": "Email",
       "phoneNumber": "Phone Number",
       "address": "Address",
-      "zipCode": "Zip Code"
+      "zipCode": "Zip Code",
+      "active": "Active",
+      "notes": "Notes"
+    },
+    "list": {
+      "new": "New",
+      "filter": "Filter",
+      "searchPlaceholder": "Search customer…",
+      "active": "Active",
+      "name": "Name",
+      "nationalId": "National ID",
+      "phone": "Phone",
+      "email": "Email",
+      "debit": "Debit",
+      "credit": "Credit",
+      "balance": "Balance",
+      "empty": "No customer found"
     },
     "toasts": {
       "downloadSuccess": "Your download will start soon",
@@ -432,12 +451,6 @@
     }
   },
   "table": {
-    "user": {
-      "firstName": "First Name",
-      "lastName": "Last Name",
-      "email": "Email",
-      "roles": "Roles"
-    },
     "reservation": {
       "vehicle": "Vehicle",
       "pickup": "Pickup",

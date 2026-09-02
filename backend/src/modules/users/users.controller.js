@@ -5,7 +5,26 @@ const { serializeUser } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 
-const ALLOWED_SORT_FIELDS = ["id", "firstName", "lastName", "email"];
+const ALLOWED_SORT_FIELDS = ["id", "firstName", "lastName", "email", "createdAt"];
+
+const CUSTOMER_STRING_FIELDS = ["customerCode", "nationalId", "notes"];
+
+// Contract totals for a set of customers: debit = Σ contract grand totals,
+// credit = Σ payments, balance = credit - debit (negative => customer owes).
+const customerTotals = async (userIds) => {
+  if (!userIds.length) return {};
+  const rows = await prisma.reservation.findMany({
+    where: { userId: { in: userIds }, status: { not: "CANCELLED" } },
+    select: { userId: true, totalPrice: true, payments: { select: { amount: true } } },
+  });
+  const totals = {};
+  for (const r of rows) {
+    const t = totals[r.userId] || (totals[r.userId] = { debit: 0, credit: 0 });
+    t.debit += r.totalPrice || 0;
+    t.credit += r.payments.reduce((s, p) => s + p.amount, 0);
+  }
+  return totals;
+};
 
 const getCurrentUser = asyncHandler(async (req, res) => {
   res.json(req.user);
@@ -51,18 +70,39 @@ const getUsersByPageAdmin = asyncHandler(async (req, res) => {
     allowedSortFields: ALLOWED_SORT_FIELDS,
   });
 
+  const { role, q } = req.query;
+  const where = {
+    ...(role ? { roles: { has: role } } : {}),
+    ...(q
+      ? {
+          OR: [
+            { firstName: { contains: q, mode: "insensitive" } },
+            { lastName: { contains: q, mode: "insensitive" } },
+            { email: { contains: q, mode: "insensitive" } },
+            { nationalId: { contains: q, mode: "insensitive" } },
+          ],
+        }
+      : {}),
+  };
+
   const [content, totalElements] = await Promise.all([
     prisma.user.findMany({
+      where,
       skip: page * size,
       take: size,
       orderBy: { [sortField]: direction },
     }),
-    prisma.user.count(),
+    prisma.user.count({ where }),
   ]);
+
+  const totals = await customerTotals(content.map((u) => u.id));
 
   res.json(
     buildPageResponse({
-      content: content.map(serializeUser),
+      content: content.map((u) => {
+        const t = totals[u.id] || { debit: 0, credit: 0 };
+        return { ...serializeUser(u), debit: t.debit, credit: t.credit, balance: t.credit - t.debit };
+      }),
       totalElements,
       page,
       size,
@@ -84,19 +124,23 @@ const createUserAdmin = asyncHandler(async (req, res) => {
   // Admin-created customers get a default password they can reset later.
   const passwordHash = await hashPassword(password || "Rentwin123.");
 
-  const user = await prisma.user.create({
-    data: {
-      firstName,
-      lastName,
-      email,
-      phoneNumber: phoneNumber || "",
-      address: address || "",
-      zipCode: zipCode ? String(zipCode) : "",
-      passwordHash,
-      roles: Array.isArray(roles) && roles.length ? roles : ["Customer"],
-      builtIn: false,
-    },
+  const data = {
+    firstName,
+    lastName,
+    email,
+    phoneNumber: phoneNumber || "",
+    address: address || "",
+    zipCode: zipCode ? String(zipCode) : "",
+    passwordHash,
+    roles: Array.isArray(roles) && roles.length ? roles : ["Customer"],
+    builtIn: false,
+  };
+  CUSTOMER_STRING_FIELDS.forEach((f) => {
+    if (f in req.body) data[f] = req.body[f] === "" ? null : req.body[f];
   });
+  if ("active" in req.body) data.active = Boolean(req.body.active);
+
+  const user = await prisma.user.create({ data });
   res.status(201).json(serializeUser(user));
 });
 
@@ -111,6 +155,10 @@ const updateUserAdmin = asyncHandler(async (req, res) => {
   if (password) {
     data.passwordHash = await hashPassword(password);
   }
+  CUSTOMER_STRING_FIELDS.forEach((f) => {
+    if (f in req.body) data[f] = req.body[f] === "" ? null : req.body[f];
+  });
+  if ("active" in req.body) data.active = Boolean(req.body.active);
 
   const user = await prisma.user.update({ where: { id: target.id }, data });
   res.json(serializeUser(user));

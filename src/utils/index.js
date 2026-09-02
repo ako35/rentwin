@@ -29,7 +29,6 @@ import {
 
 // TABLES
 import {
-  getAdminUserColumns,
   getAdminReservationsColumns,
   getAdminContactMessagesColumns,
   getAdminVehiclesColumns,
@@ -80,7 +79,6 @@ export const utils = {
     vehicleInspectionInitialValues,
   },
   tables: {
-    getAdminUserColumns,
     getAdminReservationsColumns,
     getAdminContactMessagesColumns,
     getAdminVehiclesColumns,

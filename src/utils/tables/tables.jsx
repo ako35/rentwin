@@ -1,24 +1,5 @@
 const API_URL = import.meta.env.VITE_APP_API_URL;
 
-export const getAdminUserColumns = (t, tCommon) => [
-    {
-        name: t("table.user.firstName"),
-        selector: (row) => row?.firstName,
-    },
-    {
-        name: t("table.user.lastName"),
-        selector: (row) => row?.lastName,
-    },
-    {
-        name: t("table.user.email"),
-        selector: (row) => row?.email,
-    },
-    {
-        name: t("table.user.roles"),
-        selector: (row) => row?.roles?.map((role) => tCommon(`options.roles.${role}`)).join(" — "),
-    },
-];
-
 export const getAdminReservationsColumns = (t) => [
     {
         name: t("table.reservation.vehicle"),

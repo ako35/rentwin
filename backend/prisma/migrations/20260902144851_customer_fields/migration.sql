@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN "customerCode" TEXT;
+ALTER TABLE "User" ADD COLUMN "nationalId" TEXT;
+ALTER TABLE "User" ADD COLUMN "active" BOOLEAN NOT NULL DEFAULT true;
+ALTER TABLE "User" ADD COLUMN "notes" TEXT;

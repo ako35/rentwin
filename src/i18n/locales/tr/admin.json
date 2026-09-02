@@ -387,6 +387,7 @@
   "users": {
     "downloadData": "Kullanıcı Verilerini İndir",
     "tableTitle": "Kullanıcılar",
+    "listTitle": "Müşteri Listesi",
     "cancel": "İptal",
     "update": "Güncelle",
     "delete": "Sil",
@@ -396,10 +397,28 @@
     "form": {
       "firstName": "Ad",
       "lastName": "Soyad",
+      "customerCode": "Cari Kodu",
+      "nationalId": "TC No / Pasaport No",
       "email": "E-posta",
       "phoneNumber": "Telefon Numarası",
       "address": "Adres",
-      "zipCode": "Posta Kodu"
+      "zipCode": "Posta Kodu",
+      "active": "Aktif",
+      "notes": "Açıklama"
+    },
+    "list": {
+      "new": "Yeni",
+      "filter": "Filtrele",
+      "searchPlaceholder": "Müşteri ara…",
+      "active": "Aktif",
+      "name": "Ad Soyad",
+      "nationalId": "TC No",
+      "phone": "Telefon",
+      "email": "E-posta",
+      "debit": "Borç",
+      "credit": "Alacak",
+      "balance": "Bakiye",
+      "empty": "Müşteri bulunamadı"
     },
     "toasts": {
       "downloadSuccess": "İndirmeniz kısa süre içinde başlayacak",
@@ -432,12 +451,6 @@
     }
   },
   "table": {
-    "user": {
-      "firstName": "Ad",
-      "lastName": "Soyad",
-      "email": "E-posta",
-      "roles": "Roller"
-    },
     "reservation": {
       "vehicle": "Araç",
       "pickup": "Alış",

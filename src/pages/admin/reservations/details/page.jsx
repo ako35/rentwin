@@ -147,8 +147,10 @@ const AdminReservationDetailsPage = () => {
   const loadCreate = async () => {
     try {
       await loadRefData();
-      const u = await services.user.getUsersByPage(0, 300).catch(() => ({ content: [] }));
-      setCustomers((u?.content || []).filter((x) => x.roles?.includes("Customer")));
+      const u = await services.user
+        .getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" })
+        .catch(() => ({ content: [] }));
+      setCustomers(u?.content || []);
       setCustomerType("individual");
       setInitialValues({
         ...EMPTY,
@@ -268,8 +270,8 @@ const AdminReservationDetailsPage = () => {
     setSavingCust(true);
     try {
       const created = await services.user.createUserAdmin(custForm);
-      const list = await services.user.getUsersByPage(0, 300);
-      setCustomers((list?.content || []).filter((x) => x.roles?.includes("Customer")));
+      const list = await services.user.getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" });
+      setCustomers(list?.content || []);
       formik.setFieldValue("userId", created.id);
       setCustModal(false);
       setCustForm(EMPTY_CUST);

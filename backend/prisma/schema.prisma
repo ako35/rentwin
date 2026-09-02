@@ -69,6 +69,10 @@ model User {
   zipCode      String
   roles        Role[]        @default([Customer])
   builtIn      Boolean       @default(false)
+  customerCode String?
+  nationalId   String?
+  active       Boolean       @default(true)
+  notes        String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   reservations Reservation[]

@@ -12,6 +12,8 @@ const { routes } = constants;
 const EMPTY = {
   firstName: "",
   lastName: "",
+  customerCode: "",
+  nationalId: "",
   email: "",
   phoneNumber: "",
   address: "",
@@ -47,6 +49,8 @@ const AdminNewCustomerPage = () => {
   const fields = [
     ["firstName", t("users.form.firstName")],
     ["lastName", t("users.form.lastName")],
+    ["customerCode", t("users.form.customerCode")],
+    ["nationalId", t("users.form.nationalId")],
     ["email", t("users.form.email")],
     ["phoneNumber", t("users.form.phoneNumber")],
     ["address", t("users.form.address")],

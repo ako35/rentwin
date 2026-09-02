@@ -5,8 +5,7 @@ import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import { utils } from "../../../../utils";
 import { CustomForm, Loading } from "../../../../components";
-import { Form } from "react-router-dom";
-import { Alert, Button, ButtonGroup, Row, Spinner } from "react-bootstrap";
+import { Alert, Button, ButtonGroup, Form, Row, Spinner } from "react-bootstrap";
 import { services } from "../../../../services";
 
 const { routes } = constants;
@@ -25,6 +24,14 @@ const AdminUserDetailsPage = () => {
     {
       label: t("users.form.lastName"),
       name: "lastName",
+    },
+    {
+      label: t("users.form.customerCode"),
+      name: "customerCode",
+    },
+    {
+      label: t("users.form.nationalId"),
+      name: "nationalId",
     },
     {
       label: t("users.form.email"),
@@ -58,6 +65,10 @@ const AdminUserDetailsPage = () => {
     phoneNumber: "",
     address: "",
     zipCode: "",
+    customerCode: "",
+    nationalId: "",
+    active: true,
+    notes: "",
     roles: [],
   });
 
@@ -128,7 +139,14 @@ const AdminUserDetailsPage = () => {
   const loadData = async () => {
     try {
       const userData = await services.user.getUserAdmin(userId);
-      setInitialValues(userData);
+      setInitialValues({
+        ...userData,
+        password: "",
+        customerCode: userData.customerCode || "",
+        nationalId: userData.nationalId || "",
+        notes: userData.notes || "",
+        active: userData.active ?? true,
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -147,7 +165,7 @@ const AdminUserDetailsPage = () => {
         <Loading height={500} />
       ) : (
         <Form
-          novalidate
+          noValidate
           onSubmit={formik.handleSubmit}
           className="admin-user-details-form mt-5"
         >
@@ -157,6 +175,15 @@ const AdminUserDetailsPage = () => {
                 <CustomForm key={item.name} formik={formik} {...item} />
               ))}
             </Row>
+            <CustomForm formik={formik} name="notes" label={t("users.form.notes")} type="textarea" rows={2} />
+            <Form.Check
+              className="mb-2"
+              label={t("users.form.active")}
+              type="checkbox"
+              name="active"
+              checked={!!formik.values.active}
+              onChange={(e) => formik.setFieldValue("active", e.target.checked)}
+            />
             <Form.Check
               label={t("users.customer")}
               value="Customer"
