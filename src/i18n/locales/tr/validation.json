@@ -125,6 +125,7 @@
     "dropOffDateRequired": "Bırakış tarihini girin",
     "dropOffTimeRequired": "Bırakış saatini girin",
     "carRequired": "Bir araç seçin",
+    "customerRequired": "Müşteri seçilmelidir.",
     "statusRequired": "Bir durum seçin"
   },
   "adminVehicle": {

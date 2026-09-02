@@ -362,7 +362,12 @@
       "totalAmount": "Total Amount",
       "recalc": "Recalculate",
       "acilis": "Pick-up",
-      "ekstralarTitle": "Extras"
+      "ekstralarTitle": "Extras",
+      "newTitle": "New Contract",
+      "createSave": "Create and Open",
+      "createdSuccess": "Contract created.",
+      "saveFirstHint": "This section becomes available after the contract is saved.",
+      "discard": "Discard"
     },
     "toasts": {
       "downloadSuccess": "Your download will start soon",

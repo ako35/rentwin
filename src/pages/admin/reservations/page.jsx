@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Button, Form, Modal, Spinner, Table } from "react-bootstrap";
-import moment from "moment/moment";
+import { Button, Form, Spinner, Table } from "react-bootstrap";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
 import { Loading } from "../../../components";
@@ -12,22 +11,10 @@ import "./style.scss";
 const { routes } = constants;
 const PAGE_SIZES = [10, 25, 50, 100];
 
-const NEW_FORM = {
-  carId: "",
-  userId: "",
-  pickUpLocation: "",
-  dropOffLocation: "",
-  pickUpDate: moment().format("YYYY-MM-DD"),
-  pickUpTime: "10:00",
-  dropOffDate: moment().add(3, "days").format("YYYY-MM-DD"),
-  dropOffTime: "10:00",
-};
-
 const AdminReservationsPage = () => {
   const { t } = useTranslation("admin");
   const { t: tCommon, i18n } = useTranslation("common");
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
@@ -38,66 +25,6 @@ const AdminReservationsPage = () => {
   const [plate, setPlate] = useState("");
   const [customer, setCustomer] = useState("");
   const [applied, setApplied] = useState({ plate: "", customer: "" });
-
-  const [showNew, setShowNew] = useState(false);
-  const [newForm, setNewForm] = useState(NEW_FORM);
-  const [savingNew, setSavingNew] = useState(false);
-  const [vehicles, setVehicles] = useState([]);
-  const [customers, setCustomers] = useState([]);
-  const [branches, setBranches] = useState([]);
-
-  const openNew = () => {
-    setNewForm(NEW_FORM);
-    setShowNew(true);
-    if (!vehicles.length) {
-      Promise.all([
-        services.vehicle.getVehicles(),
-        services.user.getUsersByPage(0, 300),
-        services.branch.getBranches().catch(() => []),
-      ]).then(([v, u, b]) => {
-        setVehicles(v || []);
-        setCustomers((u?.content || []).filter((x) => x.roles?.includes("Customer")));
-        setBranches(b || []);
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (searchParams.get("new") === "1") {
-      openNew();
-      setSearchParams({}, { replace: true });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
-
-  const setNF = (key) => (e) => setNewForm((f) => ({ ...f, [key]: e.target.value }));
-  const canCreate = useMemo(
-    () =>
-      newForm.carId &&
-      newForm.userId &&
-      moment(`${newForm.dropOffDate} ${newForm.dropOffTime}`).isAfter(
-        moment(`${newForm.pickUpDate} ${newForm.pickUpTime}`)
-      ),
-    [newForm]
-  );
-
-  const createContract = async () => {
-    setSavingNew(true);
-    try {
-      const { id } = await services.reservation.createReservationAdmin({
-        carId: newForm.carId,
-        userId: newForm.userId,
-        pickUpLocation: newForm.pickUpLocation,
-        dropOffLocation: newForm.dropOffLocation || newForm.pickUpLocation,
-        pickUpTime: utils.functions.combineDateAndTime(newForm.pickUpDate, newForm.pickUpTime),
-        dropOffTime: utils.functions.combineDateAndTime(newForm.dropOffDate, newForm.dropOffTime),
-      });
-      navigate(`${routes.adminReservations}/${id}`);
-    } catch (error) {
-      utils.functions.swalToast(t("newContract.error"), "error");
-      setSavingNew(false);
-    }
-  };
 
   const load = async () => {
     setLoading(true);
@@ -162,7 +89,7 @@ const AdminReservationsPage = () => {
           <Button variant="outline-primary" size="sm" onClick={handleDownload} disabled={downloading}>
             {downloading && <Spinner animation="border" size="sm" />} {c("exportExcel")}
           </Button>
-          <Button size="sm" onClick={openNew}>{c("new")}</Button>
+          <Button size="sm" onClick={() => navigate(`${routes.adminReservations}/new`)}>{c("new")}</Button>
         </div>
       </div>
 
@@ -260,71 +187,6 @@ const AdminReservationsPage = () => {
         <Button size="sm" variant="outline-secondary" disabled={page + 1 >= totalPages} onClick={() => setPage(page + 1)}>›</Button>
         <Button size="sm" variant="outline-secondary" disabled={page + 1 >= totalPages} onClick={() => setPage(totalPages - 1)}>»</Button>
       </div>
-
-      <Modal show={showNew} onHide={() => setShowNew(false)} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>{t("newContract.title")}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Group className="mb-3">
-            <Form.Label>{t("newContract.vehicle")}</Form.Label>
-            <Form.Select value={newForm.carId} onChange={setNF("carId")}>
-              <option value="">{t("newContract.selectVehicle")}</option>
-              {vehicles.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.licensePlate} — {v.brand} {v.model}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>{t("newContract.customer")}</Form.Label>
-            <Form.Select value={newForm.userId} onChange={setNF("userId")}>
-              <option value="">{t("newContract.selectCustomer")}</option>
-              {customers.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.firstName} {u.lastName} — {u.email}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-          <div className="contract-list__new-grid">
-            <Form.Group>
-              <Form.Label>{t("reservations.contract.pickUpLocation")}</Form.Label>
-              <Form.Control list="nc-branches" value={newForm.pickUpLocation} onChange={setNF("pickUpLocation")} />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>{t("reservations.contract.dropOffLocation")}</Form.Label>
-              <Form.Control list="nc-branches" value={newForm.dropOffLocation} onChange={setNF("dropOffLocation")} />
-            </Form.Group>
-            <datalist id="nc-branches">
-              {branches.map((b) => <option key={b.id} value={b.name} />)}
-            </datalist>
-            <Form.Group>
-              <Form.Label>{t("reservations.contract.pickUpDate")}</Form.Label>
-              <Form.Control type="date" value={newForm.pickUpDate} onChange={setNF("pickUpDate")} />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>{t("reservations.form.pickUpTime")}</Form.Label>
-              <Form.Control type="time" value={newForm.pickUpTime} onChange={setNF("pickUpTime")} />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>{t("reservations.contract.dropOffDate")}</Form.Label>
-              <Form.Control type="date" value={newForm.dropOffDate} min={newForm.pickUpDate} onChange={setNF("dropOffDate")} />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>{t("reservations.form.dropOffTime")}</Form.Label>
-              <Form.Control type="time" value={newForm.dropOffTime} onChange={setNF("dropOffTime")} />
-            </Form.Group>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="outline-secondary" onClick={() => setShowNew(false)}>{t("reservations.cancel")}</Button>
-          <Button onClick={createContract} disabled={!canCreate || savingNew}>
-            {savingNew && <Spinner animation="border" size="sm" />} {t("newContract.create")}
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 };

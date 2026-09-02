@@ -10,6 +10,8 @@
     border-radius: 6px;
     padding: 0.55rem 1rem;
     margin-bottom: 1rem;
+
+    &--create { background: linear-gradient(90deg, v.$color2, v.$color1); }
   }
 
   &__ribbon-main {

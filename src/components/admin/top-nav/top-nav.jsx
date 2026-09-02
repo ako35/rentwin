@@ -67,14 +67,14 @@ const AdminTopNav = () => {
               title={t("topNav.reservationsAndContracts")}
               active={pathname.startsWith(routes.adminReservations)}
             >
-              <NavDropdown.Item as={Link} to={`${routes.adminReservations}?new=1`}>
+              <NavDropdown.Item as={Link} to={`${routes.adminReservations}/new`}>
                 <BsPlusLg className="admin-top-nav__item-icon" /> {t("topNav.addReservation")}
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to={routes.adminReservations}>
                 <BsListUl className="admin-top-nav__item-icon" /> {t("topNav.reservationList")}
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item as={Link} to={`${routes.adminReservations}?new=1`}>
+              <NavDropdown.Item as={Link} to={`${routes.adminReservations}/new`}>
                 <BsPlusLg className="admin-top-nav__item-icon" /> {t("topNav.addContract")}
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to={routes.adminReservations}>

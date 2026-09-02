@@ -187,6 +187,7 @@ export const adminReservationDetailsFormValidationSchema = Yup.object({
     dropOffDate: Yup.string().required(t("adminReservation.dropOffDateRequired")),
     dropOffTime: Yup.string().required(t("adminReservation.dropOffTimeRequired")),
     carId: Yup.string().required(t("adminReservation.carRequired")),
+    userId: Yup.string().required(t("adminReservation.customerRequired")),
     status: Yup.string().required(t("adminReservation.statusRequired")),
 });
 

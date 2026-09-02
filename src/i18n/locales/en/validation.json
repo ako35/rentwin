@@ -125,6 +125,7 @@
     "dropOffDateRequired": "Enter the drop off date",
     "dropOffTimeRequired": "Enter the drop off time",
     "carRequired": "Select a car",
+    "customerRequired": "Customer is required.",
     "statusRequired": "Select a status"
   },
   "adminVehicle": {

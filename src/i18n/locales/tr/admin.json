@@ -362,7 +362,12 @@
       "totalAmount": "Toplam Tutar",
       "recalc": "Tutar Hesapla",
       "acilis": "Alış",
-      "ekstralarTitle": "Ekstralar"
+      "ekstralarTitle": "Ekstralar",
+      "newTitle": "Yeni Kontrat",
+      "createSave": "Oluştur ve Aç",
+      "createdSuccess": "Kontrat oluşturuldu.",
+      "saveFirstHint": "Bu bölüm kontrat kaydedildikten sonra kullanılabilir.",
+      "discard": "Vazgeç"
     },
     "toasts": {
       "downloadSuccess": "İndirmeniz kısa süre içinde başlayacak",

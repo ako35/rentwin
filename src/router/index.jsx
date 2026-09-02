@@ -152,6 +152,10 @@ const router = createBrowserRouter([
             element: <AdminReservationsPage />,
           },
           {
+            path: "new",
+            element: <AdminReservationDetailsPage />,
+          },
+          {
             path: ":reservationId",
             element: <AdminReservationDetailsPage />,
           },

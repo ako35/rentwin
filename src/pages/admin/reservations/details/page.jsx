@@ -24,6 +24,7 @@ const EMPTY_CORP = { title: "", taxOffice: "", taxNo: "", phone: "", email: "" }
 
 const AdminReservationDetailsPage = () => {
   const { reservationId } = useParams();
+  const isCreate = !reservationId;
   const navigate = useNavigate();
   const { t } = useTranslation("admin");
   const { t: tCommon, i18n } = useTranslation("common");
@@ -34,6 +35,7 @@ const AdminReservationDetailsPage = () => {
   const [vehicles, setVehicles] = useState([]);
   const [branches, setBranches] = useState([]);
   const [corporates, setCorporates] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [customer, setCustomer] = useState(null);
   const [meta, setMeta] = useState({});
   const [initialValues, setInitialValues] = useState(EMPTY);
@@ -77,6 +79,35 @@ const AdminReservationDetailsPage = () => {
       deposit: values.deposit, kmLimit: values.unlimitedKm ? "" : values.kmLimit,
       unlimitedKm: values.unlimitedKm, vatRate: values.vatRate,
     };
+
+    if (isCreate) {
+      try {
+        const { id } = await services.reservation.createReservationAdmin({
+          carId: values.carId,
+          userId: values.userId,
+          pickUpLocation: values.pickUpLocation,
+          dropOffLocation: values.dropOffLocation || values.pickUpLocation,
+          pickUpTime: dto.pickUpTime,
+          dropOffTime: dto.dropOffTime,
+        });
+        let patched = true;
+        try {
+          await services.reservation.updateReservation(values.carId, id, dto);
+        } catch {
+          patched = false;
+        }
+        utils.functions.swalToast(
+          patched ? t("reservations.contract.createdSuccess") : t("reservations.toasts.updateError"),
+          patched ? "success" : "warning"
+        );
+        navigate(`${routes.adminReservations}/${id}`);
+      } catch {
+        utils.functions.swalToast(t("newContract.error"), "error");
+        setUpdating(false);
+      }
+      return;
+    }
+
     try {
       await services.reservation.updateReservation(values.carId, reservationId, dto);
       utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
@@ -95,19 +126,45 @@ const AdminReservationDetailsPage = () => {
     enableReinitialize: true,
   });
 
-  const loadData = async () => {
+  const loadRefData = async () => {
+    const [v, b, cs, cat] = await Promise.all([
+      services.vehicle.getVehicles(),
+      services.branch.getBranches().catch(() => []),
+      services.corporate.getCorporates().catch(() => []),
+      services.extra.getExtras().catch(() => []),
+    ]);
+    setVehicles(v || []);
+    setBranches(b || []);
+    setCorporates(cs || []);
+    setCatalog(cat || []);
+  };
+
+  const loadCreate = async () => {
     try {
-      const [r, v, b, cs, cat] = await Promise.all([
-        services.reservation.getReservationByIdAdmin(reservationId),
-        services.vehicle.getVehicles(),
-        services.branch.getBranches().catch(() => []),
-        services.corporate.getCorporates().catch(() => []),
-        services.extra.getExtras().catch(() => []),
-      ]);
-      setVehicles(v || []);
-      setBranches(b || []);
-      setCorporates(cs || []);
-      setCatalog(cat || []);
+      await loadRefData();
+      const u = await services.user.getUsersByPage(0, 300).catch(() => ({ content: [] }));
+      setCustomers((u?.content || []).filter((x) => x.roles?.includes("Customer")));
+      setCustomerType("individual");
+      setInitialValues({
+        ...EMPTY,
+        status: "CREATED",
+        pickUpDate: moment().format("YYYY-MM-DD"),
+        pickUpTime: "10:00",
+        dropOffDate: moment().add(3, "days").format("YYYY-MM-DD"),
+        dropOffTime: "10:00",
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadData = async () => {
+    if (isCreate) return loadCreate();
+    try {
+      await loadRefData();
+      const r = await services.reservation.getReservationByIdAdmin(reservationId);
       setExtensions(r.extensions || []);
       setInvoice(r.invoice || null);
       loadPayments();
@@ -238,9 +295,12 @@ const AdminReservationDetailsPage = () => {
   };
 
   const branchNames = branches.map((b) => b.name);
-  const vehicleOptions = vehicles.map((veh) => ({
-    id: veh.id, value: veh.id, name: `${veh.brand} ${veh.model} — ${veh.licensePlate}`,
-  }));
+  const vehicleOptions = [
+    ...(isCreate ? [{ id: "__none", value: "", name: `— ${t("newContract.selectVehicle")} —` }] : []),
+    ...vehicles.map((veh) => ({
+      id: veh.id, value: veh.id, name: `${veh.brand} ${veh.model} — ${veh.licensePlate}`,
+    })),
+  ];
   const statusOptions = constants.reservationStatus.map((s) => ({
     ...s, name: tCommon(`options.reservationStatus.${s.value}`),
   }));
@@ -263,6 +323,30 @@ const AdminReservationDetailsPage = () => {
   const ro = (label, value) => (
     <div className="contract-page__ro"><span>{label}</span><strong>{value || "—"}</strong></div>
   );
+  const saveFirst = <p className="text-muted mb-0">{c("saveFirstHint")}</p>;
+  const createCustomerPicker = (
+    <>
+      <Form.Group className="mb-2">
+        <Form.Label className="mb-1">* {c("customerName")}</Form.Label>
+        <Form.Select size="sm" value={formik.values.userId}
+          onChange={(e) => formik.setFieldValue("userId", e.target.value)}>
+          <option value="">{t("newContract.selectCustomer")}</option>
+          {customers.map((u) => (
+            <option key={u.id} value={u.id}>{u.firstName} {u.lastName} — {u.email}</option>
+          ))}
+        </Form.Select>
+      </Form.Group>
+      {(() => {
+        const sc = customers.find((cx) => cx.id === formik.values.userId);
+        return sc ? (
+          <>
+            {ro(c("customerEmail"), sc.email)}
+            {ro(c("customerPhone"), sc.phoneNumber)}
+          </>
+        ) : null;
+      })()}
+    </>
+  );
   const setV = (name) => (e) => formik.setFieldValue(name, e.target.value);
   const priceInput = (name, label, suffix = "TL") => (
     <div className="contract-page__price-row">
@@ -281,20 +365,20 @@ const AdminReservationDetailsPage = () => {
 
   return (
     <div className="contract-page">
-      <div className="contract-page__ribbon">
+      <div className={`contract-page__ribbon${isCreate ? " contract-page__ribbon--create" : ""}`}>
         <div className="contract-page__ribbon-main">
           <span className="contract-page__ribbon-id">
-            {c("title")} # {reservationId.slice(0, 10).toUpperCase()}
+            {isCreate ? c("newTitle") : `${c("title")} # ${reservationId.slice(0, 10).toUpperCase()}`}
           </span>
-          {formik.values.referenceNo && (
+          {!isCreate && formik.values.referenceNo && (
             <span className="contract-page__ribbon-ref">
               ({c("contractNo")}: # {formik.values.referenceNo})
             </span>
           )}
         </div>
-        <div className="contract-page__ribbon-title">{c("detailTitle")}</div>
+        <div className="contract-page__ribbon-title">{isCreate ? "" : c("detailTitle")}</div>
         <div className="contract-page__ribbon-meta">
-          {meta.updatedAt && (
+          {!isCreate && meta.updatedAt && (
             <>
               📅 {utils.functions.formatDateTime(meta.updatedAt)}
               <br />
@@ -334,6 +418,7 @@ const AdminReservationDetailsPage = () => {
 
             <section className="contract-card">
               <h3>{c("ekstralarTitle")}</h3>
+              {isCreate ? saveFirst : (
               <ContractRecords
                 reservationId={reservationId}
                 resource="extras"
@@ -361,6 +446,7 @@ const AdminReservationDetailsPage = () => {
                   </div>
                 }
               />
+              )}
             </section>
           </div>
 
@@ -383,6 +469,7 @@ const AdminReservationDetailsPage = () => {
                       checked={customerType === "corporate"} onChange={() => setCustomerType("corporate")} />
                   </div>
                   {customerType === "individual" ? (
+                    isCreate ? createCustomerPicker : (
                     <>
                       {ro(c("customerName"), customer ? `${customer.firstName} ${customer.lastName}` : "")}
                       {ro(c("customerEmail"), customer?.email)}
@@ -393,8 +480,10 @@ const AdminReservationDetailsPage = () => {
                         </Link>
                       )}
                     </>
+                    )
                   ) : (
                     <>
+                      {isCreate && createCustomerPicker}
                       <div className="contract-page__corp-head">
                         <Form.Label className="mb-0">* {c("corporateTitle")}</Form.Label>
                         <button type="button" className="contract-page__link" onClick={() => setCorpModal(true)}>
@@ -425,6 +514,7 @@ const AdminReservationDetailsPage = () => {
 
               {topTab === "drivers" && (
                 <div className="contract-page__top-content">
+                  {isCreate ? saveFirst : (
                   <ContractRecords
                     reservationId={reservationId} resource="drivers"
                     initial={{ firstName: "", lastName: "", licenseNo: "", licenseDate: "", birthDate: "", phone: "" }}
@@ -444,12 +534,13 @@ const AdminReservationDetailsPage = () => {
                     ]}
                     labels={recordLabels}
                   />
+                  )}
                 </div>
               )}
 
               {topTab === "invoice" && (
                 <div className="contract-page__top-content">
-                  {invoice ? (
+                  {isCreate ? saveFirst : invoice ? (
                     <>
                       {ro(c("invoice.number"), invoice.number)}
                       {ro(c("invoice.issuedAt"), utils.functions.getDate(invoice.issuedAt))}
@@ -492,7 +583,10 @@ const AdminReservationDetailsPage = () => {
                     {ro(c("route"), `${formik.values.pickUpLocation || "—"} - ${formik.values.dropOffLocation || "—"}`)}
                     {ro(c("selectedExtras"), formik.values.extrasTotal ? `${money(formik.values.extrasTotal)} TL` : "")}
                     <CustomForm formik={formik} name="flightNo" label={c("flightNo")} />
-                    {ro(c("customerName"), selectedCorp ? selectedCorp.title : customer ? `${customer.firstName} ${customer.lastName}` : "")}
+                    {ro(c("customerName"), selectedCorp ? selectedCorp.title : (() => {
+                      const cu = customer || customers.find((cx) => cx.id === formik.values.userId);
+                      return cu ? `${cu.firstName} ${cu.lastName}` : "";
+                    })())}
                     <CustomForm formik={formik} name="customerNote" label={c("customerNote")} type="textarea" rows={2} />
                     <CustomForm formik={formik} name="adminNote" label={c("adminNote")} type="textarea" rows={2} />
                     <CustomForm formik={formik} name="status" label={c("status")} type="select" itemsArr={statusOptions} />
@@ -503,7 +597,7 @@ const AdminReservationDetailsPage = () => {
                   <CustomForm formik={formik} name="deposit" label={c("deposit")} type="number" />
                 )}
 
-                {subTab === "payments" && (
+                {subTab === "payments" && (isCreate ? saveFirst : (
                   <>
                     <div className="contract-page__pay-summary">
                       {ro(c("grandTotal"), `${money(pricing.total)} TL`)}
@@ -529,7 +623,7 @@ const AdminReservationDetailsPage = () => {
                       labels={recordLabels}
                     />
                   </>
-                )}
+                ))}
 
                 {subTab === "returnExtra" && (
                   <CustomForm formik={formik} name="returnExtraAmount" label={c("returnExtraAmount")} type="number" />
@@ -539,7 +633,7 @@ const AdminReservationDetailsPage = () => {
                   <CustomForm formik={formik} name="referenceNo" label={c("referenceNo")} />
                 )}
 
-                {subTab === "extension" && (
+                {subTab === "extension" && (isCreate ? saveFirst : (
                   <>
                     <div className="contract-records__form">
                       <div className="contract-records__fields">
@@ -582,7 +676,7 @@ const AdminReservationDetailsPage = () => {
                       </div>
                     ))}
                   </>
-                )}
+                ))}
               </div>
 
               {/* pricing block */}
@@ -630,9 +724,11 @@ const AdminReservationDetailsPage = () => {
                 {priceRO(c("contractAmount"), `${money(pricing.subtotal)} TL`)}
                 {priceRO(c("totalAmount"), `${money(pricing.total)} TL`, "total")}
 
-                <div className="contract-page__price-actions">
-                  <Button type="submit" variant="outline-primary" size="sm" disabled={updating}>{c("recalc")}</Button>
-                </div>
+                {!isCreate && (
+                  <div className="contract-page__price-actions">
+                    <Button type="submit" variant="outline-primary" size="sm" disabled={updating}>{c("recalc")}</Button>
+                  </div>
+                )}
               </div>
 
               <div className="contract-page__balance">
@@ -644,18 +740,33 @@ const AdminReservationDetailsPage = () => {
         </div>
 
         <div className="contract-page__actions">
-          <Button variant="info" type="button"
-            onClick={() => utils.functions.swalToast(t("alertBar.comingSoonToast"), "info")}>
-            {c("vehicleReturn")}
-          </Button>
-          <span className="contract-page__actions-spacer" />
-          <Button variant="outline-danger" type="button" disabled={deleting || updating} onClick={handleDelete}>
-            {deleting && <Spinner animation="border" size="sm" />} {c("cancelContract")}
-          </Button>
-          <Button variant="warning" type="button" onClick={() => window.print()}>{c("print")}</Button>
-          <Button type="submit" disabled={!(formik.isValid && formik.dirty) || updating}>
-            {updating && <Spinner animation="border" size="sm" />} {t("reservations.save")}
-          </Button>
+          {isCreate ? (
+            <>
+              <Button variant="outline-secondary" type="button" disabled={updating}
+                onClick={() => navigate(routes.adminReservations)}>
+                {c("discard")}
+              </Button>
+              <span className="contract-page__actions-spacer" />
+              <Button type="submit" disabled={!formik.isValid || updating}>
+                {updating && <Spinner animation="border" size="sm" />} {c("createSave")}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="info" type="button"
+                onClick={() => utils.functions.swalToast(t("alertBar.comingSoonToast"), "info")}>
+                {c("vehicleReturn")}
+              </Button>
+              <span className="contract-page__actions-spacer" />
+              <Button variant="outline-danger" type="button" disabled={deleting || updating} onClick={handleDelete}>
+                {deleting && <Spinner animation="border" size="sm" />} {c("cancelContract")}
+              </Button>
+              <Button variant="warning" type="button" onClick={() => window.print()}>{c("print")}</Button>
+              <Button type="submit" disabled={!(formik.isValid && formik.dirty) || updating}>
+                {updating && <Spinner animation="border" size="sm" />} {t("reservations.save")}
+              </Button>
+            </>
+          )}
         </div>
       </Form>
 
