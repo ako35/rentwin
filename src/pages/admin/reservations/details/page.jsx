@@ -308,7 +308,7 @@ const AdminReservationDetailsPage = () => {
         customerCode: custEdit.customerCode || "",
         notes: custEdit.notes || "",
       });
-      utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
+      utils.functions.swalToast(t("users.toasts.updateSuccess"), "success");
       refreshCustomers();
     } catch {
       utils.functions.swalToast(t("reservations.contract.records.error"), "error");
