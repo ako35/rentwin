@@ -15,7 +15,6 @@ const EMPTY = {
   taxOffice: "",
   firstName: "",
   lastName: "",
-  customerCode: "",
   nationalId: "",
   email: "",
   phoneNumber: "",
@@ -43,8 +42,10 @@ const AdminNewCustomerPage = () => {
       utils.functions.swalToast(t("newCustomer.success"), "success");
       navigate(`${routes.adminUsers}/${user.id}`);
     } catch (error) {
+      const status = error?.response?.status;
+      const message = error?.response?.data?.message;
       utils.functions.swalToast(
-        error?.response?.status === 409 ? t("newCustomer.emailExists") : t("newCustomer.error"),
+        status === 409 ? t("newCustomer.emailExists") : message || t("newCustomer.error"),
         "error"
       );
       setSaving(false);
@@ -56,7 +57,6 @@ const AdminNewCustomerPage = () => {
         ["companyTitle", `* ${t("users.form.companyTitle")}`],
         ["taxOffice", t("users.form.taxOffice")],
         ["nationalId", t("users.form.taxNo")],
-        ["customerCode", t("users.form.customerCode")],
         ["firstName", t("users.form.contactFirstName")],
         ["lastName", t("users.form.contactLastName")],
         ["email", `* ${t("users.form.email")}`],
@@ -67,7 +67,6 @@ const AdminNewCustomerPage = () => {
     : [
         ["firstName", `* ${t("users.form.firstName")}`],
         ["lastName", `* ${t("users.form.lastName")}`],
-        ["customerCode", t("users.form.customerCode")],
         ["nationalId", t("users.form.nationalId")],
         ["email", `* ${t("users.form.email")}`],
         ["phoneNumber", t("users.form.phoneNumber")],
@@ -103,7 +102,6 @@ const AdminNewCustomerPage = () => {
             </Form.Group>
           ))}
         </div>
-        <p className="new-contract-page__hint">{t("newCustomer.autoPasswordHint")}</p>
         <div className="new-contract-page__actions">
           <Button variant="outline-secondary" type="button" onClick={() => navigate(routes.adminUsers)}>
             {t("reservations.cancel")}
