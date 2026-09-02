@@ -4,7 +4,7 @@ import { createReservation, createReservationAdmin, createInvoice, deleteReserva
 
 import { addReservationRecord, deleteReservationRecord, getReservationRecords, updateReservationRecord } from "./reservation/reservation-record-service";
 
-import { deleteUser, downloadUserReports, getUser, getUserAdmin, getUsersByPage, login, register, updatePassword, updateUser, updateUserAdmin } from "./user/user-service";
+import { createUserAdmin, deleteUser, downloadUserReports, getUser, getUserAdmin, getUsersByPage, login, register, updatePassword, updateUser, updateUserAdmin } from "./user/user-service";
 
 import { addVehicle, deleteVehicle, deleteVehicleImage, downloadVehicleReports, getExpiryAlerts, getFleetStats, getVehicleById, getVehicles, getVehiclesByPage, getVehiclesByPageAdmin, updateVehicle, uploadVehicleImage } from "./vehicle/vehicle-service";
 
@@ -61,6 +61,7 @@ export const services = {
         updateUser,
         updatePassword,
         // ADMIN ENDPOINTS
+        createUserAdmin,
         deleteUser,
         downloadUserReports,
         getUserAdmin,

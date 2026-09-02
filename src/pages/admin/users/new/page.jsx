@@ -44,17 +44,8 @@ const AdminNewCustomerPage = () => {
     } catch (error) {
       const status = error?.response?.status;
       const message = error?.response?.data?.message;
-      console.error("[newCustomer] create failed", {
-        status,
-        code: error?.code,
-        message: error?.message,
-        data: error?.response?.data,
-        url: error?.config?.baseURL || error?.config?.url,
-      });
       utils.functions.swalToast(
-        status === 409
-          ? t("newCustomer.emailExists")
-          : message || error?.message || t("newCustomer.error"),
+        status === 409 ? t("newCustomer.emailExists") : message || t("newCustomer.error"),
         "error"
       );
       setSaving(false);
