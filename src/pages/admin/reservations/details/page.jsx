@@ -21,7 +21,6 @@ const EMPTY = {
   deposit: "", kmLimit: "", unlimitedKm: true, vatRate: 20,
 };
 const EMPTY_CORP = { title: "", taxOffice: "", taxNo: "", phone: "", email: "" };
-const EMPTY_CUST = { firstName: "", lastName: "", email: "", phoneNumber: "" };
 
 const AdminReservationDetailsPage = () => {
   const { reservationId } = useParams();
@@ -46,9 +45,6 @@ const AdminReservationDetailsPage = () => {
   const [corpModal, setCorpModal] = useState(false);
   const [corpForm, setCorpForm] = useState(EMPTY_CORP);
   const [savingCorp, setSavingCorp] = useState(false);
-  const [custModal, setCustModal] = useState(false);
-  const [custForm, setCustForm] = useState(EMPTY_CUST);
-  const [savingCust, setSavingCust] = useState(false);
   const [availableCars, setAvailableCars] = useState([]);
   const [payments, setPayments] = useState([]);
   const [catalog, setCatalog] = useState([]);
@@ -265,25 +261,24 @@ const AdminReservationDetailsPage = () => {
     }
   };
 
-  const saveCustomer = async () => {
-    if (!custForm.firstName.trim() || !custForm.lastName.trim() || !custForm.email.trim()) return;
-    setSavingCust(true);
-    try {
-      const created = await services.user.createUserAdmin(custForm);
-      const list = await services.user.getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" });
-      setCustomers(list?.content || []);
-      formik.setFieldValue("userId", created.id);
-      setCustModal(false);
-      setCustForm(EMPTY_CUST);
-    } catch (error) {
-      utils.functions.swalToast(
-        error?.response?.status === 409 ? t("newCustomer.emailExists") : t("newCustomer.error"),
-        "error"
-      );
-    } finally {
-      setSavingCust(false);
-    }
-  };
+  const refreshCustomers = () =>
+    services.user
+      .getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" })
+      .then((list) => setCustomers(list?.content || []))
+      .catch(() => {});
+
+  // A customer added in the "Yeni Müşteri" tab shows up when the user returns here.
+  useEffect(() => {
+    if (!isCreate) return undefined;
+    const onFocus = () => {
+      services.user
+        .getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" })
+        .then((list) => setCustomers(list?.content || []))
+        .catch(() => {});
+    };
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+  }, [isCreate]);
 
   const selectedCar = useMemo(
     () => [...vehicles, ...availableCars].find((v) => v.id === formik.values.carId),
@@ -382,16 +377,24 @@ const AdminReservationDetailsPage = () => {
     <>
       <div className="contract-page__corp-head">
         <Form.Label className="mb-0">* {c("customerName")}</Form.Label>
-        <button type="button" className="contract-page__link" onClick={() => setCustModal(true)}>
-          + {c("newCustomerBtn")}
-        </button>
+        <span>
+          <button type="button" className="contract-page__link" onClick={refreshCustomers}>
+            ↻ {c("refresh")}
+          </button>
+          {"  "}
+          <a className="contract-page__link" href={`${routes.adminUsers}/new`} target="_blank" rel="noreferrer">
+            + {c("newCustomerBtn")}
+          </a>
+        </span>
       </div>
       <Form.Group className="mb-2">
         <Form.Select size="sm" value={formik.values.userId}
           onChange={(e) => formik.setFieldValue("userId", e.target.value)}>
           <option value="">{t("newContract.selectCustomer")}</option>
           {customers.map((u) => (
-            <option key={u.id} value={u.id}>{u.firstName} {u.lastName} — {u.email}</option>
+            <option key={u.id} value={u.id}>
+              {(u.companyTitle || `${u.firstName} ${u.lastName}`).trim()} — {u.email}
+            </option>
           ))}
         </Form.Select>
       </Form.Group>
@@ -646,7 +649,7 @@ const AdminReservationDetailsPage = () => {
                     <CustomForm formik={formik} name="flightNo" label={c("flightNo")} />
                     {ro(c("customerName"), selectedCorp ? selectedCorp.title : (() => {
                       const cu = customer || customers.find((cx) => cx.id === formik.values.userId);
-                      return cu ? `${cu.firstName} ${cu.lastName}` : "";
+                      return cu ? (cu.companyTitle || `${cu.firstName} ${cu.lastName}`).trim() : "";
                     })())}
                     <CustomForm formik={formik} name="customerNote" label={c("customerNote")} type="textarea" rows={2} />
                     <CustomForm formik={formik} name="adminNote" label={c("adminNote")} type="textarea" rows={2} />
@@ -846,34 +849,6 @@ const AdminReservationDetailsPage = () => {
           <Button variant="outline-secondary" onClick={() => setCorpModal(false)}>{t("reservations.cancel")}</Button>
           <Button onClick={saveCorporate} disabled={savingCorp || !corpForm.title.trim()}>
             {savingCorp && <Spinner animation="border" size="sm" />} {t("reservations.save")}
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={custModal} onHide={() => setCustModal(false)}>
-        <Modal.Header closeButton><Modal.Title>{t("newCustomer.title")}</Modal.Title></Modal.Header>
-        <Modal.Body>
-          {[["firstName", "firstName"], ["lastName", "lastName"], ["email", "email"], ["phoneNumber", "phoneNumber"]].map(
-            ([field, lk]) => (
-              <Form.Group className="mb-2" key={field}>
-                <Form.Label>{t(`users.form.${lk}`)}</Form.Label>
-                <Form.Control
-                  type={field === "email" ? "email" : "text"}
-                  value={custForm[field]}
-                  onChange={(e) => setCustForm({ ...custForm, [field]: e.target.value })}
-                />
-              </Form.Group>
-            )
-          )}
-          <p className="text-muted mb-0" style={{ fontSize: "0.8rem" }}>{t("newCustomer.passwordHint")}</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="outline-secondary" onClick={() => setCustModal(false)}>{t("reservations.cancel")}</Button>
-          <Button
-            onClick={saveCustomer}
-            disabled={savingCust || !custForm.firstName.trim() || !custForm.lastName.trim() || !custForm.email.trim()}
-          >
-            {savingCust && <Spinner animation="border" size="sm" />} {t("reservations.save")}
           </Button>
         </Modal.Footer>
       </Modal>

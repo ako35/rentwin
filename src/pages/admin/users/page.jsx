@@ -130,6 +130,7 @@ const AdminUsersPage = () => {
               <tr>
                 <th>{c("active")}</th>
                 <th>{c("name")}</th>
+                <th>{c("type")}</th>
                 <th>{c("nationalId")}</th>
                 <th>{c("phone")}</th>
                 <th>{c("email")}</th>
@@ -141,7 +142,7 @@ const AdminUsersPage = () => {
             <tbody>
               {rows.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="text-center text-muted">{c("empty")}</td>
+                  <td colSpan={9} className="text-center text-muted">{c("empty")}</td>
                 </tr>
               )}
               {rows.map((r) => (
@@ -151,7 +152,10 @@ const AdminUsersPage = () => {
                       {r.active === false ? "✕" : "✓"}
                     </span>
                   </td>
-                  <td className="customer-list__name">{r.firstName} {r.lastName}</td>
+                  <td className="customer-list__name">
+                    {(r.companyTitle || `${r.firstName} ${r.lastName}`).trim() || "—"}
+                  </td>
+                  <td>{r.customerType || "Bireysel"}</td>
                   <td>{r.nationalId || "—"}</td>
                   <td>{r.phoneNumber || "—"}</td>
                   <td className="customer-list__email">{r.email}</td>

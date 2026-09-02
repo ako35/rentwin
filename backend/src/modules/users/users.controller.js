@@ -7,7 +7,17 @@ const asyncHandler = require("../../middleware/async-handler");
 
 const ALLOWED_SORT_FIELDS = ["id", "firstName", "lastName", "email", "createdAt"];
 
-const CUSTOMER_STRING_FIELDS = ["customerCode", "nationalId", "notes"];
+const CUSTOMER_STRING_FIELDS = ["customerCode", "companyTitle", "taxOffice", "nationalId", "notes"];
+
+const applyCustomerFields = (body, data) => {
+  CUSTOMER_STRING_FIELDS.forEach((f) => {
+    if (f in body) data[f] = body[f] === "" ? null : body[f];
+  });
+  if ("active" in body) data.active = Boolean(body.active);
+  if ("customerType" in body) {
+    data.customerType = body.customerType === "Kurumsal" ? "Kurumsal" : "Bireysel";
+  }
+};
 
 // Contract totals for a set of customers: debit = Σ contract grand totals,
 // credit = Σ payments, balance = credit - debit (negative => customer owes).
@@ -78,6 +88,7 @@ const getUsersByPageAdmin = asyncHandler(async (req, res) => {
           OR: [
             { firstName: { contains: q, mode: "insensitive" } },
             { lastName: { contains: q, mode: "insensitive" } },
+            { companyTitle: { contains: q, mode: "insensitive" } },
             { email: { contains: q, mode: "insensitive" } },
             { nationalId: { contains: q, mode: "insensitive" } },
           ],
@@ -112,10 +123,13 @@ const getUsersByPageAdmin = asyncHandler(async (req, res) => {
 });
 
 const createUserAdmin = asyncHandler(async (req, res) => {
-  const { firstName, lastName, email, phoneNumber, address, zipCode, roles, password } = req.body;
+  const { firstName, lastName, email, phoneNumber, address, zipCode, roles, password, customerType, companyTitle } = req.body;
 
-  if (!firstName || !lastName || !email) {
-    throw new HttpError(400, "First name, last name and email are required.");
+  const isCorporate = customerType === "Kurumsal";
+  if (!email || (isCorporate ? !companyTitle : !firstName || !lastName)) {
+    throw new HttpError(400, isCorporate
+      ? "Company title and email are required."
+      : "First name, last name and email are required.");
   }
 
   const existing = await prisma.user.findUnique({ where: { email } });
@@ -125,8 +139,8 @@ const createUserAdmin = asyncHandler(async (req, res) => {
   const passwordHash = await hashPassword(password || "Rentwin123.");
 
   const data = {
-    firstName,
-    lastName,
+    firstName: firstName || "",
+    lastName: lastName || "",
     email,
     phoneNumber: phoneNumber || "",
     address: address || "",
@@ -135,10 +149,7 @@ const createUserAdmin = asyncHandler(async (req, res) => {
     roles: Array.isArray(roles) && roles.length ? roles : ["Customer"],
     builtIn: false,
   };
-  CUSTOMER_STRING_FIELDS.forEach((f) => {
-    if (f in req.body) data[f] = req.body[f] === "" ? null : req.body[f];
-  });
-  if ("active" in req.body) data.active = Boolean(req.body.active);
+  applyCustomerFields(req.body, data);
 
   const user = await prisma.user.create({ data });
   res.status(201).json(serializeUser(user));
@@ -155,10 +166,7 @@ const updateUserAdmin = asyncHandler(async (req, res) => {
   if (password) {
     data.passwordHash = await hashPassword(password);
   }
-  CUSTOMER_STRING_FIELDS.forEach((f) => {
-    if (f in req.body) data[f] = req.body[f] === "" ? null : req.body[f];
-  });
-  if ("active" in req.body) data.active = Boolean(req.body.active);
+  applyCustomerFields(req.body, data);
 
   const user = await prisma.user.update({ where: { id: target.id }, data });
   res.json(serializeUser(user));

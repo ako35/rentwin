@@ -102,6 +102,7 @@
     "firstNameMin": "Ad en az 2 karakter olmalıdır",
     "firstNameMax": "Ad en fazla 50 karakter olmalıdır",
     "firstNameRequired": "Lütfen adı girin",
+    "companyTitleRequired": "Lütfen cari ünvanı girin",
     "lastNameMin": "Soyad en az 2 karakter olmalıdır",
     "lastNameMax": "Soyad en fazla 50 karakter olmalıdır",
     "lastNameRequired": "Lütfen soyadı girin",

@@ -152,30 +152,32 @@ export const userPasswordFormValidationSchema = Yup.object({
 
 /////////////// ADMIN VALIDATIONS ///////////////
 
+// Customer record (individual or corporate). Only identity + email are hard
+// requirements — a walk-in customer often has no full address on file.
 export const adminUserDetailsFormValidationSchema = Yup.object({
-    firstName: Yup.string()
-        .min(2, t("adminUser.firstNameMin"))
-        .max(50, t("adminUser.firstNameMax"))
-        .required(t("adminUser.firstNameRequired")),
-    lastName: Yup.string()
-        .min(2, t("adminUser.lastNameMin"))
-        .max(50, t("adminUser.lastNameMax"))
-        .required(t("adminUser.lastNameRequired")),
+    customerType: Yup.string().oneOf(["Bireysel", "Kurumsal"]),
     email: Yup.string()
         .email(t("adminUser.emailInvalid"))
         .required(t("adminUser.emailRequired")),
-    phoneNumber: Yup.string()
-        .matches(/\d+/, t("adminUser.phoneDigitsOnly"))
-        .required(t("adminUser.phoneRequired")),
-    address: Yup.string()
-        .min(5, t("adminUser.addressMin"))
-        .max(50, t("adminUser.addressMax"))
-        .required(t("adminUser.addressRequired")),
+    companyTitle: Yup.string().when("customerType", {
+        is: "Kurumsal",
+        then: (s) => s.trim().required(t("adminUser.companyTitleRequired")),
+        otherwise: (s) => s.nullable(),
+    }),
+    firstName: Yup.string().when("customerType", {
+        is: "Kurumsal",
+        then: (s) => s.nullable(),
+        otherwise: (s) => s.trim().required(t("adminUser.firstNameRequired")),
+    }),
+    lastName: Yup.string().when("customerType", {
+        is: "Kurumsal",
+        then: (s) => s.nullable(),
+        otherwise: (s) => s.trim().required(t("adminUser.lastNameRequired")),
+    }),
     zipCode: Yup.string()
-        .matches(/\d+/, t("adminUser.zipDigitsOnly"))
-        .min(5, t("adminUser.zipMin"))
-        .max(5, t("adminUser.zipMax"))
-        .required(t("adminUser.zipRequired")),
+        .matches(/^\d*$/, t("adminUser.zipDigitsOnly"))
+        .max(10, t("adminUser.zipMax"))
+        .nullable(),
 });
 
 // ADMIN RESERVATIONS FORM

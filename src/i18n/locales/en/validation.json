@@ -102,6 +102,7 @@
     "firstNameMin": "First name must be at least 2 characters",
     "firstNameMax": "First name must be at most 50 characters",
     "firstNameRequired": "Please enter your first name",
+    "companyTitleRequired": "Please enter the company title",
     "lastNameMin": "Last name must be at least 2 characters",
     "lastNameMax": "Last name must be at most 50 characters",
     "lastNameRequired": "Please enter your last name",
