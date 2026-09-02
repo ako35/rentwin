@@ -371,7 +371,13 @@
       "newCustomerBtn": "New Customer",
       "refresh": "Refresh",
       "branch": "Branch",
-      "noAvailableCars": "No vehicle available for the selected date range."
+      "noAvailableCars": "No vehicle available for the selected date range.",
+      "custType": "Customer Type",
+      "custCode": "Customer Code",
+      "custNationalId": "National ID / Passport No",
+      "custAddress": "Address",
+      "custBalance": "Account Balance",
+      "updateCustomer": "Update Customer"
     },
     "toasts": {
       "downloadSuccess": "Your download will start soon",

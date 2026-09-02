@@ -45,6 +45,8 @@ const AdminReservationDetailsPage = () => {
   const [corpModal, setCorpModal] = useState(false);
   const [corpForm, setCorpForm] = useState(EMPTY_CORP);
   const [savingCorp, setSavingCorp] = useState(false);
+  const [custEdit, setCustEdit] = useState(null);
+  const [savingCust, setSavingCust] = useState(false);
   const [availableCars, setAvailableCars] = useState([]);
   const [payments, setPayments] = useState([]);
   const [catalog, setCatalog] = useState([]);
@@ -280,6 +282,41 @@ const AdminReservationDetailsPage = () => {
     return () => window.removeEventListener("focus", onFocus);
   }, [isCreate]);
 
+  // Load the picked customer into an editable copy.
+  useEffect(() => {
+    const sc = customers.find((cx) => cx.id === formik.values.userId);
+    setCustEdit(sc ? { ...sc } : null);
+  }, [formik.values.userId, customers]);
+
+  const setCE = (key) => (e) => setCustEdit((c0) => ({ ...c0, [key]: e.target.value }));
+
+  const saveCustomer = async () => {
+    if (!custEdit) return;
+    setSavingCust(true);
+    try {
+      await services.user.updateUserAdmin(custEdit.id, {
+        customerType: custEdit.customerType || "Bireysel",
+        firstName: custEdit.firstName || "",
+        lastName: custEdit.lastName || "",
+        companyTitle: custEdit.companyTitle || "",
+        taxOffice: custEdit.taxOffice || "",
+        email: custEdit.email,
+        phoneNumber: custEdit.phoneNumber || "",
+        address: custEdit.address || "",
+        zipCode: custEdit.zipCode || "",
+        nationalId: custEdit.nationalId || "",
+        customerCode: custEdit.customerCode || "",
+        notes: custEdit.notes || "",
+      });
+      utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
+      refreshCustomers();
+    } catch {
+      utils.functions.swalToast(t("reservations.contract.records.error"), "error");
+    } finally {
+      setSavingCust(false);
+    }
+  };
+
   const selectedCar = useMemo(
     () => [...vehicles, ...availableCars].find((v) => v.id === formik.values.carId),
     [vehicles, availableCars, formik.values.carId]
@@ -398,14 +435,49 @@ const AdminReservationDetailsPage = () => {
           ))}
         </Form.Select>
       </Form.Group>
-      {(() => {
-        const sc = customers.find((cx) => cx.id === formik.values.userId);
-        return sc ? (
-          <>
-            {ro(c("customerEmail"), sc.email)}
-            {ro(c("customerPhone"), sc.phoneNumber)}
-          </>
-        ) : null;
+      {custEdit && (() => {
+        const isCorp = (custEdit.customerType || "Bireysel") === "Kurumsal";
+        const ci = (name, label, type = "text") => (
+          <Form.Group className="mb-2">
+            <Form.Label className="mb-0" style={{ fontSize: "0.8rem", color: "var(--bs-secondary-color)" }}>{label}</Form.Label>
+            <Form.Control size="sm" type={type} value={custEdit[name] || ""} onChange={setCE(name)} />
+          </Form.Group>
+        );
+        return (
+          <div className="contract-page__cust-edit">
+            <div className="contract-page__radios mb-2">
+              <Form.Check inline type="radio" id="ce-ind" label={c("individual")}
+                checked={!isCorp} onChange={() => setCustEdit((x) => ({ ...x, customerType: "Bireysel" }))} />
+              <Form.Check inline type="radio" id="ce-corp" label={c("corporate")}
+                checked={isCorp} onChange={() => setCustEdit((x) => ({ ...x, customerType: "Kurumsal" }))} />
+            </div>
+            <div className="contract-page__pair">
+              {isCorp ? (
+                <>
+                  {ci("companyTitle", c("corporateTitle"))}
+                  {ci("taxOffice", c("taxOffice"))}
+                </>
+              ) : (
+                <>
+                  {ci("firstName", t("users.form.firstName"))}
+                  {ci("lastName", t("users.form.lastName"))}
+                </>
+              )}
+              {ci("nationalId", isCorp ? c("taxNo") : c("custNationalId"))}
+              {ci("customerCode", c("custCode"))}
+              {ci("email", c("customerEmail"), "email")}
+              {ci("phoneNumber", c("customerPhone"))}
+            </div>
+            {ci("address", c("custAddress"))}
+            {ci("notes", c("adminNote"))}
+            {ro(c("custBalance"), `${money(custEdit.balance)} TL`)}
+            <div className="text-end">
+              <Button type="button" size="sm" variant="outline-primary" disabled={savingCust} onClick={saveCustomer}>
+                {savingCust && <Spinner animation="border" size="sm" />} {c("updateCustomer")}
+              </Button>
+            </div>
+          </div>
+        );
       })()}
     </>
   );
@@ -629,7 +701,7 @@ const AdminReservationDetailsPage = () => {
               {/* sub tabs */}
               <Nav variant="pills" activeKey={subTab} onSelect={(k) => k && setSubTab(k)}
                 className="contract-page__subtabs mt-3 mb-2">
-                {["summary", "deposit", "payments", "returnExtra", "reference", "extension"].map((k) => (
+                {["summary", "payments", "returnExtra", "extension"].map((k) => (
                   <Nav.Item key={k}><Nav.Link eventKey={k}>{c(`subTabs.${k}`)}</Nav.Link></Nav.Item>
                 ))}
               </Nav>
@@ -655,10 +727,6 @@ const AdminReservationDetailsPage = () => {
                     <CustomForm formik={formik} name="adminNote" label={c("adminNote")} type="textarea" rows={2} />
                     <CustomForm formik={formik} name="status" label={c("status")} type="select" itemsArr={statusOptions} />
                   </>
-                )}
-
-                {subTab === "deposit" && (
-                  <CustomForm formik={formik} name="deposit" label={c("deposit")} type="number" />
                 )}
 
                 {subTab === "payments" && (isCreate ? saveFirst : (
@@ -691,10 +759,6 @@ const AdminReservationDetailsPage = () => {
 
                 {subTab === "returnExtra" && (
                   <CustomForm formik={formik} name="returnExtraAmount" label={c("returnExtraAmount")} type="number" />
-                )}
-
-                {subTab === "reference" && (
-                  <CustomForm formik={formik} name="referenceNo" label={c("referenceNo")} />
                 )}
 
                 {subTab === "extension" && (isCreate ? saveFirst : (

@@ -371,7 +371,13 @@
       "newCustomerBtn": "Yeni Müşteri",
       "refresh": "Yenile",
       "branch": "Şube",
-      "noAvailableCars": "Seçili tarih aralığında müsait araç yok."
+      "noAvailableCars": "Seçili tarih aralığında müsait araç yok.",
+      "custType": "Müşteri Tipi",
+      "custCode": "Cari Kodu",
+      "custNationalId": "TC No / Pasaport No",
+      "custAddress": "Adres",
+      "custBalance": "Cari Bakiye",
+      "updateCustomer": "Müşteriyi Güncelle"
     },
     "toasts": {
       "downloadSuccess": "İndirmeniz kısa süre içinde başlayacak",
