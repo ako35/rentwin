@@ -959,36 +959,48 @@ const AdminReservationDetailsPage = () => {
             ];
         const canSave = ncFields.every(([name, , , req]) => !req || newCust[name].trim());
         const nf = ([name, label, placeholder, req]) => (
-          <Form.Group className="mb-2" key={name}>
-            <Form.Label>{req ? `* ${label}` : label}</Form.Label>
+          <div className="customer-form-card__row" key={name}>
+            <label>{req ? `* ${label}` : label}</label>
             <Form.Control
+              size="sm"
               type={name === "email" ? "email" : "text"}
               placeholder={placeholder || undefined}
               value={newCust[name]}
               onChange={setNC(name)}
             />
-          </Form.Group>
+          </div>
         );
         return (
-          <Modal show={newCustModal} size="lg" onHide={() => setNewCustModal(false)}>
-            <Modal.Header closeButton><Modal.Title>{t("newCustomer.title")}</Modal.Title></Modal.Header>
+          <Modal
+            show={newCustModal}
+            size="lg"
+            onHide={() => setNewCustModal(false)}
+            contentClassName="contract-page__newcust-modal"
+          >
             <Modal.Body>
-              <div className="contract-page__radios mb-3">
-                <Form.Check inline type="radio" id="ncm-ind" label={c("individual")}
-                  checked={!isCorp} onChange={() => setNewCust((f) => ({ ...f, customerType: "Bireysel" }))} />
-                <Form.Check inline type="radio" id="ncm-corp" label={c("corporate")}
-                  checked={isCorp} onChange={() => setNewCust((f) => ({ ...f, customerType: "Kurumsal" }))} />
-              </div>
-              <div className="contract-page__newcust-grid">
-                {ncFields.map(nf)}
+              <div className="customer-form-card">
+                <div className="customer-form-card__card">
+                  <div className="customer-form-card__head">{t("newCustomer.title")}</div>
+                  <div className="customer-form-card__body">
+                    <div className="customer-form-card__radios">
+                      <Form.Check inline type="radio" id="ncm-ind" label={c("individual")}
+                        checked={!isCorp} onChange={() => setNewCust((f) => ({ ...f, customerType: "Bireysel" }))} />
+                      <Form.Check inline type="radio" id="ncm-corp" label={c("corporate")}
+                        checked={isCorp} onChange={() => setNewCust((f) => ({ ...f, customerType: "Kurumsal" }))} />
+                    </div>
+                    {ncFields.map(nf)}
+                    <div className="customer-form-card__actions">
+                      <Button variant="outline-secondary" type="button" onClick={() => setNewCustModal(false)}>
+                        {t("reservations.cancel")}
+                      </Button>
+                      <Button type="button" onClick={saveNewCust} disabled={savingNewCust || !canSave}>
+                        {savingNewCust && <Spinner animation="border" size="sm" />} {t("newCustomer.create")}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </Modal.Body>
-            <Modal.Footer>
-              <Button variant="outline-secondary" onClick={() => setNewCustModal(false)}>{t("reservations.cancel")}</Button>
-              <Button onClick={saveNewCust} disabled={savingNewCust || !canSave}>
-                {savingNewCust && <Spinner animation="border" size="sm" />} {t("newCustomer.create")}
-              </Button>
-            </Modal.Footer>
           </Modal>
         );
       })()}

@@ -1,5 +1,15 @@
 @use '../../../../styles/variables' as v;
 @use '../../../../styles/mixins' as m;
+@use '../../../../styles/customer-form-card';
+
+// Yeni kontrat içindeki "Yeni Müşteri" modalı, /admin/users/new ile aynı kart yapısını
+// kullanır; modal kabuğunu şeffaflaştırıp kartı olduğu gibi gösteriyoruz.
+.contract-page__newcust-modal {
+  border: none;
+  background-color: transparent;
+
+  .modal-body { padding: 0; }
+}
 
 .contract-page {
   &__ribbon {
@@ -129,13 +139,6 @@
     strong { color: v.$color5; }
   }
 
-  &__newcust-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.25rem 1rem;
-
-    @media (max-width: 576px) { grid-template-columns: 1fr; }
-  }
 
   &__typeahead {
     position: relative;

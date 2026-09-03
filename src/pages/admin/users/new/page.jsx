@@ -77,11 +77,11 @@ const AdminNewCustomerPage = () => {
   };
 
   return (
-    <div className="new-contract-page">
-      <div className="new-contract-page__card">
-        <div className="new-contract-page__head">{t("newCustomer.title")}</div>
-        <form className="new-contract-page__body" onSubmit={submit}>
-          <div className="new-contract-page__radios">
+    <div className="customer-form-card">
+      <div className="customer-form-card__card">
+        <div className="customer-form-card__head">{t("newCustomer.title")}</div>
+        <form className="customer-form-card__body" onSubmit={submit}>
+          <div className="customer-form-card__radios">
             <Form.Check
               inline type="radio" id="nc-ind" label={t("users.form.individual")}
               checked={!isCorporate}
@@ -94,7 +94,7 @@ const AdminNewCustomerPage = () => {
             />
           </div>
           {fields.map(([name, label, placeholder, required]) => (
-            <div className="new-contract-page__row" key={name}>
+            <div className="customer-form-card__row" key={name}>
               <label>{required ? `* ${label}` : label}</label>
               <Form.Control
                 size="sm"
@@ -105,7 +105,7 @@ const AdminNewCustomerPage = () => {
               />
             </div>
           ))}
-          <div className="new-contract-page__actions">
+          <div className="customer-form-card__actions">
             <Button variant="outline-secondary" type="button" onClick={() => navigate(routes.adminUsers)}>
               {t("reservations.cancel")}
             </Button>

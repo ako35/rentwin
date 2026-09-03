@@ -1,0 +1,72 @@
+@use './variables' as v;
+@use './mixins' as m;
+
+// Paylaşılan "Yeni Müşteri" formu kart yapısı — hem /admin/users/new sayfası
+// hem de yeni kontrat içindeki müşteri ekleme modalı bu düzeni kullanır.
+.customer-form-card {
+  &__card {
+    border: 1px solid v.$color3;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 16px v.$color1-5;
+    overflow: hidden;
+  }
+
+  &__head {
+    background: linear-gradient(90deg, v.$color1, v.$color2);
+    color: v.$color4;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 0.7rem 1.5rem;
+  }
+
+  &__body {
+    padding: 1.35rem 1.6rem 1.5rem;
+  }
+
+  &__radios {
+    margin-bottom: 1rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px dashed v.$color3;
+  }
+
+  &__row {
+    @include m.flexbox(row, flex-start, center, 1rem);
+    margin-bottom: 0.6rem;
+
+    label {
+      flex: 0 0 210px;
+      margin: 0;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: v.$color5;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .form-control { flex: 1; }
+
+    @media (max-width: 640px) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.15rem;
+
+      label { flex: none; white-space: normal; }
+    }
+  }
+
+  &__hint {
+    margin: 0.7rem 0 0;
+    font-size: 0.78rem;
+    color: v.$color5_3;
+  }
+
+  &__actions {
+    @include m.flexbox(row, flex-end, center, 0.5rem);
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid v.$color3;
+  }
+}
