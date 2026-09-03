@@ -129,7 +129,6 @@ const AdminUsersPage = () => {
             <thead>
               <tr>
                 <th>{c("active")}</th>
-                <th>{c("code")}</th>
                 <th>{c("name")}</th>
                 <th>{c("type")}</th>
                 <th>{c("nationalId")}</th>
@@ -143,7 +142,7 @@ const AdminUsersPage = () => {
             <tbody>
               {rows.length === 0 && (
                 <tr>
-                  <td colSpan={10} className="text-center text-muted">{c("empty")}</td>
+                  <td colSpan={9} className="text-center text-muted">{c("empty")}</td>
                 </tr>
               )}
               {rows.map((r) => (
@@ -153,7 +152,6 @@ const AdminUsersPage = () => {
                       {r.active === false ? "✕" : "✓"}
                     </span>
                   </td>
-                  <td className="customer-list__code">{r.customerCode || "—"}</td>
                   <td className="customer-list__name">
                     {(r.companyTitle || `${r.firstName} ${r.lastName}`).trim() || "—"}
                   </td>

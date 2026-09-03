@@ -448,7 +448,6 @@
       "filter": "Filter",
       "searchPlaceholder": "Search customer…",
       "active": "Active",
-      "code": "Customer Code",
       "name": "Title",
       "type": "Type",
       "nationalId": "ID / Tax No",

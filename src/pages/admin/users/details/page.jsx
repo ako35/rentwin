@@ -16,7 +16,6 @@ const EMPTY = {
   taxOffice: "",
   firstName: "",
   lastName: "",
-  customerCode: "",
   nationalId: "",
   email: "",
   phoneNumber: "",
@@ -92,7 +91,6 @@ const AdminUserDetailsPage = () => {
         customerType: u.customerType || "Bireysel",
         companyTitle: u.companyTitle || "",
         taxOffice: u.taxOffice || "",
-        customerCode: u.customerCode || "",
         nationalId: u.nationalId || "",
         city: u.city || "",
         district: u.district || "",
@@ -112,10 +110,8 @@ const AdminUserDetailsPage = () => {
   }, []);
 
   const phone = { name: "phoneNumber", label: t("users.form.phoneNumber"), asInput: "ReactInputMask", mask: "(999) 999-9999" };
-  const codeItem = { name: "customerCode", label: t("users.form.customerCode"), disabled: true };
   const formItems = isCorporate
     ? [
-        codeItem,
         { name: "companyTitle", label: `* ${t("users.form.corpName")}` },
         { name: "firstName", label: `* ${t("users.form.corpContactFirst")}` },
         { name: "lastName", label: `* ${t("users.form.corpContactLast")}` },
@@ -128,7 +124,6 @@ const AdminUserDetailsPage = () => {
         { name: "district", label: `* ${t("users.form.district")}` },
       ]
     : [
-        codeItem,
         { name: "firstName", label: `* ${t("users.form.firstName")}` },
         { name: "lastName", label: `* ${t("users.form.lastName")}` },
         { name: "nationalId", label: `* ${t("users.form.nationalId")}` },

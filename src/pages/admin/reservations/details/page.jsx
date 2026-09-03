@@ -520,10 +520,6 @@ const AdminReservationDetailsPage = () => {
         return (
           <div className="contract-page__cust-edit">
             <div className="contract-page__cust-row">
-              <label>{c("custCode")}</label>
-              <strong>{hasCust ? custEdit.customerCode || "—" : "—"}</strong>
-            </div>
-            <div className="contract-page__cust-row">
               <label>{c("custType")}</label>
               <strong>{hasCust ? (isCorp ? c("corporate") : c("individual")) : "—"}</strong>
             </div>
