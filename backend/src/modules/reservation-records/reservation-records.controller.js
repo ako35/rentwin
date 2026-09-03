@@ -35,7 +35,7 @@ const RESOURCES = {
   },
 };
 
-// billable days for the contract; matches reservations.controller computeTotal.
+// billable days for the contract; matches contract-fields.computeTotal.
 const contractDays = (reservation) =>
   Math.max(1, Math.ceil(hoursBetween(reservation.pickUpTime, reservation.dropOffTime) / 24));
 

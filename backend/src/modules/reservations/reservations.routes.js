@@ -3,11 +3,13 @@ const authenticate = require("../../middleware/authenticate");
 const requireAdmin = require("../../middleware/require-admin");
 const {
   createReservation,
-  createReservationAdmin,
   getReservationById,
   getMyReservationsByPage,
-  getReservationsByPageAdmin,
   checkVehicleAvailability,
+} = require("./reservations.controller");
+const {
+  getReservationsByPageAdmin,
+  createReservationAdmin,
   getAvailableCarsAdmin,
   deleteReservationAdmin,
   updateReservationAdmin,
@@ -15,7 +17,7 @@ const {
   extendReservation,
   createInvoice,
   getAdminSchedule,
-} = require("./reservations.controller");
+} = require("./reservations.admin.controller");
 
 const router = Router();
 
