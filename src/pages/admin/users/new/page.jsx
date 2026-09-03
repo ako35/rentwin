@@ -55,7 +55,7 @@ const AdminNewCustomerPage = () => {
     ? [
         ["companyTitle", `* ${t("users.form.companyTitle")}`],
         ["taxOffice", t("users.form.taxOffice")],
-        ["nationalId", t("users.form.taxNo")],
+        ["nationalId", `* ${t("users.form.taxNo")}`],
         ["firstName", t("users.form.contactFirstName")],
         ["lastName", t("users.form.contactLastName")],
         ["email", `* ${t("users.form.email")}`],
@@ -65,7 +65,7 @@ const AdminNewCustomerPage = () => {
     : [
         ["firstName", `* ${t("users.form.firstName")}`],
         ["lastName", `* ${t("users.form.lastName")}`],
-        ["nationalId", t("users.form.nationalId")],
+        ["nationalId", `* ${t("users.form.nationalId")}`],
         ["email", `* ${t("users.form.email")}`],
         ["phoneNumber", t("users.form.phoneNumber")],
         ["address", t("users.form.address")],
@@ -87,18 +87,17 @@ const AdminNewCustomerPage = () => {
             onChange={() => setForm({ ...form, customerType: "Kurumsal" })}
           />
         </div>
-        <div className="new-contract-page__grid">
-          {fields.map(([name, label]) => (
-            <Form.Group key={name}>
-              <Form.Label>{label}</Form.Label>
-              <Form.Control
-                type={name === "email" ? "email" : "text"}
-                value={form[name]}
-                onChange={set(name)}
-              />
-            </Form.Group>
-          ))}
-        </div>
+        {fields.map(([name, label]) => (
+          <div className="new-contract-page__row" key={name}>
+            <label>{label}</label>
+            <Form.Control
+              size="sm"
+              type={name === "email" ? "email" : "text"}
+              value={form[name]}
+              onChange={set(name)}
+            />
+          </div>
+        ))}
         <div className="new-contract-page__actions">
           <Button variant="outline-secondary" type="button" onClick={() => navigate(routes.adminUsers)}>
             {t("reservations.cancel")}
