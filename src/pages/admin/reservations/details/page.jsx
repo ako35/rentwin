@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Modal, Nav, Spinner } from "react-bootstrap";
@@ -31,6 +31,7 @@ const AdminReservationDetailsPage = () => {
   const { reservationId } = useParams();
   const isCreate = !reservationId;
   const navigate = useNavigate();
+  const { key: navKey } = useLocation();
   const { t } = useTranslation("admin");
   const { t: tCommon, i18n } = useTranslation("common");
 
@@ -302,6 +303,19 @@ const AdminReservationDetailsPage = () => {
     setCustEdit(sc ? { ...sc } : {});
     if (sc) setCustQuery(`${(sc.companyTitle || `${sc.firstName} ${sc.lastName}`).trim()} — ${sc.email}`);
   }, [formik.values.userId, customers]);
+
+  // Opening "Yeni Kontrat" again re-uses this component (same route) — clear the
+  // customer selection so a fresh contract always starts with an empty picker.
+  useEffect(() => {
+    if (!isCreate) return;
+    setCustQuery("");
+    setCustEdit({});
+    setNewCust(EMPTY_NEW_CUST);
+    setCustomerType("individual");
+    formik.setFieldValue("userId", "");
+    formik.setFieldValue("corporateId", "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navKey, isCreate]);
 
   const setCE = (key) => (e) => setCustEdit((c0) => ({ ...c0, [key]: e.target.value }));
 
