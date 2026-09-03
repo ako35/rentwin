@@ -8,8 +8,14 @@ import { constants } from "../../../../constants";
 import { utils } from "../../../../utils";
 import { services } from "../../../../services";
 import { ContractRecords, CustomForm, Loading } from "../../../../components";
+import ContractRibbon from "./parts/ContractRibbon";
+import VehicleSection from "./parts/VehicleSection";
+import ExtrasSection from "./parts/ExtrasSection";
 import CustomerPanel from "./parts/CustomerPanel";
+import PricingBlock from "./parts/PricingBlock";
+import ContractActions from "./parts/ContractActions";
 import NewCustomerModal from "./parts/NewCustomerModal";
+import RoRow from "./parts/RoRow";
 import {
   EMPTY_CONTRACT as EMPTY,
   formatMoney,
@@ -298,113 +304,39 @@ const AdminReservationDetailsPage = () => {
   if (loading) return <Loading />;
 
   const c = (key, opts) => t(`reservations.contract.${key}`, opts);
-  const ro = (label, value) => (
-    <div className="contract-page__ro"><span>{label}</span><strong>{value || "—"}</strong></div>
-  );
+  const ro = (label, value) => <RoRow label={label} value={value} />;
   const saveFirst = <p className="text-muted mb-0">{c("saveFirstHint")}</p>;
-  const setV = (name) => (e) => formik.setFieldValue(name, e.target.value);
-  const priceInput = (name, label, suffix = "TL") => (
-    <div className="contract-page__price-row">
-      <label>{label}</label>
-      <span className="contract-page__price-input">
-        <Form.Control type="number" size="sm" value={formik.values[name]} onChange={setV(name)} />
-        {suffix}
-      </span>
-    </div>
-  );
-  const priceRO = (label, value, kind) => (
-    <div className={`contract-page__price-row${kind ? ` contract-page__price-row--${kind}` : ""}`}>
-      <label>{label}</label><span>{value}</span>
-    </div>
-  );
 
   return (
     <div className="contract-page">
-      <div className={`contract-page__ribbon${isCreate ? " contract-page__ribbon--create" : ""}`}>
-        <div className="contract-page__ribbon-main">
-          <span className="contract-page__ribbon-id">
-            {isCreate ? c("newTitle") : `${c("title")} # ${reservationId.slice(0, 10).toUpperCase()}`}
-          </span>
-          {!isCreate && formik.values.referenceNo && (
-            <span className="contract-page__ribbon-ref">
-              ({c("contractNo")}: # {formik.values.referenceNo})
-            </span>
-          )}
-        </div>
-        <div className="contract-page__ribbon-title">{isCreate ? "" : c("detailTitle")}</div>
-        <div className="contract-page__ribbon-meta">
-          {!isCreate && meta.updatedAt && (
-            <>
-              📅 {utils.functions.formatDateTime(meta.updatedAt)}
-              <br />
-              {c("lastUpdated")}: {utils.functions.formatDateTime(meta.updatedAt)}
-            </>
-          )}
-        </div>
-      </div>
+      <ContractRibbon
+        isCreate={isCreate}
+        reservationId={reservationId}
+        referenceNo={formik.values.referenceNo}
+        updatedAt={meta.updatedAt}
+      />
 
       <Form noValidate onSubmit={formik.handleSubmit}>
         <div className="contract-page__grid">
           {/* ---------- LEFT ---------- */}
           <div className="contract-page__col">
-            <section className="contract-card">
-              <h3>{c("leftTitle")}</h3>
-              <CustomForm formik={formik} name="pickUpLocation" label={`* ${c("pickUpLocation")}`} list={branchNames} />
-              <CustomForm formik={formik} name="dropOffLocation" label={`* ${c("dropOffLocation")}`} list={branchNames} />
-              <div className="contract-page__pair">
-                <CustomForm formik={formik} name="pickUpDate" label={`* ${c("pickUpDate")}`} type="date" />
-                <CustomForm formik={formik} name="pickUpTime" label={t("reservations.form.pickUpTime")} type="time" />
-              </div>
-              <div className="contract-page__pair">
-                <CustomForm formik={formik} name="dropOffDate" label={`* ${c("dropOffDate")}`} type="date" />
-                <CustomForm formik={formik} name="dropOffTime" label={t("reservations.form.dropOffTime")} type="time" />
-              </div>
-              <CustomForm formik={formik} name="carId" label={c("vehicle")} type="select" itemsArr={vehicleOptions} />
-              {isCreate && !availableCars.length && (
-                <p className="text-muted mb-2" style={{ fontSize: "0.8rem" }}>{c("noAvailableCars")}</p>
-              )}
-              {ro(c("branch"), selectedCar?.branch?.name)}
-              {ro(
-                c("fuelTransmission"),
-                selectedCar
-                  ? `${tCommon(`options.fuelTypes.${selectedCar.fuelType}`)} / ${tCommon(`options.transmissionTypes.${selectedCar.transmission}`)}`
-                  : ""
-              )}
-              {ro(c("plate"), selectedCar?.licensePlate)}
-            </section>
-
-            <section className="contract-card">
-              <h3>{c("ekstralarTitle")}</h3>
-              {isCreate ? saveFirst : (
-              <ContractRecords
-                reservationId={reservationId}
-                resource="extras"
-                onChange={loadData}
-                catalog={catalog.map((x) => ({
-                  label: `${x.name} (${x.unitPrice} TL${x.perDay ? "/gün" : ""})`,
-                  values: { name: x.name, unitPrice: x.unitPrice, perDay: x.perDay, quantity: 1 },
-                }))}
-                initial={{ name: "", unitPrice: "", perDay: true, quantity: 1 }}
-                columns={[
-                  { key: "name", label: c("extrasFields.name") },
-                  { key: "unitPrice", label: c("extrasFields.unitPrice"), kind: "money" },
-                  { key: "quantity", label: c("extrasFields.quantity") },
-                ]}
-                fields={[
-                  { name: "name", label: c("extrasFields.name") },
-                  { name: "unitPrice", label: c("extrasFields.unitPrice"), type: "number" },
-                  { name: "quantity", label: c("extrasFields.quantity"), type: "number" },
-                ]}
-                labels={recordLabels}
-                footer={
-                  <div className="contract-page__ro" style={{ marginTop: "0.5rem" }}>
-                    <span>{c("extrasTotal")}</span>
-                    <strong>{money(formik.values.extrasTotal)} TL</strong>
-                  </div>
-                }
-              />
-              )}
-            </section>
+            <VehicleSection
+              formik={formik}
+              branchNames={branchNames}
+              vehicleOptions={vehicleOptions}
+              selectedCar={selectedCar}
+              isCreate={isCreate}
+              showNoAvailable={!availableCars.length}
+            />
+            <ExtrasSection
+              isCreate={isCreate}
+              reservationId={reservationId}
+              catalog={catalog}
+              recordLabels={recordLabels}
+              extrasTotal={formik.values.extrasTotal}
+              onChange={loadData}
+              money={money}
+            />
           </div>
 
           {/* ---------- RIGHT ---------- */}
@@ -602,57 +534,16 @@ const AdminReservationDetailsPage = () => {
                 ))}
               </div>
 
-              {/* pricing block */}
-              <div className="contract-page__pricing-block">
-                <div className="contract-page__price-row">
-                  <label>{c("dailyPrice")}</label>
-                  <span className="contract-page__price-input">
-                    <Form.Control type="number" size="sm" value={formik.values.dailyPrice} onChange={setV("dailyPrice")} />
-                    TL × {billableDays} {c("day")}{extensionDays ? ` (+${extensionDays})` : ""}
-                  </span>
-                </div>
-                {priceRO(c("rentalAmount"), `${money(pricing.rental)} TL`)}
-                {priceInput("extrasTotal", c("extrasTotal"))}
-                {priceInput("oneWayFee", c("oneWayFee"))}
-                {priceRO(c("subtotal"), `${money(pricing.rental + pricing.addOns)} TL`, "blue")}
-
-                <div className="contract-page__price-row">
-                  <label>{c("discount")}</label>
-                  <span className="contract-page__discount">
-                    <Form.Check inline type="radio" id="disc-flat" label={c("discountFlat")}
-                      checked={!formik.values.discountIsPercent} onChange={() => formik.setFieldValue("discountIsPercent", false)} />
-                    <Form.Check inline type="radio" id="disc-pct" label={c("discountPercent")}
-                      checked={formik.values.discountIsPercent} onChange={() => formik.setFieldValue("discountIsPercent", true)} />
-                    <Form.Control type="number" size="sm" value={formik.values.discount} onChange={setV("discount")} />
-                    <Form.Check type="checkbox" id="disc-daily" label={c("discountDailyOnly")}
-                      checked={formik.values.discountDailyOnly}
-                      onChange={(e) => formik.setFieldValue("discountDailyOnly", e.target.checked)} />
-                  </span>
-                </div>
-
-                <div className="contract-page__price-row">
-                  <label>{c("kmLimit")}</label>
-                  <span className="contract-page__km">
-                    <Form.Control type="number" size="sm" value={formik.values.kmLimit} onChange={setV("kmLimit")}
-                      disabled={formik.values.unlimitedKm} /> km
-                    <Form.Check type="checkbox" id="km-unl" label={c("unlimitedKm")}
-                      checked={formik.values.unlimitedKm}
-                      onChange={(e) => formik.setFieldValue("unlimitedKm", e.target.checked)} />
-                  </span>
-                </div>
-
-                {priceRO(c("uzatmaAmount"), `${money(extensionTotal)} TL`)}
-                {priceRO(c("returnExtraAmount"), `${money(formik.values.returnExtraAmount)} TL`)}
-                {priceInput("vatRate", c("vatRate"), "%")}
-                {priceRO(c("contractAmount"), `${money(pricing.subtotal)} TL`)}
-                {priceRO(c("totalAmount"), `${money(pricing.total)} TL`, "total")}
-
-                {!isCreate && (
-                  <div className="contract-page__price-actions">
-                    <Button type="submit" variant="outline-primary" size="sm" disabled={updating}>{c("recalc")}</Button>
-                  </div>
-                )}
-              </div>
+              <PricingBlock
+                formik={formik}
+                pricing={pricing}
+                billableDays={billableDays}
+                extensionDays={extensionDays}
+                extensionTotal={extensionTotal}
+                isCreate={isCreate}
+                updating={updating}
+                money={money}
+              />
 
               <div className="contract-page__balance">
                 <strong>{money(collected - pricing.total)} TL</strong>
@@ -662,35 +553,14 @@ const AdminReservationDetailsPage = () => {
           </div>
         </div>
 
-        <div className="contract-page__actions">
-          {isCreate ? (
-            <>
-              <Button variant="outline-secondary" type="button" disabled={updating}
-                onClick={() => navigate(routes.adminReservations)}>
-                {c("discard")}
-              </Button>
-              <span className="contract-page__actions-spacer" />
-              <Button type="submit" disabled={!formik.isValid || updating}>
-                {updating && <Spinner animation="border" size="sm" />} {c("createSave")}
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button variant="info" type="button"
-                onClick={() => utils.functions.swalToast(t("alertBar.comingSoonToast"), "info")}>
-                {c("vehicleReturn")}
-              </Button>
-              <span className="contract-page__actions-spacer" />
-              <Button variant="outline-danger" type="button" disabled={deleting || updating} onClick={handleDelete}>
-                {deleting && <Spinner animation="border" size="sm" />} {c("cancelContract")}
-              </Button>
-              <Button variant="warning" type="button" onClick={() => window.print()}>{c("print")}</Button>
-              <Button type="submit" disabled={!(formik.isValid && formik.dirty) || updating}>
-                {updating && <Spinner animation="border" size="sm" />} {t("reservations.save")}
-              </Button>
-            </>
-          )}
-        </div>
+        <ContractActions
+          isCreate={isCreate}
+          updating={updating}
+          deleting={deleting}
+          canSave={isCreate ? formik.isValid : formik.isValid && formik.dirty}
+          onDiscard={() => navigate(routes.adminReservations)}
+          onDelete={handleDelete}
+        />
       </Form>
 
       <NewCustomerModal
