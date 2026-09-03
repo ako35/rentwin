@@ -2,30 +2,22 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
-import { Form, Nav } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import moment from "moment/moment";
 import { constants } from "../../../../constants";
 import { utils } from "../../../../utils";
 import { services } from "../../../../services";
-import { CustomForm, Loading } from "../../../../components";
+import { Loading } from "../../../../components";
 import { useContractData } from "./use-contract-data";
 import ContractRibbon from "./parts/ContractRibbon";
 import VehicleSection from "./parts/VehicleSection";
 import ExtrasSection from "./parts/ExtrasSection";
-import CustomerPanel from "./parts/CustomerPanel";
-import CustomerSummary from "./parts/CustomerSummary";
-import DriversTab from "./parts/DriversTab";
-import InvoiceTab from "./parts/InvoiceTab";
-import SummaryTab from "./parts/SummaryTab";
-import PaymentsTab from "./parts/PaymentsTab";
-import ExtensionTab from "./parts/ExtensionTab";
-import PricingBlock from "./parts/PricingBlock";
+import ContractRightCard from "./parts/ContractRightCard";
 import ContractActions from "./parts/ContractActions";
 import NewCustomerModal from "./parts/NewCustomerModal";
 import {
   fetchCustomers,
   formatMoney,
-  custLabel,
   computeBillableDays,
   computePricing,
   buildContractDto,
@@ -47,8 +39,6 @@ const AdminReservationDetailsPage = () => {
 
   const [updating, setUpdating] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [topTab, setTopTab] = useState("customer");
-  const [subTab, setSubTab] = useState("summary");
   const [newCustModal, setNewCustModal] = useState(false);
 
   const {
@@ -189,8 +179,6 @@ const AdminReservationDetailsPage = () => {
 
   if (loading) return <Loading />;
 
-  const c = (key, opts) => t(`reservations.contract.${key}`, opts);
-
   return (
     <div className="contract-page">
       <ContractRibbon
@@ -225,116 +213,31 @@ const AdminReservationDetailsPage = () => {
 
           {/* ---------- RIGHT ---------- */}
           <div className="contract-page__col">
-            <section className="contract-card">
-              {/* top tabs */}
-              <Nav variant="tabs" activeKey={topTab} onSelect={(k) => k && setTopTab(k)} className="mb-3">
-                <Nav.Item><Nav.Link eventKey="customer">{c("topTabs.customer")}</Nav.Link></Nav.Item>
-                <Nav.Item><Nav.Link eventKey="drivers">{c("topTabs.drivers")}</Nav.Link></Nav.Item>
-                <Nav.Item><Nav.Link eventKey="invoice">{c("topTabs.invoice")}</Nav.Link></Nav.Item>
-              </Nav>
-
-              {topTab === "customer" && (
-                <div className="contract-page__top-content">
-                  {isCreate ? (
-                    <CustomerPanel
-                      formik={formik}
-                      customers={customers}
-                      refreshCustomers={refreshCustomers}
-                      onRequestNewCustomer={openNewCust}
-                      resetKey={navKey}
-                      money={money}
-                    />
-                  ) : (
-                    <CustomerSummary customer={customer} userId={formik.values.userId} />
-                  )}
-                </div>
-              )}
-
-              {topTab === "drivers" && (
-                <div className="contract-page__top-content">
-                  <DriversTab isCreate={isCreate} reservationId={reservationId} recordLabels={recordLabels} />
-                </div>
-              )}
-
-              {topTab === "invoice" && (
-                <div className="contract-page__top-content">
-                  <InvoiceTab
-                    isCreate={isCreate}
-                    reservationId={reservationId}
-                    invoice={invoice}
-                    onInvoiceCreated={setInvoice}
-                    money={money}
-                  />
-                </div>
-              )}
-
-              {/* sub tabs */}
-              <Nav variant="pills" activeKey={subTab} onSelect={(k) => k && setSubTab(k)}
-                className="contract-page__subtabs mt-3 mb-2">
-                {["summary", "payments", "returnExtra", "extension"].map((k) => (
-                  <Nav.Item key={k}><Nav.Link eventKey={k}>{c(`subTabs.${k}`)}</Nav.Link></Nav.Item>
-                ))}
-              </Nav>
-
-              <div className="contract-page__sub-content">
-                {subTab === "summary" && (
-                  <SummaryTab
-                    formik={formik}
-                    selectedCar={selectedCar}
-                    billableDays={billableDays}
-                    customerName={(() => {
-                      const cu = customer || customers.find((cx) => cx.id === formik.values.userId);
-                      return cu ? custLabel(cu) : "";
-                    })()}
-                    statusOptions={statusOptions}
-                    money={money}
-                  />
-                )}
-
-                {subTab === "payments" && (
-                  <PaymentsTab
-                    isCreate={isCreate}
-                    reservationId={reservationId}
-                    recordLabels={recordLabels}
-                    total={pricing.total}
-                    collected={collected}
-                    onPaymentsChange={loadPayments}
-                    money={money}
-                  />
-                )}
-
-                {subTab === "returnExtra" && (
-                  <CustomForm formik={formik} name="returnExtraAmount" label={c("returnExtraAmount")} type="number" />
-                )}
-
-                {subTab === "extension" && (
-                  <ExtensionTab
-                    isCreate={isCreate}
-                    reservationId={reservationId}
-                    minDate={formik.values.dropOffDate}
-                    extensions={extensions}
-                    onExtended={loadData}
-                    money={money}
-                  />
-                )}
-              </div>
-
-              <PricingBlock
-                formik={formik}
-                pricing={pricing}
-                billableDays={billableDays}
-                extensionDays={extensionDays}
-                extensionTotal={extensionTotal}
-                isCreate={isCreate}
-                updating={updating}
-                money={money}
-              />
-
-              <div className="contract-page__balance">
-                <strong>{money(collected - pricing.total)} TL</strong>
-                <span>{c("balance").toUpperCase()}</span>
-              </div>
-            </section>
+            <ContractRightCard
+              isCreate={isCreate}
+              reservationId={reservationId}
+              formik={formik}
+              navKey={navKey}
+              customers={customers}
+              customer={customer}
+              invoice={invoice}
+              extensions={extensions}
+              refreshCustomers={refreshCustomers}
+              onRequestNewCustomer={openNewCust}
+              onInvoiceCreated={setInvoice}
+              loadData={loadData}
+              loadPayments={loadPayments}
+              selectedCar={selectedCar}
+              billableDays={billableDays}
+              pricing={pricing}
+              collected={collected}
+              extensionDays={extensionDays}
+              extensionTotal={extensionTotal}
+              statusOptions={statusOptions}
+              recordLabels={recordLabels}
+              updating={updating}
+              money={money}
+            />
           </div>
         </div>
 
