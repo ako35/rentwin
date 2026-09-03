@@ -28,7 +28,7 @@ import "./style.scss";
 
 const { routes } = constants;
 
-const AdminContractDetailsPage = () => {
+const ContractDetail = () => {
   const { contractId } = useParams();
   const isCreate = !contractId;
   const navigate = useNavigate();
@@ -296,6 +296,14 @@ const AdminContractDetailsPage = () => {
       />
     </div>
   );
+};
+
+// Re-key on the route param so "create" -> "/:id" (after "Oluştur ve Aç") and
+// any "/:id" -> "/:other" fully remounts the screen: state (updating, formik)
+// resets and the freshly saved contract is loaded from the server.
+const AdminContractDetailsPage = () => {
+  const { contractId } = useParams();
+  return <ContractDetail key={contractId || "new"} />;
 };
 
 export default AdminContractDetailsPage;
