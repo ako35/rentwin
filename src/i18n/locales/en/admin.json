@@ -433,6 +433,7 @@
         "corpName": "Company name",
         "firstName": "First name",
         "lastName": "Last name",
+        "nationalId": "National ID / Passport no",
         "taxNo": "Tax no",
         "taxOffice": "Tax office",
         "phone": "Mobile phone",

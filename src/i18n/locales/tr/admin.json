@@ -433,6 +433,7 @@
         "corpName": "Kurum Adı",
         "firstName": "Adı",
         "lastName": "Soyadı",
+        "nationalId": "TC No / Pasaport No",
         "taxNo": "Vergi No",
         "taxOffice": "Vergi Dairesi",
         "phone": "Cep Telefonu",

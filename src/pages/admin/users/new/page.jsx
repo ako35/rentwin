@@ -46,14 +46,14 @@ const AdminNewCustomerPage = () => {
         ["district", t("users.form.district"), t("users.form.ph.district"), true],
       ]
     : [
-        ["firstName", t("users.form.firstName"), "", true],
-        ["lastName", t("users.form.lastName"), "", true],
-        ["nationalId", t("users.form.nationalId"), "", true],
-        ["email", t("users.form.email"), "", true],
-        ["phoneNumber", t("users.form.phoneNumber"), "", false],
-        ["address", t("users.form.address"), "", false],
-        ["city", t("users.form.city"), "", false],
-        ["district", t("users.form.district"), "", false],
+        ["firstName", t("users.form.firstName"), t("users.form.ph.firstName"), true],
+        ["lastName", t("users.form.lastName"), t("users.form.ph.lastName"), true],
+        ["nationalId", t("users.form.nationalId"), t("users.form.ph.nationalId"), true],
+        ["email", t("users.form.email"), t("users.form.ph.email"), true],
+        ["phoneNumber", t("users.form.phoneNumber"), t("users.form.ph.phone"), false],
+        ["address", t("users.form.address"), t("users.form.ph.address"), false],
+        ["city", t("users.form.city"), t("users.form.ph.city"), false],
+        ["district", t("users.form.district"), t("users.form.ph.district"), false],
       ];
 
   const canSubmit = fields.every(([name, , , required]) => !required || form[name].trim());
