@@ -39,6 +39,35 @@ export const deleteContract = async (id) => {
   return response.data;
 };
 
+// Contract lifecycle: "Araç Teslim Al" -> DONE, "Kontratı İptal Et" -> CANCELLED,
+// "Geri Aç" -> CREATED. Each returns { id, status }.
+export const returnContract = async (id) => {
+  const response = await axios.post(
+    `${API_URL}/contracts/admin/${id}/return/auth`,
+    {},
+    services.authHeader()
+  );
+  return response.data;
+};
+
+export const cancelContract = async (id) => {
+  const response = await axios.post(
+    `${API_URL}/contracts/admin/${id}/cancel/auth`,
+    {},
+    services.authHeader()
+  );
+  return response.data;
+};
+
+export const reopenContract = async (id) => {
+  const response = await axios.post(
+    `${API_URL}/contracts/admin/${id}/reopen/auth`,
+    {},
+    services.authHeader()
+  );
+  return response.data;
+};
+
 export const extendContract = async (id, payload) => {
   const response = await axios.post(
     `${API_URL}/contracts/admin/${id}/extend/auth`,

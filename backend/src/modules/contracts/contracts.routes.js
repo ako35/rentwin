@@ -7,6 +7,9 @@ const {
   getAvailableCarsAdmin,
   deleteContract,
   getAdminSchedule,
+  returnContract,
+  cancelContract,
+  reopenContract,
 } = require("./contracts.admin.controller");
 const {
   updateContract,
@@ -27,5 +30,8 @@ router.put("/contracts/admin/auth", authenticate, requireAdmin, updateContract);
 router.delete("/contracts/admin/:id/auth", authenticate, requireAdmin, deleteContract);
 router.post("/contracts/admin/:id/extend/auth", authenticate, requireAdmin, extendContract);
 router.post("/contracts/admin/:id/invoice/auth", authenticate, requireAdmin, createInvoice);
+router.post("/contracts/admin/:id/return/auth", authenticate, requireAdmin, returnContract);
+router.post("/contracts/admin/:id/cancel/auth", authenticate, requireAdmin, cancelContract);
+router.post("/contracts/admin/:id/reopen/auth", authenticate, requireAdmin, reopenContract);
 
 module.exports = router;

@@ -32,6 +32,41 @@
   &__ribbon-id { font-weight: 800; font-size: 1.05rem; }
   &__ribbon-ref { font-size: 0.85rem; opacity: 0.95; }
 
+  &__badge {
+    display: inline-block;
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.9);
+    color: v.$color5;
+
+    &--created { background: #d6e6fb; color: #1b5aa8; }
+    &--done { background: #d6f2df; color: #1c7a3e; }
+    &--cancelled { background: #f7d9d9; color: #a52626; }
+  }
+
+  // Fieldset is a layout-neutral wrapper; disabling it makes a closed contract
+  // (DONE / CANCELLED) read-only without touching every child component.
+  &__fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+
+    &:disabled { opacity: 0.75; }
+  }
+
+  &__delete-link {
+    color: v.$color5_3;
+    text-decoration: none;
+    font-size: 0.85rem;
+
+    &:hover { color: #dc3545; }
+  }
+
   &__ribbon-title {
     font-style: italic;
     font-weight: 600;

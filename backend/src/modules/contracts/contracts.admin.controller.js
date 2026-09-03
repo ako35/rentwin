@@ -161,6 +161,26 @@ const deleteContract = asyncHandler(async (req, res) => {
   res.json({ message: "Contract deleted." });
 });
 
+// Lifecycle actions from the contract detail bar: "Araç Teslim Al" closes the
+// contract (DONE), "Kontratı İptal Et" voids it (CANCELLED — frees the vehicle,
+// drops out of customer balance), "Geri Aç" reopens it (CREATED).
+const setContractStatus = (status) =>
+  asyncHandler(async (req, res) => {
+    const existing = await prisma.contract.findUnique({ where: { id: req.params.id } });
+    if (!existing) throw new HttpError(404, "Contract not found.");
+
+    const contract = await prisma.contract.update({
+      where: { id: existing.id },
+      data: { status },
+      select: { id: true, status: true },
+    });
+    res.json(contract);
+  });
+
+const returnContract = setContractStatus("DONE");
+const cancelContract = setContractStatus("CANCELLED");
+const reopenContract = setContractStatus("CREATED");
+
 // Admin dashboard "Returns"/"Departures" tables: contracts whose drop-off
 // (returns) or pick-up (departures) falls within a day window from now.
 // Always excludes CANCELLED; optionally excludes DONE too.
@@ -188,4 +208,7 @@ module.exports = {
   getAvailableCarsAdmin,
   deleteContract,
   getAdminSchedule,
+  returnContract,
+  cancelContract,
+  reopenContract,
 };

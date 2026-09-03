@@ -2,8 +2,9 @@ import { useTranslation } from "react-i18next";
 import { CustomForm } from "../../../../../components";
 import RoRow from "./RoRow";
 
-// Sub tab: at-a-glance contract summary + admin note / status fields.
-const SummaryTab = ({ formik, selectedCar, billableDays, statusOptions }) => {
+// Sub tab: at-a-glance contract summary + admin note. The contract status is
+// driven by the action bar (Araç Teslim Al / Kontratı İptal Et), not edited here.
+const SummaryTab = ({ formik, selectedCar, billableDays }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.${key}`, opts);
   const v = formik.values;
@@ -22,7 +23,6 @@ const SummaryTab = ({ formik, selectedCar, billableDays, statusOptions }) => {
         })})`}
       />
       <CustomForm formik={formik} name="adminNote" label={c("adminNote")} type="textarea" rows={2} />
-      <CustomForm formik={formik} name="status" label={c("status")} type="select" itemsArr={statusOptions} />
     </>
   );
 };

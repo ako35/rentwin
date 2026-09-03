@@ -85,6 +85,20 @@
     font-weight: 600;
   }
 
+  &__badge {
+    display: inline-block;
+    padding: 0.08rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: v.$color3-4;
+    color: v.$color5;
+
+    &--created { background: #d6e6fb; color: #1b5aa8; }
+    &--done { background: #d6f2df; color: #1c7a3e; }
+    &--cancelled { background: #f7d9d9; color: #a52626; }
+  }
+
   &__pager {
     @include m.flexbox(row, flex-end, center, 0.35rem);
     margin-top: 0.6rem;

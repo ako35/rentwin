@@ -63,7 +63,7 @@
       "Administrator": "Administrator"
     },
     "contractStatus": {
-      "CREATED": "Created",
+      "CREATED": "Open",
       "CANCELLED": "Cancelled",
       "DONE": "Done"
     },

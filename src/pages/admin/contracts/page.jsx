@@ -171,7 +171,11 @@ const AdminContractsPage = () => {
                     <td className={`text-end${balance < 0 ? " contract-list__neg" : ""}`}>
                       {money(balance)}
                     </td>
-                    <td>{tCommon(`options.contractStatus.${r.status}`)}</td>
+                    <td>
+                      <span className={`contract-list__badge contract-list__badge--${(r.status || "").toLowerCase()}`}>
+                        {tCommon(`options.contractStatus.${r.status}`)}
+                      </span>
+                    </td>
                   </tr>
                 );
               })}

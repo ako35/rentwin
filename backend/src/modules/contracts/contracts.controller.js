@@ -12,7 +12,9 @@ const { num, pickContractFields, computeTotal } = require("./contract-fields");
 
 const updateContract = asyncHandler(async (req, res) => {
   const { carId, contractId } = req.query;
-  const { pickUpTime, dropOffTime, pickUpLocation, dropOffLocation, status } = req.body;
+  const { pickUpTime, dropOffTime, pickUpLocation, dropOffLocation } = req.body;
+  // `status` is owned by the lifecycle endpoints (return / cancel / reopen), not
+  // the generic patch — an edit-save never changes it.
 
   const existing = await prisma.contract.findUnique({ where: { id: contractId } });
   if (!existing) throw new HttpError(404, "Contract not found.");
@@ -37,7 +39,6 @@ const updateContract = asyncHandler(async (req, res) => {
       dropOffLocation,
       pickUpTime: parsedPickUp,
       dropOffTime: parsedDropOff,
-      status,
       totalPrice,
       ...contractFields,
     },

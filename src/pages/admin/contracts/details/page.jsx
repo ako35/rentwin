@@ -22,7 +22,6 @@ import {
   computePricing,
   buildContractDto,
   buildVehicleOptions,
-  buildStatusOptions,
   buildRecordLabels,
 } from "./contract-helpers";
 import "./style.scss";
@@ -35,7 +34,7 @@ const AdminContractDetailsPage = () => {
   const navigate = useNavigate();
   const { key: navKey } = useLocation();
   const { t } = useTranslation("admin");
-  const { t: tCommon, i18n } = useTranslation("common");
+  const { i18n } = useTranslation("common");
 
   const [updating, setUpdating] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -144,6 +143,36 @@ const AdminContractDetailsPage = () => {
       });
   };
 
+  // Contract lifecycle: "Araç Teslim Al" -> DONE, "Kontratı İptal Et" ->
+  // CANCELLED, "Geri Aç" -> CREATED. Each confirms, calls its endpoint, reloads.
+  const runStatusAction = (apiCall, titleKey, textKey, successKey) => () => {
+    utils.functions
+      .swalQuestion(t(`reservations.contract.${titleKey}`), t(`reservations.contract.${textKey}`))
+      .then(async (res) => {
+        if (!res.isConfirmed) return;
+        setUpdating(true);
+        try {
+          await apiCall(contractId);
+          utils.functions.swalToast(t(`reservations.contract.${successKey}`), "success");
+          loadData();
+        } catch {
+          utils.functions.swalToast(t("reservations.toasts.updateError"), "error");
+        } finally {
+          setUpdating(false);
+        }
+      });
+  };
+
+  const handleVehicleReturn = runStatusAction(
+    services.contract.returnContract, "returnConfirmTitle", "returnConfirmText", "returnedSuccess"
+  );
+  const handleCancelContract = runStatusAction(
+    services.contract.cancelContract, "cancelConfirmTitle", "cancelConfirmText", "cancelledSuccess"
+  );
+  const handleReopen = runStatusAction(
+    services.contract.reopenContract, "reopenConfirmTitle", "reopenConfirmText", "reopenedSuccess"
+  );
+
   const openNewCust = () => setNewCustModal(true);
 
   const handleNewCustomerCreated = async (created) => {
@@ -174,8 +203,11 @@ const AdminContractDetailsPage = () => {
     isCreate,
     placeholder: t("newContract.selectVehicle"),
   });
-  const statusOptions = buildStatusOptions(tCommon);
   const recordLabels = buildRecordLabels(t);
+
+  // A closed contract (returned or cancelled) is read-only until reopened.
+  const contractStatus = formik.values.status;
+  const locked = !isCreate && (contractStatus === "DONE" || contractStatus === "CANCELLED");
 
   if (loading) return <Loading />;
 
@@ -185,10 +217,12 @@ const AdminContractDetailsPage = () => {
         isCreate={isCreate}
         contractId={contractId}
         referenceNo={formik.values.referenceNo}
+        status={contractStatus}
         updatedAt={meta.updatedAt}
       />
 
       <Form noValidate onSubmit={formik.handleSubmit}>
+        <fieldset className="contract-page__fieldset" disabled={locked}>
         <div className="contract-page__grid">
           {/* ---------- LEFT ---------- */}
           <div className="contract-page__col">
@@ -233,21 +267,25 @@ const AdminContractDetailsPage = () => {
               collected={collected}
               extensionDays={extensionDays}
               extensionTotal={extensionTotal}
-              statusOptions={statusOptions}
               recordLabels={recordLabels}
               updating={updating}
               money={money}
             />
           </div>
         </div>
+        </fieldset>
 
         <ContractActions
           isCreate={isCreate}
           updating={updating}
           deleting={deleting}
           canSave={isCreate ? formik.isValid : formik.isValid && formik.dirty}
+          status={contractStatus}
           onDiscard={() => navigate(routes.adminContracts)}
           onDelete={handleDelete}
+          onVehicleReturn={handleVehicleReturn}
+          onCancelContract={handleCancelContract}
+          onReopen={handleReopen}
         />
       </Form>
 

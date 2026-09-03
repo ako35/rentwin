@@ -21,7 +21,7 @@ const ContractRightCard = ({
   customers, customer, invoice, extensions,
   refreshCustomers, onRequestNewCustomer, onInvoiceCreated, loadData, loadPayments,
   selectedCar, billableDays, pricing, collected, extensionDays, extensionTotal,
-  statusOptions, recordLabels, updating, money,
+  recordLabels, updating, money,
 }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
@@ -88,7 +88,6 @@ const ContractRightCard = ({
             formik={formik}
             selectedCar={selectedCar}
             billableDays={billableDays}
-            statusOptions={statusOptions}
           />
         )}
 

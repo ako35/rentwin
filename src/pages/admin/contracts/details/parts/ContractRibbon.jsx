@@ -1,9 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { utils } from "../../../../../utils";
 
-// Top ribbon: contract id / "Yeni Kontrat", optional contract no, last-updated.
-const ContractRibbon = ({ isCreate, contractId, referenceNo, updatedAt }) => {
+// Top ribbon: contract id / "Yeni Kontrat", optional contract no, status badge,
+// last-updated.
+const ContractRibbon = ({ isCreate, contractId, referenceNo, status, updatedAt }) => {
   const { t } = useTranslation("admin");
+  const { t: tCommon } = useTranslation("common");
   const c = (key) => t(`reservations.contract.${key}`);
 
   return (
@@ -15,6 +17,11 @@ const ContractRibbon = ({ isCreate, contractId, referenceNo, updatedAt }) => {
         {!isCreate && referenceNo && (
           <span className="contract-page__ribbon-ref">
             ({c("contractNo")}: # {referenceNo})
+          </span>
+        )}
+        {!isCreate && status && (
+          <span className={`contract-page__badge contract-page__badge--${status.toLowerCase()}`}>
+            {tCommon(`options.contractStatus.${status}`)}
           </span>
         )}
       </div>

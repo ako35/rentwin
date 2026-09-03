@@ -63,7 +63,7 @@
       "Administrator": "Yönetici"
     },
     "contractStatus": {
-      "CREATED": "Oluşturuldu",
+      "CREATED": "Açık",
       "CANCELLED": "İptal Edildi",
       "DONE": "Tamamlandı"
     },

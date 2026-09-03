@@ -1,6 +1,5 @@
 import moment from "moment/moment";
 import { utils } from "../../../../utils";
-import { constants } from "../../../../constants";
 import { services } from "../../../../services";
 
 // Every contract-screen customer dropdown is fed by the same query: all
@@ -74,7 +73,6 @@ export const buildContractDto = (values) => ({
   dropOffTime: utils.functions.combineDateAndTime(values.dropOffDate, values.dropOffTime),
   pickUpLocation: values.pickUpLocation,
   dropOffLocation: values.dropOffLocation,
-  status: values.status,
   customerNote: values.customerNote, adminNote: values.adminNote,
   referenceNo: values.referenceNo, flightNo: values.flightNo,
   dailyPrice: values.dailyPrice, extrasTotal: values.extrasTotal,
@@ -112,9 +110,6 @@ export const buildVehicleOptions = (carList, { isCreate, placeholder }) => [
     name: `${veh.brand} ${veh.model} — ${veh.licensePlate}${veh.branch ? ` · ${veh.branch.name}` : ""}`,
   })),
 ];
-
-export const buildStatusOptions = (tCommon) =>
-  constants.contractStatus.map((s) => ({ ...s, name: tCommon(`options.contractStatus.${s.value}`) }));
 
 // Shared label bag passed to every <ContractRecords> instance.
 export const buildRecordLabels = (t) => {
