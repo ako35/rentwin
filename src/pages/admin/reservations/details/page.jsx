@@ -2,30 +2,28 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
-import { Button, Form, Modal, Nav, Spinner } from "react-bootstrap";
+import { Button, Form, Nav, Spinner } from "react-bootstrap";
 import moment from "moment/moment";
 import { constants } from "../../../../constants";
 import { utils } from "../../../../utils";
 import { services } from "../../../../services";
 import { ContractRecords, CustomForm, Loading } from "../../../../components";
+import NewCustomerModal from "./parts/NewCustomerModal";
+import {
+  EMPTY_CONTRACT as EMPTY,
+  formatMoney,
+  custLabel,
+  computeBillableDays,
+  computePricing,
+  buildContractDto,
+  reservationToFormValues,
+  buildVehicleOptions,
+  buildStatusOptions,
+  buildRecordLabels,
+} from "./contract-helpers";
 import "./style.scss";
 
 const { routes } = constants;
-
-const EMPTY = {
-  pickUpLocation: "", dropOffLocation: "", pickUpDate: "", pickUpTime: "",
-  dropOffDate: "", dropOffTime: "", carId: "", status: "", userId: "",
-  customerNote: "", adminNote: "", referenceNo: "", flightNo: "",
-  dailyPrice: "", extrasTotal: "", oneWayFee: "", returnExtraAmount: "",
-  discount: "", discountIsPercent: false, discountDailyOnly: true,
-  deposit: "", kmLimit: "", unlimitedKm: true, vatRate: 20,
-  referenceUserId: "",
-};
-const EMPTY_NEW_CUST = {
-  customerType: "Bireysel", companyTitle: "", taxOffice: "",
-  firstName: "", lastName: "", nationalId: "",
-  email: "", phoneNumber: "", address: "", city: "", district: "",
-};
 
 const AdminReservationDetailsPage = () => {
   const { reservationId } = useParams();
@@ -54,8 +52,6 @@ const AdminReservationDetailsPage = () => {
   const [refQuery, setRefQuery] = useState("");
   const [refOpen, setRefOpen] = useState(false);
   const [newCustModal, setNewCustModal] = useState(false);
-  const [newCust, setNewCust] = useState(EMPTY_NEW_CUST);
-  const [savingNewCust, setSavingNewCust] = useState(false);
   const [availableCars, setAvailableCars] = useState([]);
   const [payments, setPayments] = useState([]);
   const [catalog, setCatalog] = useState([]);
@@ -65,8 +61,7 @@ const AdminReservationDetailsPage = () => {
   const [extending, setExtending] = useState(false);
   const [invoicing, setInvoicing] = useState(false);
 
-  const money = (v) =>
-    Number(v || 0).toLocaleString(i18n.language, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const money = (v) => formatMoney(v, i18n.language);
 
   const loadPayments = () =>
     services.reservation.getRecords(reservationId, "payments")
@@ -75,22 +70,7 @@ const AdminReservationDetailsPage = () => {
 
   const onSubmit = async (values) => {
     setUpdating(true);
-    const dto = {
-      pickUpTime: utils.functions.combineDateAndTime(values.pickUpDate, values.pickUpTime),
-      dropOffTime: utils.functions.combineDateAndTime(values.dropOffDate, values.dropOffTime),
-      pickUpLocation: values.pickUpLocation,
-      dropOffLocation: values.dropOffLocation,
-      status: values.status,
-      customerNote: values.customerNote, adminNote: values.adminNote,
-      referenceNo: values.referenceNo, flightNo: values.flightNo,
-      dailyPrice: values.dailyPrice, extrasTotal: values.extrasTotal,
-      oneWayFee: values.oneWayFee, returnExtraAmount: values.returnExtraAmount,
-      discount: values.discount, discountIsPercent: values.discountIsPercent,
-      discountDailyOnly: values.discountDailyOnly,
-      deposit: values.deposit, kmLimit: values.unlimitedKm ? "" : values.kmLimit,
-      unlimitedKm: values.unlimitedKm, vatRate: values.vatRate,
-      referenceUserId: values.referenceUserId || null,
-    };
+    const dto = buildContractDto(values);
 
     if (isCreate) {
       try {
@@ -182,22 +162,7 @@ const AdminReservationDetailsPage = () => {
       setCustomer(r.customer || null);
       setRefCust(r.referenceUser || null);
       setMeta({ createdAt: r.createdAt, updatedAt: r.updatedAt });
-      setInitialValues({
-        ...EMPTY, ...r,
-        pickUpDate: utils.functions.getDate(r.pickUpTime),
-        pickUpTime: utils.functions.getTime(r.pickUpTime),
-        dropOffDate: utils.functions.getDate(r.dropOffTime),
-        dropOffTime: utils.functions.getTime(r.dropOffTime),
-        customerNote: r.customerNote || "", adminNote: r.adminNote || "",
-        referenceNo: r.referenceNo || "", flightNo: r.flightNo || "",
-        dailyPrice: r.dailyPrice ?? "", extrasTotal: r.extrasTotal ?? "",
-        oneWayFee: r.oneWayFee ?? "", returnExtraAmount: r.returnExtraAmount ?? "",
-        discount: r.discount ?? "", discountIsPercent: r.discountIsPercent ?? false,
-        discountDailyOnly: r.discountDailyOnly ?? true,
-        deposit: r.deposit ?? "", kmLimit: r.kmLimit ?? "",
-        unlimitedKm: r.unlimitedKm ?? true, vatRate: r.vatRate ?? 20,
-        referenceUserId: r.referenceUserId || "",
-      });
+      setInitialValues(reservationToFormValues(r));
     } catch (error) {
       console.log(error);
     } finally {
@@ -273,8 +238,6 @@ const AdminReservationDetailsPage = () => {
     return () => window.removeEventListener("focus", onFocus);
   }, [isCreate]);
 
-  const custLabel = (u) => (u.companyTitle || `${u.firstName} ${u.lastName}`).trim();
-
   // Load the picked customer into an editable copy + keep the search box in sync.
   // The panel layout is always shown; fields are blank until a customer is picked.
   useEffect(() => {
@@ -289,7 +252,6 @@ const AdminReservationDetailsPage = () => {
     if (!isCreate) return;
     setCustQuery("");
     setCustEdit({});
-    setNewCust(EMPTY_NEW_CUST);
     setRefCust(null);
     setRefQuery("");
     setRefOpen(false);
@@ -328,31 +290,15 @@ const AdminReservationDetailsPage = () => {
   };
 
   const openNewCust = () => {
-    setNewCust(EMPTY_NEW_CUST);
     setCustOpen(false);
     setNewCustModal(true);
   };
 
-  const saveNewCust = async () => {
-    setSavingNewCust(true);
-    try {
-      const created = await services.user.createUserAdmin(newCust);
-      const list = await services.user.getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" });
-      setCustomers(list?.content || []);
-      formik.setFieldValue("userId", created.id);
-      setNewCustModal(false);
-      setNewCust(EMPTY_NEW_CUST);
-      utils.functions.swalToast(t("newCustomer.success"), "success");
-    } catch (error) {
-      utils.functions.swalToast(
-        error?.response?.status === 409
-          ? t("newCustomer.emailExists")
-          : error?.response?.data?.message || t("newCustomer.error"),
-        "error"
-      );
-    } finally {
-      setSavingNewCust(false);
-    }
+  const handleNewCustomerCreated = async (created) => {
+    const list = await services.user.getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" });
+    setCustomers(list?.content || []);
+    formik.setFieldValue("userId", created.id);
+    setNewCustModal(false);
   };
 
   const selectedCar = useMemo(
@@ -360,30 +306,16 @@ const AdminReservationDetailsPage = () => {
     [vehicles, availableCars, formik.values.carId]
   );
 
-  const billableDays = useMemo(() => {
-    const { pickUpDate, pickUpTime, dropOffDate, dropOffTime } = formik.values;
-    if (!pickUpDate || !dropOffDate) return 1;
-    const s = moment(`${pickUpDate} ${pickUpTime || "00:00"}`);
-    const e = moment(`${dropOffDate} ${dropOffTime || "00:00"}`);
-    return Math.max(1, Math.ceil(e.diff(s, "hours") / 24));
-  }, [formik.values]);
+  const billableDays = useMemo(() => computeBillableDays(formik.values), [formik.values]);
 
   const extensionTotal = extensions.reduce((s, e) => s + (Number(e.extraAmount) || 0), 0);
   const extensionDays = extensions.reduce((s, e) => s + (Number(e.extraDays) || 0), 0);
   const collected = payments.reduce((s, p) => s + (Number(p.amount) || 0), 0);
 
-  const pricing = useMemo(() => {
-    const n = (x) => Number(x) || 0;
-    const v = formik.values;
-    const rental = n(v.dailyPrice) * billableDays;
-    const addOns = n(v.extrasTotal) + n(v.oneWayFee) + n(v.returnExtraAmount);
-    const discBase = v.discountDailyOnly ? rental : rental + addOns;
-    const discAmount = v.discountIsPercent ? (discBase * n(v.discount)) / 100 : n(v.discount);
-    const subtotal = rental + addOns - discAmount;
-    const vat = v.vatRate === "" ? 20 : n(v.vatRate);
-    const total = subtotal * (1 + vat / 100);
-    return { rental, addOns, subtotal, total };
-  }, [formik.values, billableDays]);
+  const pricing = useMemo(
+    () => computePricing(formik.values, billableDays),
+    [formik.values, billableDays]
+  );
 
   const doExtend = async () => {
     if (!extForm.date) return;
@@ -417,28 +349,12 @@ const AdminReservationDetailsPage = () => {
 
   const branchNames = branches.map((b) => b.name);
   const carList = isCreate ? availableCars : vehicles;
-  const vehicleOptions = [
-    ...(isCreate ? [{ id: "__none", value: "", name: `— ${t("newContract.selectVehicle")} —` }] : []),
-    ...carList.map((veh) => ({
-      id: veh.id, value: veh.id,
-      name: `${veh.brand} ${veh.model} — ${veh.licensePlate}${veh.branch ? ` · ${veh.branch.name}` : ""}`,
-    })),
-  ];
-  const statusOptions = constants.reservationStatus.map((s) => ({
-    ...s, name: tCommon(`options.reservationStatus.${s.value}`),
-  }));
-  const recordLabels = {
-    actions: t("reservations.contract.records.actions"),
-    add: t("reservations.contract.records.add"),
-    save: t("reservations.contract.records.save"),
-    cancel: t("reservations.contract.records.cancel"),
-    edit: t("reservations.contract.records.edit"),
-    delete: t("reservations.contract.records.delete"),
-    empty: t("reservations.contract.records.empty"),
-    error: t("reservations.contract.records.error"),
-    deleteConfirm: t("reservations.contract.records.deleteConfirm"),
-    deleteConfirmText: t("reservations.contract.records.deleteConfirmText"),
-  };
+  const vehicleOptions = buildVehicleOptions(carList, {
+    isCreate,
+    placeholder: t("newContract.selectVehicle"),
+  });
+  const statusOptions = buildStatusOptions(tCommon);
+  const recordLabels = buildRecordLabels(t);
 
   if (loading) return <Loading />;
 
@@ -1020,91 +936,11 @@ const AdminReservationDetailsPage = () => {
         </div>
       </Form>
 
-      {(() => {
-        const isCorp = newCust.customerType === "Kurumsal";
-        const setNC = (k) => (e) => setNewCust((f) => ({ ...f, [k]: e.target.value }));
-        const ncFields = isCorp
-          ? [
-              ["companyTitle", t("users.form.corpName"), t("users.form.ph.corpName"), true],
-              ["firstName", t("users.form.corpContactFirst"), t("users.form.ph.firstName"), true],
-              ["lastName", t("users.form.corpContactLast"), t("users.form.ph.lastName"), true],
-              ["nationalId", t("users.form.corpTaxNo"), t("users.form.ph.taxNo"), true],
-              ["taxOffice", t("users.form.taxOffice"), t("users.form.ph.taxOffice"), true],
-              ["phoneNumber", t("users.form.corpPhone"), t("users.form.ph.phone"), true],
-              ["email", t("users.form.email"), t("users.form.ph.email"), true],
-              ["address", t("users.form.address"), t("users.form.ph.address"), true],
-              ["city", t("users.form.city"), t("users.form.ph.city"), true],
-              ["district", t("users.form.district"), t("users.form.ph.district"), true],
-            ]
-          : [
-              ["firstName", t("users.form.firstName"), t("users.form.ph.firstName"), true],
-              ["lastName", t("users.form.lastName"), t("users.form.ph.lastName"), true],
-              ["nationalId", t("users.form.nationalId"), t("users.form.ph.nationalId"), true],
-              ["email", t("users.form.email"), t("users.form.ph.email"), true],
-              ["phoneNumber", t("users.form.phoneNumber"), t("users.form.ph.phone"), false],
-              ["address", t("users.form.address"), t("users.form.ph.address"), false],
-              ["city", t("users.form.city"), t("users.form.ph.city"), false],
-              ["district", t("users.form.district"), t("users.form.ph.district"), false],
-            ];
-        const canSave = ncFields.every(([name, , , req]) => !req || newCust[name].trim());
-        const nf = ([name, label, placeholder, req]) => (
-          <div className="customer-form-card__row" key={name}>
-            <label>{req ? `* ${label}` : label}</label>
-            <Form.Control
-              size="sm"
-              type={name === "email" ? "email" : "text"}
-              placeholder={placeholder || undefined}
-              value={newCust[name]}
-              onChange={setNC(name)}
-            />
-          </div>
-        );
-        return (
-          <Modal
-            show={newCustModal}
-            size="lg"
-            onHide={() => setNewCustModal(false)}
-            contentClassName="contract-page__newcust-modal"
-          >
-            <Modal.Body>
-              <div className="customer-form-card">
-                <div className="customer-form-card__card">
-                  <div className="customer-form-card__head">
-                    <span>{t("newCustomer.title")}</span>
-                    <button
-                      type="button"
-                      className="customer-form-card__close"
-                      aria-label={t("reservations.cancel")}
-                      onClick={() => setNewCustModal(false)}
-                    >
-                      <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
-                        <path d="M5 5l14 14M19 5L5 19" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                      </svg>
-                    </button>
-                  </div>
-                  <div className="customer-form-card__body">
-                    <div className="customer-form-card__radios">
-                      <Form.Check inline type="radio" id="ncm-ind" label={c("individual")}
-                        checked={!isCorp} onChange={() => setNewCust((f) => ({ ...f, customerType: "Bireysel" }))} />
-                      <Form.Check inline type="radio" id="ncm-corp" label={c("corporate")}
-                        checked={isCorp} onChange={() => setNewCust((f) => ({ ...f, customerType: "Kurumsal" }))} />
-                    </div>
-                    {ncFields.map(nf)}
-                    <div className="customer-form-card__actions">
-                      <Button variant="outline-secondary" type="button" onClick={() => setNewCustModal(false)}>
-                        {t("reservations.cancel")}
-                      </Button>
-                      <Button type="button" onClick={saveNewCust} disabled={savingNewCust || !canSave}>
-                        {savingNewCust && <Spinner animation="border" size="sm" />} {t("newCustomer.create")}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Modal.Body>
-          </Modal>
-        );
-      })()}
+      <NewCustomerModal
+        show={newCustModal}
+        onHide={() => setNewCustModal(false)}
+        onCreated={handleNewCustomerCreated}
+      />
     </div>
   );
 };
