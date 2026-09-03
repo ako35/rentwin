@@ -293,15 +293,14 @@ const AdminReservationDetailsPage = () => {
     return () => window.removeEventListener("focus", onFocus);
   }, [isCreate]);
 
-  const custLabel = (u) =>
-    `${(u.companyTitle || `${u.firstName} ${u.lastName}`).trim()} — ${u.email}`;
+  const custLabel = (u) => (u.companyTitle || `${u.firstName} ${u.lastName}`).trim();
 
   // Load the picked customer into an editable copy + keep the search box in sync.
   // The panel layout is always shown; fields are blank until a customer is picked.
   useEffect(() => {
     const sc = customers.find((cx) => cx.id === formik.values.userId);
     setCustEdit(sc ? { ...sc } : {});
-    if (sc) setCustQuery(`${(sc.companyTitle || `${sc.firstName} ${sc.lastName}`).trim()} — ${sc.email}`);
+    if (sc) setCustQuery((sc.companyTitle || `${sc.firstName} ${sc.lastName}`).trim());
   }, [formik.values.userId, customers]);
 
   // Opening "Yeni Kontrat" again re-uses this component (same route) — clear the
