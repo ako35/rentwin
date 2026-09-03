@@ -29,10 +29,17 @@ enum FuelType {
   Hydrogen
 }
 
-enum ReservationStatus {
+enum ContractStatus {
   CREATED
   CANCELLED
   DONE
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  CONVERTED
 }
 
 enum InsuranceType {
@@ -59,29 +66,30 @@ enum InspectionResult {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  firstName    String
-  lastName     String
-  email        String
-  passwordHash String
-  phoneNumber  String
-  address      String
-  zipCode      String
-  roles        Role[]        @default([Customer])
-  builtIn      Boolean       @default(false)
-  customerType String        @default("Bireysel")
-  customerCode String?       @unique
-  companyTitle String?
-  taxOffice    String?
-  nationalId   String?
-  city         String?
-  district     String?
-  active       Boolean       @default(true)
-  notes        String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  reservations          Reservation[] @relation("ReservationCustomer")
-  referenceReservations Reservation[] @relation("ReservationReferenceCustomer")
+  id                 String        @id @default(uuid())
+  firstName          String
+  lastName           String
+  email              String
+  passwordHash       String
+  phoneNumber        String
+  address            String
+  zipCode            String
+  roles              Role[]        @default([Customer])
+  builtIn            Boolean       @default(false)
+  customerType       String        @default("Bireysel")
+  customerCode       String?       @unique
+  companyTitle       String?
+  taxOffice          String?
+  nationalId         String?
+  city               String?
+  district           String?
+  active             Boolean       @default(true)
+  notes              String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  reservations       Reservation[] @relation("ReservationCustomer")
+  contracts          Contract[]    @relation("ContractCustomer")
+  referenceContracts Contract[]    @relation("ContractReferenceCustomer")
 }
 
 model VehicleImage {
@@ -116,6 +124,7 @@ model Vehicle {
   notes                String?
   images               VehicleImage[]
   reservations         Reservation[]
+  contracts            Contract[]
   insurances           VehicleInsurance[]
   taxes                VehicleTax[]
   maintenances         VehicleMaintenance[]
@@ -203,100 +212,124 @@ model Announcement {
   updatedAt DateTime @updatedAt
 }
 
+// A lightweight booking: a car held for a customer for a date range. Created
+// online by customers (status PENDING) or by staff, then optionally converted
+// into a Contract when the car is handed over.
 model Reservation {
   id              String            @id @default(uuid())
+  userId          String
+  user            User              @relation("ReservationCustomer", fields: [userId], references: [id])
+  carId           String
+  car             Vehicle           @relation(fields: [carId], references: [id], onDelete: Restrict)
   pickUpLocation  String
   dropOffLocation String
   pickUpTime      DateTime
   dropOffTime     DateTime
-  totalPrice      Float
-  status          ReservationStatus @default(CREATED)
-  userId          String
-  user            User              @relation("ReservationCustomer", fields: [userId], references: [id])
-  referenceUserId String?
-  referenceUser   User?             @relation("ReservationReferenceCustomer", fields: [referenceUserId], references: [id], onDelete: SetNull)
-  carId           String
-  car             Vehicle           @relation(fields: [carId], references: [id], onDelete: Restrict)
-  corporateId     String?
-  corporate       Corporate?        @relation(fields: [corporateId], references: [id], onDelete: SetNull)
-  customerNote    String?
-  adminNote       String?
-  referenceNo     String?
-  flightNo        String?
-  dailyPrice      Float?
-  extrasTotal     Float?
-  oneWayFee       Float?
-  discount        Float?
-  discountIsPercent Boolean         @default(false)
-  discountDailyOnly Boolean         @default(true)
-  deposit         Float?
-  returnExtraAmount Float?
-  kmLimit         Int?
-  unlimitedKm     Boolean           @default(true)
-  vatRate         Float             @default(20)
-  drivers         ReservationDriver[]
-  payments        ReservationPayment[]
-  extras          ReservationExtra[]
-  extensions      ReservationExtension[]
-  invoice         Invoice?
+  status          ReservationStatus @default(PENDING)
+  note            String?
+  contract        Contract?         @relation("ContractFromReservation")
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 }
 
+// The full rental agreement — pricing, extras, drivers, payments, invoice.
+// May be created directly (walk-in) or converted from a Reservation.
+model Contract {
+  id                String              @id @default(uuid())
+  pickUpLocation    String
+  dropOffLocation   String
+  pickUpTime        DateTime
+  dropOffTime       DateTime
+  totalPrice        Float
+  status            ContractStatus      @default(CREATED)
+  userId            String
+  user              User                @relation("ContractCustomer", fields: [userId], references: [id])
+  referenceUserId   String?
+  referenceUser     User?               @relation("ContractReferenceCustomer", fields: [referenceUserId], references: [id], onDelete: SetNull)
+  carId             String
+  car               Vehicle             @relation(fields: [carId], references: [id], onDelete: Restrict)
+  corporateId       String?
+  corporate         Corporate?          @relation(fields: [corporateId], references: [id], onDelete: SetNull)
+  reservationId     String?             @unique
+  reservation       Reservation?        @relation("ContractFromReservation", fields: [reservationId], references: [id], onDelete: SetNull)
+  customerNote      String?
+  adminNote         String?
+  referenceNo       String?
+  flightNo          String?
+  dailyPrice        Float?
+  extrasTotal       Float?
+  oneWayFee         Float?
+  discount          Float?
+  discountIsPercent Boolean             @default(false)
+  discountDailyOnly Boolean             @default(true)
+  deposit           Float?
+  returnExtraAmount Float?
+  kmLimit           Int?
+  unlimitedKm       Boolean             @default(true)
+  vatRate           Float               @default(20)
+  drivers           ContractDriver[]
+  payments          ContractPayment[]
+  extras            ContractExtra[]
+  extensions        ContractExtension[]
+  invoice           Invoice?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
 // A contract extension: pushes the drop-off out and adds an amount.
-model ReservationExtension {
-  id              String      @id @default(uuid())
-  reservationId   String
-  reservation     Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+model ContractExtension {
+  id              String   @id @default(uuid())
+  contractId      String
+  contract        Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
   previousDropOff DateTime
   newDropOff      DateTime
-  extraDays       Int         @default(0)
-  extraAmount     Float       @default(0)
+  extraDays       Int      @default(0)
+  extraAmount     Float    @default(0)
   note            String?
-  createdAt       DateTime    @default(now())
+  createdAt       DateTime @default(now())
 }
 
 // One invoice per contract, numbered per year.
 model Invoice {
-  id            String      @id @default(uuid())
-  reservationId String      @unique
-  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
-  number        String      @unique
-  issuedAt      DateTime    @default(now())
-  netAmount     Float       @default(0)
-  taxAmount     Float       @default(0)
-  grossAmount   Float       @default(0)
+  id            String   @id @default(uuid())
+  contractId    String   @unique
+  contract      Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  number        String   @unique
+  issuedAt      DateTime @default(now())
+  netAmount     Float    @default(0)
+  taxAmount     Float    @default(0)
+  grossAmount   Float    @default(0)
   customerTitle String?
   taxNo         String?
   note          String?
-  createdAt     DateTime    @default(now())
+  createdAt     DateTime @default(now())
 }
 
 // Additional named drivers on a rental contract.
-model ReservationDriver {
-  id            String      @id @default(uuid())
-  reservationId String
-  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
-  firstName     String
-  lastName      String
-  licenseNo     String?
-  licenseDate   DateTime?
-  birthDate     DateTime?
-  phone         String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+model ContractDriver {
+  id          String    @id @default(uuid())
+  contractId  String
+  contract    Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  firstName   String
+  lastName    String
+  licenseNo   String?
+  licenseDate DateTime?
+  birthDate   DateTime?
+  phone       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
-model ReservationPayment {
-  id            String      @id @default(uuid())
-  reservationId String
-  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
-  amount        Float
-  method        String      @default("Cash")
-  paidAt        DateTime    @default(now())
-  note          String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+model ContractPayment {
+  id         String   @id @default(uuid())
+  contractId String
+  contract   Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  amount     Float
+  method     String   @default("Cash")
+  paidAt     DateTime @default(now())
+  note       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 // Catalogue of billable extras (child seat, extra driver, GPS, ...).
@@ -311,31 +344,31 @@ model Extra {
 }
 
 // An extra selected on a specific contract (values snapshotted from the catalogue).
-model ReservationExtra {
-  id            String      @id @default(uuid())
-  reservationId String
-  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
-  name          String
-  unitPrice     Float       @default(0)
-  perDay        Boolean     @default(true)
-  quantity      Int         @default(1)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+model ContractExtra {
+  id         String   @id @default(uuid())
+  contractId String
+  contract   Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  name       String
+  unitPrice  Float    @default(0)
+  perDay     Boolean  @default(true)
+  quantity   Int      @default(1)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 // "Cari" — corporate customer a contract can be billed to.
 model Corporate {
-  id           String        @id @default(uuid())
-  title        String
-  taxOffice    String?
-  taxNo        String?
-  phone        String?
-  email        String?
-  note         String?
-  blacklisted  Boolean       @default(false)
-  reservations Reservation[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id          String     @id @default(uuid())
+  title       String
+  taxOffice   String?
+  taxNo       String?
+  phone       String?
+  email       String?
+  note        String?
+  blacklisted Boolean    @default(false)
+  contracts   Contract[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
 model ContactMessage {
