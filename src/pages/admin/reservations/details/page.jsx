@@ -980,7 +980,17 @@ const AdminReservationDetailsPage = () => {
             <Modal.Body>
               <div className="customer-form-card">
                 <div className="customer-form-card__card">
-                  <div className="customer-form-card__head">{t("newCustomer.title")}</div>
+                  <div className="customer-form-card__head">
+                    <span>{t("newCustomer.title")}</span>
+                    <button
+                      type="button"
+                      className="customer-form-card__close"
+                      aria-label={t("reservations.cancel")}
+                      onClick={() => setNewCustModal(false)}
+                    >
+                      &times;
+                    </button>
+                  </div>
                   <div className="customer-form-card__body">
                     <div className="customer-form-card__radios">
                       <Form.Check inline type="radio" id="ncm-ind" label={c("individual")}

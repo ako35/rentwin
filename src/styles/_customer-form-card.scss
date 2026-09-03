@@ -13,6 +13,7 @@
   }
 
   &__head {
+    @include m.flexbox(row, space-between, center, 1rem);
     background: linear-gradient(90deg, v.$color1, v.$color2);
     color: v.$color4;
     font-weight: 700;
@@ -20,6 +21,26 @@
     letter-spacing: 0.03em;
     text-transform: uppercase;
     padding: 0.7rem 1.5rem;
+  }
+
+  &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.7rem;
+    height: 1.7rem;
+    margin: -0.35rem -0.6rem -0.35rem 0;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: transparent;
+    color: v.$color4;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover { background-color: rgba(255, 255, 255, 0.22); }
   }
 
   &__body {
