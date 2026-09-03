@@ -37,7 +37,7 @@ const pickContractFields = (body) => {
   if ("discountDailyOnly" in body) data.discountDailyOnly = Boolean(body.discountDailyOnly);
   if ("corporateId" in body) data.corporateId = body.corporateId || null;
   // Reference account: this contract's total is billed to this customer instead
-  // of the driver (see customerTotals in the users controller).
+  // of the driver (see customerTotals in users/customer-fields.js).
   if ("referenceUserId" in body) data.referenceUserId = body.referenceUserId || null;
   return data;
 };
