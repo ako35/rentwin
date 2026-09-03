@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Col, Form, Modal, Row, Spinner, Table } from "react-bootstrap";
-import { BsPencil, BsTrash } from "react-icons/bs";
-import CustomForm from "../../common/custom-form/custom-form";
-import Loading from "../../common/loading/loading";
+import { Alert } from "react-bootstrap";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
 import { dateFieldNames } from "./record-configs";
+import RecordsTableView from "./records-table-view";
+import RecordsTwoPaneView from "./records-two-pane-view";
 
 const RecordsPanel = ({ vehicleId, config }) => {
   const { t } = useTranslation("admin");
@@ -139,9 +138,6 @@ const RecordsPanel = ({ vehicleId, config }) => {
         : String(option.name),
     }));
 
-  const gridFields = config.fields.filter((field) => !field.full);
-  const fullFields = config.fields.filter((field) => field.full);
-
   if (!vehicleId) {
     return (
       <Alert variant="secondary" className="mb-0">
@@ -150,220 +146,14 @@ const RecordsPanel = ({ vehicleId, config }) => {
     );
   }
 
-  // ---- Two-pane variant (Sigorta / Kasko) ------------------------------------
-  if (config.twoPane) {
-    const groupRows = (type) => rows.filter((row) => row[config.typeField] === type);
-    const groupTotal = (type) =>
-      groupRows(type).reduce((sum, row) => sum + (Number(row[config.totalField]) || 0), 0);
-    const inlineFields = config.fields.filter((field) => field.name !== config.typeField);
+  const view = {
+    config, t, i18n, rows, loading, formik, editing, saving,
+    showModal, setShowModal, setEditing, toFormValues,
+    fieldLabel, formatCell, buildItems,
+    openCreate, openEdit, handleDelete,
+  };
 
-    const startEdit = (row) => {
-      setEditing(row);
-      formik.resetForm({ values: toFormValues(row) });
-    };
-    const cancelEdit = () => {
-      setEditing(null);
-      formik.resetForm({ values: config.initialValues });
-    };
-
-    return (
-      <div className="records-two-pane">
-        <div className="records-two-pane__lists">
-          {loading ? (
-            <Loading height={160} />
-          ) : (
-            config.groups.map((group) => {
-              const list = groupRows(group.type);
-              return (
-                <div className="records-two-pane__group" key={group.key}>
-                  <h4>{t(`vehicles.records.${config.tabKey}.groups.${group.key}`)}</h4>
-                  <Table hover size="sm" className="mb-1">
-                    <thead>
-                      <tr>
-                        {config.listColumns.map((col) => (
-                          <th key={col.key}>{fieldLabel(col.key)}</th>
-                        ))}
-                        <th className="text-end">{t("vehicles.records.actions")}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {list.length === 0 && (
-                        <tr>
-                          <td
-                            colSpan={config.listColumns.length + 1}
-                            className="text-center text-muted"
-                          >
-                            {t("vehicles.records.empty")}
-                          </td>
-                        </tr>
-                      )}
-                      {list.map((row) => (
-                        <tr key={row.id} className={editing?.id === row.id ? "table-active" : ""}>
-                          {config.listColumns.map((col) => (
-                            <td key={col.key}>{formatCell(col, row[col.key])}</td>
-                          ))}
-                          <td className="records-two-pane__row-actions text-end">
-                            <button type="button" onClick={() => startEdit(row)}>
-                              {t("vehicles.records.edit")}
-                            </button>
-                            <button type="button" onClick={() => handleDelete(row)}>
-                              {t("vehicles.records.delete")}
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                  <div className="records-two-pane__total">
-                    {t(`vehicles.records.${config.tabKey}.groups.${group.key}Total`)}:{" "}
-                    <strong>
-                      {groupTotal(group.type).toLocaleString(i18n.language)} TL
-                    </strong>
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </div>
-
-        <div className="records-two-pane__form">
-          <Form noValidate onSubmit={formik.handleSubmit}>
-            <div className="records-two-pane__type mb-2">
-              {config.groups.map((group) => (
-                <Form.Check
-                  inline
-                  type="radio"
-                  key={group.type}
-                  id={`${config.tabKey}-type-${group.type}`}
-                  name={config.typeField}
-                  label={t(`vehicles.records.${config.tabKey}.groups.${group.key}`)}
-                  checked={formik.values[config.typeField] === group.type}
-                  onChange={() => formik.setFieldValue(config.typeField, group.type)}
-                />
-              ))}
-            </div>
-            {inlineFields.map((field) => (
-              <CustomForm
-                key={field.name}
-                formik={formik}
-                name={field.name}
-                label={fieldLabel(field.name)}
-                type={field.type || "text"}
-                rows={field.rows}
-                itemsArr={field.options ? buildItems(field) : []}
-              />
-            ))}
-            <div className="records-two-pane__form-actions">
-              {editing && (
-                <Button variant="outline-secondary" type="button" onClick={cancelEdit}>
-                  {t("vehicles.records.cancel")}
-                </Button>
-              )}
-              <Button type="submit" disabled={saving || !formik.isValid}>
-                {saving && <Spinner animation="border" size="sm" />}{" "}
-                {editing ? t("vehicles.records.save") : t("vehicles.records.add")}
-              </Button>
-            </div>
-          </Form>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="vehicle-records-panel">
-      <div className="vehicle-records-panel__head">
-        <h3>{t(`vehicles.records.${config.tabKey}.title`)}</h3>
-        <Button size="sm" onClick={openCreate}>
-          {t("vehicles.records.add")}
-        </Button>
-      </div>
-
-      {loading ? (
-        <Loading height={160} />
-      ) : (
-        <Table hover responsive className="vehicle-records-panel__table">
-          <thead>
-            <tr>
-              {config.columns.map((col) => (
-                <th key={col.key}>{fieldLabel(col.key)}</th>
-              ))}
-              <th className="text-end">{t("vehicles.records.actions")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.length === 0 && (
-              <tr>
-                <td colSpan={config.columns.length + 1} className="text-center text-muted">
-                  {t("vehicles.records.empty")}
-                </td>
-              </tr>
-            )}
-            {rows.map((row) => (
-              <tr key={row.id}>
-                {config.columns.map((col) => (
-                  <td key={col.key}>{formatCell(col, row[col.key])}</td>
-                ))}
-                <td className="vehicle-records-panel__actions text-end">
-                  <Button size="sm" variant="outline-primary" onClick={() => openEdit(row)}>
-                    <BsPencil />
-                  </Button>
-                  <Button size="sm" variant="outline-danger" onClick={() => handleDelete(row)}>
-                    <BsTrash />
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      )}
-
-      <Modal show={showModal} size="lg" onHide={() => setShowModal(false)}>
-        <Form noValidate onSubmit={formik.handleSubmit}>
-          <Modal.Header closeButton>
-            <Modal.Title>
-              {editing ? t("vehicles.records.editTitle") : t("vehicles.records.new")}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Row className="row-cols-1 row-cols-md-2">
-              {gridFields.map((field) => (
-                <CustomForm
-                  key={field.name}
-                  formik={formik}
-                  asGroup={Col}
-                  name={field.name}
-                  label={fieldLabel(field.name)}
-                  type={field.type || "text"}
-                  rows={field.rows}
-                  itemsArr={field.options ? buildItems(field) : []}
-                />
-              ))}
-            </Row>
-            {fullFields.map((field) => (
-              <CustomForm
-                key={field.name}
-                formik={formik}
-                name={field.name}
-                label={fieldLabel(field.name)}
-                type={field.type || "text"}
-                rows={field.rows}
-                itemsArr={field.options ? buildItems(field) : []}
-              />
-            ))}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="outline-primary" onClick={() => setShowModal(false)}>
-              {t("vehicles.records.cancel")}
-            </Button>
-            <Button type="submit" disabled={saving || !formik.isValid}>
-              {saving && <Spinner animation="border" size="sm" />} {t("vehicles.records.save")}
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
-    </div>
-  );
+  return config.twoPane ? <RecordsTwoPaneView {...view} /> : <RecordsTableView {...view} />;
 };
 
 export default RecordsPanel;
