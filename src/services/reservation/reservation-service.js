@@ -3,7 +3,7 @@ import { services } from "..";
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
 
-// COMMON ENDPOINTS
+// ---- Customer-facing booking ----
 export const createReservation = async (carId, dto) => {
   const response = await axios.post(
     `${API_URL}/reservations/add?carId=${carId}`,
@@ -12,6 +12,7 @@ export const createReservation = async (carId, dto) => {
   );
   return response.data;
 };
+
 export const getReservationById = async (id) => {
   const response = await axios.get(`${API_URL}/reservations/${id}/auth`, services.authHeader());
   return response.data;
@@ -39,31 +40,7 @@ export const isVehicleAvailable = async (payload) => {
   return response.data;
 };
 
-// ADMIN ENDPOINTS
-export const deleteReservation = async (id) => {
-  const response = await axios.delete(
-    `${API_URL}/reservations/admin/${id}/auth`,
-    services.authHeader()
-  );
-  return response.data;
-};
-export const downloadReservationReports = async () => {
-  const token = services.encryptedLocalStorage.getItem("rentwintoken");
-  const response = await axios.get(`${API_URL}/excel/download/reservations`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    responseType: "blob",
-  });
-  return response.data;
-};
-export const getReservationByIdAdmin = async (id) => {
-  const response = await axios.get(
-    `${API_URL}/reservations/${id}/admin`,
-    services.authHeader()
-  );
-  return response.data;
-};
+// ---- Admin booking management ----
 export const getReservationsByPageAdmin = async (page = 0, size = 10, filters = {}) => {
   const params = new URLSearchParams({ page, size });
   ["branchId", "status", "plate", "customer"].forEach((key) => {
@@ -75,6 +52,12 @@ export const getReservationsByPageAdmin = async (page = 0, size = 10, filters = 
   );
   return response.data;
 };
+
+export const getReservationByIdAdmin = async (id) => {
+  const response = await axios.get(`${API_URL}/reservations/admin/${id}/auth`, services.authHeader());
+  return response.data;
+};
+
 export const createReservationAdmin = async (payload) => {
   const response = await axios.post(
     `${API_URL}/reservations/admin/auth`,
@@ -83,42 +66,38 @@ export const createReservationAdmin = async (payload) => {
   );
   return response.data;
 };
-export const getAvailableCarsAdmin = async ({ pickUpTime, dropOffTime, excludeReservationId } = {}) => {
-  const params = new URLSearchParams({ pickUpTime, dropOffTime });
-  if (excludeReservationId) params.set("excludeReservationId", excludeReservationId);
-  const response = await axios.get(
-    `${API_URL}/reservations/admin/available-cars/auth?${params.toString()}`,
-    services.authHeader()
-  );
-  return response.data;
-};
-export const getAdminSchedule = async ({ type, window = 7, excludeCompleted = true, branchId }) => {
-  const response = await axios.get(
-    `${API_URL}/reservations/admin/schedule/auth?type=${type}&window=${window}&excludeCompleted=${excludeCompleted}${branchId ? `&branchId=${branchId}` : ""}`,
-    services.authHeader()
-  );
-  return response.data;
-};
-export const updateReservation = async (carId, reservationId, payload) => {
+
+export const updateReservationAdmin = async (id, payload) => {
   const response = await axios.put(
-    `${API_URL}/reservations/admin/auth?carId=${carId}&reservationId=${reservationId}`,
+    `${API_URL}/reservations/admin/${id}/auth`,
     payload,
     services.authHeader()
   );
   return response.data;
 };
-export const extendReservation = async (id, payload) => {
+
+export const confirmReservation = async (id) => {
   const response = await axios.post(
-    `${API_URL}/reservations/admin/${id}/extend/auth`,
-    payload,
+    `${API_URL}/reservations/admin/${id}/confirm/auth`,
+    {},
     services.authHeader()
   );
   return response.data;
 };
-export const createInvoice = async (id, payload = {}) => {
+
+export const cancelReservation = async (id) => {
   const response = await axios.post(
-    `${API_URL}/reservations/admin/${id}/invoice/auth`,
-    payload,
+    `${API_URL}/reservations/admin/${id}/cancel/auth`,
+    {},
+    services.authHeader()
+  );
+  return response.data;
+};
+
+export const convertReservationToContract = async (id) => {
+  const response = await axios.post(
+    `${API_URL}/reservations/admin/${id}/convert/auth`,
+    {},
     services.authHeader()
   );
   return response.data;

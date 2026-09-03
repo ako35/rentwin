@@ -7,7 +7,7 @@ import RoRow from "./RoRow";
 import SaveFirstHint from "./SaveFirstHint";
 
 // Top tab: the contract's invoice — show it, or create one.
-const InvoiceTab = ({ isCreate, reservationId, invoice, onInvoiceCreated, money }) => {
+const InvoiceTab = ({ isCreate, contractId, invoice, onInvoiceCreated, money }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
   const [invoicing, setInvoicing] = useState(false);
@@ -15,7 +15,7 @@ const InvoiceTab = ({ isCreate, reservationId, invoice, onInvoiceCreated, money 
   const createInvoice = async () => {
     setInvoicing(true);
     try {
-      onInvoiceCreated(await services.reservation.createInvoice(reservationId));
+      onInvoiceCreated(await services.contract.createInvoice(contractId));
       utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
     } catch {
       utils.functions.swalToast(t("reservations.contract.records.error"), "error");

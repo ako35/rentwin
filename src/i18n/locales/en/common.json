@@ -62,10 +62,16 @@
       "Customer": "Customer",
       "Administrator": "Administrator"
     },
-    "reservationStatus": {
+    "contractStatus": {
       "CREATED": "Created",
       "CANCELLED": "Cancelled",
       "DONE": "Done"
+    },
+    "reservationStatus": {
+      "PENDING": "Pending",
+      "CONFIRMED": "Confirmed",
+      "CANCELLED": "Cancelled",
+      "CONVERTED": "Converted"
     },
     "insuranceTypes": {
       "Traffic": "Traffic Insurance",

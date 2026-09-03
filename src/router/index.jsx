@@ -10,8 +10,8 @@ import {
   AdminLocationsPage,
   AdminNewCustomerPage,
   AdminNewVehiclePage,
-  AdminReservationDetailsPage,
-  AdminReservationsPage,
+  AdminContractDetailsPage,
+  AdminContractsPage,
   AdminUserDetailsPage,
   AdminUsersPage,
   AdminVehicleDetailsPage,
@@ -145,19 +145,19 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "reservations",
+        path: "contracts",
         children: [
           {
             index: true,
-            element: <AdminReservationsPage />,
+            element: <AdminContractsPage />,
           },
           {
             path: "new",
-            element: <AdminReservationDetailsPage />,
+            element: <AdminContractDetailsPage />,
           },
           {
-            path: ":reservationId",
-            element: <AdminReservationDetailsPage />,
+            path: ":contractId",
+            element: <AdminContractDetailsPage />,
           },
         ],
       },

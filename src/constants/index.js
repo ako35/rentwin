@@ -78,22 +78,17 @@ const taxInstallments = [
   { id: 2, name: "2", value: 2 },
 ];
 
+const contractStatus = [
+  { id: 1, name: "CREATED", value: "CREATED" },
+  { id: 2, name: "CANCELLED", value: "CANCELLED" },
+  { id: 3, name: "DONE", value: "DONE" },
+];
+
 const reservationStatus = [
-  {
-    id: 1,
-    name: "CREATED",
-    value: "CREATED",
-  },
-  {
-    id: 2,
-    name: "CANCELLED",
-    value: "CANCELLED",
-  },
-  {
-    id: 3,
-    name: "DONE",
-    value: "DONE",
-  },
+  { id: 1, name: "PENDING", value: "PENDING" },
+  { id: 2, name: "CONFIRMED", value: "CONFIRMED" },
+  { id: 3, name: "CANCELLED", value: "CANCELLED" },
+  { id: 4, name: "CONVERTED", value: "CONVERTED" },
 ];
 
 const roles = [
@@ -117,6 +112,7 @@ const routes = {
   adminDashboard: "/admin",
   adminExtras: "/admin/extras",
   adminLocations: "/admin/locations",
+  adminContracts: "/admin/contracts",
   adminReservations: "/admin/reservations",
   adminUsers: "/admin/users",
   adminVehicles: "/admin/vehicles",
@@ -175,6 +171,7 @@ export const constants = {
   inspectionTypes,
   insuranceTypes,
   maintenanceTypes,
+  contractStatus,
   reservationStatus,
   roles,
   routes,

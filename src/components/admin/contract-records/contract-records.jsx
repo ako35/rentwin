@@ -16,7 +16,7 @@ import "./contract-records.scss";
  * @param labels    { add, save, cancel, edit, delete, empty }
  */
 const ContractRecords = ({
-  reservationId,
+  contractId,
   resource,
   columns,
   fields,
@@ -39,10 +39,10 @@ const ContractRecords = ({
   );
 
   const load = async () => {
-    if (!reservationId) return;
+    if (!contractId) return;
     setLoading(true);
     try {
-      const data = await services.reservation.getRecords(reservationId, resource);
+      const data = await services.contract.getRecords(contractId, resource);
       setRows(Array.isArray(data) ? data : []);
     } catch {
       setRows([]);
@@ -54,7 +54,7 @@ const ContractRecords = ({
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reservationId, resource]);
+  }, [contractId, resource]);
 
   const reset = () => {
     setEditing(null);
@@ -77,8 +77,8 @@ const ContractRecords = ({
     e.preventDefault();
     setSaving(true);
     try {
-      if (editing) await services.reservation.updateRecord(resource, editing.id, values);
-      else await services.reservation.addRecord(reservationId, resource, values);
+      if (editing) await services.contract.updateRecord(resource, editing.id, values);
+      else await services.contract.addRecord(contractId, resource, values);
       reset();
       await load();
       onChange?.();
@@ -92,7 +92,7 @@ const ContractRecords = ({
   const quickAdd = async (values) => {
     setSaving(true);
     try {
-      await services.reservation.addRecord(reservationId, resource, values);
+      await services.contract.addRecord(contractId, resource, values);
       await load();
       onChange?.();
     } catch {
@@ -106,7 +106,7 @@ const ContractRecords = ({
     utils.functions.swalQuestion(labels.deleteConfirm, labels.deleteConfirmText).then(async (r) => {
       if (!r.isConfirmed) return;
       try {
-        await services.reservation.deleteRecord(resource, row.id);
+        await services.contract.deleteRecord(resource, row.id);
         await load();
         onChange?.();
       } catch {

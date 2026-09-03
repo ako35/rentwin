@@ -4,7 +4,7 @@ import RoRow from "./RoRow";
 import SaveFirstHint from "./SaveFirstHint";
 
 // Sub tab: grand total / collected / balance + the payments ledger.
-const PaymentsTab = ({ isCreate, reservationId, recordLabels, total, collected, onPaymentsChange, money }) => {
+const PaymentsTab = ({ isCreate, contractId, recordLabels, total, collected, onPaymentsChange, money }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
 
@@ -18,7 +18,7 @@ const PaymentsTab = ({ isCreate, reservationId, recordLabels, total, collected, 
         <RoRow label={c("balance")} value={`${money(collected - total)} TL`} />
       </div>
       <ContractRecords
-        reservationId={reservationId}
+        contractId={contractId}
         resource="payments"
         onChange={onPaymentsChange}
         initial={{ amount: "", method: "Cash", paidAt: "", note: "" }}

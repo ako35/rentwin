@@ -29,9 +29,9 @@ import "./style.scss";
 
 const { routes } = constants;
 
-const AdminReservationDetailsPage = () => {
-  const { reservationId } = useParams();
-  const isCreate = !reservationId;
+const AdminContractDetailsPage = () => {
+  const { contractId } = useParams();
+  const isCreate = !contractId;
   const navigate = useNavigate();
   const { key: navKey } = useLocation();
   const { t } = useTranslation("admin");
@@ -47,7 +47,7 @@ const AdminReservationDetailsPage = () => {
     initialValues, availableCars, payments, catalog, extensions, invoice,
     setCustomers, setAvailableCars, setInvoice,
     loadData, loadPayments, refreshCustomers,
-  } = useContractData({ isCreate, reservationId });
+  } = useContractData({ isCreate, contractId });
 
   const money = (v) => formatMoney(v, i18n.language);
 
@@ -57,7 +57,7 @@ const AdminReservationDetailsPage = () => {
 
     if (isCreate) {
       try {
-        const { id } = await services.reservation.createReservationAdmin({
+        const { id } = await services.contract.createContract({
           carId: values.carId,
           userId: values.userId,
           pickUpLocation: values.pickUpLocation,
@@ -67,7 +67,7 @@ const AdminReservationDetailsPage = () => {
         });
         let patched = true;
         try {
-          await services.reservation.updateReservation(values.carId, id, dto);
+          await services.contract.updateContract(values.carId, id, dto);
         } catch {
           patched = false;
         }
@@ -75,7 +75,7 @@ const AdminReservationDetailsPage = () => {
           patched ? t("reservations.contract.createdSuccess") : t("reservations.toasts.updateError"),
           patched ? "success" : "warning"
         );
-        navigate(`${routes.adminReservations}/${id}`);
+        navigate(`${routes.adminContracts}/${id}`);
       } catch {
         utils.functions.swalToast(t("newContract.error"), "error");
         setUpdating(false);
@@ -84,7 +84,7 @@ const AdminReservationDetailsPage = () => {
     }
 
     try {
-      await services.reservation.updateReservation(values.carId, reservationId, dto);
+      await services.contract.updateContract(values.carId, contractId, dto);
       utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
       loadData();
     } catch {
@@ -133,9 +133,9 @@ const AdminReservationDetailsPage = () => {
         if (!res.isConfirmed) return;
         setDeleting(true);
         try {
-          await services.reservation.deleteReservation(reservationId);
+          await services.contract.deleteContract(contractId);
           await utils.functions.swalToast(t("reservations.toasts.deleteSuccess"), "success");
-          navigate(routes.adminReservations);
+          navigate(routes.adminContracts);
         } catch {
           utils.functions.swalToast(t("reservations.toasts.deleteError"), "error");
         } finally {
@@ -183,7 +183,7 @@ const AdminReservationDetailsPage = () => {
     <div className="contract-page">
       <ContractRibbon
         isCreate={isCreate}
-        reservationId={reservationId}
+        contractId={contractId}
         referenceNo={formik.values.referenceNo}
         updatedAt={meta.updatedAt}
       />
@@ -202,7 +202,7 @@ const AdminReservationDetailsPage = () => {
             />
             <ExtrasSection
               isCreate={isCreate}
-              reservationId={reservationId}
+              contractId={contractId}
               catalog={catalog}
               recordLabels={recordLabels}
               extrasTotal={formik.values.extrasTotal}
@@ -215,7 +215,7 @@ const AdminReservationDetailsPage = () => {
           <div className="contract-page__col">
             <ContractRightCard
               isCreate={isCreate}
-              reservationId={reservationId}
+              contractId={contractId}
               formik={formik}
               navKey={navKey}
               customers={customers}
@@ -246,7 +246,7 @@ const AdminReservationDetailsPage = () => {
           updating={updating}
           deleting={deleting}
           canSave={isCreate ? formik.isValid : formik.isValid && formik.dirty}
-          onDiscard={() => navigate(routes.adminReservations)}
+          onDiscard={() => navigate(routes.adminContracts)}
           onDelete={handleDelete}
         />
       </Form>
@@ -260,4 +260,4 @@ const AdminReservationDetailsPage = () => {
   );
 };
 
-export default AdminReservationDetailsPage;
+export default AdminContractDetailsPage;

@@ -11,7 +11,7 @@ import "./style.scss";
 const { routes } = constants;
 const PAGE_SIZES = [10, 25, 50, 100];
 
-const AdminReservationsPage = () => {
+const AdminContractsPage = () => {
   const { t } = useTranslation("admin");
   const { t: tCommon, i18n } = useTranslation("common");
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const AdminReservationsPage = () => {
   const load = async () => {
     setLoading(true);
     try {
-      const data = await services.reservation.getReservationsByPageAdmin(page, size, applied);
+      const data = await services.contract.getContractsByPage(page, size, applied);
       setRows(data.content || []);
       setTotal(data.totalElements || 0);
     } catch (error) {
@@ -48,7 +48,7 @@ const AdminReservationsPage = () => {
   const handleDownload = async () => {
     setDownloading(true);
     try {
-      const blob = await services.reservation.downloadReservationReports();
+      const blob = await services.contract.downloadContractReports();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -89,7 +89,7 @@ const AdminReservationsPage = () => {
           <Button variant="outline-primary" size="sm" onClick={handleDownload} disabled={downloading}>
             {downloading && <Spinner animation="border" size="sm" />} {c("exportExcel")}
           </Button>
-          <Button size="sm" onClick={() => navigate(`${routes.adminReservations}/new`)}>{c("new")}</Button>
+          <Button size="sm" onClick={() => navigate(`${routes.adminContracts}/new`)}>{c("new")}</Button>
         </div>
       </div>
 
@@ -155,7 +155,7 @@ const AdminReservationsPage = () => {
               {rows.map((r) => {
                 const balance = (r.collected || 0) - (r.totalPrice || 0);
                 return (
-                  <tr key={r.id} onClick={() => navigate(`${routes.adminReservations}/${r.id}`)}>
+                  <tr key={r.id} onClick={() => navigate(`${routes.adminContracts}/${r.id}`)}>
                     <td>{utils.functions.getDate(r.dropOffTime)}</td>
                     <td>{utils.functions.getTime(r.dropOffTime)}</td>
                     <td className="contract-list__plate">{r.plate || "—"}</td>
@@ -171,7 +171,7 @@ const AdminReservationsPage = () => {
                     <td className={`text-end${balance < 0 ? " contract-list__neg" : ""}`}>
                       {money(balance)}
                     </td>
-                    <td>{tCommon(`options.reservationStatus.${r.status}`)}</td>
+                    <td>{tCommon(`options.contractStatus.${r.status}`)}</td>
                   </tr>
                 );
               })}
@@ -191,4 +191,4 @@ const AdminReservationsPage = () => {
   );
 };
 
-export default AdminReservationsPage;
+export default AdminContractsPage;

@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { ContractRecords } from "../../../../../components";
 
 // Left card: the contract's billable extras. Blocked until the contract exists.
-const ExtrasSection = ({ isCreate, reservationId, catalog, recordLabels, extrasTotal, onChange, money }) => {
+const ExtrasSection = ({ isCreate, contractId, catalog, recordLabels, extrasTotal, onChange, money }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
 
@@ -13,7 +13,7 @@ const ExtrasSection = ({ isCreate, reservationId, catalog, recordLabels, extrasT
         <p className="text-muted mb-0">{c("saveFirstHint")}</p>
       ) : (
         <ContractRecords
-          reservationId={reservationId}
+          contractId={contractId}
           resource="extras"
           onChange={onChange}
           catalog={catalog.map((x) => ({

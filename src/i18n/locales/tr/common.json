@@ -62,10 +62,16 @@
       "Customer": "Müşteri",
       "Administrator": "Yönetici"
     },
-    "reservationStatus": {
+    "contractStatus": {
       "CREATED": "Oluşturuldu",
       "CANCELLED": "İptal Edildi",
       "DONE": "Tamamlandı"
+    },
+    "reservationStatus": {
+      "PENDING": "Beklemede",
+      "CONFIRMED": "Onaylandı",
+      "CANCELLED": "İptal Edildi",
+      "CONVERTED": "Kontrata Dönüştü"
     },
     "insuranceTypes": {
       "Traffic": "Trafik Sigortası",

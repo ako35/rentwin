@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import moment from "moment/moment";
 import { services } from "../../../../services";
-import { EMPTY_CONTRACT, fetchCustomers, reservationToFormValues } from "./contract-helpers";
+import { EMPTY_CONTRACT, fetchCustomers, contractToFormValues } from "./contract-helpers";
 
 // Owns every piece of data the contract screen loads — reference lists
 // (vehicles / branches / extras catalog), the customer list, and, in edit mode,
 // the reservation itself plus its payments / extensions / invoice.
-export const useContractData = ({ isCreate, reservationId }) => {
+export const useContractData = ({ isCreate, contractId }) => {
   const [loading, setLoading] = useState(true);
   const [vehicles, setVehicles] = useState([]);
   const [branches, setBranches] = useState([]);
@@ -22,7 +22,7 @@ export const useContractData = ({ isCreate, reservationId }) => {
 
   const loadPayments = () =>
     services.reservation
-      .getRecords(reservationId, "payments")
+      .getRecords(contractId, "payments")
       .then((d) => setPayments(Array.isArray(d) ? d : []))
       .catch(() => setPayments([]));
 
@@ -62,13 +62,13 @@ export const useContractData = ({ isCreate, reservationId }) => {
     if (isCreate) return loadCreate();
     try {
       await loadRefData();
-      const r = await services.reservation.getReservationByIdAdmin(reservationId);
+      const r = await services.contract.getContractByIdAdmin(contractId);
       setExtensions(r.extensions || []);
       setInvoice(r.invoice || null);
       loadPayments();
       setCustomer(r.customer || null);
       setMeta({ createdAt: r.createdAt, updatedAt: r.updatedAt });
-      setInitialValues(reservationToFormValues(r));
+      setInitialValues(contractToFormValues(r));
     } catch (error) {
       console.log(error);
     } finally {

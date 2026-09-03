@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { utils } from "../../../../../utils";
 
 // Top ribbon: contract id / "Yeni Kontrat", optional contract no, last-updated.
-const ContractRibbon = ({ isCreate, reservationId, referenceNo, updatedAt }) => {
+const ContractRibbon = ({ isCreate, contractId, referenceNo, updatedAt }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
 
@@ -10,7 +10,7 @@ const ContractRibbon = ({ isCreate, reservationId, referenceNo, updatedAt }) => 
     <div className={`contract-page__ribbon${isCreate ? " contract-page__ribbon--create" : ""}`}>
       <div className="contract-page__ribbon-main">
         <span className="contract-page__ribbon-id">
-          {isCreate ? c("newTitle") : `${c("title")} # ${reservationId.slice(0, 10).toUpperCase()}`}
+          {isCreate ? c("newTitle") : `${c("title")} # ${contractId.slice(0, 10).toUpperCase()}`}
         </span>
         {!isCreate && referenceNo && (
           <span className="contract-page__ribbon-ref">

@@ -1,8 +1,10 @@
 import { deleteMessage, getMessage, getMessagesByPage, sendMessage } from "./contact/contact-service";
 
-import { createReservation, createReservationAdmin, createInvoice, deleteReservation, downloadReservationReports, extendReservation, getAdminSchedule, getAvailableCarsAdmin, getReservationById, getReservationByIdAdmin, getReservationsByPage, getReservationsByPageAdmin, isVehicleAvailable, updateReservation } from "./reservation/reservation-service";
+import { cancelReservation, confirmReservation, convertReservationToContract, createReservation, createReservationAdmin, getReservationById, getReservationByIdAdmin, getReservationsByPage, getReservationsByPageAdmin, isVehicleAvailable, updateReservationAdmin } from "./reservation/reservation-service";
 
-import { addReservationRecord, deleteReservationRecord, getReservationRecords, updateReservationRecord } from "./reservation/reservation-record-service";
+import { createContract, createInvoice, deleteContract, downloadContractReports, extendContract, getAdminSchedule, getAvailableCars, getContractByIdAdmin, getContractsByPage, updateContract } from "./contract/contract-service";
+
+import { addContractRecord, deleteContractRecord, getContractRecords, updateContractRecord } from "./contract/contract-record-service";
 
 import { createUserAdmin, deleteUser, downloadUserReports, getUser, getUserAdmin, getUsersByPage, login, register, updatePassword, updateUser, updateUserAdmin } from "./user/user-service";
 
@@ -31,26 +33,35 @@ export const services = {
         getMessagesByPage,
     },
     reservation: {
-        // COMMON ENDPOINTS
+        // CUSTOMER BOOKING
         createReservation,
         getReservationById,
         getReservationsByPage,
         isVehicleAvailable,
-        // ADMIN ENDPOINTS
-        createReservationAdmin,
-        getAvailableCarsAdmin,
-        deleteReservation,
-        downloadReservationReports,
-        getAdminSchedule,
-        getReservationByIdAdmin,
+        // ADMIN BOOKING
         getReservationsByPageAdmin,
-        updateReservation,
-        extendReservation,
+        getReservationByIdAdmin,
+        createReservationAdmin,
+        updateReservationAdmin,
+        confirmReservation,
+        cancelReservation,
+        convertReservationToContract,
+    },
+    contract: {
+        getContractsByPage,
+        getContractByIdAdmin,
+        createContract,
+        updateContract,
+        deleteContract,
+        extendContract,
         createInvoice,
-        getRecords: getReservationRecords,
-        addRecord: addReservationRecord,
-        updateRecord: updateReservationRecord,
-        deleteRecord: deleteReservationRecord,
+        getAvailableCars,
+        getAdminSchedule,
+        downloadContractReports,
+        getRecords: getContractRecords,
+        addRecord: addContractRecord,
+        updateRecord: updateContractRecord,
+        deleteRecord: deleteContractRecord,
     },
     user: {
         // COMMON ENDPOINTS

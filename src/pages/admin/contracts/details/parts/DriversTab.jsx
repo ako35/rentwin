@@ -3,7 +3,7 @@ import { ContractRecords } from "../../../../../components";
 import SaveFirstHint from "./SaveFirstHint";
 
 // Top tab: named drivers on the contract.
-const DriversTab = ({ isCreate, reservationId, recordLabels }) => {
+const DriversTab = ({ isCreate, contractId, recordLabels }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
 
@@ -11,7 +11,7 @@ const DriversTab = ({ isCreate, reservationId, recordLabels }) => {
 
   return (
     <ContractRecords
-      reservationId={reservationId}
+      contractId={contractId}
       resource="drivers"
       initial={{ firstName: "", lastName: "", licenseNo: "", licenseDate: "", birthDate: "", phone: "" }}
       columns={[

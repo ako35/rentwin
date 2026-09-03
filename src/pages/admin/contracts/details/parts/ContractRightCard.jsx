@@ -18,7 +18,7 @@ const SUB_TABS = ["summary", "payments", "returnExtra", "extension"];
 // tabs, the summary / payments / return-extra / extension sub tabs, the pricing
 // block and the running balance. Owns its own tab selection.
 const ContractRightCard = ({
-  isCreate, reservationId, formik, navKey,
+  isCreate, contractId, formik, navKey,
   customers, customer, invoice, extensions,
   refreshCustomers, onRequestNewCustomer, onInvoiceCreated, loadData, loadPayments,
   selectedCar, billableDays, pricing, collected, extensionDays, extensionTotal,
@@ -61,7 +61,7 @@ const ContractRightCard = ({
 
       {topTab === "drivers" && (
         <div className="contract-page__top-content">
-          <DriversTab isCreate={isCreate} reservationId={reservationId} recordLabels={recordLabels} />
+          <DriversTab isCreate={isCreate} contractId={contractId} recordLabels={recordLabels} />
         </div>
       )}
 
@@ -69,7 +69,7 @@ const ContractRightCard = ({
         <div className="contract-page__top-content">
           <InvoiceTab
             isCreate={isCreate}
-            reservationId={reservationId}
+            contractId={contractId}
             invoice={invoice}
             onInvoiceCreated={onInvoiceCreated}
             money={money}
@@ -103,7 +103,7 @@ const ContractRightCard = ({
         {subTab === "payments" && (
           <PaymentsTab
             isCreate={isCreate}
-            reservationId={reservationId}
+            contractId={contractId}
             recordLabels={recordLabels}
             total={pricing.total}
             collected={collected}
@@ -119,7 +119,7 @@ const ContractRightCard = ({
         {subTab === "extension" && (
           <ExtensionTab
             isCreate={isCreate}
-            reservationId={reservationId}
+            contractId={contractId}
             minDate={formik.values.dropOffDate}
             extensions={extensions}
             onExtended={loadData}

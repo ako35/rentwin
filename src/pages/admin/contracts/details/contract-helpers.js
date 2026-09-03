@@ -68,7 +68,7 @@ export const computePricing = (values, billableDays) => {
   return { rental, addOns, subtotal, total };
 };
 
-// Contract patch payload sent to updateReservation (create + edit both use it).
+// Contract patch payload sent to updateContract (create + edit both use it).
 export const buildContractDto = (values) => ({
   pickUpTime: utils.functions.combineDateAndTime(values.pickUpDate, values.pickUpTime),
   dropOffTime: utils.functions.combineDateAndTime(values.dropOffDate, values.dropOffTime),
@@ -87,7 +87,7 @@ export const buildContractDto = (values) => ({
 });
 
 // Merge a loaded reservation onto EMPTY_CONTRACT for formik.
-export const reservationToFormValues = (r) => ({
+export const contractToFormValues = (r) => ({
   ...EMPTY_CONTRACT, ...r,
   pickUpDate: utils.functions.getDate(r.pickUpTime),
   pickUpTime: utils.functions.getTime(r.pickUpTime),
@@ -114,7 +114,7 @@ export const buildVehicleOptions = (carList, { isCreate, placeholder }) => [
 ];
 
 export const buildStatusOptions = (tCommon) =>
-  constants.reservationStatus.map((s) => ({ ...s, name: tCommon(`options.reservationStatus.${s.value}`) }));
+  constants.contractStatus.map((s) => ({ ...s, name: tCommon(`options.contractStatus.${s.value}`) }));
 
 // Shared label bag passed to every <ContractRecords> instance.
 export const buildRecordLabels = (t) => {

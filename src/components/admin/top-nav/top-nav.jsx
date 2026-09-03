@@ -15,7 +15,8 @@ const { routes } = constants;
 
 const MODULE_OPTIONS = [
   { key: "vehicle", route: routes.adminVehicles },
-  { key: "reservationsAndContracts", route: routes.adminReservations },
+  { key: "reservations", route: routes.adminReservations },
+  { key: "contracts", route: routes.adminContracts },
   { key: "customer", route: routes.adminUsers },
   { key: "location", route: routes.adminLocations },
 ];
@@ -64,7 +65,7 @@ const AdminTopNav = () => {
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown
-              title={t("topNav.reservationsAndContracts")}
+              title={t("topNav.reservations")}
               active={pathname.startsWith(routes.adminReservations)}
             >
               <NavDropdown.Item as={Link} to={`${routes.adminReservations}/new`}>
@@ -73,11 +74,15 @@ const AdminTopNav = () => {
               <NavDropdown.Item as={Link} to={routes.adminReservations}>
                 <BsListUl className="admin-top-nav__item-icon" /> {t("topNav.reservationList")}
               </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item as={Link} to={`${routes.adminReservations}/new`}>
+            </NavDropdown>
+            <NavDropdown
+              title={t("topNav.contracts")}
+              active={pathname.startsWith(routes.adminContracts)}
+            >
+              <NavDropdown.Item as={Link} to={`${routes.adminContracts}/new`}>
                 <BsPlusLg className="admin-top-nav__item-icon" /> {t("topNav.addContract")}
               </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to={routes.adminReservations}>
+              <NavDropdown.Item as={Link} to={routes.adminContracts}>
                 <BsListUl className="admin-top-nav__item-icon" /> {t("topNav.contractList")}
               </NavDropdown.Item>
             </NavDropdown>

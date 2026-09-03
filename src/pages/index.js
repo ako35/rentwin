@@ -6,8 +6,8 @@ import AdminContactMessageDetailsPage from "./admin/contact-messages/details/pag
 import AdminDashboard from "./admin/dashboard/page"
 import AdminExtrasPage from "./admin/extras/page";
 import AdminLocationsPage from "./admin/locations/page";
-import AdminReservationsPage from "./admin/reservations/page"
-import AdminReservationDetailsPage from "./admin/reservations/details/page";
+import AdminContractsPage from "./admin/contracts/page"
+import AdminContractDetailsPage from "./admin/contracts/details/page";
 import AdminUsersPage from "./admin/users/page";
 import AdminUserDetailsPage from "./admin/users/details/page";
 import AdminVehiclesPage from "./admin/vehicles/page";
@@ -39,8 +39,8 @@ export {
     AdminDashboard,
     AdminExtrasPage,
     AdminLocationsPage,
-    AdminReservationsPage,
-    AdminReservationDetailsPage,
+    AdminContractsPage,
+    AdminContractDetailsPage,
     AdminUsersPage,
     AdminUserDetailsPage,
     AdminVehiclesPage,

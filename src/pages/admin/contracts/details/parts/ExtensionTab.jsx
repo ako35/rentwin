@@ -8,7 +8,7 @@ import SaveFirstHint from "./SaveFirstHint";
 const EMPTY_EXT_FORM = { date: "", time: "", extraAmount: "", note: "" };
 
 // Sub tab: push the drop-off out and log an extra amount; lists past extensions.
-const ExtensionTab = ({ isCreate, reservationId, minDate, extensions, onExtended, money }) => {
+const ExtensionTab = ({ isCreate, contractId, minDate, extensions, onExtended, money }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.${key}`, opts);
   const [form, setForm] = useState(EMPTY_EXT_FORM);
@@ -18,7 +18,7 @@ const ExtensionTab = ({ isCreate, reservationId, minDate, extensions, onExtended
     if (!form.date) return;
     setExtending(true);
     try {
-      await services.reservation.extendReservation(reservationId, {
+      await services.contract.extendContract(contractId, {
         newDropOff: utils.functions.combineDateAndTime(form.date, form.time || "10:00"),
         extraAmount: form.extraAmount,
         note: form.note,

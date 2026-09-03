@@ -28,7 +28,7 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const data = await services.reservation.getAdminSchedule({
+      const data = await services.contract.getAdminSchedule({
         type,
         window,
         excludeCompleted: true,
@@ -93,7 +93,7 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
               rows.map((row) => {
                 const target = row[dateField];
                 const daysRemaining = moment(target).startOf("day").diff(moment().startOf("day"), "days");
-                const goToDetails = () => navigate(`${routes.adminReservations}/${row.id}`);
+                const goToDetails = () => navigate(`${routes.adminContracts}/${row.id}`);
                 return (
                   <tr
                     key={row.id}
