@@ -145,13 +145,15 @@ const getUsersByPageAdmin = asyncHandler(async (req, res) => {
 });
 
 const createUserAdmin = asyncHandler(async (req, res) => {
-  const { firstName, lastName, email, phoneNumber, address, zipCode, roles, password, customerType, companyTitle } = req.body;
+  const { firstName, lastName, email, phoneNumber, address, zipCode, roles, password, customerType } = req.body;
 
   const isCorporate = customerType === "Kurumsal";
-  if (!email || (isCorporate ? !companyTitle : !firstName || !lastName)) {
-    throw new HttpError(400, isCorporate
-      ? "Company title and email are required."
-      : "First name, last name and email are required.");
+  // Kurumsal: all contact fields mandatory. Bireysel: name + email.
+  const requiredFields = isCorporate
+    ? ["companyTitle", "firstName", "lastName", "phoneNumber", "email", "address"]
+    : ["firstName", "lastName", "email"];
+  if (requiredFields.some((f) => !String(req.body[f] || "").trim())) {
+    throw new HttpError(400, "Lütfen tüm zorunlu alanları doldurun.");
   }
 
   await assertNationalId(req.body);

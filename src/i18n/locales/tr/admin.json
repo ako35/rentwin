@@ -421,7 +421,21 @@
       "address": "Adres",
       "zipCode": "Posta Kodu",
       "active": "Aktif",
-      "notes": "Açıklama"
+      "notes": "Açıklama",
+      "corpName": "Kurum / Kuruluş Adı",
+      "corpContactFirst": "Kurum Yetkili Kişi Adı",
+      "corpContactLast": "Kurum Yetkili Kişi Soyadı",
+      "corpTaxNo": "Kurum Vergi Numarası",
+      "corpPhone": "İrtibat Telefonu",
+      "ph": {
+        "corpName": "Kurum Adı",
+        "firstName": "Adı",
+        "lastName": "Soyadı",
+        "taxNo": "Vergi No",
+        "phone": "Cep Telefonu",
+        "email": "E-Posta",
+        "address": "Adres"
+      }
     },
     "list": {
       "new": "Yeni",

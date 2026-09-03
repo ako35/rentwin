@@ -21,7 +21,7 @@ const EMPTY = {
   deposit: "", kmLimit: "", unlimitedKm: true, vatRate: 20,
 };
 const EMPTY_NEW_CUST = {
-  customerType: "Bireysel", companyTitle: "", taxOffice: "",
+  customerType: "Bireysel", companyTitle: "",
   firstName: "", lastName: "", nationalId: "",
   email: "", phoneNumber: "", address: "",
 };
@@ -931,13 +931,34 @@ const AdminReservationDetailsPage = () => {
       {(() => {
         const isCorp = newCust.customerType === "Kurumsal";
         const setNC = (k) => (e) => setNewCust((f) => ({ ...f, [k]: e.target.value }));
-        const canSave =
-          newCust.email.trim() &&
-          (isCorp ? newCust.companyTitle.trim() : newCust.firstName.trim() && newCust.lastName.trim());
-        const nf = (name, label, type = "text") => (
+        const ncFields = isCorp
+          ? [
+              ["companyTitle", t("users.form.corpName"), t("users.form.ph.corpName"), true],
+              ["firstName", t("users.form.corpContactFirst"), t("users.form.ph.firstName"), true],
+              ["lastName", t("users.form.corpContactLast"), t("users.form.ph.lastName"), true],
+              ["nationalId", t("users.form.corpTaxNo"), t("users.form.ph.taxNo"), true],
+              ["phoneNumber", t("users.form.corpPhone"), t("users.form.ph.phone"), true],
+              ["email", t("users.form.email"), t("users.form.ph.email"), true],
+              ["address", t("users.form.address"), t("users.form.ph.address"), true],
+            ]
+          : [
+              ["firstName", t("users.form.firstName"), "", true],
+              ["lastName", t("users.form.lastName"), "", true],
+              ["nationalId", t("users.form.nationalId"), "", true],
+              ["email", t("users.form.email"), "", true],
+              ["phoneNumber", t("users.form.phoneNumber"), "", false],
+              ["address", t("users.form.address"), "", false],
+            ];
+        const canSave = ncFields.every(([name, , , req]) => !req || newCust[name].trim());
+        const nf = ([name, label, placeholder, req]) => (
           <Form.Group className="mb-2" key={name}>
-            <Form.Label>{label}</Form.Label>
-            <Form.Control type={type} value={newCust[name]} onChange={setNC(name)} />
+            <Form.Label>{req ? `* ${label}` : label}</Form.Label>
+            <Form.Control
+              type={name === "email" ? "email" : "text"}
+              placeholder={placeholder || undefined}
+              value={newCust[name]}
+              onChange={setNC(name)}
+            />
           </Form.Group>
         );
         return (
@@ -951,12 +972,7 @@ const AdminReservationDetailsPage = () => {
                   checked={isCorp} onChange={() => setNewCust((f) => ({ ...f, customerType: "Kurumsal" }))} />
               </div>
               <div className="contract-page__newcust-grid">
-                {isCorp
-                  ? [nf("companyTitle", `* ${c("corporateTitle")}`), nf("taxOffice", c("taxOffice")), nf("nationalId", c("taxNo"))]
-                  : [nf("firstName", `* ${t("users.form.firstName")}`), nf("lastName", `* ${t("users.form.lastName")}`), nf("nationalId", c("custNationalId"))]}
-                {nf("email", `* ${c("customerEmail")}`, "email")}
-                {nf("phoneNumber", c("customerPhone"))}
-                {nf("address", c("custAddress"))}
+                {ncFields.map(nf)}
               </div>
             </Modal.Body>
             <Modal.Footer>

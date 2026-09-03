@@ -12,7 +12,6 @@ const { routes } = constants;
 const EMPTY = {
   customerType: "Bireysel",
   companyTitle: "",
-  taxOffice: "",
   firstName: "",
   lastName: "",
   nationalId: "",
@@ -29,9 +28,27 @@ const AdminNewCustomerPage = () => {
 
   const isCorporate = form.customerType === "Kurumsal";
   const set = (key) => (e) => setForm({ ...form, [key]: e.target.value });
-  const canSubmit =
-    form.email.trim() &&
-    (isCorporate ? form.companyTitle.trim() : form.firstName.trim() && form.lastName.trim());
+
+  const fields = isCorporate
+    ? [
+        ["companyTitle", t("users.form.corpName"), t("users.form.ph.corpName"), true],
+        ["firstName", t("users.form.corpContactFirst"), t("users.form.ph.firstName"), true],
+        ["lastName", t("users.form.corpContactLast"), t("users.form.ph.lastName"), true],
+        ["nationalId", t("users.form.corpTaxNo"), t("users.form.ph.taxNo"), true],
+        ["phoneNumber", t("users.form.corpPhone"), t("users.form.ph.phone"), true],
+        ["email", t("users.form.email"), t("users.form.ph.email"), true],
+        ["address", t("users.form.address"), t("users.form.ph.address"), true],
+      ]
+    : [
+        ["firstName", t("users.form.firstName"), "", true],
+        ["lastName", t("users.form.lastName"), "", true],
+        ["nationalId", t("users.form.nationalId"), "", true],
+        ["email", t("users.form.email"), "", true],
+        ["phoneNumber", t("users.form.phoneNumber"), "", false],
+        ["address", t("users.form.address"), "", false],
+      ];
+
+  const canSubmit = fields.every(([name, , , required]) => !required || form[name].trim());
 
   const submit = async (e) => {
     e.preventDefault();
@@ -51,26 +68,6 @@ const AdminNewCustomerPage = () => {
     }
   };
 
-  const fields = isCorporate
-    ? [
-        ["companyTitle", `* ${t("users.form.companyTitle")}`],
-        ["taxOffice", t("users.form.taxOffice")],
-        ["nationalId", `* ${t("users.form.taxNo")}`],
-        ["firstName", t("users.form.contactFirstName")],
-        ["lastName", t("users.form.contactLastName")],
-        ["email", `* ${t("users.form.email")}`],
-        ["phoneNumber", t("users.form.phoneNumber")],
-        ["address", t("users.form.address")],
-      ]
-    : [
-        ["firstName", `* ${t("users.form.firstName")}`],
-        ["lastName", `* ${t("users.form.lastName")}`],
-        ["nationalId", `* ${t("users.form.nationalId")}`],
-        ["email", `* ${t("users.form.email")}`],
-        ["phoneNumber", t("users.form.phoneNumber")],
-        ["address", t("users.form.address")],
-      ];
-
   return (
     <div className="new-contract-page">
       <h2>{t("newCustomer.title")}</h2>
@@ -87,12 +84,13 @@ const AdminNewCustomerPage = () => {
             onChange={() => setForm({ ...form, customerType: "Kurumsal" })}
           />
         </div>
-        {fields.map(([name, label]) => (
+        {fields.map(([name, label, placeholder, required]) => (
           <div className="new-contract-page__row" key={name}>
-            <label>{label}</label>
+            <label>{required ? `* ${label}` : label}</label>
             <Form.Control
               size="sm"
               type={name === "email" ? "email" : "text"}
+              placeholder={placeholder || undefined}
               value={form[name]}
               onChange={set(name)}
             />

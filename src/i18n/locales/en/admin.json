@@ -421,7 +421,21 @@
       "address": "Address",
       "zipCode": "Zip Code",
       "active": "Active",
-      "notes": "Notes"
+      "notes": "Notes",
+      "corpName": "Company / Organization Name",
+      "corpContactFirst": "Company Contact First Name",
+      "corpContactLast": "Company Contact Last Name",
+      "corpTaxNo": "Company Tax Number",
+      "corpPhone": "Contact Phone",
+      "ph": {
+        "corpName": "Company name",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "taxNo": "Tax no",
+        "phone": "Mobile phone",
+        "email": "E-mail",
+        "address": "Address"
+      }
     },
     "list": {
       "new": "New",
