@@ -19,7 +19,6 @@ const EMPTY = {
   email: "",
   phoneNumber: "",
   address: "",
-  zipCode: "",
 };
 
 const AdminNewCustomerPage = () => {
@@ -62,7 +61,6 @@ const AdminNewCustomerPage = () => {
         ["email", `* ${t("users.form.email")}`],
         ["phoneNumber", t("users.form.phoneNumber")],
         ["address", t("users.form.address")],
-        ["zipCode", t("users.form.zipCode")],
       ]
     : [
         ["firstName", `* ${t("users.form.firstName")}`],
@@ -71,7 +69,6 @@ const AdminNewCustomerPage = () => {
         ["email", `* ${t("users.form.email")}`],
         ["phoneNumber", t("users.form.phoneNumber")],
         ["address", t("users.form.address")],
-        ["zipCode", t("users.form.zipCode")],
       ];
 
   return (

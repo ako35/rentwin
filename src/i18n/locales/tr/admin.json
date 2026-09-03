@@ -566,7 +566,6 @@
   },
   "newCustomer": {
     "title": "Yeni Müşteri",
-    "autoPasswordHint": "Müşteriye otomatik olarak varsayılan bir şifre atanır (Rentwin123.), sonradan değiştirebilir.",
     "create": "Oluştur",
     "success": "Müşteri oluşturuldu.",
     "error": "Müşteri oluşturulurken bir hata oluştu.",

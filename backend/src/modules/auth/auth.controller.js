@@ -11,7 +11,7 @@ const register = asyncHandler(async (req, res) => {
     throw new HttpError(400, "Missing required fields.");
   }
 
-  const existing = await prisma.user.findUnique({ where: { email } });
+  const existing = await prisma.user.findFirst({ where: { email } });
   if (existing) {
     throw new HttpError(409, "An account with this email already exists.");
   }
@@ -25,7 +25,7 @@ const register = asyncHandler(async (req, res) => {
       email,
       phoneNumber,
       address,
-      zipCode: String(zipCode),
+      zipCode: zipCode == null ? "" : String(zipCode),
       passwordHash,
       roles: ["Customer"],
       builtIn: false,
@@ -38,13 +38,21 @@ const register = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) {
-    throw new HttpError(401, "Invalid email or password.");
-  }
+  // Email is no longer unique (admin-created customers may share one). Log in
+  // whichever account with this email the supplied password actually matches.
+  const candidates = await prisma.user.findMany({
+    where: { email },
+    orderBy: { createdAt: "asc" },
+  });
 
-  const valid = await comparePassword(password || "", user.passwordHash);
-  if (!valid) {
+  let user = null;
+  for (const candidate of candidates) {
+    if (await comparePassword(password || "", candidate.passwordHash)) {
+      user = candidate;
+      break;
+    }
+  }
+  if (!user) {
     throw new HttpError(401, "Invalid email or password.");
   }
 

@@ -24,7 +24,7 @@ const EMPTY_CORP = { title: "", taxOffice: "", taxNo: "", phone: "", email: "" }
 const EMPTY_NEW_CUST = {
   customerType: "Bireysel", companyTitle: "", taxOffice: "",
   firstName: "", lastName: "", nationalId: "",
-  email: "", phoneNumber: "", address: "", zipCode: "",
+  email: "", phoneNumber: "", address: "",
 };
 
 const AdminReservationDetailsPage = () => {
@@ -50,7 +50,7 @@ const AdminReservationDetailsPage = () => {
   const [corpModal, setCorpModal] = useState(false);
   const [corpForm, setCorpForm] = useState(EMPTY_CORP);
   const [savingCorp, setSavingCorp] = useState(false);
-  const [custEdit, setCustEdit] = useState(null);
+  const [custEdit, setCustEdit] = useState({});
   const [savingCust, setSavingCust] = useState(false);
   const [custQuery, setCustQuery] = useState("");
   const [custOpen, setCustOpen] = useState(false);
@@ -296,16 +296,17 @@ const AdminReservationDetailsPage = () => {
     `${(u.companyTitle || `${u.firstName} ${u.lastName}`).trim()} — ${u.email}`;
 
   // Load the picked customer into an editable copy + keep the search box in sync.
+  // The panel layout is always shown; fields are blank until a customer is picked.
   useEffect(() => {
     const sc = customers.find((cx) => cx.id === formik.values.userId);
-    setCustEdit(sc ? { ...sc } : null);
+    setCustEdit(sc ? { ...sc } : {});
     if (sc) setCustQuery(`${(sc.companyTitle || `${sc.firstName} ${sc.lastName}`).trim()} — ${sc.email}`);
   }, [formik.values.userId, customers]);
 
   const setCE = (key) => (e) => setCustEdit((c0) => ({ ...c0, [key]: e.target.value }));
 
   const saveCustomer = async () => {
-    if (!custEdit) return;
+    if (!custEdit.id) return;
     setSavingCust(true);
     try {
       await services.user.updateUserAdmin(custEdit.id, {
@@ -515,17 +516,18 @@ const AdminReservationDetailsPage = () => {
           </div>
         );
       })()}
-      {custEdit && (() => {
+      {(() => {
+        const hasCust = !!custEdit.id;
         const isCorp = (custEdit.customerType || "Bireysel") === "Kurumsal";
         const ci = (name, label, type = "text") => (
-          <Form.Group className="mb-2">
+          <Form.Group className="mb-2" key={name}>
             <Form.Label className="mb-0" style={{ fontSize: "0.8rem", color: "var(--bs-secondary-color)" }}>{label}</Form.Label>
-            <Form.Control size="sm" type={type} value={custEdit[name] || ""} onChange={setCE(name)} />
+            <Form.Control size="sm" type={type} value={custEdit[name] || ""} onChange={setCE(name)} disabled={!hasCust} />
           </Form.Group>
         );
         return (
           <div className="contract-page__cust-edit">
-            {ro(c("custType"), isCorp ? c("corporate") : c("individual"))}
+            {ro(c("custType"), hasCust ? (isCorp ? c("corporate") : c("individual")) : "")}
             <div className="contract-page__pair">
               {isCorp ? (
                 <>
@@ -545,12 +547,14 @@ const AdminReservationDetailsPage = () => {
             </div>
             {ci("address", c("custAddress"))}
             {ci("notes", c("adminNote"))}
-            {ro(c("custBalance"), `${money(custEdit.balance)} TL`)}
-            <div className="text-end">
-              <Button type="button" size="sm" variant="outline-primary" disabled={savingCust} onClick={saveCustomer}>
-                {savingCust && <Spinner animation="border" size="sm" />} {c("updateCustomer")}
-              </Button>
-            </div>
+            {ro(c("custBalance"), hasCust ? `${money(custEdit.balance)} TL` : "")}
+            {hasCust && (
+              <div className="text-end">
+                <Button type="button" size="sm" variant="outline-primary" disabled={savingCust} onClick={saveCustomer}>
+                  {savingCust && <Spinner animation="border" size="sm" />} {c("updateCustomer")}
+                </Button>
+              </div>
+            )}
           </div>
         );
       })()}
@@ -1021,9 +1025,7 @@ const AdminReservationDetailsPage = () => {
                 {nf("email", `* ${c("customerEmail")}`, "email")}
                 {nf("phoneNumber", c("customerPhone"))}
                 {nf("address", c("custAddress"))}
-                {nf("zipCode", t("users.form.zipCode"))}
               </div>
-              <p className="text-muted mb-0" style={{ fontSize: "0.8rem" }}>{t("newCustomer.autoPasswordHint")}</p>
             </Modal.Body>
             <Modal.Footer>
               <Button variant="outline-secondary" onClick={() => setNewCustModal(false)}>{t("reservations.cancel")}</Button>

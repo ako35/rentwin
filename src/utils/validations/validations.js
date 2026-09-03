@@ -174,10 +174,6 @@ export const adminUserDetailsFormValidationSchema = Yup.object({
         then: (s) => s.nullable(),
         otherwise: (s) => s.trim().required(t("adminUser.lastNameRequired")),
     }),
-    zipCode: Yup.string()
-        .matches(/^\d*$/, t("adminUser.zipDigitsOnly"))
-        .max(10, t("adminUser.zipMax"))
-        .nullable(),
 });
 
 // ADMIN RESERVATIONS FORM

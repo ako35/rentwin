@@ -21,7 +21,6 @@ const EMPTY = {
   email: "",
   phoneNumber: "",
   address: "",
-  zipCode: "",
   active: true,
   notes: "",
   roles: [],
@@ -119,7 +118,6 @@ const AdminUserDetailsPage = () => {
         { name: "email", label: `* ${t("users.form.email")}`, type: "email" },
         { name: "phoneNumber", label: t("users.form.phoneNumber"), asInput: "ReactInputMask", mask: "(999) 999-9999" },
         { name: "address", label: t("users.form.address") },
-        { name: "zipCode", label: t("users.form.zipCode") },
       ]
     : [
         { name: "firstName", label: `* ${t("users.form.firstName")}` },
@@ -129,7 +127,6 @@ const AdminUserDetailsPage = () => {
         { name: "email", label: `* ${t("users.form.email")}`, type: "email" },
         { name: "phoneNumber", label: t("users.form.phoneNumber"), asInput: "ReactInputMask", mask: "(999) 999-9999" },
         { name: "address", label: t("users.form.address") },
-        { name: "zipCode", label: t("users.form.zipCode") },
       ];
 
   if (loading) return <Loading height={500} />;

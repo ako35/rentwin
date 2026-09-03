@@ -566,7 +566,6 @@
   },
   "newCustomer": {
     "title": "New Customer",
-    "autoPasswordHint": "A default password is assigned automatically (Rentwin123.); the customer can change it later.",
     "create": "Create",
     "success": "Customer created.",
     "error": "Something went wrong while creating the customer.",

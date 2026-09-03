@@ -132,10 +132,8 @@ const createUserAdmin = asyncHandler(async (req, res) => {
       : "First name, last name and email are required.");
   }
 
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) throw new HttpError(409, "An account with this email already exists.");
-
-  // Admin-created customers get a default password they can reset later.
+  // Email is intentionally not unique for admin-created customers: the same
+  // address may belong to several customer records.
   const passwordHash = await hashPassword(password || "Rentwin123.");
 
   const data = {
@@ -162,7 +160,10 @@ const updateUserAdmin = asyncHandler(async (req, res) => {
 
   const { firstName, lastName, email, phoneNumber, address, zipCode, roles, password } = req.body;
 
-  const data = { firstName, lastName, email, phoneNumber, address, zipCode: String(zipCode), roles };
+  const data = {
+    firstName, lastName, email, phoneNumber, address, roles,
+    zipCode: zipCode == null ? "" : String(zipCode),
+  };
   if (password) {
     data.passwordHash = await hashPassword(password);
   }
