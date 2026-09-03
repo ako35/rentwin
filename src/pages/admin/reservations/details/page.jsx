@@ -8,6 +8,7 @@ import { constants } from "../../../../constants";
 import { utils } from "../../../../utils";
 import { services } from "../../../../services";
 import { CustomForm, Loading } from "../../../../components";
+import { useContractData } from "./use-contract-data";
 import ContractRibbon from "./parts/ContractRibbon";
 import VehicleSection from "./parts/VehicleSection";
 import ExtrasSection from "./parts/ExtrasSection";
@@ -22,14 +23,12 @@ import PricingBlock from "./parts/PricingBlock";
 import ContractActions from "./parts/ContractActions";
 import NewCustomerModal from "./parts/NewCustomerModal";
 import {
-  EMPTY_CONTRACT as EMPTY,
   fetchCustomers,
   formatMoney,
   custLabel,
   computeBillableDays,
   computePricing,
   buildContractDto,
-  reservationToFormValues,
   buildVehicleOptions,
   buildStatusOptions,
   buildRecordLabels,
@@ -46,30 +45,21 @@ const AdminReservationDetailsPage = () => {
   const { t } = useTranslation("admin");
   const { t: tCommon, i18n } = useTranslation("common");
 
-  const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [vehicles, setVehicles] = useState([]);
-  const [branches, setBranches] = useState([]);
-  const [customers, setCustomers] = useState([]);
-  const [customer, setCustomer] = useState(null);
-  const [meta, setMeta] = useState({});
-  const [initialValues, setInitialValues] = useState(EMPTY);
   const [topTab, setTopTab] = useState("customer");
   const [subTab, setSubTab] = useState("summary");
   const [newCustModal, setNewCustModal] = useState(false);
-  const [availableCars, setAvailableCars] = useState([]);
-  const [payments, setPayments] = useState([]);
-  const [catalog, setCatalog] = useState([]);
-  const [extensions, setExtensions] = useState([]);
-  const [invoice, setInvoice] = useState(null);
+
+  const {
+    loading,
+    vehicles, branches, customers, customer, meta,
+    initialValues, availableCars, payments, catalog, extensions, invoice,
+    setCustomers, setAvailableCars, setInvoice,
+    loadData, loadPayments, refreshCustomers,
+  } = useContractData({ isCreate, reservationId });
 
   const money = (v) => formatMoney(v, i18n.language);
-
-  const loadPayments = () =>
-    services.reservation.getRecords(reservationId, "payments")
-      .then((d) => setPayments(Array.isArray(d) ? d : []))
-      .catch(() => setPayments([]));
 
   const onSubmit = async (values) => {
     setUpdating(true);
@@ -121,59 +111,6 @@ const AdminReservationDetailsPage = () => {
     enableReinitialize: true,
   });
 
-  const loadRefData = async () => {
-    const [v, b, cat] = await Promise.all([
-      services.vehicle.getVehicles(),
-      services.branch.getBranches().catch(() => []),
-      services.extra.getExtras().catch(() => []),
-    ]);
-    setVehicles(v || []);
-    setBranches(b || []);
-    setCatalog(cat || []);
-  };
-
-  const loadCreate = async () => {
-    try {
-      await loadRefData();
-      setCustomers(await fetchCustomers().catch(() => []));
-      setInitialValues({
-        ...EMPTY,
-        status: "CREATED",
-        pickUpDate: moment().format("YYYY-MM-DD"),
-        pickUpTime: "10:00",
-        dropOffDate: moment().add(3, "days").format("YYYY-MM-DD"),
-        dropOffTime: "10:00",
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadData = async () => {
-    if (isCreate) return loadCreate();
-    try {
-      await loadRefData();
-      const r = await services.reservation.getReservationByIdAdmin(reservationId);
-      setExtensions(r.extensions || []);
-      setInvoice(r.invoice || null);
-      loadPayments();
-      setCustomer(r.customer || null);
-      setMeta({ createdAt: r.createdAt, updatedAt: r.updatedAt });
-      setInitialValues(reservationToFormValues(r));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Create mode: keep the vehicle picker limited to cars actually free for the
   // chosen date range (and not out of service). Refetch whenever the range changes.
   const { pickUpDate, pickUpTime, dropOffDate, dropOffTime } = formik.values;
@@ -216,17 +153,6 @@ const AdminReservationDetailsPage = () => {
         }
       });
   };
-
-
-  const refreshCustomers = () => fetchCustomers().then(setCustomers).catch(() => {});
-
-  // A customer added in the "Yeni Müşteri" tab shows up when the user returns here.
-  useEffect(() => {
-    if (!isCreate) return undefined;
-    const onFocus = () => refreshCustomers();
-    window.addEventListener("focus", onFocus);
-    return () => window.removeEventListener("focus", onFocus);
-  }, [isCreate]);
 
   const openNewCust = () => setNewCustModal(true);
 
