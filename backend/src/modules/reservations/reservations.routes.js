@@ -12,12 +12,14 @@ const {
   createReservationAdmin,
   getAvailableCarsAdmin,
   deleteReservationAdmin,
+  getAdminSchedule,
+} = require("./reservations.admin.controller");
+const {
   updateReservationAdmin,
   getReservationByIdAdmin,
   extendReservation,
   createInvoice,
-  getAdminSchedule,
-} = require("./reservations.admin.controller");
+} = require("./reservations.contract.controller");
 
 const router = Router();
 
