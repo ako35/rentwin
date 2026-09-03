@@ -70,7 +70,7 @@ model User {
   roles        Role[]        @default([Customer])
   builtIn      Boolean       @default(false)
   customerType String        @default("Bireysel")
-  customerCode String?
+  customerCode String?       @unique
   companyTitle String?
   taxOffice    String?
   nationalId   String?

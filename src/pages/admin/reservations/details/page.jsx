@@ -305,7 +305,6 @@ const AdminReservationDetailsPage = () => {
         city: custEdit.city || "",
         district: custEdit.district || "",
         nationalId: custEdit.nationalId || "",
-        customerCode: custEdit.customerCode || "",
         notes: custEdit.notes || "",
       });
       utils.functions.swalToast(t("users.toasts.updateSuccess"), "success");
@@ -511,6 +510,10 @@ const AdminReservationDetailsPage = () => {
         );
         return (
           <div className="contract-page__cust-edit">
+            <div className="contract-page__cust-row">
+              <label>{c("custCode")}</label>
+              <strong>{hasCust ? custEdit.customerCode || "—" : "—"}</strong>
+            </div>
             <div className="contract-page__cust-row">
               <label>{c("custType")}</label>
               <strong>{hasCust ? (isCorp ? c("corporate") : c("individual")) : "—"}</strong>

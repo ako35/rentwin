@@ -7,7 +7,23 @@ const asyncHandler = require("../../middleware/async-handler");
 
 const ALLOWED_SORT_FIELDS = ["id", "firstName", "lastName", "email", "createdAt"];
 
-const CUSTOMER_STRING_FIELDS = ["customerCode", "companyTitle", "taxOffice", "nationalId", "city", "district", "notes"];
+// customerCode is auto-assigned on create and never editable afterwards, so it
+// is deliberately absent here.
+const CUSTOMER_STRING_FIELDS = ["companyTitle", "taxOffice", "nationalId", "city", "district", "notes"];
+
+const CUSTOMER_CODE_PREFIX = "M";
+const CUSTOMER_CODE_PAD = 5;
+
+// Auto-assigned customer code: M00001, M00002 … (highest existing + 1).
+const nextCustomerCode = async (client = prisma) => {
+  const last = await client.user.findFirst({
+    where: { customerCode: { startsWith: CUSTOMER_CODE_PREFIX } },
+    orderBy: { customerCode: "desc" },
+    select: { customerCode: true },
+  });
+  const lastNum = last ? parseInt(last.customerCode.slice(CUSTOMER_CODE_PREFIX.length), 10) || 0 : 0;
+  return `${CUSTOMER_CODE_PREFIX}${String(lastNum + 1).padStart(CUSTOMER_CODE_PAD, "0")}`;
+};
 
 const applyCustomerFields = (body, data) => {
   CUSTOMER_STRING_FIELDS.forEach((f) => {
@@ -175,7 +191,20 @@ const createUserAdmin = asyncHandler(async (req, res) => {
   };
   applyCustomerFields(req.body, data);
 
-  const user = await prisma.user.create({ data });
+  // Customer code is always auto-assigned; ignore any value sent by the client.
+  // Retry on the rare race where two customers are created at the same instant.
+  let user;
+  for (let attempt = 0; ; attempt += 1) {
+    data.customerCode = await nextCustomerCode();
+    try {
+      user = await prisma.user.create({ data });
+      break;
+    } catch (err) {
+      const dupCode = err.code === "P2002" && String(err.meta?.target ?? "").includes("customerCode");
+      if (dupCode && attempt < 5) continue;
+      throw err;
+    }
+  }
   res.status(201).json(serializeUser(user));
 });
 
