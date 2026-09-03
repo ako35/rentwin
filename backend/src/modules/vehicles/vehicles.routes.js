@@ -6,12 +6,11 @@ const {
   getAllVehicles,
   getVehiclesByPage,
   getVehiclesByPageAdmin,
-  getFleetStats,
-  getExpiryAlerts,
   addVehicle,
   updateVehicle,
   deleteVehicle,
 } = require("./vehicles.controller");
+const { getFleetStats, getExpiryAlerts } = require("./vehicles.dashboard.controller");
 
 const router = Router();
 
