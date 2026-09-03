@@ -21,6 +21,8 @@ const EMPTY = {
   email: "",
   phoneNumber: "",
   address: "",
+  city: "",
+  district: "",
   active: true,
   notes: "",
   roles: [],
@@ -92,6 +94,8 @@ const AdminUserDetailsPage = () => {
         taxOffice: u.taxOffice || "",
         customerCode: u.customerCode || "",
         nationalId: u.nationalId || "",
+        city: u.city || "",
+        district: u.district || "",
         notes: u.notes || "",
         active: u.active ?? true,
       });
@@ -107,26 +111,29 @@ const AdminUserDetailsPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const phone = { name: "phoneNumber", label: t("users.form.phoneNumber"), asInput: "ReactInputMask", mask: "(999) 999-9999" };
   const formItems = isCorporate
     ? [
-        { name: "companyTitle", label: `* ${t("users.form.companyTitle")}` },
-        { name: "taxOffice", label: t("users.form.taxOffice") },
-        { name: "nationalId", label: t("users.form.taxNo") },
-        { name: "customerCode", label: t("users.form.customerCode") },
-        { name: "firstName", label: t("users.form.contactFirstName") },
-        { name: "lastName", label: t("users.form.contactLastName") },
+        { name: "companyTitle", label: `* ${t("users.form.corpName")}` },
+        { name: "firstName", label: `* ${t("users.form.corpContactFirst")}` },
+        { name: "lastName", label: `* ${t("users.form.corpContactLast")}` },
+        { name: "nationalId", label: `* ${t("users.form.corpTaxNo")}` },
+        { name: "taxOffice", label: `* ${t("users.form.taxOffice")}` },
+        { ...phone, label: `* ${t("users.form.corpPhone")}` },
         { name: "email", label: `* ${t("users.form.email")}`, type: "email" },
-        { name: "phoneNumber", label: t("users.form.phoneNumber"), asInput: "ReactInputMask", mask: "(999) 999-9999" },
-        { name: "address", label: t("users.form.address") },
+        { name: "address", label: `* ${t("users.form.address")}` },
+        { name: "city", label: `* ${t("users.form.city")}` },
+        { name: "district", label: `* ${t("users.form.district")}` },
       ]
     : [
         { name: "firstName", label: `* ${t("users.form.firstName")}` },
         { name: "lastName", label: `* ${t("users.form.lastName")}` },
-        { name: "customerCode", label: t("users.form.customerCode") },
-        { name: "nationalId", label: t("users.form.nationalId") },
+        { name: "nationalId", label: `* ${t("users.form.nationalId")}` },
         { name: "email", label: `* ${t("users.form.email")}`, type: "email" },
-        { name: "phoneNumber", label: t("users.form.phoneNumber"), asInput: "ReactInputMask", mask: "(999) 999-9999" },
+        phone,
         { name: "address", label: t("users.form.address") },
+        { name: "city", label: t("users.form.city") },
+        { name: "district", label: t("users.form.district") },
       ];
 
   if (loading) return <Loading height={500} />;

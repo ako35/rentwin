@@ -422,6 +422,8 @@
       "zipCode": "Posta Kodu",
       "active": "Aktif",
       "notes": "Açıklama",
+      "city": "İl",
+      "district": "İlçe",
       "corpName": "Kurum / Kuruluş Adı",
       "corpContactFirst": "Kurum Yetkili Kişi Adı",
       "corpContactLast": "Kurum Yetkili Kişi Soyadı",
@@ -432,9 +434,12 @@
         "firstName": "Adı",
         "lastName": "Soyadı",
         "taxNo": "Vergi No",
+        "taxOffice": "Vergi Dairesi",
         "phone": "Cep Telefonu",
         "email": "E-Posta",
-        "address": "Adres"
+        "address": "Adres",
+        "city": "İl",
+        "district": "İlçe"
       }
     },
     "list": {

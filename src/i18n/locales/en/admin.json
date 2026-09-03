@@ -422,6 +422,8 @@
       "zipCode": "Zip Code",
       "active": "Active",
       "notes": "Notes",
+      "city": "Province",
+      "district": "District",
       "corpName": "Company / Organization Name",
       "corpContactFirst": "Company Contact First Name",
       "corpContactLast": "Company Contact Last Name",
@@ -432,9 +434,12 @@
         "firstName": "First name",
         "lastName": "Last name",
         "taxNo": "Tax no",
+        "taxOffice": "Tax office",
         "phone": "Mobile phone",
         "email": "E-mail",
-        "address": "Address"
+        "address": "Address",
+        "city": "Province",
+        "district": "District"
       }
     },
     "list": {

@@ -7,7 +7,7 @@ const asyncHandler = require("../../middleware/async-handler");
 
 const ALLOWED_SORT_FIELDS = ["id", "firstName", "lastName", "email", "createdAt"];
 
-const CUSTOMER_STRING_FIELDS = ["customerCode", "companyTitle", "taxOffice", "nationalId", "notes"];
+const CUSTOMER_STRING_FIELDS = ["customerCode", "companyTitle", "taxOffice", "nationalId", "city", "district", "notes"];
 
 const applyCustomerFields = (body, data) => {
   CUSTOMER_STRING_FIELDS.forEach((f) => {
@@ -150,7 +150,7 @@ const createUserAdmin = asyncHandler(async (req, res) => {
   const isCorporate = customerType === "Kurumsal";
   // Kurumsal: all contact fields mandatory. Bireysel: name + email.
   const requiredFields = isCorporate
-    ? ["companyTitle", "firstName", "lastName", "phoneNumber", "email", "address"]
+    ? ["companyTitle", "firstName", "lastName", "taxOffice", "phoneNumber", "email", "address", "city", "district"]
     : ["firstName", "lastName", "email"];
   if (requiredFields.some((f) => !String(req.body[f] || "").trim())) {
     throw new HttpError(400, "Lütfen tüm zorunlu alanları doldurun.");

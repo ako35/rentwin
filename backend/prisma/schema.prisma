@@ -74,6 +74,8 @@ model User {
   companyTitle String?
   taxOffice    String?
   nationalId   String?
+  city         String?
+  district     String?
   active       Boolean       @default(true)
   notes        String?
   createdAt    DateTime      @default(now())

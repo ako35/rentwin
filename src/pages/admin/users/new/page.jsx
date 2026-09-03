@@ -12,12 +12,15 @@ const { routes } = constants;
 const EMPTY = {
   customerType: "Bireysel",
   companyTitle: "",
+  taxOffice: "",
   firstName: "",
   lastName: "",
   nationalId: "",
   email: "",
   phoneNumber: "",
   address: "",
+  city: "",
+  district: "",
 };
 
 const AdminNewCustomerPage = () => {
@@ -35,9 +38,12 @@ const AdminNewCustomerPage = () => {
         ["firstName", t("users.form.corpContactFirst"), t("users.form.ph.firstName"), true],
         ["lastName", t("users.form.corpContactLast"), t("users.form.ph.lastName"), true],
         ["nationalId", t("users.form.corpTaxNo"), t("users.form.ph.taxNo"), true],
+        ["taxOffice", t("users.form.taxOffice"), t("users.form.ph.taxOffice"), true],
         ["phoneNumber", t("users.form.corpPhone"), t("users.form.ph.phone"), true],
         ["email", t("users.form.email"), t("users.form.ph.email"), true],
         ["address", t("users.form.address"), t("users.form.ph.address"), true],
+        ["city", t("users.form.city"), t("users.form.ph.city"), true],
+        ["district", t("users.form.district"), t("users.form.ph.district"), true],
       ]
     : [
         ["firstName", t("users.form.firstName"), "", true],
@@ -46,6 +52,8 @@ const AdminNewCustomerPage = () => {
         ["email", t("users.form.email"), "", true],
         ["phoneNumber", t("users.form.phoneNumber"), "", false],
         ["address", t("users.form.address"), "", false],
+        ["city", t("users.form.city"), "", false],
+        ["district", t("users.form.district"), "", false],
       ];
 
   const canSubmit = fields.every(([name, , , required]) => !required || form[name].trim());
