@@ -317,11 +317,7 @@ const AdminReservationDetailsPage = () => {
   };
 
   const openNewCust = () => {
-    const q = custQuery.trim();
-    setNewCust({
-      ...EMPTY_NEW_CUST,
-      ...(q.includes("@") ? { email: q } : q ? { firstName: q } : {}),
-    });
+    setNewCust(EMPTY_NEW_CUST);
     setCustOpen(false);
     setNewCustModal(true);
   };
