@@ -8,6 +8,7 @@ import { constants } from "../../../../constants";
 import { utils } from "../../../../utils";
 import { services } from "../../../../services";
 import { ContractRecords, CustomForm, Loading } from "../../../../components";
+import CustomerPanel from "./parts/CustomerPanel";
 import NewCustomerModal from "./parts/NewCustomerModal";
 import {
   EMPTY_CONTRACT as EMPTY,
@@ -44,13 +45,6 @@ const AdminReservationDetailsPage = () => {
   const [initialValues, setInitialValues] = useState(EMPTY);
   const [topTab, setTopTab] = useState("customer");
   const [subTab, setSubTab] = useState("summary");
-  const [custEdit, setCustEdit] = useState({});
-  const [savingCust, setSavingCust] = useState(false);
-  const [custQuery, setCustQuery] = useState("");
-  const [custOpen, setCustOpen] = useState(false);
-  const [refCust, setRefCust] = useState(null);
-  const [refQuery, setRefQuery] = useState("");
-  const [refOpen, setRefOpen] = useState(false);
   const [newCustModal, setNewCustModal] = useState(false);
   const [availableCars, setAvailableCars] = useState([]);
   const [payments, setPayments] = useState([]);
@@ -160,7 +154,6 @@ const AdminReservationDetailsPage = () => {
       setInvoice(r.invoice || null);
       loadPayments();
       setCustomer(r.customer || null);
-      setRefCust(r.referenceUser || null);
       setMeta({ createdAt: r.createdAt, updatedAt: r.updatedAt });
       setInitialValues(reservationToFormValues(r));
     } catch (error) {
@@ -238,61 +231,7 @@ const AdminReservationDetailsPage = () => {
     return () => window.removeEventListener("focus", onFocus);
   }, [isCreate]);
 
-  // Load the picked customer into an editable copy + keep the search box in sync.
-  // The panel layout is always shown; fields are blank until a customer is picked.
-  useEffect(() => {
-    const sc = customers.find((cx) => cx.id === formik.values.userId);
-    setCustEdit(sc ? { ...sc } : {});
-    if (sc) setCustQuery((sc.companyTitle || `${sc.firstName} ${sc.lastName}`).trim());
-  }, [formik.values.userId, customers]);
-
-  // Opening "Yeni Kontrat" again re-uses this component (same route) — clear the
-  // customer selection so a fresh contract always starts with an empty picker.
-  useEffect(() => {
-    if (!isCreate) return;
-    setCustQuery("");
-    setCustEdit({});
-    setRefCust(null);
-    setRefQuery("");
-    setRefOpen(false);
-    formik.setFieldValue("userId", "");
-    formik.setFieldValue("referenceUserId", "");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navKey, isCreate]);
-
-  const setCE = (key) => (e) => setCustEdit((c0) => ({ ...c0, [key]: e.target.value }));
-
-  const saveCustomer = async () => {
-    if (!custEdit.id) return;
-    setSavingCust(true);
-    try {
-      await services.user.updateUserAdmin(custEdit.id, {
-        customerType: custEdit.customerType || "Bireysel",
-        firstName: custEdit.firstName || "",
-        lastName: custEdit.lastName || "",
-        companyTitle: custEdit.companyTitle || "",
-        taxOffice: custEdit.taxOffice || "",
-        email: custEdit.email,
-        phoneNumber: custEdit.phoneNumber || "",
-        address: custEdit.address || "",
-        city: custEdit.city || "",
-        district: custEdit.district || "",
-        nationalId: custEdit.nationalId || "",
-        notes: custEdit.notes || "",
-      });
-      utils.functions.swalToast(t("users.toasts.updateSuccess"), "success");
-      refreshCustomers();
-    } catch {
-      utils.functions.swalToast(t("reservations.contract.records.error"), "error");
-    } finally {
-      setSavingCust(false);
-    }
-  };
-
-  const openNewCust = () => {
-    setCustOpen(false);
-    setNewCustModal(true);
-  };
+  const openNewCust = () => setNewCustModal(true);
 
   const handleNewCustomerCreated = async (created) => {
     const list = await services.user.getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" });
@@ -363,197 +302,6 @@ const AdminReservationDetailsPage = () => {
     <div className="contract-page__ro"><span>{label}</span><strong>{value || "—"}</strong></div>
   );
   const saveFirst = <p className="text-muted mb-0">{c("saveFirstHint")}</p>;
-  const createCustomerPicker = (
-    <>
-      <div className="contract-page__corp-head">
-        <Form.Label className="mb-0">* {c("customerName")}</Form.Label>
-        <span>
-          <button type="button" className="contract-page__link" onClick={refreshCustomers}>
-            ↻ {c("refresh")}
-          </button>
-          {"  "}
-          <button type="button" className="contract-page__link" onClick={openNewCust}>
-            + {c("newCustomerBtn")}
-          </button>
-        </span>
-      </div>
-      {(() => {
-        const q = custQuery.trim().toLowerCase();
-        const matches = customers
-          .filter((u) => {
-            if (!q || u.id === formik.values.userId) return true;
-            return [u.firstName, u.lastName, u.companyTitle, u.email, u.nationalId, u.phoneNumber]
-              .some((f) => (f || "").toLowerCase().includes(q));
-          })
-          .slice(0, 25);
-        return (
-          <div className="contract-page__typeahead mb-2">
-            <Form.Control
-              size="sm"
-              autoComplete="off"
-              placeholder={c("customerSearch")}
-              value={custQuery}
-              onChange={(e) => {
-                // Only filter the list while typing — keep the picked customer
-                // (and its info panel) until another one is explicitly selected.
-                setCustQuery(e.target.value);
-                setCustOpen(true);
-              }}
-              onFocus={() => setCustOpen(true)}
-              onBlur={() =>
-                setTimeout(() => {
-                  setCustOpen(false);
-                  // Clicked away without picking anyone — restore the box to the
-                  // currently selected customer instead of leaving a stray query.
-                  const sc = customers.find((cx) => cx.id === formik.values.userId);
-                  if (sc) setCustQuery(custLabel(sc));
-                }, 150)
-              }
-            />
-            {custOpen && (
-              <ul className="contract-page__typeahead-list">
-                {matches.map((u) => (
-                  <li key={u.id} onMouseDown={() => {
-                    formik.setFieldValue("userId", u.id);
-                    setCustQuery(custLabel(u));
-                    setCustOpen(false);
-                  }}>
-                    {custLabel(u)}
-                  </li>
-                ))}
-                {matches.length === 0 && (
-                  <li className="contract-page__typeahead-add" onMouseDown={openNewCust}>
-                    + {c("customerNotFoundAdd")}
-                  </li>
-                )}
-              </ul>
-            )}
-          </div>
-        );
-      })()}
-      {(() => {
-        const hasCust = !!custEdit.id;
-        const isCorp = (custEdit.customerType || "Bireysel") === "Kurumsal";
-        const ci = (name, label, type = "text") => (
-          <div className="contract-page__cust-row" key={name}>
-            <label>{label}</label>
-            <Form.Control size="sm" type={type} value={custEdit[name] || ""} onChange={setCE(name)} disabled={!hasCust} />
-          </div>
-        );
-        const rq = refQuery.trim().toLowerCase();
-        const refMatches = customers
-          .filter((u) => {
-            if (u.id === formik.values.userId) return false;
-            if (!rq) return true;
-            return [u.firstName, u.lastName, u.companyTitle, u.email, u.nationalId, u.phoneNumber]
-              .some((f) => (f || "").toLowerCase().includes(rq));
-          })
-          .slice(0, 25);
-        const refPerson = refCust || customers.find((u) => u.id === formik.values.referenceUserId);
-        const refLabel = refPerson ? custLabel(refPerson) : "…";
-        return (
-          <div className="contract-page__cust-edit">
-            <div className="contract-page__cust-row">
-              <label>{c("custType")}</label>
-              <strong>{hasCust ? (isCorp ? c("corporate") : c("individual")) : "—"}</strong>
-            </div>
-            {isCorp ? (
-              <>
-                {ci("companyTitle", c("corporateTitle"))}
-                {ci("taxOffice", c("taxOffice"))}
-              </>
-            ) : (
-              <>
-                {ci("firstName", t("users.form.firstName"))}
-                {ci("lastName", t("users.form.lastName"))}
-              </>
-            )}
-            {ci("nationalId", isCorp ? c("taxNo") : c("custNationalId"))}
-            {ci("email", c("customerEmail"), "email")}
-            {ci("phoneNumber", c("customerPhone"))}
-            {ci("address", c("custAddress"))}
-            {ci("city", t("users.form.city"))}
-            {ci("district", t("users.form.district"))}
-            {ci("notes", c("adminNote"))}
-            <div className="contract-page__cust-row">
-              <label>{c("custBalance")}</label>
-              <strong>{hasCust ? `${money(custEdit.balance)} TL` : "—"}</strong>
-            </div>
-            {hasCust && (
-              <div className="text-end mt-2">
-                <Button type="button" size="sm" variant="outline-primary" disabled={savingCust} onClick={saveCustomer}>
-                  {savingCust && <Spinner animation="border" size="sm" />} {c("updateCustomer")}
-                </Button>
-              </div>
-            )}
-            <div className="contract-page__cust-row contract-page__ref-row">
-              <label>{c("referenceCari")}</label>
-              <div className="contract-page__ref-field">
-                {refOpen ? (
-                  <div className="contract-page__typeahead">
-                    <Form.Control
-                      size="sm"
-                      autoComplete="off"
-                      autoFocus
-                      placeholder={c("referenceCariSearch")}
-                      value={refQuery}
-                      onChange={(e) => setRefQuery(e.target.value)}
-                      onBlur={() => setTimeout(() => setRefOpen(false), 150)}
-                    />
-                    <ul className="contract-page__typeahead-list">
-                      {refMatches.map((u) => (
-                        <li
-                          key={u.id}
-                          onMouseDown={() => {
-                            formik.setFieldValue("referenceUserId", u.id);
-                            setRefCust(u);
-                            setRefQuery("");
-                            setRefOpen(false);
-                          }}
-                        >
-                          {custLabel(u)}
-                        </li>
-                      ))}
-                      {!refMatches.length && (
-                        <li className="text-muted">{c("referenceCariNoMatch")}</li>
-                      )}
-                    </ul>
-                  </div>
-                ) : formik.values.referenceUserId ? (
-                  <span className="contract-page__ref-value">
-                    <button
-                      type="button"
-                      className="contract-page__link"
-                      onClick={() => { setRefQuery(""); setRefOpen(true); }}
-                    >
-                      {refLabel}
-                    </button>
-                    <button
-                      type="button"
-                      className="contract-page__ref-clear"
-                      aria-label={c("referenceCariClear")}
-                      onClick={() => { formik.setFieldValue("referenceUserId", ""); setRefCust(null); }}
-                    >
-                      &times;
-                    </button>
-                  </span>
-                ) : (
-                  <button
-                    type="button"
-                    className="contract-page__link"
-                    onClick={() => { setRefQuery(""); setRefOpen(true); }}
-                  >
-                    {c("referenceCariSelect")}
-                  </button>
-                )}
-              </div>
-            </div>
-            <p className="contract-page__ref-hint">{c("referenceCariHint")}</p>
-          </div>
-        );
-      })()}
-    </>
-  );
   const setV = (name) => (e) => formik.setFieldValue(name, e.target.value);
   const priceInput = (name, label, suffix = "TL") => (
     <div className="contract-page__price-row">
@@ -671,7 +419,16 @@ const AdminReservationDetailsPage = () => {
 
               {topTab === "customer" && (
                 <div className="contract-page__top-content">
-                  {isCreate ? createCustomerPicker : (
+                  {isCreate ? (
+                    <CustomerPanel
+                      formik={formik}
+                      customers={customers}
+                      refreshCustomers={refreshCustomers}
+                      onRequestNewCustomer={openNewCust}
+                      resetKey={navKey}
+                      money={money}
+                    />
+                  ) : (
                     <>
                       {ro(c("customerName"), customer ? `${customer.firstName} ${customer.lastName}` : "")}
                       {ro(c("customerEmail"), customer?.email)}
@@ -759,7 +516,7 @@ const AdminReservationDetailsPage = () => {
                     <CustomForm formik={formik} name="flightNo" label={c("flightNo")} />
                     {ro(c("customerName"), (() => {
                       const cu = customer || customers.find((cx) => cx.id === formik.values.userId);
-                      return cu ? (cu.companyTitle || `${cu.firstName} ${cu.lastName}`).trim() : "";
+                      return cu ? custLabel(cu) : "";
                     })())}
                     <CustomForm formik={formik} name="customerNote" label={c("customerNote")} type="textarea" rows={2} />
                     <CustomForm formik={formik} name="adminNote" label={c("adminNote")} type="textarea" rows={2} />
