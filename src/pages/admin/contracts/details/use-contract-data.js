@@ -21,7 +21,7 @@ export const useContractData = ({ isCreate, contractId }) => {
   const [invoice, setInvoice] = useState(null);
 
   const loadPayments = () =>
-    services.reservation
+    services.contract
       .getRecords(contractId, "payments")
       .then((d) => setPayments(Array.isArray(d) ? d : []))
       .catch(() => setPayments([]));

@@ -12,6 +12,8 @@ import {
   AdminNewVehiclePage,
   AdminContractDetailsPage,
   AdminContractsPage,
+  AdminReservationsPage,
+  AdminReservationFormPage,
   AdminUserDetailsPage,
   AdminUsersPage,
   AdminVehicleDetailsPage,
@@ -142,6 +144,14 @@ const router = createBrowserRouter([
             path: ":contactMessageId",
             element: <AdminContactMessageDetailsPage />,
           },
+        ],
+      },
+      {
+        path: "reservations",
+        children: [
+          { index: true, element: <AdminReservationsPage /> },
+          { path: "new", element: <AdminReservationFormPage /> },
+          { path: ":reservationId", element: <AdminReservationFormPage /> },
         ],
       },
       {

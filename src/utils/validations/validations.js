@@ -181,7 +181,7 @@ export const adminUserDetailsFormValidationSchema = Yup.object({
     }),
 });
 
-// ADMIN RESERVATIONS FORM
+// ADMIN CONTRACT DETAIL FORM
 export const adminReservationDetailsFormValidationSchema = Yup.object({
     pickUpLocation: Yup.string().required(t("adminReservation.pickUpLocationRequired")),
     dropOffLocation: Yup.string().required(t("adminReservation.dropOffLocationRequired")),
@@ -192,6 +192,16 @@ export const adminReservationDetailsFormValidationSchema = Yup.object({
     carId: Yup.string().required(t("adminReservation.carRequired")),
     userId: Yup.string().required(t("adminReservation.customerRequired")),
     status: Yup.string().required(t("adminReservation.statusRequired")),
+});
+
+// ADMIN RESERVATION (BOOKING) FORM
+export const adminReservationBookingValidationSchema = Yup.object({
+    pickUpLocation: Yup.string().required(t("adminReservation.pickUpLocationRequired")),
+    pickUpDate: Yup.string().required(t("adminReservation.pickUpDateRequired")),
+    pickUpTime: Yup.string().required(t("adminReservation.pickUpTimeRequired")),
+    dropOffDate: Yup.string().required(t("adminReservation.dropOffDateRequired")),
+    dropOffTime: Yup.string().required(t("adminReservation.dropOffTimeRequired")),
+    carId: Yup.string().required(t("adminReservation.carRequired")),
 });
 
 // VEHICLE SUB-RECORD FORMS (insurance / tax / maintenance / inspection)

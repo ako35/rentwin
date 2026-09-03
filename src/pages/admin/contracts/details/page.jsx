@@ -108,8 +108,8 @@ const AdminContractDetailsPage = () => {
     if (!isCreate || !pickUpDate || !dropOffDate) return;
     if (!moment(`${dropOffDate} ${dropOffTime || "00:00"}`).isAfter(`${pickUpDate} ${pickUpTime || "00:00"}`)) return;
     let cancelled = false;
-    services.reservation
-      .getAvailableCarsAdmin({
+    services.contract
+      .getAvailableCars({
         pickUpTime: utils.functions.combineDateAndTime(pickUpDate, pickUpTime || "00:00"),
         dropOffTime: utils.functions.combineDateAndTime(dropOffDate, dropOffTime || "00:00"),
       })
