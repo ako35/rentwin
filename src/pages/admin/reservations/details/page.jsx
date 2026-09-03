@@ -471,12 +471,21 @@ const AdminReservationDetailsPage = () => {
               placeholder={c("customerSearch")}
               value={custQuery}
               onChange={(e) => {
+                // Only filter the list while typing — keep the picked customer
+                // (and its info panel) until another one is explicitly selected.
                 setCustQuery(e.target.value);
                 setCustOpen(true);
-                if (formik.values.userId) formik.setFieldValue("userId", "");
               }}
               onFocus={() => setCustOpen(true)}
-              onBlur={() => setTimeout(() => setCustOpen(false), 150)}
+              onBlur={() =>
+                setTimeout(() => {
+                  setCustOpen(false);
+                  // Clicked away without picking anyone — restore the box to the
+                  // currently selected customer instead of leaving a stray query.
+                  const sc = customers.find((cx) => cx.id === formik.values.userId);
+                  if (sc) setCustQuery(custLabel(sc));
+                }, 150)
+              }
             />
             {custOpen && (
               <ul className="contract-page__typeahead-list">
