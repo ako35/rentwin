@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Nav } from "react-bootstrap";
 import { CustomForm } from "../../../../../components";
-import { custLabel } from "../contract-helpers";
 import CustomerPanel from "./CustomerPanel";
 import CustomerSummary from "./CustomerSummary";
 import DriversTab from "./DriversTab";
@@ -28,11 +27,6 @@ const ContractRightCard = ({
   const c = (key) => t(`reservations.contract.${key}`);
   const [topTab, setTopTab] = useState("customer");
   const [subTab, setSubTab] = useState("summary");
-
-  const summaryCustomerName = (() => {
-    const cu = customer || customers.find((cx) => cx.id === formik.values.userId);
-    return cu ? custLabel(cu) : "";
-  })();
 
   return (
     <section className="contract-card">
@@ -94,9 +88,7 @@ const ContractRightCard = ({
             formik={formik}
             selectedCar={selectedCar}
             billableDays={billableDays}
-            customerName={summaryCustomerName}
             statusOptions={statusOptions}
-            money={money}
           />
         )}
 
