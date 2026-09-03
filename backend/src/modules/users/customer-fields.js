@@ -59,7 +59,7 @@ const assertNationalId = async (body, currentId) => {
 const customerTotals = async (userIds) => {
   if (!userIds.length) return {};
   const ids = new Set(userIds);
-  const rows = await prisma.reservation.findMany({
+  const rows = await prisma.contract.findMany({
     where: {
       status: { not: "CANCELLED" },
       OR: [{ userId: { in: userIds } }, { referenceUserId: { in: userIds } }],

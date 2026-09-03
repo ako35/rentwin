@@ -3,11 +3,11 @@ const HttpError = require("../../lib/http-error");
 const asyncHandler = require("../../middleware/async-handler");
 const { hoursBetween, round2 } = require("../../lib/dates");
 
-// Generic CRUD for records that hang off a reservation (contract).
+// Generic CRUD for records that hang off a contract (drivers / payments / extras).
 // URL segment -> Prisma model + accepted payload shape.
 const RESOURCES = {
   drivers: {
-    model: "reservationDriver",
+    model: "contractDriver",
     fields: ["firstName", "lastName", "licenseNo", "licenseDate", "birthDate", "phone"],
     required: ["firstName", "lastName"],
     dateFields: ["licenseDate", "birthDate"],
@@ -15,7 +15,7 @@ const RESOURCES = {
     orderBy: [{ createdAt: "asc" }],
   },
   payments: {
-    model: "reservationPayment",
+    model: "contractPayment",
     fields: ["amount", "method", "paidAt", "note"],
     required: ["amount"],
     dateFields: ["paidAt"],
@@ -23,42 +23,42 @@ const RESOURCES = {
     orderBy: [{ paidAt: "desc" }],
   },
   extras: {
-    model: "reservationExtra",
+    model: "contractExtra",
     fields: ["name", "unitPrice", "perDay", "quantity"],
     required: ["name"],
     dateFields: [],
     numberFields: ["unitPrice", "quantity"],
     boolFields: ["perDay"],
     orderBy: [{ createdAt: "asc" }],
-    // After any change, cache the summed line totals on Reservation.extrasTotal.
+    // After any change, cache the summed line totals on Contract.extrasTotal.
     recomputeExtrasTotal: true,
   },
 };
 
 // billable days for the contract; matches contract-fields.computeTotal.
-const contractDays = (reservation) =>
-  Math.max(1, Math.ceil(hoursBetween(reservation.pickUpTime, reservation.dropOffTime) / 24));
+const contractDays = (contract) =>
+  Math.max(1, Math.ceil(hoursBetween(contract.pickUpTime, contract.dropOffTime) / 24));
 
-const syncExtrasTotal = async (reservationId) => {
-  const reservation = await prisma.reservation.findUnique({
-    where: { id: reservationId },
+const syncExtrasTotal = async (contractId) => {
+  const contract = await prisma.contract.findUnique({
+    where: { id: contractId },
     select: { id: true, pickUpTime: true, dropOffTime: true },
   });
-  if (!reservation) return;
-  const rows = await prisma.reservationExtra.findMany({ where: { reservationId } });
-  const days = contractDays(reservation);
+  if (!contract) return;
+  const rows = await prisma.contractExtra.findMany({ where: { contractId } });
+  const days = contractDays(contract);
   const total = rows.reduce(
     (sum, r) => sum + r.unitPrice * r.quantity * (r.perDay ? days : 1),
     0
   );
-  await prisma.reservation
-    .update({ where: { id: reservationId }, data: { extrasTotal: round2(total) } })
+  await prisma.contract
+    .update({ where: { id: contractId }, data: { extrasTotal: round2(total) } })
     .catch(() => {});
 };
 
 const getResource = (name) => {
   const resource = RESOURCES[name];
-  if (!resource) throw new HttpError(404, "Unknown reservation record type.");
+  if (!resource) throw new HttpError(404, "Unknown contract record type.");
   return resource;
 };
 
@@ -92,19 +92,19 @@ const buildData = (resource, body, { partial } = {}) => {
   return data;
 };
 
-const ensureReservation = async (reservationId) => {
-  const reservation = await prisma.reservation.findUnique({
-    where: { id: reservationId },
+const ensureContract = async (contractId) => {
+  const contract = await prisma.contract.findUnique({
+    where: { id: contractId },
     select: { id: true },
   });
-  if (!reservation) throw new HttpError(404, "Reservation not found.");
+  if (!contract) throw new HttpError(404, "Contract not found.");
 };
 
 const listRecords = asyncHandler(async (req, res) => {
   const resource = getResource(req.params.resource);
-  await ensureReservation(req.params.reservationId);
+  await ensureContract(req.params.contractId);
   const records = await prisma[resource.model].findMany({
-    where: { reservationId: req.params.reservationId },
+    where: { contractId: req.params.contractId },
     orderBy: resource.orderBy,
   });
   res.json(records);
@@ -112,11 +112,11 @@ const listRecords = asyncHandler(async (req, res) => {
 
 const createRecord = asyncHandler(async (req, res) => {
   const resource = getResource(req.params.resource);
-  await ensureReservation(req.params.reservationId);
+  await ensureContract(req.params.contractId);
   const record = await prisma[resource.model].create({
-    data: { ...buildData(resource, req.body), reservationId: req.params.reservationId },
+    data: { ...buildData(resource, req.body), contractId: req.params.contractId },
   });
-  if (resource.recomputeExtrasTotal) await syncExtrasTotal(req.params.reservationId);
+  if (resource.recomputeExtrasTotal) await syncExtrasTotal(req.params.contractId);
   res.status(201).json(record);
 });
 
@@ -128,7 +128,7 @@ const updateRecord = asyncHandler(async (req, res) => {
     where: { id: req.params.id },
     data: buildData(resource, req.body, { partial: true }),
   });
-  if (resource.recomputeExtrasTotal) await syncExtrasTotal(target.reservationId);
+  if (resource.recomputeExtrasTotal) await syncExtrasTotal(target.contractId);
   res.json(record);
 });
 
@@ -137,7 +137,7 @@ const deleteRecord = asyncHandler(async (req, res) => {
   const target = await prisma[resource.model].findUnique({ where: { id: req.params.id } });
   if (!target) throw new HttpError(404, "Record not found.");
   await prisma[resource.model].delete({ where: { id: req.params.id } });
-  if (resource.recomputeExtrasTotal) await syncExtrasTotal(target.reservationId);
+  if (resource.recomputeExtrasTotal) await syncExtrasTotal(target.contractId);
   res.json({ message: "Record deleted." });
 });
 

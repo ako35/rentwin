@@ -7,14 +7,16 @@ const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 const { CAR_INCLUDE, ALLOWED_SORT_FIELDS, isAdmin } = require("./reservations.shared");
 
+// Customer-facing booking: hold a car for a date range. Starts PENDING; admin
+// confirms or converts it to a contract.
 const createReservation = asyncHandler(async (req, res) => {
   const { carId } = req.query;
-  const { pickUpTime, dropOffTime, pickUpLocation, dropOffLocation } = req.body;
+  const { pickUpTime, dropOffTime, pickUpLocation, dropOffLocation, note } = req.body;
 
   const parsedPickUp = parseFrontendDateTime(pickUpTime);
   const parsedDropOff = parseFrontendDateTime(dropOffTime);
 
-  const { available, totalPrice } = await checkAvailability(carId, parsedPickUp, parsedDropOff);
+  const { available } = await checkAvailability(carId, parsedPickUp, parsedDropOff);
   if (!available) {
     throw new HttpError(409, "This vehicle is not available for the selected dates.");
   }
@@ -25,8 +27,8 @@ const createReservation = asyncHandler(async (req, res) => {
       dropOffLocation,
       pickUpTime: parsedPickUp,
       dropOffTime: parsedDropOff,
-      totalPrice,
-      status: "CREATED",
+      status: "PENDING",
+      note: note || null,
       userId: req.user.id,
       carId,
     },

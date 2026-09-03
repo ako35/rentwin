@@ -45,13 +45,13 @@ const downloadCars = asyncHandler(async (req, res) => {
   );
 });
 
-const downloadReservations = asyncHandler(async (req, res) => {
-  const reservations = await prisma.reservation.findMany({
+const downloadContracts = asyncHandler(async (req, res) => {
+  const contracts = await prisma.contract.findMany({
     include: { car: true, user: true },
   });
   await sendWorkbook(
     res,
-    "reservations.xlsx",
+    "contracts.xlsx",
     [
       { header: "ID", key: "id", width: 36 },
       { header: "Car Model", key: "carModel", width: 22 },
@@ -63,18 +63,18 @@ const downloadReservations = asyncHandler(async (req, res) => {
       { header: "Status", key: "status", width: 12 },
       { header: "Total Price", key: "totalPrice", width: 12 },
     ],
-    reservations.map((reservation) => ({
-      id: reservation.id,
-      carModel: reservation.car.model,
-      customerEmail: reservation.user.email,
-      pickUpLocation: reservation.pickUpLocation,
-      dropOffLocation: reservation.dropOffLocation,
-      pickUpTime: reservation.pickUpTime,
-      dropOffTime: reservation.dropOffTime,
-      status: reservation.status,
-      totalPrice: reservation.totalPrice,
+    contracts.map((contract) => ({
+      id: contract.id,
+      carModel: contract.car.model,
+      customerEmail: contract.user.email,
+      pickUpLocation: contract.pickUpLocation,
+      dropOffLocation: contract.dropOffLocation,
+      pickUpTime: contract.pickUpTime,
+      dropOffTime: contract.dropOffTime,
+      status: contract.status,
+      totalPrice: contract.totalPrice,
     }))
   );
 });
 
-module.exports = { downloadUsers, downloadCars, downloadReservations };
+module.exports = { downloadUsers, downloadCars, downloadContracts };
