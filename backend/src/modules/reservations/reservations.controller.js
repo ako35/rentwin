@@ -268,6 +268,9 @@ const pickContractFields = (body) => {
   if ("discountIsPercent" in body) data.discountIsPercent = Boolean(body.discountIsPercent);
   if ("discountDailyOnly" in body) data.discountDailyOnly = Boolean(body.discountDailyOnly);
   if ("corporateId" in body) data.corporateId = body.corporateId || null;
+  // Reference account: this contract's total is billed to this customer instead
+  // of the driver (see customerTotals in the users controller).
+  if ("referenceUserId" in body) data.referenceUserId = body.referenceUserId || null;
   return data;
 };
 
@@ -329,6 +332,7 @@ const getReservationByIdAdmin = asyncHandler(async (req, res) => {
     include: {
       ...CAR_INCLUDE,
       user: { select: { id: true, firstName: true, lastName: true, email: true, phoneNumber: true } },
+      referenceUser: { select: { id: true, firstName: true, lastName: true, companyTitle: true, customerType: true } },
       corporate: true,
       extensions: { orderBy: { createdAt: "desc" } },
       invoice: true,
@@ -336,12 +340,14 @@ const getReservationByIdAdmin = asyncHandler(async (req, res) => {
   });
   if (!reservation) throw new HttpError(404, "Reservation not found.");
 
-  const { user, ...rest } = reservation;
+  const { user, referenceUser, ...rest } = reservation;
   res.json({
     ...serializeReservation(rest),
     carId: reservation.carId,
     userId: reservation.userId,
     customer: user,
+    referenceUserId: reservation.referenceUserId,
+    referenceUser: referenceUser || null,
   });
 });
 

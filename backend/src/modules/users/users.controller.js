@@ -59,15 +59,23 @@ const assertNationalId = async (body, currentId) => {
 
 // Contract totals for a set of customers: debit = Σ contract grand totals,
 // credit = Σ payments, balance = credit - debit (negative => customer owes).
+// A contract with a referenceUserId is billed entirely to that reference
+// account instead of the driver, so its total + payments land there.
 const customerTotals = async (userIds) => {
   if (!userIds.length) return {};
+  const ids = new Set(userIds);
   const rows = await prisma.reservation.findMany({
-    where: { userId: { in: userIds }, status: { not: "CANCELLED" } },
-    select: { userId: true, totalPrice: true, payments: { select: { amount: true } } },
+    where: {
+      status: { not: "CANCELLED" },
+      OR: [{ userId: { in: userIds } }, { referenceUserId: { in: userIds } }],
+    },
+    select: { userId: true, referenceUserId: true, totalPrice: true, payments: { select: { amount: true } } },
   });
   const totals = {};
   for (const r of rows) {
-    const t = totals[r.userId] || (totals[r.userId] = { debit: 0, credit: 0 });
+    const ownerId = r.referenceUserId || r.userId;
+    if (!ids.has(ownerId)) continue;
+    const t = totals[ownerId] || (totals[ownerId] = { debit: 0, credit: 0 });
     t.debit += r.totalPrice || 0;
     t.credit += r.payments.reduce((s, p) => s + p.amount, 0);
   }

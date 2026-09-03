@@ -379,7 +379,13 @@
       "custBalance": "Account Balance",
       "updateCustomer": "Update Customer",
       "customerSearch": "Search customer (name, email, ID/tax no, phone)…",
-      "customerNotFoundAdd": "No matching customer — Add New Customer"
+      "customerNotFoundAdd": "No matching customer — Add New Customer",
+      "referenceCari": "Reference Account",
+      "referenceCariSelect": "Select reference account",
+      "referenceCariSearch": "Search reference account…",
+      "referenceCariNoMatch": "No matching customer",
+      "referenceCariClear": "Remove reference account",
+      "referenceCariHint": "This contract's total is billed to the selected reference account."
     },
     "toasts": {
       "downloadSuccess": "Your download will start soon",

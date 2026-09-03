@@ -80,7 +80,8 @@ model User {
   notes        String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  reservations Reservation[]
+  reservations          Reservation[] @relation("ReservationCustomer")
+  referenceReservations Reservation[] @relation("ReservationReferenceCustomer")
 }
 
 model VehicleImage {
@@ -211,7 +212,9 @@ model Reservation {
   totalPrice      Float
   status          ReservationStatus @default(CREATED)
   userId          String
-  user            User              @relation(fields: [userId], references: [id])
+  user            User              @relation("ReservationCustomer", fields: [userId], references: [id])
+  referenceUserId String?
+  referenceUser   User?             @relation("ReservationReferenceCustomer", fields: [referenceUserId], references: [id], onDelete: SetNull)
   carId           String
   car             Vehicle           @relation(fields: [carId], references: [id], onDelete: Restrict)
   corporateId     String?

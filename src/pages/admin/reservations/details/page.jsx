@@ -19,6 +19,7 @@ const EMPTY = {
   dailyPrice: "", extrasTotal: "", oneWayFee: "", returnExtraAmount: "",
   discount: "", discountIsPercent: false, discountDailyOnly: true,
   deposit: "", kmLimit: "", unlimitedKm: true, vatRate: 20,
+  referenceUserId: "",
 };
 const EMPTY_NEW_CUST = {
   customerType: "Bireysel", companyTitle: "", taxOffice: "",
@@ -49,6 +50,9 @@ const AdminReservationDetailsPage = () => {
   const [savingCust, setSavingCust] = useState(false);
   const [custQuery, setCustQuery] = useState("");
   const [custOpen, setCustOpen] = useState(false);
+  const [refCust, setRefCust] = useState(null);
+  const [refQuery, setRefQuery] = useState("");
+  const [refOpen, setRefOpen] = useState(false);
   const [newCustModal, setNewCustModal] = useState(false);
   const [newCust, setNewCust] = useState(EMPTY_NEW_CUST);
   const [savingNewCust, setSavingNewCust] = useState(false);
@@ -85,6 +89,7 @@ const AdminReservationDetailsPage = () => {
       discountDailyOnly: values.discountDailyOnly,
       deposit: values.deposit, kmLimit: values.unlimitedKm ? "" : values.kmLimit,
       unlimitedKm: values.unlimitedKm, vatRate: values.vatRate,
+      referenceUserId: values.referenceUserId || null,
     };
 
     if (isCreate) {
@@ -175,6 +180,7 @@ const AdminReservationDetailsPage = () => {
       setInvoice(r.invoice || null);
       loadPayments();
       setCustomer(r.customer || null);
+      setRefCust(r.referenceUser || null);
       setMeta({ createdAt: r.createdAt, updatedAt: r.updatedAt });
       setInitialValues({
         ...EMPTY, ...r,
@@ -190,6 +196,7 @@ const AdminReservationDetailsPage = () => {
         discountDailyOnly: r.discountDailyOnly ?? true,
         deposit: r.deposit ?? "", kmLimit: r.kmLimit ?? "",
         unlimitedKm: r.unlimitedKm ?? true, vatRate: r.vatRate ?? 20,
+        referenceUserId: r.referenceUserId || "",
       });
     } catch (error) {
       console.log(error);
@@ -283,7 +290,11 @@ const AdminReservationDetailsPage = () => {
     setCustQuery("");
     setCustEdit({});
     setNewCust(EMPTY_NEW_CUST);
+    setRefCust(null);
+    setRefQuery("");
+    setRefOpen(false);
     formik.setFieldValue("userId", "");
+    formik.setFieldValue("referenceUserId", "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navKey, isCreate]);
 
@@ -513,6 +524,17 @@ const AdminReservationDetailsPage = () => {
             <Form.Control size="sm" type={type} value={custEdit[name] || ""} onChange={setCE(name)} disabled={!hasCust} />
           </div>
         );
+        const rq = refQuery.trim().toLowerCase();
+        const refMatches = customers
+          .filter((u) => {
+            if (u.id === formik.values.userId) return false;
+            if (!rq) return true;
+            return [u.firstName, u.lastName, u.companyTitle, u.email, u.nationalId, u.phoneNumber]
+              .some((f) => (f || "").toLowerCase().includes(rq));
+          })
+          .slice(0, 25);
+        const refPerson = refCust || customers.find((u) => u.id === formik.values.referenceUserId);
+        const refLabel = refPerson ? custLabel(refPerson) : "…";
         return (
           <div className="contract-page__cust-edit">
             <div className="contract-page__cust-row">
@@ -548,6 +570,69 @@ const AdminReservationDetailsPage = () => {
                 </Button>
               </div>
             )}
+            <div className="contract-page__cust-row contract-page__ref-row">
+              <label>{c("referenceCari")}</label>
+              <div className="contract-page__ref-field">
+                {refOpen ? (
+                  <div className="contract-page__typeahead">
+                    <Form.Control
+                      size="sm"
+                      autoComplete="off"
+                      autoFocus
+                      placeholder={c("referenceCariSearch")}
+                      value={refQuery}
+                      onChange={(e) => setRefQuery(e.target.value)}
+                      onBlur={() => setTimeout(() => setRefOpen(false), 150)}
+                    />
+                    <ul className="contract-page__typeahead-list">
+                      {refMatches.map((u) => (
+                        <li
+                          key={u.id}
+                          onMouseDown={() => {
+                            formik.setFieldValue("referenceUserId", u.id);
+                            setRefCust(u);
+                            setRefQuery("");
+                            setRefOpen(false);
+                          }}
+                        >
+                          {custLabel(u)}
+                        </li>
+                      ))}
+                      {!refMatches.length && (
+                        <li className="text-muted">{c("referenceCariNoMatch")}</li>
+                      )}
+                    </ul>
+                  </div>
+                ) : formik.values.referenceUserId ? (
+                  <span className="contract-page__ref-value">
+                    <button
+                      type="button"
+                      className="contract-page__link"
+                      onClick={() => { setRefQuery(""); setRefOpen(true); }}
+                    >
+                      {refLabel}
+                    </button>
+                    <button
+                      type="button"
+                      className="contract-page__ref-clear"
+                      aria-label={c("referenceCariClear")}
+                      onClick={() => { formik.setFieldValue("referenceUserId", ""); setRefCust(null); }}
+                    >
+                      &times;
+                    </button>
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    className="contract-page__link"
+                    onClick={() => { setRefQuery(""); setRefOpen(true); }}
+                  >
+                    {c("referenceCariSelect")}
+                  </button>
+                )}
+              </div>
+            </div>
+            <p className="contract-page__ref-hint">{c("referenceCariHint")}</p>
           </div>
         );
       })()}

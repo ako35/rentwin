@@ -379,7 +379,13 @@
       "custBalance": "Cari Bakiye",
       "updateCustomer": "Müşteriyi Güncelle",
       "customerSearch": "Müşteri ara (ad, e-posta, TC/vergi no, telefon)…",
-      "customerNotFoundAdd": "Kayıtlı müşteri yok — Yeni Müşteri Ekle"
+      "customerNotFoundAdd": "Kayıtlı müşteri yok — Yeni Müşteri Ekle",
+      "referenceCari": "Referans Cari",
+      "referenceCariSelect": "Referans cari seç",
+      "referenceCariSearch": "Referans cari ara…",
+      "referenceCariNoMatch": "Eşleşen müşteri yok",
+      "referenceCariClear": "Referans cariyi kaldır",
+      "referenceCariHint": "Bu kontratın tutarı seçilen referans carinin hesabına işlenir."
     },
     "toasts": {
       "downloadSuccess": "İndirmeniz kısa süre içinde başlayacak",
