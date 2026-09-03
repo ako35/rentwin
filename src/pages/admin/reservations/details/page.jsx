@@ -1,21 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
-import { Button, Form, Nav, Spinner } from "react-bootstrap";
+import { Form, Nav } from "react-bootstrap";
 import moment from "moment/moment";
 import { constants } from "../../../../constants";
 import { utils } from "../../../../utils";
 import { services } from "../../../../services";
-import { ContractRecords, CustomForm, Loading } from "../../../../components";
+import { CustomForm, Loading } from "../../../../components";
 import ContractRibbon from "./parts/ContractRibbon";
 import VehicleSection from "./parts/VehicleSection";
 import ExtrasSection from "./parts/ExtrasSection";
 import CustomerPanel from "./parts/CustomerPanel";
+import CustomerSummary from "./parts/CustomerSummary";
+import DriversTab from "./parts/DriversTab";
+import InvoiceTab from "./parts/InvoiceTab";
+import SummaryTab from "./parts/SummaryTab";
+import PaymentsTab from "./parts/PaymentsTab";
+import ExtensionTab from "./parts/ExtensionTab";
 import PricingBlock from "./parts/PricingBlock";
 import ContractActions from "./parts/ContractActions";
 import NewCustomerModal from "./parts/NewCustomerModal";
-import RoRow from "./parts/RoRow";
 import {
   EMPTY_CONTRACT as EMPTY,
   formatMoney,
@@ -57,9 +62,6 @@ const AdminReservationDetailsPage = () => {
   const [catalog, setCatalog] = useState([]);
   const [extensions, setExtensions] = useState([]);
   const [invoice, setInvoice] = useState(null);
-  const [extForm, setExtForm] = useState({ date: "", time: "", extraAmount: "", note: "" });
-  const [extending, setExtending] = useState(false);
-  const [invoicing, setInvoicing] = useState(false);
 
   const money = (v) => formatMoney(v, i18n.language);
 
@@ -262,36 +264,6 @@ const AdminReservationDetailsPage = () => {
     [formik.values, billableDays]
   );
 
-  const doExtend = async () => {
-    if (!extForm.date) return;
-    setExtending(true);
-    try {
-      await services.reservation.extendReservation(reservationId, {
-        newDropOff: utils.functions.combineDateAndTime(extForm.date, extForm.time || "10:00"),
-        extraAmount: extForm.extraAmount, note: extForm.note,
-      });
-      utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
-      setExtForm({ date: "", time: "", extraAmount: "", note: "" });
-      loadData();
-    } catch {
-      utils.functions.swalToast(t("reservations.contract.records.error"), "error");
-    } finally {
-      setExtending(false);
-    }
-  };
-
-  const doInvoice = async () => {
-    setInvoicing(true);
-    try {
-      setInvoice(await services.reservation.createInvoice(reservationId));
-      utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
-    } catch {
-      utils.functions.swalToast(t("reservations.contract.records.error"), "error");
-    } finally {
-      setInvoicing(false);
-    }
-  };
-
   const branchNames = branches.map((b) => b.name);
   const carList = isCreate ? availableCars : vehicles;
   const vehicleOptions = buildVehicleOptions(carList, {
@@ -304,8 +276,6 @@ const AdminReservationDetailsPage = () => {
   if (loading) return <Loading />;
 
   const c = (key, opts) => t(`reservations.contract.${key}`, opts);
-  const ro = (label, value) => <RoRow label={label} value={value} />;
-  const saveFirst = <p className="text-muted mb-0">{c("saveFirstHint")}</p>;
 
   return (
     <div className="contract-page">
@@ -361,67 +331,26 @@ const AdminReservationDetailsPage = () => {
                       money={money}
                     />
                   ) : (
-                    <>
-                      {ro(c("customerName"), customer ? `${customer.firstName} ${customer.lastName}` : "")}
-                      {ro(c("customerEmail"), customer?.email)}
-                      {ro(c("customerPhone"), customer?.phoneNumber)}
-                      {formik.values.userId && (
-                        <Link className="contract-page__link" to={`${routes.adminUsers}/${formik.values.userId}`}>
-                          {c("openCustomer")}
-                        </Link>
-                      )}
-                    </>
+                    <CustomerSummary customer={customer} userId={formik.values.userId} />
                   )}
                 </div>
               )}
 
               {topTab === "drivers" && (
                 <div className="contract-page__top-content">
-                  {isCreate ? saveFirst : (
-                  <ContractRecords
-                    reservationId={reservationId} resource="drivers"
-                    initial={{ firstName: "", lastName: "", licenseNo: "", licenseDate: "", birthDate: "", phone: "" }}
-                    columns={[
-                      { key: "firstName", label: c("drivers.firstName") },
-                      { key: "lastName", label: c("drivers.lastName") },
-                      { key: "licenseNo", label: c("drivers.licenseNo") },
-                      { key: "phone", label: c("drivers.phone") },
-                    ]}
-                    fields={[
-                      { name: "firstName", label: c("drivers.firstName") },
-                      { name: "lastName", label: c("drivers.lastName") },
-                      { name: "licenseNo", label: c("drivers.licenseNo") },
-                      { name: "licenseDate", label: c("drivers.licenseDate"), type: "date" },
-                      { name: "birthDate", label: c("drivers.birthDate"), type: "date" },
-                      { name: "phone", label: c("drivers.phone") },
-                    ]}
-                    labels={recordLabels}
-                  />
-                  )}
+                  <DriversTab isCreate={isCreate} reservationId={reservationId} recordLabels={recordLabels} />
                 </div>
               )}
 
               {topTab === "invoice" && (
                 <div className="contract-page__top-content">
-                  {isCreate ? saveFirst : invoice ? (
-                    <>
-                      {ro(c("invoice.number"), invoice.number)}
-                      {ro(c("invoice.issuedAt"), utils.functions.getDate(invoice.issuedAt))}
-                      {ro(c("invoice.customer"), invoice.customerTitle)}
-                      {ro(c("invoice.taxNo"), invoice.taxNo)}
-                      {ro(c("invoice.net"), `${money(invoice.netAmount)} TL`)}
-                      {ro(c("invoice.tax"), `${money(invoice.taxAmount)} TL`)}
-                      {ro(c("invoice.gross"), `${money(invoice.grossAmount)} TL`)}
-                      <Button variant="warning" size="sm" className="mt-2" onClick={() => window.print()}>{c("print")}</Button>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-muted">{c("invoice.none")}</p>
-                      <Button size="sm" disabled={invoicing} onClick={doInvoice}>
-                        {invoicing && <Spinner animation="border" size="sm" />} {c("invoice.create")}
-                      </Button>
-                    </>
-                  )}
+                  <InvoiceTab
+                    isCreate={isCreate}
+                    reservationId={reservationId}
+                    invoice={invoice}
+                    onInvoiceCreated={setInvoice}
+                    money={money}
+                  />
                 </div>
               )}
 
@@ -435,103 +364,45 @@ const AdminReservationDetailsPage = () => {
 
               <div className="contract-page__sub-content">
                 {subTab === "summary" && (
-                  <>
-                    {ro(c("currentClass"), selectedCar ? `${selectedCar.brand} ${selectedCar.model}` : "")}
-                    <div className="contract-page__ro">
-                      <span>{c("currentVehicle")}</span>
-                      <strong>{selectedCar?.licensePlate || "—"}</strong>
-                    </div>
-                    {ro(c("pickUpDropOff"),
-                      `${formik.values.pickUpDate} ${formik.values.pickUpTime} - ${formik.values.dropOffDate} ${formik.values.dropOffTime} (${c("durationDays", { count: billableDays })})`)}
-                    {ro(c("route"), `${formik.values.pickUpLocation || "—"} - ${formik.values.dropOffLocation || "—"}`)}
-                    {ro(c("selectedExtras"), formik.values.extrasTotal ? `${money(formik.values.extrasTotal)} TL` : "")}
-                    <CustomForm formik={formik} name="flightNo" label={c("flightNo")} />
-                    {ro(c("customerName"), (() => {
+                  <SummaryTab
+                    formik={formik}
+                    selectedCar={selectedCar}
+                    billableDays={billableDays}
+                    customerName={(() => {
                       const cu = customer || customers.find((cx) => cx.id === formik.values.userId);
                       return cu ? custLabel(cu) : "";
-                    })())}
-                    <CustomForm formik={formik} name="customerNote" label={c("customerNote")} type="textarea" rows={2} />
-                    <CustomForm formik={formik} name="adminNote" label={c("adminNote")} type="textarea" rows={2} />
-                    <CustomForm formik={formik} name="status" label={c("status")} type="select" itemsArr={statusOptions} />
-                  </>
+                    })()}
+                    statusOptions={statusOptions}
+                    money={money}
+                  />
                 )}
 
-                {subTab === "payments" && (isCreate ? saveFirst : (
-                  <>
-                    <div className="contract-page__pay-summary">
-                      {ro(c("grandTotal"), `${money(pricing.total)} TL`)}
-                      {ro(c("collected"), `${money(collected)} TL`)}
-                      {ro(c("balance"), `${money(collected - pricing.total)} TL`)}
-                    </div>
-                    <ContractRecords
-                      reservationId={reservationId} resource="payments" onChange={loadPayments}
-                      initial={{ amount: "", method: "Cash", paidAt: "", note: "" }}
-                      columns={[
-                        { key: "paidAt", label: c("payments.paidAt"), kind: "date" },
-                        { key: "method", label: c("payments.method"), format: (v) => c(`paymentMethods.${v}`) },
-                        { key: "amount", label: c("payments.amount"), kind: "money" },
-                        { key: "note", label: c("payments.note") },
-                      ]}
-                      fields={[
-                        { name: "amount", label: c("payments.amount"), type: "number" },
-                        { name: "method", label: c("payments.method"), type: "select",
-                          options: ["Cash", "CreditCard", "Transfer", "Other"].map((m) => ({ value: m, label: c(`paymentMethods.${m}`) })) },
-                        { name: "paidAt", label: c("payments.paidAt"), type: "date" },
-                        { name: "note", label: c("payments.note") },
-                      ]}
-                      labels={recordLabels}
-                    />
-                  </>
-                ))}
+                {subTab === "payments" && (
+                  <PaymentsTab
+                    isCreate={isCreate}
+                    reservationId={reservationId}
+                    recordLabels={recordLabels}
+                    total={pricing.total}
+                    collected={collected}
+                    onPaymentsChange={loadPayments}
+                    money={money}
+                  />
+                )}
 
                 {subTab === "returnExtra" && (
                   <CustomForm formik={formik} name="returnExtraAmount" label={c("returnExtraAmount")} type="number" />
                 )}
 
-                {subTab === "extension" && (isCreate ? saveFirst : (
-                  <>
-                    <div className="contract-records__form">
-                      <div className="contract-records__fields">
-                        <Form.Group>
-                          <Form.Label>{c("extension.newDropOffDate")}</Form.Label>
-                          <Form.Control type="date" size="sm" value={extForm.date} min={formik.values.dropOffDate}
-                            onChange={(e) => setExtForm({ ...extForm, date: e.target.value })} />
-                        </Form.Group>
-                        <Form.Group>
-                          <Form.Label>{c("extension.newDropOffTime")}</Form.Label>
-                          <Form.Control type="time" size="sm" value={extForm.time}
-                            onChange={(e) => setExtForm({ ...extForm, time: e.target.value })} />
-                        </Form.Group>
-                        <Form.Group>
-                          <Form.Label>{c("extension.extraAmount")}</Form.Label>
-                          <Form.Control type="number" size="sm" value={extForm.extraAmount}
-                            onChange={(e) => setExtForm({ ...extForm, extraAmount: e.target.value })} />
-                        </Form.Group>
-                        <Form.Group>
-                          <Form.Label>{c("extension.note")}</Form.Label>
-                          <Form.Control size="sm" value={extForm.note}
-                            onChange={(e) => setExtForm({ ...extForm, note: e.target.value })} />
-                        </Form.Group>
-                      </div>
-                      <div className="contract-records__form-actions">
-                        <Button type="button" size="sm" disabled={extending || !extForm.date} onClick={doExtend}>
-                          {extending && <Spinner animation="border" size="sm" />} {c("extension.extend")}
-                        </Button>
-                      </div>
-                    </div>
-                    {extensions.map((ext) => (
-                      <div className="contract-page__ro" key={ext.id}>
-                        <span>
-                          {c("extension.range", {
-                            from: utils.functions.getDate(ext.previousDropOff),
-                            to: utils.functions.getDate(ext.newDropOff),
-                          })} · {c("extension.days", { count: ext.extraDays })}
-                        </span>
-                        <strong>{money(ext.extraAmount)} TL</strong>
-                      </div>
-                    ))}
-                  </>
-                ))}
+                {subTab === "extension" && (
+                  <ExtensionTab
+                    isCreate={isCreate}
+                    reservationId={reservationId}
+                    minDate={formik.values.dropOffDate}
+                    extensions={extensions}
+                    onExtended={loadData}
+                    money={money}
+                  />
+                )}
               </div>
 
               <PricingBlock
