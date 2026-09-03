@@ -613,7 +613,7 @@ const AdminReservationDetailsPage = () => {
               {isCreate && !availableCars.length && (
                 <p className="text-muted mb-2" style={{ fontSize: "0.8rem" }}>{c("noAvailableCars")}</p>
               )}
-              {selectedCar?.branch && ro(c("branch"), selectedCar.branch.name)}
+              {ro(c("branch"), selectedCar?.branch?.name)}
               {ro(
                 c("fuelTransmission"),
                 selectedCar
