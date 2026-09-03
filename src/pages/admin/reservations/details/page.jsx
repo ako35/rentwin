@@ -23,6 +23,7 @@ import ContractActions from "./parts/ContractActions";
 import NewCustomerModal from "./parts/NewCustomerModal";
 import {
   EMPTY_CONTRACT as EMPTY,
+  fetchCustomers,
   formatMoney,
   custLabel,
   computeBillableDays,
@@ -134,10 +135,7 @@ const AdminReservationDetailsPage = () => {
   const loadCreate = async () => {
     try {
       await loadRefData();
-      const u = await services.user
-        .getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" })
-        .catch(() => ({ content: [] }));
-      setCustomers(u?.content || []);
+      setCustomers(await fetchCustomers().catch(() => []));
       setInitialValues({
         ...EMPTY,
         status: "CREATED",
@@ -220,21 +218,12 @@ const AdminReservationDetailsPage = () => {
   };
 
 
-  const refreshCustomers = () =>
-    services.user
-      .getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" })
-      .then((list) => setCustomers(list?.content || []))
-      .catch(() => {});
+  const refreshCustomers = () => fetchCustomers().then(setCustomers).catch(() => {});
 
   // A customer added in the "Yeni Müşteri" tab shows up when the user returns here.
   useEffect(() => {
     if (!isCreate) return undefined;
-    const onFocus = () => {
-      services.user
-        .getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" })
-        .then((list) => setCustomers(list?.content || []))
-        .catch(() => {});
-    };
+    const onFocus = () => refreshCustomers();
     window.addEventListener("focus", onFocus);
     return () => window.removeEventListener("focus", onFocus);
   }, [isCreate]);
@@ -242,8 +231,7 @@ const AdminReservationDetailsPage = () => {
   const openNewCust = () => setNewCustModal(true);
 
   const handleNewCustomerCreated = async (created) => {
-    const list = await services.user.getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" });
-    setCustomers(list?.content || []);
+    setCustomers(await fetchCustomers().catch(() => []));
     formik.setFieldValue("userId", created.id);
     setNewCustModal(false);
   };

@@ -1,6 +1,14 @@
 import moment from "moment/moment";
 import { utils } from "../../../../utils";
 import { constants } from "../../../../constants";
+import { services } from "../../../../services";
+
+// Every contract-screen customer dropdown is fed by the same query: all
+// Customer-role users, name-sorted, first 300.
+export const fetchCustomers = () =>
+  services.user
+    .getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" })
+    .then((list) => list?.content || []);
 
 // Blank contract form — the shape formik is initialised with.
 export const EMPTY_CONTRACT = {
