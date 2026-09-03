@@ -48,7 +48,7 @@ const ContractRightCard = ({
               money={money}
             />
           ) : (
-            <CustomerSummary customer={customer} userId={formik.values.userId} />
+            <CustomerSummary customer={customer} userId={formik.values.userId} money={money} />
           )}
         </div>
       )}

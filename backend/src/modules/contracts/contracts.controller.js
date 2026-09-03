@@ -2,8 +2,9 @@ const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const { parseFrontendDateTime, hoursBetween, round2 } = require("../../lib/dates");
 const { checkAvailability } = require("../../lib/availability");
-const { serializeContract } = require("../../lib/serializers");
+const { serializeContract, serializeUser } = require("../../lib/serializers");
 const asyncHandler = require("../../middleware/async-handler");
+const { customerTotals } = require("../users/customer-fields");
 const { CAR_INCLUDE } = require("./contracts.shared");
 const { num, pickContractFields, computeTotal } = require("./contract-fields");
 
@@ -53,7 +54,9 @@ const getContractByIdAdmin = asyncHandler(async (req, res) => {
     where: { id: req.params.id },
     include: {
       ...CAR_INCLUDE,
-      user: { select: { id: true, firstName: true, lastName: true, email: true, phoneNumber: true } },
+      // Full customer record so the edit screen's customer tab shows the same
+      // detail as create mode (type / tax no / address / balance …).
+      user: true,
       referenceUser: { select: { id: true, firstName: true, lastName: true, companyTitle: true, customerType: true } },
       corporate: true,
       extensions: { orderBy: { createdAt: "desc" } },
@@ -63,11 +66,16 @@ const getContractByIdAdmin = asyncHandler(async (req, res) => {
   if (!contract) throw new HttpError(404, "Contract not found.");
 
   const { user, referenceUser, ...rest } = contract;
+  const totals = user ? await customerTotals([user.id]) : {};
+  const t = totals[contract.userId] || { debit: 0, credit: 0 };
+
   res.json({
     ...serializeContract(rest),
     carId: contract.carId,
     userId: contract.userId,
-    customer: user,
+    customer: user
+      ? { ...serializeUser(user), debit: t.debit, credit: t.credit, balance: t.credit - t.debit }
+      : null,
     referenceUserId: contract.referenceUserId,
     referenceUser: referenceUser || null,
     reservationId: contract.reservationId,
