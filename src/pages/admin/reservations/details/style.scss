@@ -112,8 +112,21 @@
     background-color: v.$color4;
     border: 1px solid v.$color3;
     border-radius: 6px;
+  }
 
-    .form-label { margin-bottom: 0.1rem; }
+  &__cust-row {
+    @include m.flexbox(row, flex-start, center, 0.75rem);
+    margin-bottom: 0.4rem;
+    font-size: 0.82rem;
+
+    label {
+      flex: 0 0 132px;
+      margin: 0;
+      color: v.$color5_3;
+    }
+
+    .form-control { flex: 1; }
+    strong { color: v.$color5; }
   }
 
   &__newcust-grid {

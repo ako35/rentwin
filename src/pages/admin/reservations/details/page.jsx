@@ -534,36 +534,39 @@ const AdminReservationDetailsPage = () => {
         const hasCust = !!custEdit.id;
         const isCorp = (custEdit.customerType || "Bireysel") === "Kurumsal";
         const ci = (name, label, type = "text") => (
-          <Form.Group className="mb-2" key={name}>
-            <Form.Label className="mb-0" style={{ fontSize: "0.8rem", color: "var(--bs-secondary-color)" }}>{label}</Form.Label>
+          <div className="contract-page__cust-row" key={name}>
+            <label>{label}</label>
             <Form.Control size="sm" type={type} value={custEdit[name] || ""} onChange={setCE(name)} disabled={!hasCust} />
-          </Form.Group>
+          </div>
         );
         return (
           <div className="contract-page__cust-edit">
-            {ro(c("custType"), hasCust ? (isCorp ? c("corporate") : c("individual")) : "")}
-            <div className="contract-page__pair">
-              {isCorp ? (
-                <>
-                  {ci("companyTitle", c("corporateTitle"))}
-                  {ci("taxOffice", c("taxOffice"))}
-                </>
-              ) : (
-                <>
-                  {ci("firstName", t("users.form.firstName"))}
-                  {ci("lastName", t("users.form.lastName"))}
-                </>
-              )}
-              {ci("nationalId", isCorp ? c("taxNo") : c("custNationalId"))}
-              {ci("customerCode", c("custCode"))}
-              {ci("email", c("customerEmail"), "email")}
-              {ci("phoneNumber", c("customerPhone"))}
+            <div className="contract-page__cust-row">
+              <label>{c("custType")}</label>
+              <strong>{hasCust ? (isCorp ? c("corporate") : c("individual")) : "—"}</strong>
             </div>
+            {isCorp ? (
+              <>
+                {ci("companyTitle", c("corporateTitle"))}
+                {ci("taxOffice", c("taxOffice"))}
+              </>
+            ) : (
+              <>
+                {ci("firstName", t("users.form.firstName"))}
+                {ci("lastName", t("users.form.lastName"))}
+              </>
+            )}
+            {ci("nationalId", isCorp ? c("taxNo") : c("custNationalId"))}
+            {ci("email", c("customerEmail"), "email")}
+            {ci("phoneNumber", c("customerPhone"))}
             {ci("address", c("custAddress"))}
             {ci("notes", c("adminNote"))}
-            {ro(c("custBalance"), hasCust ? `${money(custEdit.balance)} TL` : "")}
+            <div className="contract-page__cust-row">
+              <label>{c("custBalance")}</label>
+              <strong>{hasCust ? `${money(custEdit.balance)} TL` : "—"}</strong>
+            </div>
             {hasCust && (
-              <div className="text-end">
+              <div className="text-end mt-2">
                 <Button type="button" size="sm" variant="outline-primary" disabled={savingCust} onClick={saveCustomer}>
                   {savingCust && <Spinner animation="border" size="sm" />} {c("updateCustomer")}
                 </Button>
