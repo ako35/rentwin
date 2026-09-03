@@ -78,41 +78,43 @@ const AdminNewCustomerPage = () => {
 
   return (
     <div className="new-contract-page">
-      <h2>{t("newCustomer.title")}</h2>
-      <form className="new-contract-page__card" onSubmit={submit}>
-        <div className="new-contract-page__radios">
-          <Form.Check
-            inline type="radio" id="nc-ind" label={t("users.form.individual")}
-            checked={!isCorporate}
-            onChange={() => setForm({ ...form, customerType: "Bireysel" })}
-          />
-          <Form.Check
-            inline type="radio" id="nc-corp" label={t("users.form.corporate")}
-            checked={isCorporate}
-            onChange={() => setForm({ ...form, customerType: "Kurumsal" })}
-          />
-        </div>
-        {fields.map(([name, label, placeholder, required]) => (
-          <div className="new-contract-page__row" key={name}>
-            <label>{required ? `* ${label}` : label}</label>
-            <Form.Control
-              size="sm"
-              type={name === "email" ? "email" : "text"}
-              placeholder={placeholder || undefined}
-              value={form[name]}
-              onChange={set(name)}
+      <div className="new-contract-page__card">
+        <div className="new-contract-page__head">{t("newCustomer.title")}</div>
+        <form className="new-contract-page__body" onSubmit={submit}>
+          <div className="new-contract-page__radios">
+            <Form.Check
+              inline type="radio" id="nc-ind" label={t("users.form.individual")}
+              checked={!isCorporate}
+              onChange={() => setForm({ ...form, customerType: "Bireysel" })}
+            />
+            <Form.Check
+              inline type="radio" id="nc-corp" label={t("users.form.corporate")}
+              checked={isCorporate}
+              onChange={() => setForm({ ...form, customerType: "Kurumsal" })}
             />
           </div>
-        ))}
-        <div className="new-contract-page__actions">
-          <Button variant="outline-secondary" type="button" onClick={() => navigate(routes.adminUsers)}>
-            {t("reservations.cancel")}
-          </Button>
-          <Button type="submit" disabled={!canSubmit || saving}>
-            {saving && <Spinner animation="border" size="sm" />} {t("newCustomer.create")}
-          </Button>
-        </div>
-      </form>
+          {fields.map(([name, label, placeholder, required]) => (
+            <div className="new-contract-page__row" key={name}>
+              <label>{required ? `* ${label}` : label}</label>
+              <Form.Control
+                size="sm"
+                type={name === "email" ? "email" : "text"}
+                placeholder={placeholder || undefined}
+                value={form[name]}
+                onChange={set(name)}
+              />
+            </div>
+          ))}
+          <div className="new-contract-page__actions">
+            <Button variant="outline-secondary" type="button" onClick={() => navigate(routes.adminUsers)}>
+              {t("reservations.cancel")}
+            </Button>
+            <Button type="submit" disabled={!canSubmit || saving}>
+              {saving && <Spinner animation="border" size="sm" />} {t("newCustomer.create")}
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
