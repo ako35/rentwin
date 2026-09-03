@@ -174,6 +174,11 @@ export const adminUserDetailsFormValidationSchema = Yup.object({
         then: (s) => s.nullable(),
         otherwise: (s) => s.trim().required(t("adminUser.lastNameRequired")),
     }),
+    nationalId: Yup.string().when("customerType", {
+        is: "Kurumsal",
+        then: (s) => s.matches(/^\d{10}$/, t("adminUser.taxNoInvalid")).required(t("adminUser.taxNoRequired")),
+        otherwise: (s) => s.matches(/^\d{11}$/, t("adminUser.tcInvalid")).required(t("adminUser.tcRequired")),
+    }),
 });
 
 // ADMIN RESERVATIONS FORM

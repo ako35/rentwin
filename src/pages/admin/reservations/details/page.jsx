@@ -14,13 +14,12 @@ const { routes } = constants;
 
 const EMPTY = {
   pickUpLocation: "", dropOffLocation: "", pickUpDate: "", pickUpTime: "",
-  dropOffDate: "", dropOffTime: "", carId: "", status: "", userId: "", corporateId: "",
+  dropOffDate: "", dropOffTime: "", carId: "", status: "", userId: "",
   customerNote: "", adminNote: "", referenceNo: "", flightNo: "",
   dailyPrice: "", extrasTotal: "", oneWayFee: "", returnExtraAmount: "",
   discount: "", discountIsPercent: false, discountDailyOnly: true,
   deposit: "", kmLimit: "", unlimitedKm: true, vatRate: 20,
 };
-const EMPTY_CORP = { title: "", taxOffice: "", taxNo: "", phone: "", email: "" };
 const EMPTY_NEW_CUST = {
   customerType: "Bireysel", companyTitle: "", taxOffice: "",
   firstName: "", lastName: "", nationalId: "",
@@ -40,17 +39,12 @@ const AdminReservationDetailsPage = () => {
   const [deleting, setDeleting] = useState(false);
   const [vehicles, setVehicles] = useState([]);
   const [branches, setBranches] = useState([]);
-  const [corporates, setCorporates] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [customer, setCustomer] = useState(null);
   const [meta, setMeta] = useState({});
   const [initialValues, setInitialValues] = useState(EMPTY);
   const [topTab, setTopTab] = useState("customer");
   const [subTab, setSubTab] = useState("summary");
-  const [customerType, setCustomerType] = useState("individual");
-  const [corpModal, setCorpModal] = useState(false);
-  const [corpForm, setCorpForm] = useState(EMPTY_CORP);
-  const [savingCorp, setSavingCorp] = useState(false);
   const [custEdit, setCustEdit] = useState({});
   const [savingCust, setSavingCust] = useState(false);
   const [custQuery, setCustQuery] = useState("");
@@ -83,7 +77,6 @@ const AdminReservationDetailsPage = () => {
       pickUpLocation: values.pickUpLocation,
       dropOffLocation: values.dropOffLocation,
       status: values.status,
-      corporateId: customerType === "corporate" ? values.corporateId || "" : "",
       customerNote: values.customerNote, adminNote: values.adminNote,
       referenceNo: values.referenceNo, flightNo: values.flightNo,
       dailyPrice: values.dailyPrice, extrasTotal: values.extrasTotal,
@@ -141,15 +134,13 @@ const AdminReservationDetailsPage = () => {
   });
 
   const loadRefData = async () => {
-    const [v, b, cs, cat] = await Promise.all([
+    const [v, b, cat] = await Promise.all([
       services.vehicle.getVehicles(),
       services.branch.getBranches().catch(() => []),
-      services.corporate.getCorporates().catch(() => []),
       services.extra.getExtras().catch(() => []),
     ]);
     setVehicles(v || []);
     setBranches(b || []);
-    setCorporates(cs || []);
     setCatalog(cat || []);
   };
 
@@ -160,7 +151,6 @@ const AdminReservationDetailsPage = () => {
         .getUsersByPage(0, 300, "firstName", "ASC", { role: "Customer" })
         .catch(() => ({ content: [] }));
       setCustomers(u?.content || []);
-      setCustomerType("individual");
       setInitialValues({
         ...EMPTY,
         status: "CREATED",
@@ -185,11 +175,9 @@ const AdminReservationDetailsPage = () => {
       setInvoice(r.invoice || null);
       loadPayments();
       setCustomer(r.customer || null);
-      setCustomerType(r.corporateId ? "corporate" : "individual");
       setMeta({ createdAt: r.createdAt, updatedAt: r.updatedAt });
       setInitialValues({
         ...EMPTY, ...r,
-        corporateId: r.corporateId || "",
         pickUpDate: utils.functions.getDate(r.pickUpTime),
         pickUpTime: utils.functions.getTime(r.pickUpTime),
         dropOffDate: utils.functions.getDate(r.dropOffTime),
@@ -258,21 +246,6 @@ const AdminReservationDetailsPage = () => {
       });
   };
 
-  const saveCorporate = async () => {
-    if (!corpForm.title.trim()) return;
-    setSavingCorp(true);
-    try {
-      const created = await services.corporate.addCorporate(corpForm);
-      setCorporates(await services.corporate.getCorporates());
-      formik.setFieldValue("corporateId", created.id);
-      setCorpModal(false);
-      setCorpForm(EMPTY_CORP);
-    } catch {
-      utils.functions.swalToast(t("reservations.contract.records.error"), "error");
-    } finally {
-      setSavingCorp(false);
-    }
-  };
 
   const refreshCustomers = () =>
     services.user
@@ -310,9 +283,7 @@ const AdminReservationDetailsPage = () => {
     setCustQuery("");
     setCustEdit({});
     setNewCust(EMPTY_NEW_CUST);
-    setCustomerType("individual");
     formik.setFieldValue("userId", "");
-    formik.setFieldValue("corporateId", "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navKey, isCreate]);
 
@@ -381,7 +352,6 @@ const AdminReservationDetailsPage = () => {
     () => [...vehicles, ...availableCars].find((v) => v.id === formik.values.carId),
     [vehicles, availableCars, formik.values.carId]
   );
-  const selectedCorp = corporates.find((cx) => cx.id === formik.values.corporateId);
 
   const billableDays = useMemo(() => {
     const { pickUpDate, pickUpTime, dropOffDate, dropOffTime } = formik.values;
@@ -693,14 +663,7 @@ const AdminReservationDetailsPage = () => {
 
               {topTab === "customer" && (
                 <div className="contract-page__top-content">
-                  <div className="contract-page__radios mb-2">
-                    <Form.Check inline type="radio" id="ct-ind" label={c("individual")}
-                      checked={customerType === "individual"} onChange={() => setCustomerType("individual")} />
-                    <Form.Check inline type="radio" id="ct-corp" label={c("corporate")}
-                      checked={customerType === "corporate"} onChange={() => setCustomerType("corporate")} />
-                  </div>
-                  {customerType === "individual" ? (
-                    isCreate ? createCustomerPicker : (
+                  {isCreate ? createCustomerPicker : (
                     <>
                       {ro(c("customerName"), customer ? `${customer.firstName} ${customer.lastName}` : "")}
                       {ro(c("customerEmail"), customer?.email)}
@@ -709,34 +672,6 @@ const AdminReservationDetailsPage = () => {
                         <Link className="contract-page__link" to={`${routes.adminUsers}/${formik.values.userId}`}>
                           {c("openCustomer")}
                         </Link>
-                      )}
-                    </>
-                    )
-                  ) : (
-                    <>
-                      {isCreate && createCustomerPicker}
-                      <div className="contract-page__corp-head">
-                        <Form.Label className="mb-0">* {c("corporateTitle")}</Form.Label>
-                        <button type="button" className="contract-page__link" onClick={() => setCorpModal(true)}>
-                          + {c("newCorporate")}
-                        </button>
-                      </div>
-                      <Form.Control list="corp-list" autoComplete="off" size="sm" placeholder={c("corporateSearch")}
-                        defaultValue={selectedCorp?.title || ""}
-                        onChange={(e) => {
-                          const m = corporates.find((cx) => cx.title === e.target.value);
-                          formik.setFieldValue("corporateId", m ? m.id : "");
-                        }} className="mb-2" />
-                      <datalist id="corp-list">
-                        {corporates.map((cx) => <option key={cx.id} value={cx.title} />)}
-                      </datalist>
-                      {selectedCorp && (
-                        <>
-                          {ro(c("taxOffice"), selectedCorp.taxOffice)}
-                          {ro(`* ${c("taxNo")}`, selectedCorp.taxNo)}
-                          {ro(c("customerPhone"), selectedCorp.phone)}
-                          {ro(c("customerEmail"), selectedCorp.email)}
-                        </>
                       )}
                     </>
                   )}
@@ -814,7 +749,7 @@ const AdminReservationDetailsPage = () => {
                     {ro(c("route"), `${formik.values.pickUpLocation || "—"} - ${formik.values.dropOffLocation || "—"}`)}
                     {ro(c("selectedExtras"), formik.values.extrasTotal ? `${money(formik.values.extrasTotal)} TL` : "")}
                     <CustomForm formik={formik} name="flightNo" label={c("flightNo")} />
-                    {ro(c("customerName"), selectedCorp ? selectedCorp.title : (() => {
+                    {ro(c("customerName"), (() => {
                       const cu = customer || customers.find((cx) => cx.id === formik.values.userId);
                       return cu ? (cu.companyTitle || `${cu.firstName} ${cu.lastName}`).trim() : "";
                     })())}
@@ -992,25 +927,6 @@ const AdminReservationDetailsPage = () => {
           )}
         </div>
       </Form>
-
-      <Modal show={corpModal} onHide={() => setCorpModal(false)}>
-        <Modal.Header closeButton><Modal.Title>{c("newCorporate")}</Modal.Title></Modal.Header>
-        <Modal.Body>
-          {[["title", "corporateTitle"], ["taxOffice", "taxOffice"], ["taxNo", "taxNo"],
-            ["phone", "customerPhone"], ["email", "customerEmail"]].map(([field, lk]) => (
-            <Form.Group className="mb-2" key={field}>
-              <Form.Label>{c(lk)}</Form.Label>
-              <Form.Control value={corpForm[field]} onChange={(e) => setCorpForm({ ...corpForm, [field]: e.target.value })} />
-            </Form.Group>
-          ))}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="outline-secondary" onClick={() => setCorpModal(false)}>{t("reservations.cancel")}</Button>
-          <Button onClick={saveCorporate} disabled={savingCorp || !corpForm.title.trim()}>
-            {savingCorp && <Spinner animation="border" size="sm" />} {t("reservations.save")}
-          </Button>
-        </Modal.Footer>
-      </Modal>
 
       {(() => {
         const isCorp = newCust.customerType === "Kurumsal";

@@ -19,6 +19,28 @@ const applyCustomerFields = (body, data) => {
   }
 };
 
+// Bireysel müşteri = 11 haneli TC, Kurumsal müşteri = 10 haneli vergi no.
+// Yalnızca rakam, zorunlu ve her numara tek bir müşteride.
+const assertNationalId = async (body, currentId) => {
+  const isCorporate = body.customerType === "Kurumsal";
+  const value = (body.nationalId == null ? "" : String(body.nationalId)).trim();
+  const label = isCorporate ? "Vergi numarası" : "TC kimlik numarası";
+  const length = isCorporate ? 10 : 11;
+
+  if (!value) throw new HttpError(400, `${label} zorunludur.`);
+  if (!/^\d+$/.test(value) || value.length !== length) {
+    throw new HttpError(400, `${label} tam olarak ${length} haneli ve yalnızca rakamlardan oluşmalıdır.`);
+  }
+
+  const clash = await prisma.user.findFirst({
+    where: { nationalId: value, ...(currentId ? { id: { not: currentId } } : {}) },
+    select: { id: true },
+  });
+  if (clash) {
+    throw new HttpError(409, `Bu ${isCorporate ? "vergi numarası" : "TC numarası"} zaten başka bir müşteride kayıtlı.`);
+  }
+};
+
 // Contract totals for a set of customers: debit = Σ contract grand totals,
 // credit = Σ payments, balance = credit - debit (negative => customer owes).
 const customerTotals = async (userIds) => {
@@ -132,6 +154,8 @@ const createUserAdmin = asyncHandler(async (req, res) => {
       : "First name, last name and email are required.");
   }
 
+  await assertNationalId(req.body);
+
   // Email is intentionally not unique for admin-created customers: the same
   // address may belong to several customer records.
   const passwordHash = await hashPassword(password || "Rentwin123.");
@@ -159,6 +183,13 @@ const updateUserAdmin = asyncHandler(async (req, res) => {
   if (target.builtIn) throw new HttpError(403, "This user cannot be modified.");
 
   const { firstName, lastName, email, phoneNumber, address, zipCode, roles, password } = req.body;
+
+  if ("nationalId" in req.body || "customerType" in req.body) {
+    await assertNationalId(
+      { customerType: req.body.customerType ?? target.customerType, nationalId: req.body.nationalId ?? target.nationalId },
+      target.id
+    );
+  }
 
   const data = {
     firstName, lastName, email, phoneNumber, address, roles,
