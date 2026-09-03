@@ -996,7 +996,9 @@ const AdminReservationDetailsPage = () => {
                       aria-label={t("reservations.cancel")}
                       onClick={() => setNewCustModal(false)}
                     >
-                      &times;
+                      <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+                        <path d="M5 5l14 14M19 5L5 19" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                      </svg>
                     </button>
                   </div>
                   <div className="customer-form-card__body">
