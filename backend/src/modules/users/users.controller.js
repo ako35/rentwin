@@ -31,6 +31,10 @@ const updateCurrentUser = asyncHandler(async (req, res) => {
 const changePassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
 
+  if (!newPassword || String(newPassword).length < 8) {
+    throw new HttpError(400, "Yeni şifre en az 8 karakter olmalıdır.");
+  }
+
   const user = await prisma.user.findUnique({ where: { id: req.user.id } });
   const valid = await comparePassword(oldPassword || "", user.passwordHash);
   if (!valid) {

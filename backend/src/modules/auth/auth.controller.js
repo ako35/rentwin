@@ -10,6 +10,9 @@ const register = asyncHandler(async (req, res) => {
   if (!firstName || !lastName || !email || !password) {
     throw new HttpError(400, "Missing required fields.");
   }
+  if (String(password).length < 8) {
+    throw new HttpError(400, "Şifre en az 8 karakter olmalıdır.");
+  }
 
   const existing = await prisma.user.findFirst({ where: { email } });
   if (existing) {
