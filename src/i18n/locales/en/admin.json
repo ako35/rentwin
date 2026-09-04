@@ -456,11 +456,11 @@
       "downloadSuccess": "Your download will start soon",
       "downloadError": "There was an error while downloading",
       "pageChangeError": "There was an error while changing the page",
-      "updateSuccess": "Reservation updated successfully.",
-      "updateError": "There was an error updated the data.",
-      "deleteSuccess": "Reservation deleted successfully.",
-      "deleteError": "There was an error deleting the reservation.",
-      "deleteConfirmTitle": "Are you sure you want to delete this reservation?",
+      "updateSuccess": "Contract updated successfully.",
+      "updateError": "There was an error updating the data.",
+      "deleteSuccess": "Contract deleted successfully.",
+      "deleteError": "There was an error deleting the contract.",
+      "deleteConfirmTitle": "Are you sure you want to delete this contract?",
       "deleteConfirmText": "You won't be able to revert this action!"
     }
   },

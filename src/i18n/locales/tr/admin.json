@@ -456,11 +456,11 @@
       "downloadSuccess": "İndirmeniz kısa süre içinde başlayacak",
       "downloadError": "İndirme sırasında bir hata oluştu",
       "pageChangeError": "Sayfa değiştirilirken bir hata oluştu",
-      "updateSuccess": "Rezervasyon başarıyla güncellendi.",
+      "updateSuccess": "Kontrat başarıyla güncellendi.",
       "updateError": "Veriler güncellenirken bir hata oluştu.",
-      "deleteSuccess": "Rezervasyon başarıyla silindi.",
-      "deleteError": "Rezervasyon silinirken bir hata oluştu.",
-      "deleteConfirmTitle": "Bu rezervasyonu silmek istediğinizden emin misiniz?",
+      "deleteSuccess": "Kontrat başarıyla silindi.",
+      "deleteError": "Kontrat silinirken bir hata oluştu.",
+      "deleteConfirmTitle": "Bu kontratı silmek istediğinizden emin misiniz?",
       "deleteConfirmText": "Bu işlemi geri alamazsınız!"
     }
   },
