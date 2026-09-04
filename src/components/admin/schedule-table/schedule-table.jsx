@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Nav, Spinner, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { BsPlusCircle } from "react-icons/bs";
 import moment from "moment/moment";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
@@ -63,7 +62,6 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
         <Table hover responsive>
           <thead>
             <tr>
-              <th></th>
               <th>{t("scheduleTable.date")}</th>
               <th>{t("scheduleTable.time")}</th>
               <th>{t("scheduleTable.plate")}</th>
@@ -76,14 +74,14 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={8} className="text-center">
+                <td colSpan={7} className="text-center">
                   <Spinner animation="border" size="sm" />
                 </td>
               </tr>
             )}
             {!loading && rows.length === 0 && (
               <tr>
-                <td colSpan={8} className="text-center">
+                <td colSpan={7} className="text-center">
                   {t("scheduleTable.noRecords")}
                 </td>
               </tr>
@@ -99,9 +97,6 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
                     onClick={goToDetails}
                     className={daysRemaining < 0 ? "schedule-table__row--overdue" : ""}
                   >
-                    <td className="schedule-table__action">
-                      <BsPlusCircle />
-                    </td>
                     <td>{utils.functions.getDate(target)}</td>
                     <td>{utils.functions.getTime(target)}</td>
                     <td className="schedule-table__plate">{row.car?.licensePlate}</td>
