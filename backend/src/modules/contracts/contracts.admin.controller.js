@@ -37,6 +37,7 @@ const getContractsByPage = asyncHandler(async (req, res) => {
       ? {
           OR: [
             { corporate: { title: { contains: customer, mode: "insensitive" } } },
+            { user: { companyTitle: { contains: customer, mode: "insensitive" } } },
             { user: { firstName: { contains: customer, mode: "insensitive" } } },
             { user: { lastName: { contains: customer, mode: "insensitive" } } },
           ],
@@ -52,7 +53,7 @@ const getContractsByPage = asyncHandler(async (req, res) => {
       orderBy: { [sortField]: direction },
       include: {
         car: { select: { brand: true, model: true, licensePlate: true, branch: { select: { code: true } } } },
-        user: { select: { firstName: true, lastName: true } },
+        user: { select: { firstName: true, lastName: true, companyTitle: true } },
         corporate: { select: { title: true } },
         payments: { select: { amount: true } },
         extensions: { select: { extraDays: true } },
@@ -81,7 +82,8 @@ const getContractsByPage = asyncHandler(async (req, res) => {
         extensionDays: r.extensions.reduce((s, e) => s + e.extraDays, 0),
         plate: r.car?.licensePlate || null,
         vehicle: r.car ? `${r.car.brand} ${r.car.model}` : "",
-        customerName: r.corporate?.title || `${r.user.firstName} ${r.user.lastName}`.trim(),
+        customerName:
+          r.corporate?.title || r.user.companyTitle || `${r.user.firstName} ${r.user.lastName}`.trim(),
       })),
       totalElements,
       page,

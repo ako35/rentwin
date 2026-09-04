@@ -138,7 +138,6 @@ const AdminContractsPage = () => {
                 <th>{c("plate")}</th>
                 <th>{c("contractNo")}</th>
                 <th>{c("customer")}</th>
-                <th>{c("branchCode")}</th>
                 <th>{c("vehicle")}</th>
                 <th className="text-end">{c("days")}</th>
                 <th className="text-end">{c("amount")}</th>
@@ -149,7 +148,7 @@ const AdminContractsPage = () => {
             <tbody>
               {rows.length === 0 && (
                 <tr>
-                  <td colSpan={11} className="text-center text-muted">{c("empty")}</td>
+                  <td colSpan={10} className="text-center text-muted">{c("empty")}</td>
                 </tr>
               )}
               {rows.map((r) => {
@@ -161,7 +160,6 @@ const AdminContractsPage = () => {
                     <td className="contract-list__plate">{r.plate || "—"}</td>
                     <td className="contract-list__no">{r.contractNo || r.id.slice(0, 10).toUpperCase()}</td>
                     <td className="contract-list__customer">{r.customerName}</td>
-                    <td>{r.branchCode || "—"}</td>
                     <td>{r.vehicle}</td>
                     <td className="text-end">
                       {r.dayCount}
