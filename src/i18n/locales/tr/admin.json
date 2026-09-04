@@ -246,6 +246,8 @@
       "plate": "Plaka",
       "customerDriver": "Müşteri / Sürücü",
       "filter": "Filtrele",
+      "pickUpDate": "Alış Tarihi",
+      "pickUpTime": "Alış Saati",
       "dropOffDate": "Bırakış Tarihi",
       "dropOffTime": "Bırakış Saati",
       "contractNo": "Kontrat No",

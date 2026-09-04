@@ -246,6 +246,8 @@
       "plate": "Plate",
       "customerDriver": "Customer / Driver",
       "filter": "Filter",
+      "pickUpDate": "Pick-up Date",
+      "pickUpTime": "Pick-up Time",
       "dropOffDate": "Drop-off Date",
       "dropOffTime": "Drop-off Time",
       "contractNo": "Contract No",

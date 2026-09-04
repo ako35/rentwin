@@ -133,6 +133,8 @@ const AdminContractsPage = () => {
           <Table hover responsive className="contract-list__table">
             <thead>
               <tr>
+                <th>{c("pickUpDate")}</th>
+                <th>{c("pickUpTime")}</th>
                 <th>{c("dropOffDate")}</th>
                 <th>{c("dropOffTime")}</th>
                 <th>{c("plate")}</th>
@@ -147,13 +149,15 @@ const AdminContractsPage = () => {
             <tbody>
               {rows.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="text-center text-muted">{c("empty")}</td>
+                  <td colSpan={11} className="text-center text-muted">{c("empty")}</td>
                 </tr>
               )}
               {rows.map((r) => {
                 const balance = (r.collected || 0) - (r.totalPrice || 0);
                 return (
                   <tr key={r.id} onClick={() => navigate(`${routes.adminContracts}/${r.id}`)}>
+                    <td>{utils.functions.getDate(r.pickUpTime)}</td>
+                    <td>{utils.functions.getTime(r.pickUpTime)}</td>
                     <td>{utils.functions.getDate(r.dropOffTime)}</td>
                     <td>{utils.functions.getTime(r.dropOffTime)}</td>
                     <td className="contract-list__plate">{r.plate || "—"}</td>
