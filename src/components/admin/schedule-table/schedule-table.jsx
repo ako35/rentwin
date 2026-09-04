@@ -65,7 +65,6 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
               <th>{t("scheduleTable.date")}</th>
               <th>{t("scheduleTable.time")}</th>
               <th>{t("scheduleTable.plate")}</th>
-              <th>{t("scheduleTable.reservationNo")}</th>
               <th>{t("scheduleTable.vehicle")}</th>
               <th>{t("scheduleTable.customer")}</th>
               <th>{t("scheduleTable.days")}</th>
@@ -74,14 +73,14 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={7} className="text-center">
+                <td colSpan={6} className="text-center">
                   <Spinner animation="border" size="sm" />
                 </td>
               </tr>
             )}
             {!loading && rows.length === 0 && (
               <tr>
-                <td colSpan={7} className="text-center">
+                <td colSpan={6} className="text-center">
                   {t("scheduleTable.noRecords")}
                 </td>
               </tr>
@@ -100,9 +99,6 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
                     <td>{utils.functions.getDate(target)}</td>
                     <td>{utils.functions.getTime(target)}</td>
                     <td className="schedule-table__plate">{row.car?.licensePlate}</td>
-                    <td className="schedule-table__contract">
-                      {row.contractNo || row.id.slice(0, 10).toUpperCase()}
-                    </td>
                     <td>{row.car?.brand} {row.car?.model}</td>
                     <td>{row.user?.companyTitle || `${row.user?.firstName || ""} ${row.user?.lastName || ""}`.trim()}</td>
                     <td>{daysRemaining}</td>
