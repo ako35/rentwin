@@ -1,8 +1,8 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
-const { parseFrontendDateTime } = require("../../lib/dates");
+const { parseFrontendDateTime, resolveWindow } = require("../../lib/dates");
 const { checkAvailability } = require("../../lib/availability");
-const { serializeReservation } = require("../../lib/serializers");
+const { serializeReservation, serializeScheduleRow } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 const { CAR_INCLUDE, ALLOWED_SORT_FIELDS } = require("./reservations.shared");
@@ -210,6 +210,26 @@ const convertToContract = asyncHandler(async (req, res) => {
   res.status(201).json({ contractId: contract.id });
 });
 
+// Admin dashboard "Çıkışlar": still-open reservations (PENDING / CONFIRMED)
+// whose pick-up falls within a day window from now. Same row shape as the
+// contract schedule so the dashboard table renders both the same way.
+const getReservationSchedule = asyncHandler(async (req, res) => {
+  const { window = "7", branchId } = req.query;
+  const { from, to } = resolveWindow(window);
+
+  const reservations = await prisma.reservation.findMany({
+    where: {
+      pickUpTime: { gte: from, lte: to },
+      status: { in: ["PENDING", "CONFIRMED"] },
+      ...(branchId ? { car: { branchId } } : {}),
+    },
+    orderBy: { pickUpTime: "asc" },
+    include: { car: { include: { branch: true } }, user: true },
+  });
+
+  res.json(reservations.map(serializeScheduleRow));
+});
+
 module.exports = {
   getReservationsByPageAdmin,
   getReservationByIdAdmin,
@@ -218,4 +238,5 @@ module.exports = {
   confirmReservation,
   cancelReservation,
   convertToContract,
+  getReservationSchedule,
 };

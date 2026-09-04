@@ -15,6 +15,7 @@ const {
   confirmReservation,
   cancelReservation,
   convertToContract,
+  getReservationSchedule,
 } = require("./reservations.admin.controller");
 
 const router = Router();
@@ -26,6 +27,7 @@ router.get("/reservations/auth", authenticate, checkVehicleAvailability);
 
 // Admin — literal segments before ":id"
 router.get("/reservations/admin/all/auth", authenticate, requireAdmin, getReservationsByPageAdmin);
+router.get("/reservations/admin/schedule/auth", authenticate, requireAdmin, getReservationSchedule);
 router.post("/reservations/admin/auth", authenticate, requireAdmin, createReservationAdmin);
 router.get("/reservations/admin/:id/auth", authenticate, requireAdmin, getReservationByIdAdmin);
 router.put("/reservations/admin/:id/auth", authenticate, requireAdmin, updateReservationAdmin);

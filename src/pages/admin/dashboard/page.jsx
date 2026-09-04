@@ -86,7 +86,13 @@ const AdminDashboard = () => {
               <ScheduleTable title={t("dashboard.returns")} type="returns" dateField="dropOffTime" branchId={branchId} />
             </Col>
             <Col xl={6}>
-              <ScheduleTable title={t("dashboard.departures")} type="departures" dateField="pickUpTime" branchId={branchId} />
+              <ScheduleTable
+                title={t("dashboard.departures")}
+                type="departures"
+                dateField="pickUpTime"
+                branchId={branchId}
+                source="reservation"
+              />
             </Col>
           </Row>
         </>

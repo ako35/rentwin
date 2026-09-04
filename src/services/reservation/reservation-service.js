@@ -102,3 +102,12 @@ export const convertReservationToContract = async (id) => {
   );
   return response.data;
 };
+
+// Dashboard "Çıkışlar": upcoming reservation pick-ups (PENDING / CONFIRMED).
+export const getReservationSchedule = async ({ window = 7, branchId } = {}) => {
+  const response = await axios.get(
+    `${API_URL}/reservations/admin/schedule/auth?window=${window}${branchId ? `&branchId=${branchId}` : ""}`,
+    services.authHeader()
+  );
+  return response.data;
+};

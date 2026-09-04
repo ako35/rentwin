@@ -10,8 +10,9 @@ import "./schedule-table.scss";
 
 const { routes } = constants;
 
-const ScheduleTable = ({ title, type, dateField, branchId }) => {
+const ScheduleTable = ({ title, type, dateField, branchId, source = "contract" }) => {
   const { t } = useTranslation("admin");
+  const isReservation = source === "reservation";
   const WINDOWS = [
     { value: "today", label: t("scheduleTable.windows.today") },
     { value: "3", label: t("scheduleTable.windows.3") },
@@ -27,12 +28,9 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const data = await services.contract.getAdminSchedule({
-        type,
-        window,
-        excludeCompleted: true,
-        branchId,
-      });
+      const data = isReservation
+        ? await services.reservation.getReservationSchedule({ window, branchId })
+        : await services.contract.getAdminSchedule({ type, window, excludeCompleted: true, branchId });
       setRows(data);
     } catch (error) {
       utils.functions.swalToast(t("scheduleTable.loadError"), "error");
@@ -89,7 +87,8 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
               rows.map((row) => {
                 const target = row[dateField];
                 const daysRemaining = moment(target).startOf("day").diff(moment().startOf("day"), "days");
-                const goToDetails = () => navigate(`${routes.adminContracts}/${row.id}`);
+                const goToDetails = () =>
+                  navigate(`${isReservation ? routes.adminReservations : routes.adminContracts}/${row.id}`);
                 return (
                   <tr
                     key={row.id}
