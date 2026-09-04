@@ -14,7 +14,7 @@ const CustomerSummary = ({ customer, userId, money }) => {
   const fmt = money || ((v) => Number(v || 0).toFixed(2));
 
   return (
-    <>
+    <div className="contract-page__cust-summary">
       <RoRow label={c("custType")} value={customer ? (isCorp ? c("corporate") : c("individual")) : ""} />
       {isCorp ? (
         <>
@@ -40,7 +40,7 @@ const CustomerSummary = ({ customer, userId, money }) => {
           {c("openCustomer")}
         </Link>
       )}
-    </>
+    </div>
   );
 };
 

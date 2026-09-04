@@ -131,6 +131,19 @@
     strong { color: v.$color5; text-align: right; }
   }
 
+  // Edit-mode customer tab: label + value both left-aligned (create mode look),
+  // instead of the label-left / value-right split of a plain &__ro row.
+  &__cust-summary {
+    .contract-page__ro {
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 0.75rem;
+
+      span { flex: 0 0 132px; white-space: normal; }
+      strong { text-align: left; }
+    }
+  }
+
   &__link {
     display: inline-block;
     margin: 0.15rem 0 0.5rem;
