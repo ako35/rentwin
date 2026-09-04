@@ -118,7 +118,8 @@ model Vehicle {
   chassisNo            String?
   engineNo             String?
   currentKm            Int?
-  currentFuelPercent   Int?
+  currentFuelPercent   Int? // deprecated — replaced by currentFuelEighths; kept nullable until a later cleanup migration
+  currentFuelEighths   Int? // fuel / charge gauge reading, 0-8
   registrationSerialNo String?
   registrationDate     DateTime?
   color                String?

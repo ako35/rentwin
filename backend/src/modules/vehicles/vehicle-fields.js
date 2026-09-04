@@ -14,7 +14,7 @@ const VEHICLE_FIELDS = [
   "chassisNo",
   "engineNo",
   "currentKm",
-  "currentFuelPercent",
+  "currentFuelEighths",
   "registrationSerialNo",
   "registrationDate",
   "color",
@@ -23,7 +23,7 @@ const VEHICLE_FIELDS = [
 
 const DATE_FIELDS = ["nextMaintenanceDate", "nextInspectionDate", "registrationDate"];
 // Optional numeric columns: an empty-string form value must land as null, not NaN.
-const NULLABLE_NUMBER_FIELDS = ["modelYear", "currentKm", "currentFuelPercent"];
+const NULLABLE_NUMBER_FIELDS = ["modelYear", "currentKm", "currentFuelEighths"];
 // Optional string/enum columns: an empty-string form value must land as null.
 const NULLABLE_STRING_FIELDS = [
   "chassisNo",
