@@ -59,7 +59,7 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
         </Nav>
       </div>
       <div className="schedule-table__table-container">
-        <Table hover responsive>
+        <Table hover responsive size="sm" className="mb-0">
           <thead>
             <tr>
               <th>{t("scheduleTable.date")}</th>
@@ -79,7 +79,7 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
               </tr>
             )}
             {!loading && rows.length === 0 && (
-              <tr>
+              <tr className="schedule-table__empty">
                 <td colSpan={6} className="text-center">
                   {t("scheduleTable.noRecords")}
                 </td>

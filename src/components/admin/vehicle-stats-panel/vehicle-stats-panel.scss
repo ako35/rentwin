@@ -2,60 +2,60 @@
 @use '../../../styles/mixins' as m;
 
 .vehicle-stats-panel {
-    background-color: v.$color4;
-    border: 1px solid v.$color1-5;
-    border-radius: 5px;
-    box-shadow: 0 0 5px v.$color1-5;
-    padding: 1rem 1.5rem;
+    background-color: #fff;
+    border: 1px solid v.$color1_5;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(27, 122, 67, 0.08);
+    padding: 0.75rem 0.9rem;
     height: 100%;
 
     &__title {
         text-transform: uppercase;
-        font-size: 1rem;
+        letter-spacing: 0.04em;
+        font-size: 0.82rem;
+        font-weight: 700;
         color: v.$color1;
-        margin-bottom: 1rem;
-        border-bottom: 1px solid v.$color1-5;
-        padding-bottom: 0.5rem;
+        margin-bottom: 0.6rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid v.$color3;
     }
 
     &__items {
-        @include m.flexbox(row, space-between, center, 1rem);
+        @include m.flexbox(row, space-between, stretch, 0.5rem);
         flex-wrap: wrap;
     }
 
     &__item {
-        @include m.flexbox(column, center, center, 0.25rem);
+        @include m.flexbox(column, center, center, 0.15rem);
         flex: 1;
-        min-width: 90px;
+        min-width: 74px;
+        padding: 0.35rem 0.25rem;
+        border-radius: 8px;
+        background-color: v.$color3_5;
     }
 
     &__icon {
-        font-size: 1.6rem;
+        font-size: 1.15rem;
         color: v.$color2;
 
-        &--blue {
-            color: #2f7ea8;
-        }
-
-        &--green {
-            color: v.$color1;
-        }
-
-        &--orange {
-            color: #d98c2b;
-        }
+        &--blue { color: #2f7ea8; }
+        &--green { color: v.$color1; }
+        &--orange { color: #d98c2b; }
     }
 
     &__value {
-        font-size: 1.5rem;
-        font-weight: 700;
+        font-size: 1.2rem;
+        font-weight: 800;
+        line-height: 1.1;
         color: v.$color5;
     }
 
     &__label {
-        font-size: 0.75rem;
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
         text-transform: uppercase;
-        color: v.$color1-2;
+        color: v.$color1_2;
         text-align: center;
     }
 }

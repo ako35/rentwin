@@ -2,66 +2,107 @@
 @use '../../../styles/mixins' as m;
 
 .schedule-table {
-    background-color: v.$color4;
-    border: 1px solid v.$color1-5;
-    border-radius: 5px;
-    box-shadow: 0 0 5px v.$color1-5;
-    padding: 1rem 1.5rem;
+    background-color: #fff;
+    border: 1px solid v.$color1_5;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(27, 122, 67, 0.08);
+    padding: 0.75rem 0.9rem;
     height: 100%;
 
     &__header {
-        @include m.flexbox(row, space-between, center, 1rem);
+        @include m.flexbox(row, space-between, center, 0.75rem);
         flex-wrap: wrap;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.55rem;
 
         h3 {
             text-transform: uppercase;
-            font-size: 1rem;
+            letter-spacing: 0.04em;
+            font-size: 0.82rem;
+            font-weight: 700;
             color: v.$color1;
             margin: 0;
         }
 
         .nav-pills {
+            gap: 0.15rem;
+
             .nav-link {
                 color: v.$color1;
-                font-size: 0.8rem;
-                padding: 0.25rem 0.6rem;
+                font-size: 0.72rem;
+                font-weight: 600;
+                padding: 0.15rem 0.5rem;
+                border-radius: 5px;
 
                 &.active {
                     background-color: v.$color1;
-                    color: v.$color4;
+                    color: #fff;
                 }
             }
         }
     }
 
     &__table-container {
-        max-height: 350px;
+        max-height: 320px;
         overflow-y: auto;
+        border: 1px solid v.$color3;
+        border-radius: 8px;
 
         table {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin-bottom: 0;
-        }
 
-        thead {
-            position: sticky;
-            top: 0;
-            background-color: v.$color4;
-        }
+            th,
+            td {
+                padding: 0.4rem 0.65rem;
+                border-bottom: 1px solid v.$color3;
+                vertical-align: middle;
+            }
 
-        tbody tr {
-            cursor: pointer;
+            thead th {
+                position: sticky;
+                top: 0;
+                z-index: 1;
+                background-color: v.$color1;
+                color: #fff;
+                font-size: 0.68rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                border-bottom: none;
+                white-space: nowrap;
+            }
+
+            tbody tr {
+                cursor: pointer;
+                transition: background-color 0.12s ease;
+
+                &:nth-child(even) {
+                    background-color: v.$color3;
+                }
+
+                &:hover {
+                    background-color: v.$color2_5;
+                }
+
+                &:last-child td {
+                    border-bottom: none;
+                }
+            }
         }
     }
 
     &__row--overdue {
-        background-color: rgba(185, 58, 58, 0.12);
+        background-color: rgba(185, 58, 58, 0.12) !important;
     }
 
     &__plate {
         color: #b93a3a;
         font-weight: 700;
         white-space: nowrap;
+    }
+
+    &__empty td {
+        color: v.$color5_3;
+        font-size: 0.8rem;
     }
 }

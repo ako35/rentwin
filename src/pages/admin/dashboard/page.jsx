@@ -55,7 +55,7 @@ const AdminDashboard = () => {
         <Loading height={500} />
       ) : (
         <>
-          <Row className="gy-3 align-items-stretch">
+          <Row className="gy-2 align-items-stretch">
             <Col xl={5}>
               <VehicleStatsPanel stats={fleetStats} />
             </Col>
@@ -81,7 +81,7 @@ const AdminDashboard = () => {
             onAutoRefreshChange={setAutoRefresh}
           />
 
-          <Row className="gy-3 mt-1">
+          <Row className="gy-2">
             <Col xl={6}>
               <ScheduleTable title={t("dashboard.returns")} type="returns" dateField="dropOffTime" branchId={branchId} />
             </Col>
