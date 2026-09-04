@@ -24,12 +24,30 @@ const VehicleSection = ({ formik, branchNames, vehicleOptions, selectedCar, isCr
       <CustomForm formik={formik} name="pickUpLocation" label={`* ${c("pickUpLocation")}`} list={branchNames} />
       <CustomForm formik={formik} name="dropOffLocation" label={`* ${c("dropOffLocation")}`} list={branchNames} />
       <div className="contract-page__pair">
-        <CustomForm formik={formik} name="pickUpDate" label={`* ${c("pickUpDate")}`} type="date" />
-        <CustomForm formik={formik} name="pickUpTime" label={t("reservations.form.pickUpTime")} type="time" />
+        <CustomForm formik={formik} name="pickUpDate" label={`* ${c("pickUpDate")}`} type="date" disabled={!isCreate} />
+        <CustomForm
+          formik={formik}
+          name="pickUpTime"
+          label={t("reservations.form.pickUpTime")}
+          type="time"
+          disabled={!isCreate}
+        />
       </div>
       <div className="contract-page__pair">
-        <CustomForm formik={formik} name="dropOffDate" label={`* ${c("dropOffDate")}`} type="date" />
-        <CustomForm formik={formik} name="dropOffTime" label={t("reservations.form.dropOffTime")} type="time" />
+        <CustomForm
+          formik={formik}
+          name="dropOffDate"
+          label={`* ${c("dropOffDate")}`}
+          type="date"
+          disabled={!isCreate}
+        />
+        <CustomForm
+          formik={formik}
+          name="dropOffTime"
+          label={t("reservations.form.dropOffTime")}
+          type="time"
+          disabled={!isCreate}
+        />
       </div>
       <CustomForm
         formik={formik}
