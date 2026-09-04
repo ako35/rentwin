@@ -17,6 +17,7 @@ export const buildVehicleSections = ({ branches, brandOptions, modelOptions, t, 
         { name: "engineNo" },
         { name: "color" },
         { name: "currentKm", type: "number" },
+        { name: "currentFuelPercent", type: "number" },
         {
           name: "transmission",
           type: "select",

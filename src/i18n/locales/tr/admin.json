@@ -84,6 +84,7 @@
       "chassisNo": "Şasi No",
       "engineNo": "Motor No",
       "currentKm": "Güncel KM",
+      "currentFuelPercent": "Güncel Yakıt / Şarj (%)",
       "color": "Renk",
       "registrationSerialNo": "Ruhsat Seri / No",
       "registrationDate": "Tescil Tarihi",

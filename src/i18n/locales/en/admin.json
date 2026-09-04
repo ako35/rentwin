@@ -84,6 +84,7 @@
       "chassisNo": "Chassis No",
       "engineNo": "Engine No",
       "currentKm": "Current Odometer",
+      "currentFuelPercent": "Current Fuel / Charge (%)",
       "color": "Color",
       "registrationSerialNo": "Registration Serial / No",
       "registrationDate": "Registration Date",
