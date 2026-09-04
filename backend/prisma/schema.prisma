@@ -118,7 +118,7 @@ model Vehicle {
   chassisNo            String?
   engineNo             String?
   currentKm            Int?
-  currentFuelPercent   Int?
+  currentFuelEighths   Int?
   registrationSerialNo String?
   registrationDate     DateTime?
   color                String?

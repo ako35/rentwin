@@ -2,8 +2,20 @@ import { constants } from "../../../constants";
 
 // Field layout for the vehicle "Araç" tab, grouped into Kimlik / Ruhsat
 // sections. brand/model are editable comboboxes fed by the current fleet.
+// Fuel / charge gauge in eighths: "—" (not set) + 0/8 … 8/8, with Boş / ¼ / ½ / ¾ / Dolu hints.
+const FUEL_EIGHTHS_HINT = { 0: "fuelEmpty", 2: "fuelQuarter", 4: "fuelHalf", 6: "fuelThreeQuarter", 8: "fuelFull" };
+
 export const buildVehicleSections = ({ branches, brandOptions, modelOptions, t, tCommon }) => {
   const withNames = (arr, resolve) => arr.map((item) => ({ ...item, name: resolve(item) }));
+
+  const fuelEighthsOptions = [
+    { id: "fe-none", value: "", name: t("vehicles.form.fuelNotSet") },
+    ...Array.from({ length: 9 }, (_, n) => ({
+      id: `fe-${n}`,
+      value: String(n),
+      name: FUEL_EIGHTHS_HINT[n] ? `${n}/8 · ${t(`vehicles.form.${FUEL_EIGHTHS_HINT[n]}`)}` : `${n}/8`,
+    })),
+  ];
 
   return [
     {
@@ -17,7 +29,7 @@ export const buildVehicleSections = ({ branches, brandOptions, modelOptions, t, 
         { name: "engineNo" },
         { name: "color" },
         { name: "currentKm", type: "number" },
-        { name: "currentFuelPercent", type: "number" },
+        { name: "currentFuelEighths", type: "select", itemsArr: fuelEighthsOptions },
         {
           name: "transmission",
           type: "select",

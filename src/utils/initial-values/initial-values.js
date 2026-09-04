@@ -75,7 +75,7 @@ export const adminNewVehicleFormInitialValues = {
     chassisNo: "",
     engineNo: "",
     currentKm: "",
-    currentFuelPercent: "",
+    currentFuelEighths: "",
     registrationSerialNo: "",
     registrationDate: "",
     color: "",
