@@ -6,6 +6,7 @@ const { serializeReservation } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 const { CAR_INCLUDE, ALLOWED_SORT_FIELDS } = require("./reservations.shared");
+const { nextContractNo } = require("../contracts/contract-fields");
 
 const dayCount = (r) =>
   Math.max(1, Math.ceil((r.dropOffTime.getTime() - r.pickUpTime.getTime()) / 86400000));
@@ -191,6 +192,7 @@ const convertToContract = asyncHandler(async (req, res) => {
       data: {
         carId: reservation.carId,
         userId: reservation.userId,
+        contractNo: await nextContractNo(tx),
         pickUpLocation: reservation.pickUpLocation,
         dropOffLocation: reservation.dropOffLocation,
         pickUpTime: reservation.pickUpTime,

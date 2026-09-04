@@ -236,6 +236,7 @@ model Reservation {
 // May be created directly (walk-in) or converted from a Reservation.
 model Contract {
   id                String              @id @default(uuid())
+  contractNo        String?             @unique
   pickUpLocation    String
   dropOffLocation   String
   pickUpTime        DateTime

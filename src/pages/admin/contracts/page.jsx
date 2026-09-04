@@ -159,7 +159,7 @@ const AdminContractsPage = () => {
                     <td>{utils.functions.getDate(r.dropOffTime)}</td>
                     <td>{utils.functions.getTime(r.dropOffTime)}</td>
                     <td className="contract-list__plate">{r.plate || "—"}</td>
-                    <td className="contract-list__no">{r.id.slice(0, 10).toUpperCase()}</td>
+                    <td className="contract-list__no">{r.contractNo || r.id.slice(0, 10).toUpperCase()}</td>
                     <td className="contract-list__customer">{r.customerName}</td>
                     <td>{r.branchCode || "—"}</td>
                     <td>{r.vehicle}</td>

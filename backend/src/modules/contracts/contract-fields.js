@@ -1,7 +1,24 @@
+const prisma = require("../../lib/prisma");
 const { hoursBetween, round2 } = require("../../lib/dates");
 
 // Free-text contract fields (empty string -> null).
 const CONTRACT_NOTE_FIELDS = ["customerNote", "adminNote", "referenceNo", "flightNo"];
+
+const CONTRACT_NO_PREFIX = "K";
+
+// Human-readable contract number: K-<year>-00001, restarting each year.
+// Highest existing for the year + 1 (survives deletes, unlike a plain count).
+// The fixed-width zero-padded suffix makes "contractNo desc" a numeric sort.
+const nextContractNo = async (client = prisma) => {
+  const prefix = `${CONTRACT_NO_PREFIX}-${new Date().getFullYear()}-`;
+  const last = await client.contract.findFirst({
+    where: { contractNo: { startsWith: prefix } },
+    orderBy: { contractNo: "desc" },
+    select: { contractNo: true },
+  });
+  const lastNum = last ? parseInt(last.contractNo.slice(prefix.length), 10) || 0 : 0;
+  return `${prefix}${String(lastNum + 1).padStart(5, "0")}`;
+};
 
 // Numeric contract fields (parsed via num()).
 const CONTRACT_NUMBER_FIELDS = [
@@ -62,6 +79,7 @@ module.exports = {
   CONTRACT_NOTE_FIELDS,
   CONTRACT_NUMBER_FIELDS,
   num,
+  nextContractNo,
   pickContractFields,
   computeTotal,
 };

@@ -5,6 +5,20 @@ const { serializeScheduleRow, serializeVehicle } = require("../../lib/serializer
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 const { ALLOWED_SORT_FIELDS } = require("./contracts.shared");
+const { nextContractNo } = require("./contract-fields");
+
+// Assign a fresh contract number, retrying on the rare create-race collision.
+const createContractWithNo = async (data, client = prisma) => {
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      return await client.contract.create({ data: { ...data, contractNo: await nextContractNo(client) } });
+    } catch (err) {
+      const dup = err.code === "P2002" && String(err.meta?.target ?? "").includes("contractNo");
+      if (dup && attempt < 5) continue;
+      throw err;
+    }
+  }
+};
 
 const getContractsByPage = asyncHandler(async (req, res) => {
   const { page, size, direction, sortField } = parsePageParams(req.query, {
@@ -54,6 +68,7 @@ const getContractsByPage = asyncHandler(async (req, res) => {
     buildPageResponse({
       content: content.map((r) => ({
         id: r.id,
+        contractNo: r.contractNo,
         status: r.status,
         pickUpTime: r.pickUpTime,
         dropOffTime: r.dropOffTime,
@@ -96,18 +111,16 @@ const createContract = asyncHandler(async (req, res) => {
   if (!car) throw new HttpError(404, "Vehicle not found.");
   if (!user) throw new HttpError(404, "Customer not found.");
 
-  const contract = await prisma.contract.create({
-    data: {
-      carId,
-      userId,
-      pickUpLocation: pickUpLocation || "",
-      dropOffLocation: dropOffLocation || pickUpLocation || "",
-      pickUpTime: parsedPickUp,
-      dropOffTime: parsedDropOff,
-      totalPrice: 0,
-      status: "CREATED",
-      reservationId: reservationId || null,
-    },
+  const contract = await createContractWithNo({
+    carId,
+    userId,
+    pickUpLocation: pickUpLocation || "",
+    dropOffLocation: dropOffLocation || pickUpLocation || "",
+    pickUpTime: parsedPickUp,
+    dropOffTime: parsedDropOff,
+    totalPrice: 0,
+    status: "CREATED",
+    reservationId: reservationId || null,
   });
   res.status(201).json({ id: contract.id });
 });

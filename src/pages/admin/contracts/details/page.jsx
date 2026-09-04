@@ -216,7 +216,7 @@ const ContractDetail = () => {
       <ContractRibbon
         isCreate={isCreate}
         contractId={contractId}
-        referenceNo={formik.values.referenceNo}
+        contractNo={formik.values.contractNo}
         status={contractStatus}
         updatedAt={meta.updatedAt}
       />
