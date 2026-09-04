@@ -98,8 +98,16 @@ const ScheduleTable = ({ title, type, dateField, branchId, source = "contract" }
                     <td>{utils.functions.getDate(target)}</td>
                     <td>{utils.functions.getTime(target)}</td>
                     <td className="schedule-table__plate">{row.car?.licensePlate}</td>
-                    <td>{row.car?.brand} {row.car?.model}</td>
-                    <td>{row.user?.companyTitle || `${row.user?.firstName || ""} ${row.user?.lastName || ""}`.trim()}</td>
+                    <td className="schedule-table__vehicle">{row.car?.brand} {row.car?.model}</td>
+                    {(() => {
+                      const customerName =
+                        row.user?.companyTitle || `${row.user?.firstName || ""} ${row.user?.lastName || ""}`.trim();
+                      return (
+                        <td className="schedule-table__customer" title={customerName}>
+                          {customerName}
+                        </td>
+                      );
+                    })()}
                     <td>{daysRemaining}</td>
                   </tr>
                 );

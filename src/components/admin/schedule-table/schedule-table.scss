@@ -50,13 +50,27 @@
         table {
             font-size: 0.8rem;
             margin-bottom: 0;
+            table-layout: fixed;
+            width: 100%;
 
             th,
             td {
-                padding: 0.4rem 0.65rem;
+                padding: 0.4rem 0.5rem;
                 border-bottom: 1px solid v.$color3;
                 vertical-align: middle;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
+
+            // Tarih | Saat | Plaka | Araç | Müşteri | Gün — Müşteri gets the
+            // remaining room and ellipsizes; everything else stays one line.
+            th:nth-child(1), td:nth-child(1) { width: 21%; }
+            th:nth-child(2), td:nth-child(2) { width: 9%; }
+            th:nth-child(3), td:nth-child(3) { width: 13%; }
+            th:nth-child(4), td:nth-child(4) { width: 17%; }
+            th:nth-child(5), td:nth-child(5) { width: auto; }
+            th:nth-child(6), td:nth-child(6) { width: 8%; text-align: right; }
 
             thead th {
                 position: sticky;
@@ -69,7 +83,6 @@
                 text-transform: uppercase;
                 letter-spacing: 0.04em;
                 border-bottom: none;
-                white-space: nowrap;
             }
 
             tbody tr {
