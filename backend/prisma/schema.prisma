@@ -259,6 +259,8 @@ model Contract {
   adminNote         String?
   referenceNo       String?
   flightNo          String?
+  pickUpKm          Int? // odometer at hand-over (prefilled from the vehicle, editable)
+  pickUpFuelEighths Int? // fuel / charge gauge at hand-over, 0-8
   dailyPrice        Float?
   extrasTotal       Float?
   oneWayFee         Float?

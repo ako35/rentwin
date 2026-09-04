@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
@@ -185,6 +185,36 @@ const ContractDetail = () => {
     () => [...vehicles, ...availableCars].find((v) => v.id === formik.values.carId),
     [vehicles, availableCars, formik.values.carId]
   );
+
+  // Switching to a *different* vehicle than the form loaded with pulls that car's
+  // current odometer + fuel into the hand-over fields (they start empty in create
+  // mode, stay editable). An opened contract keeps the snapshot it was saved with.
+  const fuelPrefillFor = useRef(undefined);
+  useEffect(() => {
+    const carId = formik.values.carId;
+    const baseline = initialValues.carId || "";
+    if (carId === baseline) {
+      fuelPrefillFor.current = carId;
+      return;
+    }
+    if (carId === fuelPrefillFor.current) return;
+    fuelPrefillFor.current = carId;
+    if (!carId) {
+      formik.setFieldValue("pickUpKm", "");
+      formik.setFieldValue("pickUpFuelEighths", "");
+      return;
+    }
+    if (!selectedCar) {
+      fuelPrefillFor.current = undefined; // car object not loaded yet — retry when it is
+      return;
+    }
+    formik.setFieldValue("pickUpKm", selectedCar.currentKm ?? "");
+    formik.setFieldValue(
+      "pickUpFuelEighths",
+      selectedCar.currentFuelEighths != null ? String(selectedCar.currentFuelEighths) : ""
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formik.values.carId, selectedCar, initialValues.carId]);
 
   const billableDays = useMemo(() => computeBillableDays(formik.values), [formik.values]);
 

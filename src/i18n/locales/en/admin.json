@@ -386,6 +386,8 @@
       "duration": "Duration",
       "durationDays": "{{count}} days",
       "vehicle": "Vehicle",
+      "pickUpKm": "Pick-up Odometer",
+      "pickUpFuelLevel": "Pick-up Fuel / Charge",
       "class": "Class / Model",
       "fuelTransmission": "Fuel / Transmission",
       "plate": "Plate",

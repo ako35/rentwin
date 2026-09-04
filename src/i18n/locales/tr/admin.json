@@ -386,6 +386,8 @@
       "duration": "Süre",
       "durationDays": "{{count}} Gün",
       "vehicle": "Araç",
+      "pickUpKm": "Alış KM",
+      "pickUpFuelLevel": "Alış Yakıt / Şarj",
       "class": "Sınıf / Model",
       "fuelTransmission": "Yakıt / Vites",
       "plate": "Plaka",

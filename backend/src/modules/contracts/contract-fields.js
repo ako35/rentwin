@@ -22,6 +22,8 @@ const nextContractNo = async (client = prisma) => {
 
 // Numeric contract fields (parsed via num()).
 const CONTRACT_NUMBER_FIELDS = [
+  "pickUpKm",
+  "pickUpFuelEighths",
   "dailyPrice",
   "extrasTotal",
   "oneWayFee",
