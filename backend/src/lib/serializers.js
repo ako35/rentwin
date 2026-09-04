@@ -25,6 +25,7 @@ const serializeReservation = (reservation) => {
 // — only what the table needs, no image relation required on the query.
 const serializeScheduleRow = (contract) => ({
   id: contract.id,
+  contractNo: contract.contractNo || null,
   pickUpTime: contract.pickUpTime,
   dropOffTime: contract.dropOffTime,
   pickUpLocation: contract.pickUpLocation,
@@ -39,7 +40,12 @@ const serializeScheduleRow = (contract) => ({
       }
     : undefined,
   user: contract.user
-    ? { firstName: contract.user.firstName, lastName: contract.user.lastName, email: contract.user.email }
+    ? {
+        firstName: contract.user.firstName,
+        lastName: contract.user.lastName,
+        companyTitle: contract.user.companyTitle || null,
+        email: contract.user.email,
+      }
     : undefined,
 });
 

@@ -66,7 +66,6 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
               <th></th>
               <th>{t("scheduleTable.date")}</th>
               <th>{t("scheduleTable.time")}</th>
-              <th>{t("scheduleTable.branchCode")}</th>
               <th>{t("scheduleTable.plate")}</th>
               <th>{t("scheduleTable.reservationNo")}</th>
               <th>{t("scheduleTable.vehicle")}</th>
@@ -77,14 +76,14 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
           <tbody>
             {loading && (
               <tr>
-                <td colSpan={9} className="text-center">
+                <td colSpan={8} className="text-center">
                   <Spinner animation="border" size="sm" />
                 </td>
               </tr>
             )}
             {!loading && rows.length === 0 && (
               <tr>
-                <td colSpan={9} className="text-center">
+                <td colSpan={8} className="text-center">
                   {t("scheduleTable.noRecords")}
                 </td>
               </tr>
@@ -105,11 +104,12 @@ const ScheduleTable = ({ title, type, dateField, branchId }) => {
                     </td>
                     <td>{utils.functions.getDate(target)}</td>
                     <td>{utils.functions.getTime(target)}</td>
-                    <td>{row.car?.branchCode || "-"}</td>
                     <td className="schedule-table__plate">{row.car?.licensePlate}</td>
-                    <td className="schedule-table__contract">{row.id.slice(0, 10).toUpperCase()}</td>
+                    <td className="schedule-table__contract">
+                      {row.contractNo || row.id.slice(0, 10).toUpperCase()}
+                    </td>
                     <td>{row.car?.brand} {row.car?.model}</td>
-                    <td>{row.user?.firstName} {row.user?.lastName}</td>
+                    <td>{row.user?.companyTitle || `${row.user?.firstName || ""} ${row.user?.lastName || ""}`.trim()}</td>
                     <td>{daysRemaining}</td>
                   </tr>
                 );
