@@ -88,25 +88,29 @@ const ReservationSearch = () => {
 
   return (
     <form className="reservation-search" onSubmit={formik.handleSubmit} noValidate>
-      <div className="reservation-search__row">
-        {locationField("pickUpLocation", "pickUpLocationLabel", "pickUpLocationPlaceholder")}
-        {locationField("dropOffLocation", "dropOffLocationLabel", "dropOffLocationPlaceholder")}
-      </div>
-      <div className="reservation-search__row">
-        {field("pickUpDate", "pickUpDate", <BsCalendarEvent className="reservation-search__icon" />, {
-          type: "date",
-          min: utils.functions.getCurrentDate(),
-        })}
-        {field("pickUpTime", "pickUpTime", <BsClock className="reservation-search__icon" />, {
-          type: "time",
-        })}
-        {field("dropOffDate", "dropOffDate", <BsCalendarEvent className="reservation-search__icon" />, {
-          type: "date",
-          min: formik.values.pickUpDate || utils.functions.getCurrentDate(),
-        })}
-        {field("dropOffTime", "dropOffTime", <BsClock className="reservation-search__icon" />, {
-          type: "time",
-        })}
+      <div className="reservation-search__body">
+        <div className="reservation-search__fields">
+          <div className="reservation-search__row">
+            {locationField("pickUpLocation", "pickUpLocationLabel", "pickUpLocationPlaceholder")}
+            {field("pickUpDate", "pickUpDate", <BsCalendarEvent className="reservation-search__icon" />, {
+              type: "date",
+              min: utils.functions.getCurrentDate(),
+            })}
+            {field("pickUpTime", "pickUpTime", <BsClock className="reservation-search__icon" />, {
+              type: "time",
+            })}
+          </div>
+          <div className="reservation-search__row">
+            {locationField("dropOffLocation", "dropOffLocationLabel", "dropOffLocationPlaceholder")}
+            {field("dropOffDate", "dropOffDate", <BsCalendarEvent className="reservation-search__icon" />, {
+              type: "date",
+              min: formik.values.pickUpDate || utils.functions.getCurrentDate(),
+            })}
+            {field("dropOffTime", "dropOffTime", <BsClock className="reservation-search__icon" />, {
+              type: "time",
+            })}
+          </div>
+        </div>
         <button type="submit" className="reservation-search__submit">
           {t("reservationSearch.submit")}
         </button>
