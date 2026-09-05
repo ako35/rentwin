@@ -13,13 +13,14 @@ const DetailsPanel = () => {
   const vehicle = useSelector((state) => state.reservation.vehicle);
   const { t } = useTranslation("vehicles");
   const { t: tCommon } = useTranslation("common");
+  const vehicleName = [vehicle?.brand, vehicle?.model].filter(Boolean).join(" ");
 
   const carDetails = [
     {
       id: 1,
       title: t("details.model"),
       icon: <FaCar />,
-      info: vehicle?.model,
+      info: vehicleName,
     },
     {
       id: 2,
@@ -34,16 +35,17 @@ const DetailsPanel = () => {
       info: tCommon(`options.fuelTypes.${vehicle?.fuelType}`),
     },
   ];
+
   return (
     <div className="details-panel">
       <div className="panel-title">
-        <h1 className="text-primary">{vehicle?.model}</h1>
+        <h1 className="text-primary">{vehicleName}</h1>
       </div>
       <Card>
         <img
           src={`${API_URL}/files/display/${vehicle?.image}`}
-          alt={vehicle?.model}
-          title={vehicle?.model}
+          alt={vehicleName}
+          title={vehicleName}
           loading="lazy"
         />
       </Card>

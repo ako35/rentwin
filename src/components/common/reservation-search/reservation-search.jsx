@@ -31,8 +31,8 @@ const ReservationSearch = () => {
     onSubmit: (values) => {
       dispatch(
         setSearchCriteria({
-          pickUpLocation: values.location.trim(),
-          dropOffLocation: values.location.trim(),
+          pickUpLocation: values.pickUpLocation.trim(),
+          dropOffLocation: values.dropOffLocation.trim(),
           pickUpDate: values.pickUpDate,
           pickUpTime: values.pickUpTime,
           dropOffDate: values.dropOffDate,
@@ -64,45 +64,53 @@ const ReservationSearch = () => {
     </div>
   );
 
+  const locationField = (name, labelKey, placeholderKey) => (
+    <div className={`reservation-search__field reservation-search__field--${name}`}>
+      <label htmlFor={`rs-${name}`}>{t(`reservationSearch.${labelKey}`)}</label>
+      <div className="reservation-search__control">
+        <BsGeoAlt className="reservation-search__icon" />
+        <select
+          id={`rs-${name}`}
+          name={name}
+          value={formik.values[name]}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          className={invalid(name)}
+        >
+          <option value="">{t(`reservationSearch.${placeholderKey}`)}</option>
+          {locations.map((l) => (
+            <option key={l.id} value={l.name}>{l.name}</option>
+          ))}
+        </select>
+      </div>
+    </div>
+  );
+
   return (
     <form className="reservation-search" onSubmit={formik.handleSubmit} noValidate>
-      <div className="reservation-search__field reservation-search__field--location">
-        <label htmlFor="rs-location">{t("reservationSearch.locationLabel")}</label>
-        <div className="reservation-search__control">
-          <BsGeoAlt className="reservation-search__icon" />
-          <select
-            id="rs-location"
-            name="location"
-            value={formik.values.location}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            className={invalid("location")}
-          >
-            <option value="">{t("reservationSearch.locationPlaceholder")}</option>
-            {locations.map((l) => (
-              <option key={l.id} value={l.name}>{l.name}</option>
-            ))}
-          </select>
-        </div>
+      <div className="reservation-search__row">
+        {locationField("pickUpLocation", "pickUpLocationLabel", "pickUpLocationPlaceholder")}
+        {locationField("dropOffLocation", "dropOffLocationLabel", "dropOffLocationPlaceholder")}
       </div>
-      {field("pickUpDate", "pickUpDate", <BsCalendarEvent className="reservation-search__icon" />, {
-        type: "date",
-        min: utils.functions.getCurrentDate(),
-      })}
-      {field("pickUpTime", "pickUpTime", <BsClock className="reservation-search__icon" />, {
-        type: "time",
-      })}
-      {field("dropOffDate", "dropOffDate", <BsCalendarEvent className="reservation-search__icon" />, {
-        type: "date",
-        min: formik.values.pickUpDate || utils.functions.getCurrentDate(),
-      })}
-      {field("dropOffTime", "dropOffTime", <BsClock className="reservation-search__icon" />, {
-        type: "time",
-      })}
-
-      <button type="submit" className="reservation-search__submit">
-        {t("reservationSearch.submit")}
-      </button>
+      <div className="reservation-search__row">
+        {field("pickUpDate", "pickUpDate", <BsCalendarEvent className="reservation-search__icon" />, {
+          type: "date",
+          min: utils.functions.getCurrentDate(),
+        })}
+        {field("pickUpTime", "pickUpTime", <BsClock className="reservation-search__icon" />, {
+          type: "time",
+        })}
+        {field("dropOffDate", "dropOffDate", <BsCalendarEvent className="reservation-search__icon" />, {
+          type: "date",
+          min: formik.values.pickUpDate || utils.functions.getCurrentDate(),
+        })}
+        {field("dropOffTime", "dropOffTime", <BsClock className="reservation-search__icon" />, {
+          type: "time",
+        })}
+        <button type="submit" className="reservation-search__submit">
+          {t("reservationSearch.submit")}
+        </button>
+      </div>
 
       {firstError && <p className="reservation-search__error">{formik.errors[firstError]}</p>}
     </form>

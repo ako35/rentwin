@@ -29,7 +29,8 @@ export const contactFormInitialValues = {
 
 // HOMEPAGE RESERVATION SEARCH
 export const reservationSearchInitialValues = () => ({
-    location: "",
+    pickUpLocation: "",
+    dropOffLocation: "",
     pickUpDate: moment().format("YYYY-MM-DD"),
     pickUpTime: "10:00",
     dropOffDate: moment().add(3, "days").format("YYYY-MM-DD"),

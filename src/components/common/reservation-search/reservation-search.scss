@@ -4,8 +4,8 @@
 $breakpoint: 992px;
 
 .reservation-search {
-    // Desktop: single full-width row sitting just below the slider text,
-    // around the vertical middle of the hero, with a margin on each side.
+    // Desktop: two stacked rows sitting just below the slider text, around
+    // the vertical middle of the hero, with a margin on each side.
     position: absolute;
     z-index: 10;
     left: 50%;
@@ -15,8 +15,7 @@ $breakpoint: 992px;
     max-width: 1240px;
 
     display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
+    flex-direction: column;
     gap: 0.6rem;
     padding: 0.85rem 1rem;
     background-color: v.$color4_2;
@@ -32,6 +31,13 @@ $breakpoint: 992px;
         margin: -2.5rem 1rem 0;
         backdrop-filter: none;
         background-color: v.$color4;
+    }
+
+    &__row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 0.6rem;
     }
 
     &__field {
@@ -54,8 +60,9 @@ $breakpoint: 992px;
             letter-spacing: 0.02em;
         }
 
-        &--location {
-            flex: 3 1 220px;
+        &--pickUpLocation,
+        &--dropOffLocation {
+            flex: 1 1 220px;
         }
 
         &--pickUpDate,
