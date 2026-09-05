@@ -139,7 +139,7 @@ const website = {
   mapUrl: "https://goo.gl/maps/qTTsxo39YWMdGXd88",
   mapEmbedUrl:
     "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3152.9631309952415!2d-122.3940873!3d37.790903799999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80858064f28f34d9%3A0xd368cc2220a9c46e!2s150%20Main%20St%2C%20San%20Francisco%2C%20CA%2094105%2C%20USA!5e0!3m2!1sen!2str!4v1687887041591!5m2!1sen!2str",
-  email: "info@rentwin.com",
+  email: "info@rentwin.com.tr",
   instagram: "https://www.instagram.com/rentwin/",
   facebook: "https://www.facebook.com/rentwin/",
   twitter: "https://twitter.com/rentwin/",
