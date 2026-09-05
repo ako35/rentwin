@@ -1,9 +1,9 @@
 {
   "reservationSearch": {
     "pickUpLocationLabel": "Alış Yeri",
-    "pickUpLocationPlaceholder": "Şube / konum seçin",
+    "pickUpLocationPlaceholder": "Lokasyon seçin",
     "dropOffLocationLabel": "Bırakış Yeri",
-    "dropOffLocationPlaceholder": "Şube / konum seçin",
+    "dropOffLocationPlaceholder": "Lokasyon seçin",
     "pickUpDate": "Alış Tarihi",
     "pickUpTime": "Alış Saati",
     "dropOffDate": "Bırakış Tarihi",

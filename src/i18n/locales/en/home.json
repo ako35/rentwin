@@ -1,9 +1,9 @@
 {
   "reservationSearch": {
     "pickUpLocationLabel": "Pick-up Location",
-    "pickUpLocationPlaceholder": "Select branch / location",
+    "pickUpLocationPlaceholder": "Select location",
     "dropOffLocationLabel": "Drop-off Location",
-    "dropOffLocationPlaceholder": "Select branch / location",
+    "dropOffLocationPlaceholder": "Select location",
     "pickUpDate": "Pick-up Date",
     "pickUpTime": "Pick-up Time",
     "dropOffDate": "Drop-off Date",
