@@ -6,11 +6,15 @@ import RoRow from "./RoRow";
 // Left card: pick-up/drop-off locations + date range + vehicle picker, then the
 // hand-over odometer + fuel (prefilled from the car, editable) and the read-only
 // branch / fuel-transmission / plate of the chosen car.
-const VehicleSection = ({ formik, branchNames, vehicleOptions, selectedCar, isCreate, showNoAvailable }) => {
+const VehicleSection = ({ formik, locationNames, vehicleOptions, selectedCar, isCreate, showNoAvailable }) => {
   const { t } = useTranslation("admin");
   const { t: tCommon } = useTranslation("common");
   const c = (key) => t(`reservations.contract.${key}`);
   const fuelOptions = buildFuelEighthsOptions(t);
+  const locationOptions = [
+    { id: "__none", value: "", name: `— ${c("selectLocation")} —` },
+    ...locationNames.map((name) => ({ id: name, value: name, name })),
+  ];
 
   const fuelTransmission = selectedCar
     ? `${tCommon(`options.fuelTypes.${selectedCar.fuelType}`)} / ${tCommon(
@@ -21,8 +25,14 @@ const VehicleSection = ({ formik, branchNames, vehicleOptions, selectedCar, isCr
   return (
     <section className="contract-card">
       <h3>{c("leftTitle")}</h3>
-      <CustomForm formik={formik} name="pickUpLocation" label={`* ${c("pickUpLocation")}`} list={branchNames} />
-      <CustomForm formik={formik} name="dropOffLocation" label={`* ${c("dropOffLocation")}`} list={branchNames} />
+      <CustomForm
+        formik={formik} name="pickUpLocation" label={`* ${c("pickUpLocation")}`}
+        type="select" itemsArr={locationOptions}
+      />
+      <CustomForm
+        formik={formik} name="dropOffLocation" label={`* ${c("dropOffLocation")}`}
+        type="select" itemsArr={locationOptions}
+      />
       <div className="contract-page__pair">
         <CustomForm formik={formik} name="pickUpDate" label={`* ${c("pickUpDate")}`} type="date" disabled={!isCreate} />
         <CustomForm

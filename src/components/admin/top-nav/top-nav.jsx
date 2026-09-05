@@ -18,7 +18,8 @@ const MODULE_OPTIONS = [
   { key: "reservations", route: routes.adminReservations },
   { key: "contracts", route: routes.adminContracts },
   { key: "customer", route: routes.adminUsers },
-  { key: "location", route: routes.adminLocations },
+  { key: "branches", route: routes.adminBranches },
+  { key: "rentalLocations", route: routes.adminRentalLocations },
 ];
 
 const AdminTopNav = () => {
@@ -99,12 +100,20 @@ const AdminTopNav = () => {
                 <BsTag className="admin-top-nav__item-icon" /> {t("topNav.extras")}
               </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown title={t("topNav.location")} active={pathname.startsWith(routes.adminLocations)}>
-              <NavDropdown.Item as={Link} to={`${routes.adminLocations}?new=1`}>
+            <NavDropdown title={t("topNav.branches")} active={pathname.startsWith(routes.adminBranches)}>
+              <NavDropdown.Item as={Link} to={`${routes.adminBranches}?new=1`}>
                 <BsPlusLg className="admin-top-nav__item-icon" /> {t("topNav.addBranch")}
               </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to={routes.adminLocations}>
+              <NavDropdown.Item as={Link} to={routes.adminBranches}>
                 <BsListUl className="admin-top-nav__item-icon" /> {t("topNav.branchList")}
+              </NavDropdown.Item>
+            </NavDropdown>
+            <NavDropdown title={t("topNav.rentalLocations")} active={pathname.startsWith(routes.adminRentalLocations)}>
+              <NavDropdown.Item as={Link} to={`${routes.adminRentalLocations}?new=1`}>
+                <BsPlusLg className="admin-top-nav__item-icon" /> {t("topNav.addRentalLocation")}
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminRentalLocations}>
+                <BsListUl className="admin-top-nav__item-icon" /> {t("topNav.rentalLocationList")}
               </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link onClick={comingSoon("finans")}>{t("topNav.finance")}</Nav.Link>

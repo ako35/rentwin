@@ -205,6 +205,15 @@ model Branch {
   updatedAt DateTime  @updatedAt
 }
 
+// Pick-up/drop-off location options offered on booking/contract forms —
+// intentionally separate from Branch (a branch owns vehicles; a location is
+// just a place name a customer can pick for hand-over).
+model Location {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+}
+
 model Announcement {
   id        String   @id @default(uuid())
   title     String

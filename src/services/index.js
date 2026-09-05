@@ -13,6 +13,7 @@ import { addVehicle, deleteVehicle, deleteVehicleImage, downloadVehicleReports, 
 import { addVehicleRecord, deleteVehicleRecord, getVehicleRecords, updateVehicleRecord } from "./vehicle/vehicle-records-service";
 
 import { addBranch, deleteBranch, getBranches, getPublicBranches, updateBranch } from "./branch/branch-service";
+import { addLocation, deleteLocation, getLocations } from "./location/location-service";
 
 import { addCorporate, deleteCorporate, getCorporate, getCorporates, updateCorporate } from "./corporate/corporate-service";
 
@@ -112,6 +113,11 @@ export const services = {
         addBranch,
         updateBranch,
         deleteBranch,
+    },
+    location: {
+        getLocations,
+        addLocation,
+        deleteLocation,
     },
     corporate: {
         getCorporates,

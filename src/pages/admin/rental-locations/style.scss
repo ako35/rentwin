@@ -1,0 +1,29 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+.admin-rental-locations-page {
+    &__toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+
+        h2 {
+            font-size: 1.3rem;
+            color: v.$color1;
+            margin: 0;
+        }
+    }
+
+    &__hint {
+        color: v.$color5_3;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+    }
+
+    &__form {
+        @include m.flexbox(row, flex-start, center, 0.5rem);
+        max-width: 420px;
+        margin-bottom: 1.25rem;
+    }
+}

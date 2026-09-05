@@ -10,7 +10,8 @@
     "title": "Arama kriterlerin",
     "range": "{{pickUp}} → {{dropOff}}",
     "clear": "Temizle",
-    "hint": "Bir araç seç, rezervasyon formu bu bilgilerle dolacak."
+    "hint": "Bir araç seç, rezervasyon formu bu bilgilerle dolacak.",
+    "noResults": "Seçtiğiniz tarih aralığında müsait araç bulunamadı."
   },
   "sections": {
     "vehicleModels": {
@@ -44,6 +45,7 @@
     "loginAlert": "Aracın müsait olup olmadığını kontrol etmek için önce giriş yapın",
     "pickUpLocation": "Alış Konumu",
     "dropOffLocation": "Bırakış Konumu",
+    "selectLocation": "Lokasyon seçin",
     "pickUpDate": "Alış Tarihi",
     "pickUpTime": "Alış Saati",
     "dropOffDate": "Bırakış Tarihi",

@@ -232,6 +232,7 @@
       "customerNotFound": "Kayıtlı müşteri yok — Yeni Müşteri Ekle",
       "pickUpLocation": "Alış Yeri",
       "dropOffLocation": "Bırakış Yeri",
+      "selectLocation": "Lokasyon seçin",
       "pickUpTime": "Alış Saati",
       "dropOffTime": "Bırakış Saati",
       "selectVehicle": "Araç seçin",
@@ -389,6 +390,7 @@
       "kmLimit": "Toplam km Limiti",
       "pickUpLocation": "Alış Yeri",
       "dropOffLocation": "Bırakış Yeri",
+      "selectLocation": "Lokasyon seçin",
       "pickUpDate": "Alış Tarihi",
       "dropOffDate": "Bırakış Tarihi",
       "duration": "Süre",
@@ -635,7 +637,10 @@
     "longTerm": "Uzun Dönem",
     "customer": "Müşteri",
     "price": "Fiyat",
-    "location": "Şube",
+    "branches": "Şube",
+    "rentalLocations": "Lokasyon",
+    "addRentalLocation": "Yeni Lokasyon",
+    "rentalLocationList": "Lokasyon Listesi",
     "content": "İçerik",
     "finance": "Finans",
     "definitions": "Tanım",
@@ -721,8 +726,8 @@
       "deleteConfirmText": "Bu işlemi geri alamazsınız!"
     }
   },
-  "locations": {
-    "pageTitle": "Lokasyon / Şube Yönetimi",
+  "branches": {
+    "pageTitle": "Şube Yönetimi",
     "addBranch": "Şube Ekle",
     "editBranch": "Şube Düzenle",
     "nameLabel": "Şube Adı",
@@ -749,6 +754,27 @@
       "deleteSuccess": "Şube başarıyla silindi.",
       "deleteError": "Şube silinirken bir hata oluştu.",
       "deleteConfirmTitle": "Bu şubeyi silmek istediğinizden emin misiniz?",
+      "deleteConfirmText": "Bu işlemi geri alamazsınız!"
+    }
+  },
+  "rentalLocations": {
+    "pageTitle": "Lokasyon Yönetimi",
+    "hint": "Burada eklediğiniz lokasyonlar, araç alış/bırakış yeri alanlarında seçenek olarak sunulur.",
+    "nameLabel": "Lokasyon Adı",
+    "namePlaceholder": "Örn. İzmir Havalimanı",
+    "add": "Ekle",
+    "table": {
+      "name": "Lokasyon Adı",
+      "actions": "İşlemler"
+    },
+    "empty": "Henüz lokasyon eklenmedi",
+    "delete": "Sil",
+    "toasts": {
+      "createSuccess": "Lokasyon başarıyla eklendi.",
+      "createError": "Lokasyon eklenirken bir hata oluştu.",
+      "deleteSuccess": "Lokasyon başarıyla silindi.",
+      "deleteError": "Lokasyon silinirken bir hata oluştu.",
+      "deleteConfirmTitle": "Bu lokasyonu silmek istediğinizden emin misiniz?",
       "deleteConfirmText": "Bu işlemi geri alamazsınız!"
     }
   },

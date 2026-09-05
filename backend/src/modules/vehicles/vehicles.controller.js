@@ -2,6 +2,8 @@ const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const { serializeVehicle } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
+const { parseFrontendDateTime } = require("../../lib/dates");
+const { getBusyVehicleIds } = require("../../lib/availability");
 const asyncHandler = require("../../middleware/async-handler");
 const {
   ALLOWED_SORT_FIELDS,
@@ -25,20 +27,32 @@ const getAllVehicles = asyncHandler(async (req, res) => {
   res.json(vehicles.map(serializeVehicle));
 });
 
+// Public browse/search: always hides out-of-service vehicles; when a valid
+// pickUpTime/dropOffTime pair is given (homepage search -> /vehicles), also
+// hides vehicles already booked for that window.
 const getVehiclesByPage = asyncHandler(async (req, res) => {
   const { page, size, direction, sortField } = parsePageParams(req.query, {
     defaultSize: 6,
     allowedSortFields: ALLOWED_SORT_FIELDS,
   });
 
+  const where = { outOfService: false };
+  const pickUp = parseFrontendDateTime(req.query.pickUpTime);
+  const dropOff = parseFrontendDateTime(req.query.dropOffTime);
+  if (pickUp && dropOff && dropOff > pickUp) {
+    const busyIds = await getBusyVehicleIds(pickUp, dropOff);
+    if (busyIds.size) where.id = { notIn: [...busyIds] };
+  }
+
   const [content, totalElements] = await Promise.all([
     prisma.vehicle.findMany({
+      where,
       skip: page * size,
       take: size,
       orderBy: { [sortField]: direction },
       include: IMAGES_AND_BRANCH_INCLUDE,
     }),
-    prisma.vehicle.count(),
+    prisma.vehicle.count({ where }),
   ]);
 
   res.json(

@@ -10,7 +10,8 @@
     "title": "Your search",
     "range": "{{pickUp}} → {{dropOff}}",
     "clear": "Clear",
-    "hint": "Pick a vehicle and the booking form will be pre-filled."
+    "hint": "Pick a vehicle and the booking form will be pre-filled.",
+    "noResults": "No vehicles are available for the selected date range."
   },
   "sections": {
     "vehicleModels": {
@@ -44,6 +45,7 @@
     "loginAlert": "Please login first to check if the car is available",
     "pickUpLocation": "Pick Up Location",
     "dropOffLocation": "Drop Off Location",
+    "selectLocation": "Select location",
     "pickUpDate": "Pick Up Date",
     "pickUpTime": "Pick Up Time",
     "dropOffDate": "Drop Off Date",

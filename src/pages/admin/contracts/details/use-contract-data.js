@@ -9,7 +9,7 @@ import { EMPTY_CONTRACT, fetchCustomers, contractToFormValues } from "./contract
 export const useContractData = ({ isCreate, contractId }) => {
   const [loading, setLoading] = useState(true);
   const [vehicles, setVehicles] = useState([]);
-  const [branches, setBranches] = useState([]);
+  const [locations, setLocations] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [customer, setCustomer] = useState(null);
   const [meta, setMeta] = useState({});
@@ -30,13 +30,13 @@ export const useContractData = ({ isCreate, contractId }) => {
   const refreshCustomers = () => fetchCustomers().then(setCustomers).catch(() => {});
 
   const loadRefData = async () => {
-    const [v, b, cat] = await Promise.all([
+    const [v, loc, cat] = await Promise.all([
       services.vehicle.getVehicles(),
-      services.branch.getBranches().catch(() => []),
+      services.location.getLocations().catch(() => []),
       services.extra.getExtras().catch(() => []),
     ]);
     setVehicles(v || []);
-    setBranches(b || []);
+    setLocations(loc || []);
     setCatalog(cat || []);
   };
 
@@ -93,7 +93,7 @@ export const useContractData = ({ isCreate, contractId }) => {
 
   return {
     loading,
-    vehicles, branches, customers, customer, meta,
+    vehicles, locations, customers, customer, meta,
     initialValues, availableCars, payments, catalog, extensions, vehicleChanges, invoice,
     setCustomers, setAvailableCars, setInvoice,
     loadData, loadPayments, refreshCustomers,

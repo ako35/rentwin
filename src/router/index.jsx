@@ -7,7 +7,8 @@ import {
   AdminContactMessagesPage,
   AdminDashboard,
   AdminExtrasPage,
-  AdminLocationsPage,
+  AdminBranchesPage,
+  AdminRentalLocationsPage,
   AdminNewCustomerPage,
   AdminNewVehiclePage,
   AdminContractDetailsPage,
@@ -122,8 +123,12 @@ const router = createBrowserRouter([
         element: <AdminAnnouncementsPage />,
       },
       {
-        path: "locations",
-        element: <AdminLocationsPage />,
+        path: "branches",
+        element: <AdminBranchesPage />,
+      },
+      {
+        path: "rental-locations",
+        element: <AdminRentalLocationsPage />,
       },
       {
         path: "extras",

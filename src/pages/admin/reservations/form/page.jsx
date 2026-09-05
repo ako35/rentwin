@@ -36,7 +36,7 @@ const AdminReservationFormPage = () => {
 
   const [loading, setLoading] = useState(!isCreate);
   const [saving, setSaving] = useState(false);
-  const [branches, setBranches] = useState([]);
+  const [locations, setLocations] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [availableCars, setAvailableCars] = useState([]);
   const [initialValues, setInitialValues] = useState(
@@ -84,11 +84,11 @@ const AdminReservationFormPage = () => {
 
   useEffect(() => {
     (async () => {
-      const [b, cs] = await Promise.all([
-        services.branch.getBranches().catch(() => []),
+      const [loc, cs] = await Promise.all([
+        services.location.getLocations().catch(() => []),
         fetchCustomers().catch(() => []),
       ]);
-      setBranches(b || []);
+      setLocations(loc || []);
       setCustomers(cs || []);
       if (!isCreate) {
         try {
@@ -139,7 +139,10 @@ const AdminReservationFormPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pickUpDate, pickUpTime, dropOffDate, dropOffTime]);
 
-  const branchNames = branches.map((b) => b.name);
+  const locationOptions = [
+    { id: "__none", value: "", name: `— ${c("selectLocation")} —` },
+    ...locations.map((l) => ({ id: l.id, value: l.name, name: l.name })),
+  ];
   const vehicleOptions = useMemo(
     () => buildVehicleOptions(availableCars, { isCreate: true, placeholder: c("selectVehicle") }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -203,8 +206,14 @@ const AdminReservationFormPage = () => {
               />
             </div>
 
-            <CustomForm formik={formik} name="pickUpLocation" label={`* ${c("pickUpLocation")}`} list={branchNames} />
-            <CustomForm formik={formik} name="dropOffLocation" label={c("dropOffLocation")} list={branchNames} />
+            <CustomForm
+              formik={formik} name="pickUpLocation" label={`* ${c("pickUpLocation")}`}
+              type="select" itemsArr={locationOptions}
+            />
+            <CustomForm
+              formik={formik} name="dropOffLocation" label={c("dropOffLocation")}
+              type="select" itemsArr={locationOptions}
+            />
             <div className="contract-page__pair">
               <CustomForm formik={formik} name="pickUpDate" label={`* ${c("pickUpDate")}`} type="date" />
               <CustomForm formik={formik} name="pickUpTime" label={c("pickUpTime")} type="time" />

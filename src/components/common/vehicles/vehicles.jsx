@@ -5,6 +5,7 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import { BsGeoAlt, BsXLg } from "react-icons/bs";
 import moment from "moment/moment";
 import { services } from "../../../services";
+import { utils } from "../../../utils";
 import { clearSearchCriteria } from "../../../store";
 import SectionHeader from "../section-header/section-header";
 import Loading from "../loading/loading";
@@ -20,9 +21,17 @@ const Vehicles = () => {
   const [vehicles, setVehicles] = useState([]);
   const [paging, setPaging] = useState({})
 
+  const availability = searchCriteria
+    ? {
+        pickUpTime: utils.functions.combineDateAndTime(searchCriteria.pickUpDate, searchCriteria.pickUpTime),
+        dropOffTime: utils.functions.combineDateAndTime(searchCriteria.dropOffDate, searchCriteria.dropOffTime),
+      }
+    : undefined;
+
   const loadData = async (page) => {
+    setLoading(true);
     try {
-      const vehiclesData = await services.vehicle.getVehiclesByPage(page);
+      const vehiclesData = await services.vehicle.getVehiclesByPage(page, 6, "model", "ASC", availability);
       const { content, totalPages, pageable: { pageNumber}, } = vehiclesData;
 
       setVehicles(content);
@@ -39,7 +48,8 @@ const Vehicles = () => {
 
   useEffect(() => {
     loadData(0)
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchCriteria]);
 
   const fmt = (date, time) => moment(`${date} ${time}`).format("DD MMM YYYY HH:mm");
 
@@ -75,6 +85,9 @@ const Vehicles = () => {
       {
         loading ? <Loading height={500} /> :
         <>
+          {vehicles && vehicles.length === 0 && (
+            <p className="vehicles__empty">{t("searchSummary.noResults")}</p>
+          )}
           <Row className="gy-4">
             {
               vehicles && vehicles.length > 0 && vehicles.map((item, index) => (

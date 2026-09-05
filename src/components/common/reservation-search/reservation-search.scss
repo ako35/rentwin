@@ -72,7 +72,8 @@ $breakpoint: 992px;
         @include m.flexbox(row, flex-start, center, 0.4rem);
         min-width: 0;
 
-        input {
+        input,
+        select {
             border: none;
             background: transparent;
             width: 100%;

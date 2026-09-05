@@ -16,13 +16,13 @@ const ReservationSearch = () => {
   const { t } = useTranslation("home");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [branches, setBranches] = useState([]);
+  const [locations, setLocations] = useState([]);
 
   useEffect(() => {
-    services.branch
-      .getPublicBranches()
-      .then(setBranches)
-      .catch(() => setBranches([]));
+    services.location
+      .getLocations()
+      .then(setLocations)
+      .catch(() => setLocations([]));
   }, []);
 
   const formik = useFormik({
@@ -66,11 +66,25 @@ const ReservationSearch = () => {
 
   return (
     <form className="reservation-search" onSubmit={formik.handleSubmit} noValidate>
-      {field("location", "locationLabel", <BsGeoAlt className="reservation-search__icon" />, {
-        list: "rs-branches",
-        autoComplete: "off",
-        placeholder: t("reservationSearch.locationPlaceholder"),
-      })}
+      <div className="reservation-search__field reservation-search__field--location">
+        <label htmlFor="rs-location">{t("reservationSearch.locationLabel")}</label>
+        <div className="reservation-search__control">
+          <BsGeoAlt className="reservation-search__icon" />
+          <select
+            id="rs-location"
+            name="location"
+            value={formik.values.location}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className={invalid("location")}
+          >
+            <option value="">{t("reservationSearch.locationPlaceholder")}</option>
+            {locations.map((l) => (
+              <option key={l.id} value={l.name}>{l.name}</option>
+            ))}
+          </select>
+        </div>
+      </div>
       {field("pickUpDate", "pickUpDate", <BsCalendarEvent className="reservation-search__icon" />, {
         type: "date",
         min: utils.functions.getCurrentDate(),
@@ -89,12 +103,6 @@ const ReservationSearch = () => {
       <button type="submit" className="reservation-search__submit">
         {t("reservationSearch.submit")}
       </button>
-
-      <datalist id="rs-branches">
-        {branches.map((b) => (
-          <option key={b.id} value={b.name} />
-        ))}
-      </datalist>
 
       {firstError && <p className="reservation-search__error">{formik.errors[firstError]}</p>}
     </form>

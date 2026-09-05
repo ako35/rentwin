@@ -49,4 +49,16 @@ const checkAvailability = async (
   return { available: !contractClash && !reservationClash, totalPrice: 0, vehicle };
 };
 
-module.exports = { checkAvailability };
+// Vehicle ids taken by an overlapping non-cancelled Contract or pending/
+// confirmed Reservation in [pickUpTime, dropOffTime). Feeds any listing that
+// needs to show only what's actually free for a date range.
+const getBusyVehicleIds = async (pickUpTime, dropOffTime) => {
+  const window = { pickUpTime: { lt: dropOffTime }, dropOffTime: { gt: pickUpTime } };
+  const [contractBusy, reservationBusy] = await Promise.all([
+    prisma.contract.findMany({ where: { ...BLOCKING_CONTRACT, ...window }, select: { carId: true } }),
+    prisma.reservation.findMany({ where: { ...BLOCKING_RESERVATION, ...window }, select: { carId: true } }),
+  ]);
+  return new Set([...contractBusy, ...reservationBusy].map((r) => r.carId));
+};
+
+module.exports = { checkAvailability, getBusyVehicleIds };

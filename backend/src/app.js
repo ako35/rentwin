@@ -15,6 +15,7 @@ const contractRecordsRoutes = require("./modules/contract-records/contract-recor
 const contactMessagesRoutes = require("./modules/contact-messages/contact-messages.routes");
 const excelRoutes = require("./modules/excel/excel.routes");
 const branchesRoutes = require("./modules/branches/branches.routes");
+const locationsRoutes = require("./modules/locations/locations.routes");
 const corporatesRoutes = require("./modules/corporates/corporates.routes");
 const extrasRoutes = require("./modules/extras/extras.routes");
 const announcementsRoutes = require("./modules/announcements/announcements.routes");
@@ -74,6 +75,7 @@ api.use(contractRecordsRoutes);
 api.use(contactMessagesRoutes);
 api.use(excelRoutes);
 api.use(branchesRoutes);
+api.use(locationsRoutes);
 api.use(corporatesRoutes);
 api.use(extrasRoutes);
 api.use(announcementsRoutes);

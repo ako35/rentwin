@@ -42,7 +42,7 @@ const ContractDetail = () => {
 
   const {
     loading,
-    vehicles, branches, customers, customer, meta,
+    vehicles, locations, customers, customer, meta,
     initialValues, availableCars, payments, catalog, extensions, vehicleChanges, invoice,
     setCustomers, setAvailableCars, setInvoice,
     loadData, loadPayments, refreshCustomers,
@@ -227,7 +227,7 @@ const ContractDetail = () => {
     [formik.values, billableDays]
   );
 
-  const branchNames = branches.map((b) => b.name);
+  const locationNames = locations.map((l) => l.name);
   const carList = isCreate ? availableCars : vehicles;
   const vehicleOptions = buildVehicleOptions(carList, {
     isCreate,
@@ -258,7 +258,7 @@ const ContractDetail = () => {
           <div className="contract-page__col">
             <VehicleSection
               formik={formik}
-              branchNames={branchNames}
+              locationNames={locationNames}
               vehicleOptions={vehicleOptions}
               selectedCar={selectedCar}
               isCreate={isCreate}

@@ -232,6 +232,7 @@
       "customerNotFound": "No matching customer — Add New Customer",
       "pickUpLocation": "Pick-up Location",
       "dropOffLocation": "Drop-off Location",
+      "selectLocation": "Select location",
       "pickUpTime": "Pick-up Time",
       "dropOffTime": "Drop-off Time",
       "selectVehicle": "Select a vehicle",
@@ -389,6 +390,7 @@
       "kmLimit": "Total km Limit",
       "pickUpLocation": "Pick-up Location",
       "dropOffLocation": "Drop-off Location",
+      "selectLocation": "Select location",
       "pickUpDate": "Pick-up Date",
       "dropOffDate": "Drop-off Date",
       "duration": "Duration",
@@ -635,7 +637,10 @@
     "longTerm": "Long Term",
     "customer": "Customer",
     "price": "Price",
-    "location": "Branch",
+    "branches": "Branch",
+    "rentalLocations": "Location",
+    "addRentalLocation": "New Location",
+    "rentalLocationList": "Location List",
     "content": "Content",
     "finance": "Finance",
     "definitions": "Definitions",
@@ -721,8 +726,8 @@
       "deleteConfirmText": "You won't be able to revert this action!"
     }
   },
-  "locations": {
-    "pageTitle": "Location / Branch Management",
+  "branches": {
+    "pageTitle": "Branch Management",
     "addBranch": "Add Branch",
     "editBranch": "Edit Branch",
     "nameLabel": "Branch Name",
@@ -749,6 +754,27 @@
       "deleteSuccess": "Branch deleted successfully.",
       "deleteError": "There was an error deleting the branch.",
       "deleteConfirmTitle": "Are you sure you want to delete this branch?",
+      "deleteConfirmText": "You won't be able to revert this action!"
+    }
+  },
+  "rentalLocations": {
+    "pageTitle": "Location Management",
+    "hint": "Locations you add here become the pick-up/drop-off options in vehicle location fields.",
+    "nameLabel": "Location Name",
+    "namePlaceholder": "e.g. Izmir Airport",
+    "add": "Add",
+    "table": {
+      "name": "Location Name",
+      "actions": "Actions"
+    },
+    "empty": "No locations added yet",
+    "delete": "Delete",
+    "toasts": {
+      "createSuccess": "Location added successfully.",
+      "createError": "There was an error adding the location.",
+      "deleteSuccess": "Location deleted successfully.",
+      "deleteError": "There was an error deleting the location.",
+      "deleteConfirmTitle": "Are you sure you want to delete this location?",
       "deleteConfirmText": "You won't be able to revert this action!"
     }
   },

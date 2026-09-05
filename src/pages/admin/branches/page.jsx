@@ -10,7 +10,7 @@ import "./style.scss";
 
 const EMPTY_FORM = { name: "", code: "" };
 
-const AdminLocationsPage = () => {
+const AdminBranchesPage = () => {
   const { t } = useTranslation("admin");
   const [loading, setLoading] = useState(true);
   const [branches, setBranches] = useState([]);
@@ -61,16 +61,16 @@ const AdminLocationsPage = () => {
     try {
       if (editingId) {
         await services.branch.updateBranch(editingId, form);
-        utils.functions.swalToast(t("locations.toasts.updateSuccess"), "success");
+        utils.functions.swalToast(t("branches.toasts.updateSuccess"), "success");
       } else {
         await services.branch.addBranch(form);
-        utils.functions.swalToast(t("locations.toasts.createSuccess"), "success");
+        utils.functions.swalToast(t("branches.toasts.createSuccess"), "success");
       }
       setShowModal(false);
       loadData();
     } catch (error) {
       utils.functions.swalToast(
-        editingId ? t("locations.toasts.updateError") : t("locations.toasts.createError"),
+        editingId ? t("branches.toasts.updateError") : t("branches.toasts.createError"),
         "error"
       );
     } finally {
@@ -80,24 +80,24 @@ const AdminLocationsPage = () => {
 
   const handleDelete = (branch) => {
     utils.functions
-      .swalQuestion(t("locations.toasts.deleteConfirmTitle"), t("locations.toasts.deleteConfirmText"))
+      .swalQuestion(t("branches.toasts.deleteConfirmTitle"), t("branches.toasts.deleteConfirmText"))
       .then(async (result) => {
         if (!result.isConfirmed) return;
         try {
           await services.branch.deleteBranch(branch.id);
-          utils.functions.swalToast(t("locations.toasts.deleteSuccess"), "success");
+          utils.functions.swalToast(t("branches.toasts.deleteSuccess"), "success");
           loadData();
         } catch (error) {
-          utils.functions.swalToast(t("locations.toasts.deleteError"), "error");
+          utils.functions.swalToast(t("branches.toasts.deleteError"), "error");
         }
       });
   };
 
   return (
-    <div className="admin-locations-page">
-      <div className="admin-locations-page__toolbar">
-        <h2>{t("locations.pageTitle")}</h2>
-        <Button onClick={openCreate}>{t("locations.addBranch")}</Button>
+    <div className="admin-branches-page">
+      <div className="admin-branches-page__toolbar">
+        <h2>{t("branches.pageTitle")}</h2>
+        <Button onClick={openCreate}>{t("branches.addBranch")}</Button>
       </div>
       {loading ? (
         <Loading height={300} />
@@ -105,16 +105,16 @@ const AdminLocationsPage = () => {
         <Table hover responsive>
           <thead>
             <tr>
-              <th>{t("locations.table.name")}</th>
-              <th>{t("locations.table.code")}</th>
-              <th>{t("locations.table.vehicleCount")}</th>
-              <th>{t("locations.table.actions")}</th>
+              <th>{t("branches.table.name")}</th>
+              <th>{t("branches.table.code")}</th>
+              <th>{t("branches.table.vehicleCount")}</th>
+              <th>{t("branches.table.actions")}</th>
             </tr>
           </thead>
           <tbody>
             {branches.length === 0 && (
               <tr>
-                <td colSpan={4} className="text-center">{t("locations.noBranches")}</td>
+                <td colSpan={4} className="text-center">{t("branches.noBranches")}</td>
               </tr>
             )}
             {branches.map((branch) => (
@@ -122,12 +122,12 @@ const AdminLocationsPage = () => {
                 <td>{branch.name}</td>
                 <td>{branch.code}</td>
                 <td>{branch.vehicleCount}</td>
-                <td className="admin-locations-page__actions">
-                  <Button size="sm" variant="outline-primary" onClick={() => openEdit(branch)} title={t("locations.edit")}>
+                <td className="admin-branches-page__actions">
+                  <Button size="sm" variant="outline-primary" onClick={() => openEdit(branch)} title={t("branches.edit")}>
                     <BsPencil />
                   </Button>
                   {!branch.builtIn && (
-                    <Button size="sm" variant="outline-danger" onClick={() => handleDelete(branch)} title={t("locations.delete")}>
+                    <Button size="sm" variant="outline-danger" onClick={() => handleDelete(branch)} title={t("branches.delete")}>
                       <BsTrash />
                     </Button>
                   )}
@@ -140,33 +140,33 @@ const AdminLocationsPage = () => {
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{editingId ? t("locations.editBranch") : t("locations.addBranch")}</Modal.Title>
+          <Modal.Title>{editingId ? t("branches.editBranch") : t("branches.addBranch")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="mb-3">
-            <Form.Label>{t("locations.nameLabel")}</Form.Label>
+            <Form.Label>{t("branches.nameLabel")}</Form.Label>
             <Form.Control
               value={form.name}
-              placeholder={t("locations.namePlaceholder")}
+              placeholder={t("branches.namePlaceholder")}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
           </Form.Group>
           <Form.Group>
-            <Form.Label>{t("locations.codeLabel")}</Form.Label>
+            <Form.Label>{t("branches.codeLabel")}</Form.Label>
             <Form.Control
               value={form.code}
-              placeholder={t("locations.codePlaceholder")}
+              placeholder={t("branches.codePlaceholder")}
               onChange={(e) => setForm({ ...form, code: e.target.value })}
             />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="outline-primary" onClick={() => setShowModal(false)}>{t("locations.cancel")}</Button>
-          <Button onClick={handleSave} disabled={saving || !form.name || !form.code}>{t("locations.save")}</Button>
+          <Button variant="outline-primary" onClick={() => setShowModal(false)}>{t("branches.cancel")}</Button>
+          <Button onClick={handleSave} disabled={saving || !form.name || !form.code}>{t("branches.save")}</Button>
         </Modal.Footer>
       </Modal>
     </div>
   );
 };
 
-export default AdminLocationsPage;
+export default AdminBranchesPage;
