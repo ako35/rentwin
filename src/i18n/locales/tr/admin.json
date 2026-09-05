@@ -51,6 +51,12 @@
     "downloadReports": "Araç Raporlarını İndir",
     "tableTitle": "Araçlar",
     "selectImage": "Görsel Seç",
+    "registrationScan": {
+      "button": "Ruhsattan Doldur",
+      "hint": "Ruhsat fotoğrafı yükleyin, bilgiler otomatik doldurulsun.",
+      "success": "Ruhsat okundu, alanlar dolduruldu. Lütfen kontrol edin.",
+      "error": "Ruhsat okunamadı, lütfen alanları elle doldurun."
+    },
     "outOfService": "Servis Dışı",
     "cancel": "İptal",
     "create": "Oluştur",

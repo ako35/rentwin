@@ -98,6 +98,16 @@ $breakpointxl: 1200px;
     }
   }
 
+  &__registration-scan-bar {
+    @include m.flexbox(row, flex-start, center, 0.75rem);
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+
+    span {
+      font-size: 0.8rem;
+    }
+  }
+
   &__section {
     margin-bottom: 0.25rem;
 

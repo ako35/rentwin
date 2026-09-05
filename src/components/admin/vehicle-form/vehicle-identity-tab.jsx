@@ -2,6 +2,13 @@ import { useTranslation } from "react-i18next";
 import { Badge, Button, Col, Form, Row } from "react-bootstrap";
 import CustomForm from "../../common/custom-form/custom-form";
 import EditableSelectField from "./editable-select-field";
+import RegistrationScan from "./registration-scan";
+
+// Ruhsattan okunan alanları formik'e aktarır — boş/okunamayan alanlar dokunulmadan kalır.
+const REGISTRATION_FIELDS = [
+  "brand", "model", "licensePlate", "modelYear", "chassisNo",
+  "engineNo", "color", "fuelType", "registrationSerialNo", "registrationDate",
+];
 
 // The "Araç" tab: image upload column + the grouped identity/registration
 // fields + notes + the out-of-service switch.
@@ -9,6 +16,15 @@ const VehicleIdentityTab = ({
   formik, disabled, sections, imageSrc, imageError, fileImageRef, onImageChange, handleModelPicked,
 }) => {
   const { t } = useTranslation("admin");
+
+  const handleRegistrationExtracted = (fields) => {
+    REGISTRATION_FIELDS.forEach((key) => {
+      const value = fields?.[key];
+      if (value !== undefined && value !== null && value !== "") {
+        formik.setFieldValue(key, key === "modelYear" ? String(value) : value);
+      }
+    });
+  };
 
   return (
     <fieldset disabled={disabled}>
@@ -32,6 +48,10 @@ const VehicleIdentityTab = ({
           {imageError && <Badge bg="danger" className="image-error">{imageError}</Badge>}
         </Col>
         <Col xl={9}>
+          <div className="vehicle-form__registration-scan-bar">
+            <RegistrationScan onExtracted={handleRegistrationExtracted} />
+            <span className="text-muted">{t("vehicles.registrationScan.hint")}</span>
+          </div>
           {sections.map((section) => (
             <div key={section.key} className="vehicle-form__section">
               <h4>{t(`vehicles.sections.${section.key}`)}</h4>

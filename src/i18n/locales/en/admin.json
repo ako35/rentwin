@@ -51,6 +51,12 @@
     "downloadReports": "Download Vehicle Reports",
     "tableTitle": "Vehicles",
     "selectImage": "Select Image",
+    "registrationScan": {
+      "button": "Fill from Registration",
+      "hint": "Upload a photo of the registration certificate to auto-fill the fields.",
+      "success": "Registration read successfully — please review the fields.",
+      "error": "Could not read the registration document, please fill in manually."
+    },
     "outOfService": "Out of Service",
     "cancel": "Cancel",
     "create": "Create",
