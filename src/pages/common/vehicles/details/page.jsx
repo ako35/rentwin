@@ -49,7 +49,7 @@ const VehicleDetailsPage = () => {
   return (
     <>
       <PageHeader title={t("detailsPageTitle")} />
-      <Spacer />
+      <Spacer height={50} />
       <Container className="vehicle-details">
         <Row>
           {loading ? (

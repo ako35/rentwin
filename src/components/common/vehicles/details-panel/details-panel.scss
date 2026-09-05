@@ -4,20 +4,44 @@
 $breakpointsm: 400px;
 
 .details-panel{
-    
+
     .panel-title{
         @include m.flexbox(row, space-between, center);
+
+        h1{
+            font-size: 1.6rem;
+            margin: 0;
+        }
+    }
+
+    h2{
+        font-size: 1.15rem;
+    }
+
+    .card{
+        img{
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: inherit;
+        }
+
+        @media (max-width: $breakpointsm) {
+            img{
+                max-height: 220px;
+            }
+        }
     }
 
     .row{
         @include m.flexbox(row, space-between, center);
         flex-wrap: wrap;
         text-align: center;
-        margin-top: 2rem;
+        margin-top: 1.1rem;
 
         [class^="col"]{
             border-radius: 5px;
-            padding: 1rem;
+            padding: 0.6rem;
             @include m.flexbox(row, flex-start, center, 5px);
             color: v.$color2;
 
@@ -26,7 +50,7 @@ $breakpointsm: 400px;
             }
 
             svg{
-                font-size: 3rem;
+                font-size: 2.1rem;
                 color: v.$color1;
             }
 

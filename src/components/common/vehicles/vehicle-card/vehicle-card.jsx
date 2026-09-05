@@ -17,9 +17,12 @@ const VehicleCard = (props) => {
     <Link to={`${routes.vehicles}/${props.id}`}>
       <div className="vehicle-card">
         <div className="image">
-          <img src={`${API_URL}/files/display/${props.image}`} alt="" />
+          <img
+            src={`${API_URL}/files/display/${props.image}`}
+            alt={[props.brand, props.model].filter(Boolean).join(" ")}
+          />
         </div>
-        <h4>{props.model}</h4>
+        <h4>{[props.brand, props.model].filter(Boolean).join(" ")}</h4>
         <div className="details">
           <div>
             <GiGearStick /> {tCommon(`options.transmissionTypes.${props.transmission}`)}
