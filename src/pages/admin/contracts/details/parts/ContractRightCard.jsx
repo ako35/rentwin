@@ -123,6 +123,7 @@ const ContractRightCard = ({
           <VehicleChangeTab
             isCreate={isCreate}
             contractId={contractId}
+            carId={formik.values.carId}
             pickUpDate={formik.values.pickUpDate}
             dropOffDate={formik.values.dropOffDate}
             dropOffTime={formik.values.dropOffTime}

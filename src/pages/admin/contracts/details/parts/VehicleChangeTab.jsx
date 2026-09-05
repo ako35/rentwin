@@ -13,7 +13,7 @@ const EMPTY_FORM = { date: "", time: "", newCarId: "", note: "" };
 // each swap is logged (previous/new car snapshot) and repoints Contract.carId —
 // the left card's vehicle picker (disabled once opened) picks up the change.
 const VehicleChangeTab = ({
-  isCreate, contractId, pickUpDate, dropOffDate, dropOffTime, vehicleChanges, onChanged,
+  isCreate, contractId, carId, pickUpDate, dropOffDate, dropOffTime, vehicleChanges, onChanged,
 }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.${key}`, opts);
@@ -35,11 +35,15 @@ const VehicleChangeTab = ({
     setLoadingCars(true);
     services.contract
       .getAvailableCars({ pickUpTime: changeDateTime, dropOffTime: dropOff, excludeContractId: contractId })
-      .then((list) => { if (!cancelled) setAvailableCars(Array.isArray(list) ? list : []); })
+      .then((list) => {
+        if (cancelled) return;
+        const free = Array.isArray(list) ? list.filter((car) => car.id !== carId) : [];
+        setAvailableCars(free);
+      })
       .catch(() => { if (!cancelled) setAvailableCars([]); })
       .finally(() => { if (!cancelled) setLoadingCars(false); });
     return () => { cancelled = true; };
-  }, [form.date, form.time, dropOff, contractId]);
+  }, [form.date, form.time, dropOff, contractId, carId]);
 
   if (isCreate) return <SaveFirstHint />;
 
