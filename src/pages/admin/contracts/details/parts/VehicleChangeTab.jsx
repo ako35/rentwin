@@ -192,24 +192,28 @@ const VehicleChangeTab = ({
         </Button>
       )}
       {showHistory && vehicleChanges.map((vc) => (
-        <div className="contract-page__ro" key={vc.id}>
-          <span>
-            {utils.functions.getDate(vc.changeDate)} {utils.functions.getTime(vc.changeDate)} ·{" "}
+        <div className="vehicle-change-item" key={vc.id}>
+          <div className="vehicle-change-item__date">
+            {utils.functions.getDate(vc.changeDate)} {utils.functions.getTime(vc.changeDate)}
+          </div>
+          <div className="vehicle-change-item__swap">
             {c("vehicleChange.range", { from: vc.previousCarLabel, to: vc.newCarLabel })}
-          </span>
-          {(vc.returnKm != null || vc.returnFuelEighths != null) && (
-            <span className="text-muted" style={{ fontSize: "0.78rem" }}>
-              {c("vehicleChange.returnKm")}: {vc.returnKm ?? "—"} km
+          </div>
+          <div className="vehicle-change-item__row">
+            <span className="vehicle-change-item__label">{c("vehicleChange.returnGroup")}</span>
+            <span>
+              {vc.returnKm ?? "—"} km
               {vc.returnFuelEighths != null ? ` · ${vc.returnFuelEighths}/8` : ""}
             </span>
-          )}
-          {(vc.newCarKm != null || vc.newCarFuelEighths != null) && (
-            <span className="text-muted" style={{ fontSize: "0.78rem" }}>
-              {c("vehicleChange.newCarKm")}: {vc.newCarKm ?? "—"} km
+          </div>
+          <div className="vehicle-change-item__row">
+            <span className="vehicle-change-item__label">{c("vehicleChange.newCarGroup")}</span>
+            <span>
+              {vc.newCarKm ?? "—"} km
               {vc.newCarFuelEighths != null ? ` · ${vc.newCarFuelEighths}/8` : ""}
             </span>
-          )}
-          {vc.note && <strong>{vc.note}</strong>}
+          </div>
+          {vc.note && <div className="vehicle-change-item__note">{vc.note}</div>}
         </div>
       ))}
     </>
