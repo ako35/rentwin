@@ -117,14 +117,10 @@ const VehicleChangeTab = ({
             <Form.Label>{c("vehicleChange.time")}</Form.Label>
             <Form.Control type="time" size="sm" value={form.time} onChange={setField("time")} />
           </Form.Group>
-          <Form.Group>
-            <Form.Label>{c("vehicleChange.newVehicle")}</Form.Label>
-            <Form.Select size="sm" value={form.newCarId} disabled={!form.date || loadingCars} onChange={setNewCar}>
-              {carOptions.map((item) => (
-                <option key={item.id} value={item.value}>{item.name}</option>
-              ))}
-            </Form.Select>
-          </Form.Group>
+        </div>
+
+        <span className="contract-records__group-label">{c("vehicleChange.returnGroup")}</span>
+        <div className="contract-records__fields">
           <Form.Group>
             <Form.Label>{c("vehicleChange.returnKm")}</Form.Label>
             <Form.Control type="number" size="sm" value={form.returnKm} onChange={setField("returnKm")} />
@@ -133,6 +129,18 @@ const VehicleChangeTab = ({
             <Form.Label>{c("vehicleChange.returnFuelLevel")}</Form.Label>
             <Form.Select size="sm" value={form.returnFuelEighths} onChange={setField("returnFuelEighths")}>
               {fuelOptions.map((item) => (
+                <option key={item.id} value={item.value}>{item.name}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </div>
+
+        <span className="contract-records__group-label">{c("vehicleChange.newCarGroup")}</span>
+        <div className="contract-records__fields">
+          <Form.Group>
+            <Form.Label>{c("vehicleChange.newVehicle")}</Form.Label>
+            <Form.Select size="sm" value={form.newCarId} disabled={!form.date || loadingCars} onChange={setNewCar}>
+              {carOptions.map((item) => (
                 <option key={item.id} value={item.value}>{item.name}</option>
               ))}
             </Form.Select>
@@ -155,6 +163,9 @@ const VehicleChangeTab = ({
               ))}
             </Form.Select>
           </Form.Group>
+        </div>
+
+        <div className="contract-records__fields">
           <Form.Group>
             <Form.Label>{c("vehicleChange.note")}</Form.Label>
             <Form.Control size="sm" value={form.note} onChange={setField("note")} />
