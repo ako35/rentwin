@@ -1,6 +1,10 @@
 {
   "pageTitle": "Our Vehicles",
   "detailsPageTitle": "Vehicle Details",
+  "seoTitle": "Rental Cars | Rentwin Car Rental",
+  "seoDescription": "Browse our full rental fleet: reliable economy, family, and luxury vehicles. Pick the right car and book online in minutes.",
+  "seoDetailsTitle": "Rent a {{name}} | Rentwin",
+  "seoDetailsDescription": "Rent the {{name}} with Rentwin. Great rates, smooth handover, and dependable service — book your reservation now.",
   "loadError": "Vehicle information cannot be loaded",
   "searchSummary": {
     "title": "Your search",

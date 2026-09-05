@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /auth
+Disallow: /user
+Disallow: /forbidden
+
+Sitemap: https://rentwin.com.tr/sitemap.xml

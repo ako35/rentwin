@@ -1,6 +1,10 @@
 {
   "pageTitle": "Araçlarımız",
   "detailsPageTitle": "Araç Detayı",
+  "seoTitle": "Kiralık Araçlar | Rentwin Araç Kiralama",
+  "seoDescription": "Geniş kiralık araç filomuzu inceleyin: ekonomik, aile ve lüks segmentte güvenilir araçlar. Hemen uygun aracı seçin, online rezervasyon yapın.",
+  "seoDetailsTitle": "{{name}} Kiralama | Rentwin",
+  "seoDetailsDescription": "{{name}} aracını Rentwin güvencesiyle kiralayın. Uygun fiyat, sorunsuz teslimat ve güvenilir hizmet için hemen rezervasyon yapın.",
   "loadError": "Araç bilgileri yüklenemedi",
   "searchSummary": {
     "title": "Arama kriterlerin",

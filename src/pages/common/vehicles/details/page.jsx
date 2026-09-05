@@ -13,17 +13,25 @@ import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { setVehicle } from "../../../../store";
+import { usePageMeta } from "../../../../hooks/use-page-meta";
 
 const VehicleDetailsPage = () => {
   const [loading, setLoading] = useState(true);
+  const [vehicleName, setVehicleName] = useState("");
   const { vehicleId } = useParams();
   const dispatch = useDispatch();
   const { t } = useTranslation("vehicles");
+
+  usePageMeta(
+    vehicleName ? t("seoDetailsTitle", { name: vehicleName }) : t("detailsPageTitle"),
+    vehicleName ? t("seoDetailsDescription", { name: vehicleName }) : undefined
+  );
 
   const loadData = async () => {
     try {
       const data = await services.vehicle.getVehicleById(vehicleId);
       dispatch(setVehicle(data));
+      setVehicleName(`${data.brand} ${data.model}`.trim());
     } catch (error) {
       utils.functions.swalToast(
         t("loadError"),
