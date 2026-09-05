@@ -29,8 +29,8 @@ export const contactFormInitialValues = {
 
 // HOMEPAGE RESERVATION SEARCH
 export const reservationSearchInitialValues = () => ({
-    pickUpLocation: "",
-    dropOffLocation: "",
+    pickUpLocation: "Aliağa",
+    dropOffLocation: "Aliağa",
     pickUpDate: moment().format("YYYY-MM-DD"),
     pickUpTime: "10:00",
     dropOffDate: moment().add(3, "days").format("YYYY-MM-DD"),
@@ -39,8 +39,8 @@ export const reservationSearchInitialValues = () => ({
 
 // BOOKING FORM
 export const bookingFormInitialValues = {
-    pickUpLocation: "",
-    dropOffLocation: "",
+    pickUpLocation: "Aliağa",
+    dropOffLocation: "Aliağa",
     pickUpDate: "",
     dropOffDate: "",
     pickUpTime: "",
