@@ -13,7 +13,8 @@ const { routes } = constants;
 
 const AdminVehiclesPage = () => {
   const { t } = useTranslation("admin");
-  const columns = utils.tables.getAdminVehiclesColumns(t);
+  const { t: tCommon } = useTranslation("common");
+  const columns = utils.tables.getAdminVehiclesColumns(t, tCommon);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [vehicles, setVehicles] = useState([]);

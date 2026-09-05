@@ -37,7 +37,7 @@ export const getAdminContactMessagesColumns = (t) => [
     },
 ];
 
-export const getAdminVehiclesColumns = (t) => {
+export const getAdminVehiclesColumns = (t, tCommon) => {
     const STATUS_BADGE = {
         AVAILABLE: { label: t("vehicleStatus.AVAILABLE"), background: "#1b7a43" },
         RENTED: { label: t("vehicleStatus.RENTED"), background: "#c98a1f" },
@@ -77,11 +77,11 @@ export const getAdminVehiclesColumns = (t) => {
         },
         {
             name: t("table.vehicle.transmission"),
-            selector: (row) => row?.transmission,
+            selector: (row) => (row?.transmission ? tCommon(`options.transmissionTypes.${row.transmission}`) : "-"),
         },
         {
             name: t("table.vehicle.fuel"),
-            selector: (row) => row?.fuelType,
+            selector: (row) => (row?.fuelType ? tCommon(`options.fuelTypes.${row.fuelType}`) : "-"),
         },
         {
             name: t("table.vehicle.status"),
