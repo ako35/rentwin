@@ -299,16 +299,20 @@ model ContractExtension {
 // (brand/model/plate) so history reads correctly even if the vehicle is later
 // edited or removed; no FK to Vehicle is needed for that reason.
 model ContractVehicleChange {
-  id               String   @id @default(uuid())
-  contractId       String
-  contract         Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
-  changeDate       DateTime
-  previousCarId    String
-  previousCarLabel String
-  newCarId         String
-  newCarLabel      String
-  note             String?
-  createdAt        DateTime @default(now())
+  id                String   @id @default(uuid())
+  contractId        String
+  contract          Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  changeDate        DateTime
+  previousCarId     String
+  previousCarLabel  String
+  returnKm          Int? // previous car's odometer at hand-back
+  returnFuelEighths Int? // previous car's fuel / charge gauge at hand-back, 0-8
+  newCarId          String
+  newCarLabel       String
+  newCarKm          Int? // new car's odometer at hand-over (prefilled from the vehicle, editable)
+  newCarFuelEighths Int? // new car's fuel / charge gauge at hand-over, 0-8
+  note              String?
+  createdAt         DateTime @default(now())
 }
 
 // One invoice per contract, numbered per year.

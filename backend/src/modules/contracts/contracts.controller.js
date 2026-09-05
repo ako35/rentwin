@@ -124,7 +124,7 @@ const changeVehicle = asyncHandler(async (req, res) => {
   const contract = await prisma.contract.findUnique({ where: { id: req.params.id } });
   if (!contract) throw new HttpError(404, "Contract not found.");
 
-  const { newCarId, note } = req.body;
+  const { newCarId, note, returnKm, returnFuelEighths, newCarKm, newCarFuelEighths } = req.body;
   const changeDate = parseFrontendDateTime(req.body.changeDate);
   if (!newCarId) throw new HttpError(400, "Yeni araç seçilmedi.");
   if (!changeDate) throw new HttpError(400, "Geçersiz değişiklik tarihi.");
@@ -150,8 +150,12 @@ const changeVehicle = asyncHandler(async (req, res) => {
         changeDate,
         previousCarId: contract.carId,
         previousCarLabel: label(previousVehicle, contract.carId),
+        returnKm: num(returnKm),
+        returnFuelEighths: num(returnFuelEighths),
         newCarId,
         newCarLabel: label(newVehicle, newCarId),
+        newCarKm: num(newCarKm),
+        newCarFuelEighths: num(newCarFuelEighths),
         note: note || null,
       },
     });
