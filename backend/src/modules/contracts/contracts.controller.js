@@ -143,6 +143,15 @@ const changeVehicle = asyncHandler(async (req, res) => {
   const previousVehicle = await prisma.vehicle.findUnique({ where: { id: contract.carId } });
   const label = (v, fallbackId) => (v ? `${v.brand} ${v.model} — ${v.licensePlate}` : fallbackId);
 
+  // The left card's hand-over odometer/fuel track whichever car is currently
+  // assigned — once swapped, they should read the new car's figures, not the
+  // original car's (now stale) snapshot.
+  const parsedNewCarKm = num(newCarKm);
+  const parsedNewCarFuelEighths = num(newCarFuelEighths);
+  const contractUpdate = { carId: newCarId };
+  if (parsedNewCarKm !== null) contractUpdate.pickUpKm = parsedNewCarKm;
+  if (parsedNewCarFuelEighths !== null) contractUpdate.pickUpFuelEighths = parsedNewCarFuelEighths;
+
   const updated = await prisma.$transaction(async (tx) => {
     await tx.contractVehicleChange.create({
       data: {
@@ -154,14 +163,14 @@ const changeVehicle = asyncHandler(async (req, res) => {
         returnFuelEighths: num(returnFuelEighths),
         newCarId,
         newCarLabel: label(newVehicle, newCarId),
-        newCarKm: num(newCarKm),
-        newCarFuelEighths: num(newCarFuelEighths),
+        newCarKm: parsedNewCarKm,
+        newCarFuelEighths: parsedNewCarFuelEighths,
         note: note || null,
       },
     });
     return tx.contract.update({
       where: { id: contract.id },
-      data: { carId: newCarId },
+      data: contractUpdate,
       include: CAR_INCLUDE,
     });
   });

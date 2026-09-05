@@ -27,6 +27,7 @@ const VehicleChangeTab = ({
   const [availableCars, setAvailableCars] = useState([]);
   const [loadingCars, setLoadingCars] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const fuelOptions = buildFuelEighthsOptions(t);
 
   const dropOff = utils.functions.combineDateAndTime(dropOffDate, dropOffTime || "00:00");
@@ -180,7 +181,17 @@ const VehicleChangeTab = ({
           </Button>
         </div>
       </div>
-      {vehicleChanges.map((vc) => (
+      {vehicleChanges.length > 0 && (
+        <Button
+          type="button" variant="outline-secondary" size="sm"
+          className="mt-3" onClick={() => setShowHistory((v) => !v)}
+        >
+          {showHistory
+            ? c("vehicleChange.hideHistory")
+            : c("vehicleChange.showHistory", { count: vehicleChanges.length })}
+        </Button>
+      )}
+      {showHistory && vehicleChanges.map((vc) => (
         <div className="contract-page__ro" key={vc.id}>
           <span>
             {utils.functions.getDate(vc.changeDate)} {utils.functions.getTime(vc.changeDate)} ·{" "}

@@ -441,7 +441,9 @@
         "note": "Note",
         "submit": "Change",
         "noAvailable": "No vehicle is available for the selected date.",
-        "range": "{{from}} → {{to}}"
+        "range": "{{from}} → {{to}}",
+        "showHistory": "Show Previous Changes ({{count}})",
+        "hideHistory": "Hide Change History"
       },
       "currentClass": "Current Class",
       "changeVehicle": "Change",

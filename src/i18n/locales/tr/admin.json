@@ -441,7 +441,9 @@
         "note": "Açıklama",
         "submit": "Değiştir",
         "noAvailable": "Seçili tarih için müsait araç yok.",
-        "range": "{{from}} → {{to}}"
+        "range": "{{from}} → {{to}}",
+        "showHistory": "Önceki Değişiklikleri Gör ({{count}})",
+        "hideHistory": "Değişiklik Geçmişini Gizle"
       },
       "currentClass": "Geçerli Sınıf",
       "changeVehicle": "Değiştir",
