@@ -77,6 +77,17 @@ export const extendContract = async (id, payload) => {
   return response.data;
 };
 
+// Mid-contract vehicle swap: { newCarId, changeDate, note }. Repoints carId
+// after checking the new car is actually free, and logs a history row.
+export const changeVehicle = async (id, payload) => {
+  const response = await axios.post(
+    `${API_URL}/contracts/admin/${id}/change-vehicle/auth`,
+    payload,
+    services.authHeader()
+  );
+  return response.data;
+};
+
 export const createInvoice = async (id, payload = {}) => {
   const response = await axios.post(
     `${API_URL}/contracts/admin/${id}/invoice/auth`,

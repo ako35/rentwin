@@ -276,6 +276,7 @@ model Contract {
   payments          ContractPayment[]
   extras            ContractExtra[]
   extensions        ContractExtension[]
+  vehicleChanges    ContractVehicleChange[]
   invoice           Invoice?
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
@@ -292,6 +293,22 @@ model ContractExtension {
   extraAmount     Float    @default(0)
   note            String?
   createdAt       DateTime @default(now())
+}
+
+// A mid-contract vehicle swap. Car labels are a point-in-time snapshot
+// (brand/model/plate) so history reads correctly even if the vehicle is later
+// edited or removed; no FK to Vehicle is needed for that reason.
+model ContractVehicleChange {
+  id               String   @id @default(uuid())
+  contractId       String
+  contract         Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  changeDate       DateTime
+  previousCarId    String
+  previousCarLabel String
+  newCarId         String
+  newCarLabel      String
+  note             String?
+  createdAt        DateTime @default(now())
 }
 
 // One invoice per contract, numbered per year.

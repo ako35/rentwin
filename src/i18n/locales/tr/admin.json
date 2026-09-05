@@ -418,7 +418,18 @@
         "payments": "Tahsilat",
         "returnExtra": "Dönüş Ekstra",
         "reference": "Referans",
-        "extension": "Uzatma"
+        "extension": "Uzatma",
+        "vehicleChange": "Araç Değişikliği"
+      },
+      "vehicleChange": {
+        "date": "Değişiklik Tarihi",
+        "time": "Değişiklik Saati",
+        "newVehicle": "Yeni Araç",
+        "selectVehicle": "Araç seçin",
+        "note": "Açıklama",
+        "submit": "Değiştir",
+        "noAvailable": "Seçili tarih için müsait araç yok.",
+        "range": "{{from}} → {{to}}"
       },
       "currentClass": "Geçerli Sınıf",
       "changeVehicle": "Değiştir",

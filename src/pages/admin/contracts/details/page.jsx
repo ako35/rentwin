@@ -43,7 +43,7 @@ const ContractDetail = () => {
   const {
     loading,
     vehicles, branches, customers, customer, meta,
-    initialValues, availableCars, payments, catalog, extensions, invoice,
+    initialValues, availableCars, payments, catalog, extensions, vehicleChanges, invoice,
     setCustomers, setAvailableCars, setInvoice,
     loadData, loadPayments, refreshCustomers,
   } = useContractData({ isCreate, contractId });
@@ -286,6 +286,7 @@ const ContractDetail = () => {
               customer={customer}
               invoice={invoice}
               extensions={extensions}
+              vehicleChanges={vehicleChanges}
               refreshCustomers={refreshCustomers}
               onRequestNewCustomer={openNewCust}
               onInvoiceCreated={setInvoice}

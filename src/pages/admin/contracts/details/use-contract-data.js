@@ -18,6 +18,7 @@ export const useContractData = ({ isCreate, contractId }) => {
   const [payments, setPayments] = useState([]);
   const [catalog, setCatalog] = useState([]);
   const [extensions, setExtensions] = useState([]);
+  const [vehicleChanges, setVehicleChanges] = useState([]);
   const [invoice, setInvoice] = useState(null);
 
   const loadPayments = () =>
@@ -64,6 +65,7 @@ export const useContractData = ({ isCreate, contractId }) => {
       await loadRefData();
       const r = await services.contract.getContractByIdAdmin(contractId);
       setExtensions(r.extensions || []);
+      setVehicleChanges(r.vehicleChanges || []);
       setInvoice(r.invoice || null);
       loadPayments();
       setCustomer(r.customer || null);
@@ -92,7 +94,7 @@ export const useContractData = ({ isCreate, contractId }) => {
   return {
     loading,
     vehicles, branches, customers, customer, meta,
-    initialValues, availableCars, payments, catalog, extensions, invoice,
+    initialValues, availableCars, payments, catalog, extensions, vehicleChanges, invoice,
     setCustomers, setAvailableCars, setInvoice,
     loadData, loadPayments, refreshCustomers,
   };

@@ -418,7 +418,18 @@
         "payments": "Payments",
         "returnExtra": "Return Extra",
         "reference": "Reference",
-        "extension": "Extension"
+        "extension": "Extension",
+        "vehicleChange": "Vehicle Change"
+      },
+      "vehicleChange": {
+        "date": "Change Date",
+        "time": "Change Time",
+        "newVehicle": "New Vehicle",
+        "selectVehicle": "Select vehicle",
+        "note": "Note",
+        "submit": "Change",
+        "noAvailable": "No vehicle is available for the selected date.",
+        "range": "{{from}} → {{to}}"
       },
       "currentClass": "Current Class",
       "changeVehicle": "Change",

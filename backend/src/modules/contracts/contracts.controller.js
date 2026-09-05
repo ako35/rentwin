@@ -60,6 +60,7 @@ const getContractByIdAdmin = asyncHandler(async (req, res) => {
       referenceUser: { select: { id: true, firstName: true, lastName: true, companyTitle: true, customerType: true } },
       corporate: true,
       extensions: { orderBy: { createdAt: "desc" } },
+      vehicleChanges: { orderBy: { changeDate: "desc" } },
       invoice: true,
     },
   });
@@ -117,6 +118,53 @@ const extendContract = asyncHandler(async (req, res) => {
   res.json(serializeContract(updated));
 });
 
+// Mid-contract vehicle swap: only accepts a car that's actually free for
+// [changeDate, dropOffTime), logs a snapshot record, then repoints carId.
+const changeVehicle = asyncHandler(async (req, res) => {
+  const contract = await prisma.contract.findUnique({ where: { id: req.params.id } });
+  if (!contract) throw new HttpError(404, "Contract not found.");
+
+  const { newCarId, note } = req.body;
+  const changeDate = parseFrontendDateTime(req.body.changeDate);
+  if (!newCarId) throw new HttpError(400, "Yeni araç seçilmedi.");
+  if (!changeDate) throw new HttpError(400, "Geçersiz değişiklik tarihi.");
+  if (changeDate < contract.pickUpTime || changeDate >= contract.dropOffTime) {
+    throw new HttpError(400, "Değişiklik tarihi kontrat aralığında olmalıdır.");
+  }
+  if (newCarId === contract.carId) {
+    throw new HttpError(400, "Bu araç zaten kontrata atanmış.");
+  }
+
+  const { available, vehicle: newVehicle } = await checkAvailability(newCarId, changeDate, contract.dropOffTime, {
+    excludeContractId: contract.id,
+  });
+  if (!available) throw new HttpError(409, "Bu araç seçili tarih aralığında müsait değil.");
+
+  const previousVehicle = await prisma.vehicle.findUnique({ where: { id: contract.carId } });
+  const label = (v, fallbackId) => (v ? `${v.brand} ${v.model} — ${v.licensePlate}` : fallbackId);
+
+  const updated = await prisma.$transaction(async (tx) => {
+    await tx.contractVehicleChange.create({
+      data: {
+        contractId: contract.id,
+        changeDate,
+        previousCarId: contract.carId,
+        previousCarLabel: label(previousVehicle, contract.carId),
+        newCarId,
+        newCarLabel: label(newVehicle, newCarId),
+        note: note || null,
+      },
+    });
+    return tx.contract.update({
+      where: { id: contract.id },
+      data: { carId: newCarId },
+      include: CAR_INCLUDE,
+    });
+  });
+
+  res.json(serializeContract(updated));
+});
+
 const createInvoice = asyncHandler(async (req, res) => {
   const contract = await prisma.contract.findUnique({
     where: { id: req.params.id },
@@ -162,5 +210,6 @@ module.exports = {
   updateContract,
   getContractByIdAdmin,
   extendContract,
+  changeVehicle,
   createInvoice,
 };

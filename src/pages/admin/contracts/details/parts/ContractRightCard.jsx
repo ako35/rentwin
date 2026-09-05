@@ -9,16 +9,17 @@ import InvoiceTab from "./InvoiceTab";
 import SummaryTab from "./SummaryTab";
 import PaymentsTab from "./PaymentsTab";
 import ExtensionTab from "./ExtensionTab";
+import VehicleChangeTab from "./VehicleChangeTab";
 import PricingBlock from "./PricingBlock";
 
-const SUB_TABS = ["summary", "payments", "returnExtra", "extension"];
+const SUB_TABS = ["summary", "payments", "returnExtra", "extension", "vehicleChange"];
 
 // The right column of the contract screen: customer / drivers / invoice top
 // tabs, the summary / payments / return-extra / extension sub tabs, the pricing
 // block and the running balance. Owns its own tab selection.
 const ContractRightCard = ({
   isCreate, contractId, formik, navKey,
-  customers, customer, invoice, extensions,
+  customers, customer, invoice, extensions, vehicleChanges,
   refreshCustomers, onRequestNewCustomer, onInvoiceCreated, loadData, loadPayments,
   selectedCar, billableDays, pricing, collected, extensionDays, extensionTotal,
   recordLabels, updating, money,
@@ -115,6 +116,18 @@ const ContractRightCard = ({
             extensions={extensions}
             onExtended={loadData}
             money={money}
+          />
+        )}
+
+        {subTab === "vehicleChange" && (
+          <VehicleChangeTab
+            isCreate={isCreate}
+            contractId={contractId}
+            pickUpDate={formik.values.pickUpDate}
+            dropOffDate={formik.values.dropOffDate}
+            dropOffTime={formik.values.dropOffTime}
+            vehicleChanges={vehicleChanges}
+            onChanged={loadData}
           />
         )}
       </div>
