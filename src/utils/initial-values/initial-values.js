@@ -44,10 +44,6 @@ export const bookingFormInitialValues = {
     dropOffDate: "",
     pickUpTime: "",
     dropOffTime: "",
-    cardNo: "",
-    cardHolderName: "",
-    expiryDate: "",
-    cvv: "",
     terms: false,
 };
 

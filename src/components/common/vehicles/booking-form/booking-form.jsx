@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import { utils } from "../../../../utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -23,12 +23,17 @@ const { routes } = constants;
 const BookingForm = () => {
   const [loading, setLoading] = useState(false);
   const [vehicleAvailable, setVehicleAvailable] = useState(false);
+  const [locations, setLocations] = useState([]);
   const { t } = useTranslation("vehicles");
 
   const {
     auth: { isLoggedIn },
     reservation: { vehicle, searchCriteria },
   } = useSelector((state) => state);
+
+  useEffect(() => {
+    services.location.getLocations().then(setLocations).catch(() => setLocations([]));
+  }, []);
 
   // Pre-fill from the homepage reservation search, if the user came through it.
   const initialValues = searchCriteria
@@ -37,16 +42,23 @@ const BookingForm = () => {
 
   const navigate = useNavigate();
 
+  const locationOptions = [
+    { id: "__none", value: "", name: t("booking.selectLocation") },
+    ...locations.map((l) => ({ id: l.id, value: l.name, name: l.name })),
+  ];
+
   const formItems = [
     {
       label: t("booking.pickUpLocation"),
       name: "pickUpLocation",
-      floating: true,
+      type: "select",
+      itemsArr: locationOptions,
     },
     {
       label: t("booking.dropOffLocation"),
       name: "dropOffLocation",
-      floating: true,
+      type: "select",
+      itemsArr: locationOptions,
     },
     {
       label: t("booking.pickUpDate"),
@@ -72,37 +84,6 @@ const BookingForm = () => {
       name: "dropOffTime",
       type: "time",
       floating: true,
-    },
-    {
-      label: t("booking.cardNumber"),
-      name: "cardNo",
-      floating: true,
-      asInput: "ReactInputMask",
-      mask: "9999-9999-9999-9999",
-    },
-    {
-      label: t("booking.cardHolderName"),
-      name: "cardHolderName",
-      floating: true,
-    },
-    {
-      label: t("booking.expiryDate"),
-      name: "expiryDate",
-      type: "month",
-      floating: true,
-    },
-    {
-      label: t("booking.cvv"),
-      name: "cvv",
-      floating: true,
-      asInput: "ReactInputMask",
-      mask: "999",
-    },
-    {
-      label: t("booking.termsLabel"),
-      name: "terms",
-      id: "terms",
-      type: "checkbox",
     },
   ];
 
@@ -223,9 +204,6 @@ const BookingForm = () => {
           className={`mt-5 ${vehicleAvailable && isLoggedIn} || 'd-none'`}
         >
           <Alert variant="success">
-            {formItems.slice(6, 10).map((item) => (
-              <CustomForm key={item.name} formik={formik} {...item} />
-            ))}
             <FormCheck
               type="checkbox"
               id="terms"

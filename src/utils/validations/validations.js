@@ -92,16 +92,6 @@ export const bookingFormValidationSchema = Yup.object({
     pickUpTime: Yup.string().required(t("booking.pickUpTimeRequired")),
     dropOffDate: Yup.date().required(t("booking.dropOffDateRequired")),
     dropOffTime: Yup.string().required(t("booking.dropOffTimeRequired")),
-    cardNo: Yup.string()
-        .min(15, t("booking.cardNoMin"))
-        .required(t("booking.cardNoRequired")),
-    cardHolderName: Yup.string().required(t("booking.cardHolderNameRequired")),
-    expiryDate: Yup.date().required(t("booking.expiryDateRequired")),
-    cvv: Yup.number()
-        .typeError(t("booking.cvvType"))
-        .min(1)
-        .max(999)
-        .required(t("booking.cvvRequired")),
     terms: Yup.bool().oneOf([true], t("booking.termsRequired"))
 });
 
