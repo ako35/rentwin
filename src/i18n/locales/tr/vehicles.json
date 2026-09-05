@@ -11,7 +11,19 @@
     "range": "{{pickUp}} → {{dropOff}}",
     "clear": "Temizle",
     "hint": "Bir araç seç, rezervasyon formu bu bilgilerle dolacak.",
-    "noResults": "Seçtiğiniz tarih aralığında müsait araç bulunamadı."
+    "noResults": "Seçtiğiniz tarih aralığında müsait araç bulunamadı.",
+    "resultsCount": "Aramanız için {{count}} sonuç bulundu.",
+    "sortLabel": "Sırala:",
+    "sortRecommended": "Önerilen",
+    "sortBrand": "Marka (A-Z)",
+    "sortModel": "Model (A-Z)"
+  },
+  "filters": {
+    "title": "Filtrele",
+    "clear": "Filtreleri Temizle",
+    "transmission": "Vites Tipi",
+    "fuelType": "Yakıt Tipi",
+    "brand": "Araç Markası"
   },
   "sections": {
     "vehicleModels": {

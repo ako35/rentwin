@@ -1,7 +1,57 @@
 @use '../../../styles/variables' as v;
 @use '../../../styles/mixins' as m;
 
+$breakpointmd: 900px;
+
 .vehicles {
+
+    &__layout {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+
+        @media (max-width: $breakpointmd) {
+            flex-direction: column;
+        }
+    }
+
+    &__results {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__results-toolbar {
+        @include m.flexbox(row, space-between, center, 1rem);
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+
+    &__results-count {
+        font-weight: 600;
+        color: v.$color5;
+    }
+
+    &__sort {
+        @include m.flexbox(row, flex-start, center, 0.5rem);
+        font-size: 0.9rem;
+        color: v.$color5_3;
+
+        select {
+            padding: 0.35rem 0.6rem;
+            border: 1px solid v.$color3;
+            border-radius: 6px;
+            background-color: v.$color4;
+            color: v.$color5;
+        }
+    }
+
+    &__list {
+        @include m.flexbox(column, flex-start, stretch, 0.9rem);
+    }
+
+    &__pagination {
+        margin-top: 1.5rem;
+    }
 
     &__search-summary {
         @include m.flexbox(row, space-between, center, 1rem);

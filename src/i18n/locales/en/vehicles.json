@@ -11,7 +11,19 @@
     "range": "{{pickUp}} → {{dropOff}}",
     "clear": "Clear",
     "hint": "Pick a vehicle and the booking form will be pre-filled.",
-    "noResults": "No vehicles are available for the selected date range."
+    "noResults": "No vehicles are available for the selected date range.",
+    "resultsCount": "{{count}} results found for your search.",
+    "sortLabel": "Sort:",
+    "sortRecommended": "Recommended",
+    "sortBrand": "Brand (A-Z)",
+    "sortModel": "Model (A-Z)"
+  },
+  "filters": {
+    "title": "Filter",
+    "clear": "Clear filters",
+    "transmission": "Transmission",
+    "fuelType": "Fuel Type",
+    "brand": "Brand"
   },
   "sections": {
     "vehicleModels": {
