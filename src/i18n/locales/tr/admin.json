@@ -53,7 +53,7 @@
     "selectImage": "Görsel Seç",
     "registrationScan": {
       "button": "Ruhsattan Doldur",
-      "hint": "Ruhsat fotoğrafı yükleyin, bilgiler otomatik doldurulsun.",
+      "hint": "Ruhsat fotoğrafı veya PDF'i yükleyin, bilgiler otomatik doldurulsun.",
       "success": "Ruhsat okundu, alanlar dolduruldu. Lütfen kontrol edin.",
       "error": "Ruhsat okunamadı, lütfen alanları elle doldurun."
     },

@@ -35,7 +35,7 @@ const RegistrationScan = ({ onExtracted }) => {
     <Form.Group className="vehicle-form__registration-scan">
       <Form.Control
         type="file"
-        accept=".jpg,.jpeg,.png"
+        accept=".jpg,.jpeg,.png,.pdf"
         ref={inputRef}
         onChange={handleChange}
         id="selectRegistration"
