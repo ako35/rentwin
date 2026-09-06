@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { CustomForm, SectionHeader } from "../../../";
+import { CustomForm, KvkkConsent, SectionHeader } from "../../../";
 import {
   Alert,
   Button,
   ButtonGroup,
   Form,
-  FormCheck,
   InputGroup,
   Spinner,
 } from "react-bootstrap";
@@ -204,13 +203,7 @@ const BookingForm = () => {
           className={`mt-5 ${vehicleAvailable && isLoggedIn} || 'd-none'`}
         >
           <Alert variant="success">
-            <FormCheck
-              type="checkbox"
-              id="terms"
-              value={true}
-              label={t("booking.termsLabel")}
-              {...formik.getFieldProps("terms")}
-            />
+            <KvkkConsent formik={formik} name="terms" ns="vehicles" i18nKey="booking.termsLabel" />
             <ButtonGroup className="mt-3 w-100">
               <Button
                 variant="outline-primary"

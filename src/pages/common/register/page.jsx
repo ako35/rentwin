@@ -6,7 +6,7 @@ import { utils } from "../../../utils";
 import { services } from "../../../services";
 import { constants } from "../../../constants";
 import { Button, Form, Spinner } from "react-bootstrap";
-import { CustomForm, PasswordInput } from "../../../components";
+import { CustomForm, KvkkConsent, PasswordInput } from "../../../components";
 import "./style.scss";
 
 const { routes } = constants;
@@ -92,6 +92,7 @@ const RegisterPage = () => {
       {passwordItems.map((item, index) => (
         <PasswordInput key={index} formik={formik} {...item} />
       ))}
+      <KvkkConsent formik={formik} ns="auth" i18nKey="register.kvkkLabel" />
       <Button
         type="submit"
         disabled={!(formik.dirty && formik.isValid) || loading}

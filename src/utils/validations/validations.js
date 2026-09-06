@@ -46,6 +46,7 @@ export const registerFormValidationSchema = Yup.object({
         .min(4, t("register.zipMin"))
         .max(6, t("register.zipMax"))
         .required(t("register.zipRequired")),
+    kvkkConsent: Yup.bool().oneOf([true], t("register.kvkkRequired")),
 })
 
 // CONTACT FORM

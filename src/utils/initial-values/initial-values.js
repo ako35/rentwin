@@ -16,7 +16,8 @@ export const registerFormInitialValues = {
     confirmPassword: "",
     phoneNumber: "",
     address: "",
-    zipCode: ""
+    zipCode: "",
+    kvkkConsent: false,
 };
 
 // CONTACT FORM

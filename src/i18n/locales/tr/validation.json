@@ -31,7 +31,8 @@
     "addressRequired": "Lütfen adresinizi girin",
     "zipMin": "Posta kodu en az 4 haneli olmalıdır",
     "zipMax": "Posta kodu en fazla 6 haneli olmalıdır",
-    "zipRequired": "Lütfen posta kodunuzu girin"
+    "zipRequired": "Lütfen posta kodunuzu girin",
+    "kvkkRequired": "Devam etmek için Gizlilik Politikası ve KVKK Aydınlatma Metni'ni kabul etmelisiniz"
   },
   "contact": {
     "nameMin": "İsim en az 2 karakter olmalıdır",

@@ -64,7 +64,7 @@
     "cardHolderName": "Card Holder Name",
     "expiryDate": "Expiry Date",
     "cvv": "CVV",
-    "termsLabel": "I agree to the terms and conditions",
+    "termsLabel": "I have read the <policy>Privacy & Personal Data Protection Policy</policy> and consent to the processing of my personal data as described.",
     "checkAvailability": "Check If Available",
     "totalPrice": "Total Price",
     "edit": "Edit",

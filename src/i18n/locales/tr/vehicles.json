@@ -64,7 +64,7 @@
     "cardHolderName": "Kart Sahibinin Adı",
     "expiryDate": "Son Kullanma Tarihi",
     "cvv": "CVV",
-    "termsLabel": "Şartlar ve koşulları kabul ediyorum",
+    "termsLabel": "<policy>Gizlilik Politikası ve KVKK Aydınlatma Metni</policy>'ni okudum, kişisel verilerimin belirtilen kapsamda işlenmesini kabul ediyorum.",
     "checkAvailability": "Müsaitliği Kontrol Et",
     "totalPrice": "Toplam Fiyat",
     "edit": "Düzenle",

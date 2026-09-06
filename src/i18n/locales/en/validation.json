@@ -31,7 +31,8 @@
     "addressRequired": "Please enter your address",
     "zipMin": "Zip code must be at least 4 digits",
     "zipMax": "Zip code must be at most 6 digits",
-    "zipRequired": "Please enter your zip code"
+    "zipRequired": "Please enter your zip code",
+    "kvkkRequired": "You must accept the Privacy & Personal Data Protection Policy to continue"
   },
   "contact": {
     "nameMin": "Name must be at least 2 characters",
