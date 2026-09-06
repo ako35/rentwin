@@ -89,7 +89,9 @@ export const buildContractDto = (values) => ({
   flightNo: values.flightNo,
   pickUpKm: values.pickUpKm, pickUpFuelEighths: values.pickUpFuelEighths,
   dailyPrice: values.dailyPrice, extrasTotal: values.extrasTotal,
-  oneWayFee: values.oneWayFee, returnExtraAmount: values.returnExtraAmount,
+  oneWayFee: values.oneWayFee,
+  // returnExtraAmount is derived from the itemised return charges (ReturnExtraTab)
+  // and cached server-side — it is never written from this form.
   discount: values.discount, discountIsPercent: values.discountIsPercent,
   discountDailyOnly: values.discountDailyOnly,
   deposit: values.deposit, kmLimit: values.unlimitedKm ? "" : values.kmLimit,

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Nav } from "react-bootstrap";
-import { CustomForm } from "../../../../../components";
 import CustomerPanel from "./CustomerPanel";
 import CustomerSummary from "./CustomerSummary";
 import DriversTab from "./DriversTab";
 import InvoiceTab from "./InvoiceTab";
 import SummaryTab from "./SummaryTab";
 import PaymentsTab from "./PaymentsTab";
+import ReturnExtraTab from "./ReturnExtraTab";
 import ExtensionTab from "./ExtensionTab";
 import VehicleChangeTab from "./VehicleChangeTab";
 import PricingBlock from "./PricingBlock";
@@ -105,7 +105,14 @@ const ContractRightCard = ({
         )}
 
         {subTab === "returnExtra" && (
-          <CustomForm formik={formik} name="returnExtraAmount" label={c("returnExtraAmount")} type="number" />
+          <ReturnExtraTab
+            isCreate={isCreate}
+            contractId={contractId}
+            pickUpKm={formik.values.pickUpKm}
+            kmLimit={formik.values.unlimitedKm ? "" : formik.values.kmLimit}
+            onChange={loadData}
+            money={money}
+          />
         )}
 
         {subTab === "extension" && (

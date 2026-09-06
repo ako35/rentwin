@@ -314,6 +314,7 @@ model Contract {
   drivers           ContractDriver[]
   payments          ContractPayment[]
   extras            ContractExtra[]
+  returnCharges     ContractReturnCharge[]
   extensions        ContractExtension[]
   vehicleChanges    ContractVehicleChange[]
   invoice           Invoice?
@@ -447,6 +448,23 @@ model ContractExtra {
   quantity   Int      @default(1)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+// A return-time charge itemised on the contract (HGS/OGS, km excess, damage,
+// roadside, cleaning, fuel difference, other). The summed line totals are cached
+// on Contract.returnExtraAmount, which feeds the grand total.
+model ContractReturnCharge {
+  id          String   @id @default(uuid())
+  contractId  String
+  contract    Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  category    String // HGS_OGS | KM_EXCESS | DAMAGE | ROADSIDE | CLEANING | FUEL | OTHER
+  description String?
+  amount      Float    @default(0)
+  quantity    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([contractId])
 }
 
 // "Cari" — corporate customer a contract can be billed to.

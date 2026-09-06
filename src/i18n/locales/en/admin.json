@@ -325,6 +325,31 @@
         "Transfer": "Bank Transfer",
         "Other": "Other"
       },
+      "returnCharges": {
+        "category": "Item",
+        "description": "Description",
+        "amount": "Amount (TL)",
+        "quantity": "Qty",
+        "lineTotal": "Amount",
+        "total": "Return Extras Total",
+        "cat": {
+          "HGS_OGS": "Toll (HGS / OGS)",
+          "KM_EXCESS": "Mileage Excess",
+          "DAMAGE": "Damage / Missing Part",
+          "ROADSIDE": "Roadside / Tow",
+          "CLEANING": "Cleaning",
+          "FUEL": "Fuel Difference",
+          "OTHER": "Other"
+        },
+        "kmCalcTitle": "Mileage Excess Calculator",
+        "pickUpKm": "Pick-up KM",
+        "returnKm": "Return KM",
+        "allowedKm": "Allowed KM",
+        "unitPrice": "Unit (₺/km)",
+        "excessKm": "Excess",
+        "calcAmount": "Amount",
+        "kmExcessNote": "{{km}} km × {{unit}} ₺"
+      },
       "drivers": {
         "firstName": "First Name",
         "lastName": "Last Name",
@@ -353,6 +378,7 @@
       "uzatmaAmount": "Extension Amount",
       "contractAmount": "Contract Amount",
       "balance": "Balance Due",
+      "balanceRemaining": "Remaining Balance",
       "collected": "Collected",
       "vehicleReturn": "Check In Vehicle",
       "cancelContract": "Cancel Contract",

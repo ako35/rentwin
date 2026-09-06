@@ -378,12 +378,151 @@
 
   &__top-content { margin-bottom: 0.5rem; }
 
-  &__pay-summary {
-    margin-bottom: 0.6rem;
-    padding: 0.4rem 0.7rem;
+  // Tahsilat sekmesi: genel toplam / tahsil edilen / kalan bakiye finansal kartları.
+  &__fin-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+
+    @media (max-width: 480px) { grid-template-columns: 1fr; }
+  }
+
+  &__fin-card {
+    padding: 0.5rem 0.6rem;
     background-color: v.$color4;
     border: 1px solid v.$color3;
-    border-radius: 6px;
+    border-radius: 8px;
+    text-align: center;
+
+    &.is-due {
+      background-color: rgba(v.$accent-rose, 0.06);
+      border-color: rgba(v.$accent-rose, 0.35);
+
+      .contract-page__fin-value { color: v.$accent-rose; }
+    }
+  }
+
+  &__fin-label {
+    display: block;
+    margin-bottom: 0.18rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: v.$color5_4;
+  }
+
+  &__fin-value {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: v.$color5;
+
+    &.is-paid { color: v.$color2; }
+  }
+
+  /* ---- Dönüş Ekstra: itemised return-charge matrix ---- */
+  &__rex {
+    &-chips {
+      @include m.flexbox(row, flex-start, center, 0.4rem);
+      flex-wrap: wrap;
+      margin-bottom: 0.6rem;
+
+      button {
+        border: 1px solid v.$color2;
+        background-color: v.$color4;
+        color: v.$color1;
+        border-radius: 999px;
+        padding: 0.2rem 0.7rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+
+        &:hover,
+        &.is-active {
+          background-color: v.$color2;
+          color: v.$color4;
+        }
+      }
+    }
+
+    &-calc {
+      margin-bottom: 0.7rem;
+      padding: 0.55rem 0.65rem;
+      background-color: rgba(v.$accent-amber, 0.07);
+      border: 1px solid rgba(v.$accent-amber, 0.4);
+      border-radius: 8px;
+
+      &-head {
+        @include m.flexbox(row, flex-start, center, 0.35rem);
+        font-size: 0.76rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #9a6a00;
+        margin-bottom: 0.5rem;
+      }
+
+      &-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.4rem;
+
+        @media (max-width: 640px) { grid-template-columns: 1fr 1fr; }
+
+        .form-label { margin-bottom: 0.05rem; font-size: 0.68rem; font-weight: 600; }
+        .form-control { font-size: 0.82rem; }
+      }
+
+      &-foot {
+        @include m.flexbox(row, space-between, center, 0.5rem);
+        flex-wrap: wrap;
+        margin-top: 0.55rem;
+        font-size: 0.8rem;
+        color: v.$color5_2;
+
+        strong { color: v.$color5; }
+      }
+    }
+
+    &-badge {
+      display: inline-block;
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      background-color: v.$color3_5;
+      color: v.$color5_2;
+
+      &.cat-KM_EXCESS,
+      &.cat-FUEL {
+        background-color: rgba(v.$accent-amber, 0.16);
+        color: #9a6a00;
+      }
+
+      &.cat-DAMAGE {
+        background-color: rgba(v.$accent-rose, 0.12);
+        color: v.$accent-rose;
+      }
+
+      &.cat-CLEANING {
+        background-color: rgba(v.$color1, 0.14);
+        color: v.$color2;
+      }
+    }
+
+    &-total {
+      @include m.flexbox(row, space-between, center, 1rem);
+      margin-top: 0.6rem;
+      padding: 0.45rem 0.7rem;
+      background-color: v.$color4;
+      border: 1px solid v.$color3;
+      border-radius: 8px;
+      font-size: 0.82rem;
+
+      span { color: v.$color5_3; }
+      strong { font-size: 0.95rem; font-weight: 800; color: v.$color5; }
+    }
   }
 
   /* ---- pricing block: invoice summary ---- */

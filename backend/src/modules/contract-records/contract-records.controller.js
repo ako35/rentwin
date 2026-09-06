@@ -30,6 +30,9 @@ const RESOURCES = {
     fields: ["amount", "method", "paidAt", "note"],
     required: ["amount"],
     dateFields: ["paidAt"],
+    // paidAt is a non-nullable column (@default(now())) — a blank value must
+    // fall back to "now", never null (which Prisma rejects).
+    defaultNowFields: ["paidAt"],
     numberFields: ["amount"],
     orderBy: [{ paidAt: "desc" }],
   },
@@ -43,6 +46,16 @@ const RESOURCES = {
     orderBy: [{ createdAt: "asc" }],
     // After any change, cache the summed line totals on Contract.extrasTotal.
     recomputeExtrasTotal: true,
+  },
+  returnCharges: {
+    model: "contractReturnCharge",
+    fields: ["category", "description", "amount", "quantity"],
+    required: ["category"],
+    dateFields: [],
+    numberFields: ["amount", "quantity"],
+    orderBy: [{ createdAt: "asc" }],
+    // After any change, cache the summed line totals on Contract.returnExtraAmount.
+    recomputeReturnExtra: true,
   },
 };
 
@@ -67,6 +80,16 @@ const syncExtrasTotal = async (contractId) => {
     .catch(() => {});
 };
 
+// Cache the summed return-charge line totals on Contract.returnExtraAmount so the
+// grand total (computeTotal / computePricing) picks them up.
+const syncReturnExtraTotal = async (contractId) => {
+  const rows = await prisma.contractReturnCharge.findMany({ where: { contractId } });
+  const total = rows.reduce((sum, r) => sum + r.amount * r.quantity, 0);
+  await prisma.contract
+    .update({ where: { id: contractId }, data: { returnExtraAmount: round2(total) } })
+    .catch(() => {});
+};
+
 const getResource = (name) => {
   const resource = RESOURCES[name];
   if (!resource) throw new HttpError(404, "Unknown contract record type.");
@@ -78,13 +101,15 @@ const isBlank = (v) => v === undefined || v === null || v === "";
 const buildData = (resource, body, { partial } = {}) => {
   const data = {};
   const boolFields = resource.boolFields || [];
+  const defaultNowFields = resource.defaultNowFields || [];
   resource.fields.forEach((field) => {
     if (partial && !(field in body)) return;
     const raw = body[field];
     if (boolFields.includes(field)) {
       data[field] = Boolean(raw);
     } else if (resource.dateFields.includes(field)) {
-      data[field] = isBlank(raw) ? null : new Date(raw);
+      if (!isBlank(raw)) data[field] = new Date(raw);
+      else data[field] = defaultNowFields.includes(field) ? new Date() : null;
     } else if (resource.numberFields.includes(field)) {
       data[field] = isBlank(raw) ? (field === "quantity" ? 1 : 0) : Number(raw);
     } else {
@@ -128,6 +153,7 @@ const createRecord = asyncHandler(async (req, res) => {
     data: { ...buildData(resource, req.body), contractId: req.params.contractId },
   });
   if (resource.recomputeExtrasTotal) await syncExtrasTotal(req.params.contractId);
+  if (resource.recomputeReturnExtra) await syncReturnExtraTotal(req.params.contractId);
   if (resource.model === "contractPayment") await syncPaymentToLedger(record);
   res.status(201).json(record);
 });
@@ -141,6 +167,7 @@ const updateRecord = asyncHandler(async (req, res) => {
     data: buildData(resource, req.body, { partial: true }),
   });
   if (resource.recomputeExtrasTotal) await syncExtrasTotal(target.contractId);
+  if (resource.recomputeReturnExtra) await syncReturnExtraTotal(target.contractId);
   if (resource.model === "contractPayment") await syncPaymentToLedger(record);
   res.json(record);
 });
@@ -151,6 +178,7 @@ const deleteRecord = asyncHandler(async (req, res) => {
   if (!target) throw new HttpError(404, "Record not found.");
   await prisma[resource.model].delete({ where: { id: req.params.id } });
   if (resource.recomputeExtrasTotal) await syncExtrasTotal(target.contractId);
+  if (resource.recomputeReturnExtra) await syncReturnExtraTotal(target.contractId);
   if (resource.model === "contractPayment") await unmirrorPayment(target.id);
   res.json({ message: "Record deleted." });
 });

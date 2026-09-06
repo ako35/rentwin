@@ -25,6 +25,7 @@ const ContractRecords = ({
   labels,
   catalog,
   footer,
+  emptyIcon,
 }) => {
   const { i18n } = useTranslation();
   const [rows, setRows] = useState([]);
@@ -163,8 +164,11 @@ const ContractRecords = ({
           )}
           {!loading && rows.length === 0 && (
             <tr>
-              <td colSpan={columns.length + 1} className="text-center text-muted">
-                {labels.empty}
+              <td colSpan={columns.length + 1}>
+                <div className="contract-records__empty">
+                  {emptyIcon}
+                  <span>{labels.empty}</span>
+                </div>
               </td>
             </tr>
           )}

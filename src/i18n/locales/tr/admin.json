@@ -325,6 +325,31 @@
         "Transfer": "Havale / EFT",
         "Other": "Diğer"
       },
+      "returnCharges": {
+        "category": "Kalem",
+        "description": "Açıklama",
+        "amount": "Tutar (TL)",
+        "quantity": "Adet",
+        "lineTotal": "Tutar",
+        "total": "Dönüş Ekstra Toplamı",
+        "cat": {
+          "HGS_OGS": "HGS / OGS",
+          "KM_EXCESS": "KM Aşımı",
+          "DAMAGE": "Hasar / Eksik Parça",
+          "ROADSIDE": "Yol Yardım / Çekici",
+          "CLEANING": "Temizlik",
+          "FUEL": "Yakıt Farkı",
+          "OTHER": "Diğer"
+        },
+        "kmCalcTitle": "KM Aşım Hesapla",
+        "pickUpKm": "Alış KM",
+        "returnKm": "Dönüş KM",
+        "allowedKm": "İzin Verilen KM",
+        "unitPrice": "Birim (₺/km)",
+        "excessKm": "Aşım",
+        "calcAmount": "Tutar",
+        "kmExcessNote": "{{km}} km × {{unit}} ₺"
+      },
       "drivers": {
         "firstName": "Ad",
         "lastName": "Soyad",
@@ -353,6 +378,7 @@
       "uzatmaAmount": "Uzatma Tutarı",
       "contractAmount": "Kontrat Tutarı",
       "balance": "Borç Bakiye",
+      "balanceRemaining": "Kalan Bakiye",
       "collected": "Tahsil Edilen",
       "vehicleReturn": "Araç Teslim Al",
       "cancelContract": "Kontratı İptal Et",

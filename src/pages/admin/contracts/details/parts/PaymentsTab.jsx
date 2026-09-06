@@ -1,27 +1,42 @@
 import { useTranslation } from "react-i18next";
+import moment from "moment/moment";
+import { BsWallet2 } from "react-icons/bs";
 import { ContractRecords } from "../../../../../components";
-import RoRow from "./RoRow";
 import SaveFirstHint from "./SaveFirstHint";
 
-// Sub tab: grand total / collected / balance + the payments ledger.
+// Sub tab: grand total / collected / remaining balance as three financial
+// badge cards (a negative balance is called out in rose), then the payments
+// ledger. New rows default their date to today.
 const PaymentsTab = ({ isCreate, contractId, recordLabels, total, collected, onPaymentsChange, money }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
 
   if (isCreate) return <SaveFirstHint />;
 
+  const balance = collected - total;
+
   return (
     <>
-      <div className="contract-page__pay-summary">
-        <RoRow label={c("grandTotal")} value={`${money(total)} TL`} />
-        <RoRow label={c("collected")} value={`${money(collected)} TL`} />
-        <RoRow label={c("balance")} value={`${money(collected - total)} TL`} />
+      <div className="contract-page__fin-cards">
+        <div className="contract-page__fin-card">
+          <span className="contract-page__fin-label">{c("grandTotal")}</span>
+          <span className="contract-page__fin-value">{money(total)} TL</span>
+        </div>
+        <div className="contract-page__fin-card">
+          <span className="contract-page__fin-label">{c("collected")}</span>
+          <span className="contract-page__fin-value is-paid">{money(collected)} TL</span>
+        </div>
+        <div className={`contract-page__fin-card${balance < 0 ? " is-due" : ""}`}>
+          <span className="contract-page__fin-label">{c("balanceRemaining")}</span>
+          <span className="contract-page__fin-value">{money(balance)} TL</span>
+        </div>
       </div>
       <ContractRecords
         contractId={contractId}
         resource="payments"
         onChange={onPaymentsChange}
-        initial={{ amount: "", method: "Cash", paidAt: "", note: "" }}
+        initial={{ amount: "", method: "Cash", paidAt: moment().format("YYYY-MM-DD"), note: "" }}
+        emptyIcon={<BsWallet2 />}
         columns={[
           { key: "paidAt", label: c("payments.paidAt"), kind: "date" },
           { key: "method", label: c("payments.method"), format: (val) => c(`paymentMethods.${val}`) },
