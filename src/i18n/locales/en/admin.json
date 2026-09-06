@@ -532,6 +532,13 @@
       "corpContactLast": "Company Contact Last Name",
       "corpTaxNo": "Company Tax Number",
       "corpPhone": "Contact Phone",
+      "groups": {
+        "identity": "Identity",
+        "company": "Company / Identity",
+        "contact": "Contact Details",
+        "address": "Address",
+        "other": "Other"
+      },
       "ph": {
         "corpName": "Company name",
         "firstName": "First name",

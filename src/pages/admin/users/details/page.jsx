@@ -1,31 +1,24 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { constants } from "../../../../constants";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
+import { Alert, Button, Form, Spinner } from "react-bootstrap";
+import { constants } from "../../../../constants";
 import { utils } from "../../../../utils";
 import { CustomForm, Loading } from "../../../../components";
-import { Alert, Button, ButtonGroup, Form, Row, Spinner } from "react-bootstrap";
 import { services } from "../../../../services";
+import { TR_PROVINCES, TR_DISTRICTS } from "../../../../constants/tr-geo";
+import "./style.scss";
 
 const { routes } = constants;
 
 const EMPTY = {
   customerType: "Bireysel",
-  companyTitle: "",
-  taxOffice: "",
-  firstName: "",
-  lastName: "",
-  nationalId: "",
-  email: "",
-  phoneNumber: "",
-  address: "",
-  city: "",
-  district: "",
-  active: true,
-  notes: "",
-  roles: [],
-  builtIn: false,
+  companyTitle: "", taxOffice: "",
+  firstName: "", lastName: "", nationalId: "",
+  email: "", phoneNumber: "",
+  address: "", city: "", district: "",
+  active: true, notes: "", roles: [], builtIn: false,
 };
 
 const AdminUserDetailsPage = () => {
@@ -74,7 +67,7 @@ const AdminUserDetailsPage = () => {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     utils.functions
       .swalQuestion(t("users.toasts.deleteConfirmTitle"), t("users.toasts.deleteConfirmText"))
       .then((result) => {
@@ -86,8 +79,7 @@ const AdminUserDetailsPage = () => {
     try {
       const u = await services.user.getUserAdmin(userId);
       setInitialValues({
-        ...EMPTY,
-        ...u,
+        ...EMPTY, ...u,
         customerType: u.customerType || "Bireysel",
         companyTitle: u.companyTitle || "",
         taxOffice: u.taxOffice || "",
@@ -109,79 +101,140 @@ const AdminUserDetailsPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const provinceOptions = useMemo(
+    () => [{ id: "__none", value: "", name: `— ${t("users.form.city")} —` },
+      ...TR_PROVINCES.map((p) => ({ id: p, value: p, name: p }))],
+    [t]
+  );
+  const districtList = TR_DISTRICTS[formik.values.city] || null;
+  const districtOptions = districtList
+    ? [{ id: "__none", value: "", name: `— ${t("users.form.district")} —` },
+      ...districtList.map((d) => ({ id: d, value: d, name: d }))]
+    : null;
+
   const phone = { name: "phoneNumber", label: t("users.form.phoneNumber"), asInput: "ReactInputMask", mask: "(999) 999-9999" };
-  const formItems = isCorporate
+
+  const identityFields = isCorporate
     ? [
         { name: "companyTitle", label: `* ${t("users.form.corpName")}` },
-        { name: "firstName", label: `* ${t("users.form.corpContactFirst")}` },
-        { name: "lastName", label: `* ${t("users.form.corpContactLast")}` },
         { name: "nationalId", label: `* ${t("users.form.corpTaxNo")}` },
         { name: "taxOffice", label: `* ${t("users.form.taxOffice")}` },
-        { ...phone, label: `* ${t("users.form.corpPhone")}` },
-        { name: "email", label: `* ${t("users.form.email")}`, type: "email" },
-        { name: "address", label: `* ${t("users.form.address")}` },
-        { name: "city", label: `* ${t("users.form.city")}` },
-        { name: "district", label: `* ${t("users.form.district")}` },
       ]
     : [
         { name: "firstName", label: `* ${t("users.form.firstName")}` },
         { name: "lastName", label: `* ${t("users.form.lastName")}` },
         { name: "nationalId", label: `* ${t("users.form.nationalId")}` },
+      ];
+
+  const contactFields = isCorporate
+    ? [
+        { name: "firstName", label: `* ${t("users.form.corpContactFirst")}` },
+        { name: "lastName", label: `* ${t("users.form.corpContactLast")}` },
+        { ...phone, label: `* ${t("users.form.corpPhone")}` },
         { name: "email", label: `* ${t("users.form.email")}`, type: "email" },
-        phone,
-        { name: "address", label: t("users.form.address") },
-        { name: "city", label: t("users.form.city") },
-        { name: "district", label: t("users.form.district") },
+      ]
+    : [
+        { ...phone },
+        { name: "email", label: `* ${t("users.form.email")}`, type: "email" },
       ];
 
   if (loading) return <Loading height={500} />;
 
+  const disabled = formik.values.builtIn;
+
   return (
-    <Form noValidate onSubmit={formik.handleSubmit} className="admin-user-details-form mt-5">
-      <fieldset disabled={formik.values.builtIn}>
-        <div className="mb-3">
-          <Form.Check
-            inline type="radio" id="cu-ind" label={t("users.form.individual")}
-            checked={!isCorporate}
-            onChange={() => formik.setFieldValue("customerType", "Bireysel")}
-          />
-          <Form.Check
-            inline type="radio" id="cu-corp" label={t("users.form.corporate")}
-            checked={isCorporate}
-            onChange={() => formik.setFieldValue("customerType", "Kurumsal")}
-          />
+    <Form noValidate onSubmit={formik.handleSubmit} className="customer-form">
+      <fieldset disabled={disabled} className="customer-form__fieldset">
+        <div className="customer-form__segmented" role="tablist">
+          <button
+            type="button"
+            className={!isCorporate ? "is-active" : ""}
+            onClick={() => formik.setFieldValue("customerType", "Bireysel")}
+          >
+            {t("users.form.individual")}
+          </button>
+          <button
+            type="button"
+            className={isCorporate ? "is-active" : ""}
+            onClick={() => formik.setFieldValue("customerType", "Kurumsal")}
+          >
+            {t("users.form.corporate")}
+          </button>
         </div>
-        <Row className="row-cols-1 row-cols-md-2 row-cols-lg-3">
-          {formItems.map((item) => (
-            <CustomForm key={item.name} formik={formik} {...item} />
-          ))}
-        </Row>
-        <CustomForm formik={formik} name="notes" label={t("users.form.notes")} type="textarea" rows={2} />
-        <Form.Check
-          className="mb-2"
-          label={t("users.form.active")}
-          type="checkbox"
-          name="active"
-          checked={!!formik.values.active}
-          onChange={(e) => formik.setFieldValue("active", e.target.checked)}
-        />
+
+        <section className="customer-form__card">
+          <h3>{isCorporate ? t("users.form.groups.company") : t("users.form.groups.identity")}</h3>
+          <div className="customer-form__grid">
+            {identityFields.map((item) => (
+              <CustomForm key={item.name} formik={formik} {...item} />
+            ))}
+          </div>
+        </section>
+
+        <section className="customer-form__card">
+          <h3>{t("users.form.groups.contact")}</h3>
+          <div className="customer-form__grid">
+            {contactFields.map((item) => (
+              <CustomForm key={item.name} formik={formik} {...item} />
+            ))}
+          </div>
+        </section>
+
+        <section className="customer-form__card">
+          <h3>{t("users.form.groups.address")}</h3>
+          <div className="customer-form__grid">
+            <CustomForm
+              formik={formik} name="city" type="select" itemsArr={provinceOptions}
+              label={isCorporate ? `* ${t("users.form.city")}` : t("users.form.city")}
+            />
+            {districtOptions ? (
+              <CustomForm
+                formik={formik} name="district" type="select" itemsArr={districtOptions}
+                label={isCorporate ? `* ${t("users.form.district")}` : t("users.form.district")}
+              />
+            ) : (
+              <CustomForm
+                formik={formik} name="district"
+                label={isCorporate ? `* ${t("users.form.district")}` : t("users.form.district")}
+              />
+            )}
+          </div>
+          <CustomForm
+            formik={formik} name="address" type="textarea" rows={2}
+            label={isCorporate ? `* ${t("users.form.address")}` : t("users.form.address")}
+          />
+        </section>
+
+        <section className="customer-form__card">
+          <h3>{t("users.form.groups.other")}</h3>
+          <CustomForm formik={formik} name="notes" label={t("users.form.notes")} type="textarea" rows={2} />
+          <Form.Check
+            className="mt-2"
+            label={t("users.form.active")}
+            type="checkbox"
+            name="active"
+            checked={!!formik.values.active}
+            onChange={(e) => formik.setFieldValue("active", e.target.checked)}
+          />
+        </section>
       </fieldset>
-      {formik.values.builtIn && <Alert variant="warning">{t("users.builtInWarning")}</Alert>}
-      <div className="text-end">
-        <ButtonGroup>
-          <Button onClick={() => navigate(-1)}>{t("users.cancel")}</Button>
-          {!formik.values.builtIn && (
-            <>
-              <Button type="submit" disabled={!(formik.dirty && formik.isValid) || updating}>
-                {updating && <Spinner animation="border" size="sm" />} {t("users.update")}
-              </Button>
-              <Button variant="danger" onClick={handleDelete} disabled={deleting}>
-                {deleting && <Spinner animation="border" size="sm" />} {t("users.delete")}
-              </Button>
-            </>
-          )}
-        </ButtonGroup>
-      </div>
+
+      {disabled && <Alert variant="warning">{t("users.builtInWarning")}</Alert>}
+
+      {!disabled && (
+        <div className="customer-form__actions">
+          <Button variant="outline-danger" type="button" onClick={handleDelete} disabled={deleting || updating}>
+            {deleting && <Spinner animation="border" size="sm" />} {t("users.delete")}
+          </Button>
+          <span className="customer-form__actions-spacer" />
+          <Button variant="outline-secondary" type="button" onClick={() => navigate(-1)}>
+            {t("users.cancel")}
+          </Button>
+          <Button type="submit" disabled={!(formik.dirty && formik.isValid) || updating}>
+            {updating && <Spinner animation="border" size="sm" />} {t("users.update")}
+          </Button>
+        </div>
+      )}
     </Form>
   );
 };

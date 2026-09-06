@@ -1,0 +1,77 @@
+@use '../../../../styles/variables' as v;
+@use '../../../../styles/mixins' as m;
+
+.customer-form {
+  max-width: 960px;
+  margin: 1rem auto 0;
+
+  &__fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+
+    &:disabled { opacity: 0.7; }
+  }
+
+  // Bireysel / Kurumsal segmented control
+  &__segmented {
+    display: inline-flex;
+    padding: 0.2rem;
+    margin-bottom: 1rem;
+    border: 1px solid v.$color3;
+    border-radius: 999px;
+    background-color: v.$color4;
+
+    button {
+      border: 0;
+      background: transparent;
+      border-radius: 999px;
+      padding: 0.35rem 1.3rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: v.$color5_3;
+      transition: background-color 0.15s ease, color 0.15s ease;
+
+      &.is-active {
+        background-color: v.$color1;
+        color: #fff;
+        box-shadow: 0 2px 6px v.$color1_4;
+      }
+    }
+  }
+
+  &__card {
+    border: 1px solid v.$color3;
+    border-radius: 10px;
+    background-color: #fff;
+    padding: 1rem 1.1rem 1.1rem;
+    margin-bottom: 0.9rem;
+
+    h3 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: v.$color1;
+      margin: 0 0 0.85rem;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.35rem 1rem;
+  }
+
+  &__actions {
+    @include m.flexbox(row, flex-start, center, 0.5rem);
+    flex-wrap: wrap;
+    position: sticky;
+    bottom: 0;
+    margin-top: 1rem;
+    padding: 0.7rem 0;
+    background: linear-gradient(180deg, rgba(247, 251, 248, 0), v.$color4 40%);
+  }
+
+  &__actions-spacer { flex: 1; }
+}

@@ -532,6 +532,13 @@
       "corpContactLast": "Kurum Yetkili Kişi Soyadı",
       "corpTaxNo": "Kurum Vergi Numarası",
       "corpPhone": "İrtibat Telefonu",
+      "groups": {
+        "identity": "Kimlik Bilgileri",
+        "company": "Şirket / Kimlik Bilgileri",
+        "contact": "İletişim Bilgileri",
+        "address": "Adres Bilgileri",
+        "other": "Diğer"
+      },
       "ph": {
         "corpName": "Kurum Adı",
         "firstName": "Adı",
