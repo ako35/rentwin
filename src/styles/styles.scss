@@ -1,5 +1,5 @@
 @import "./variables";
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&display=swap");
 @import "bootstrap/scss/bootstrap";
 @import "swiper/css";
 @import "swiper/css/navigation";
@@ -23,6 +23,51 @@ body,
     width: 100%;
 }
 
+body {
+    font-family: $font-family-sans-serif;
+    color: $color5;
+    background-color: $color4;
+}
+
 a {
     text-decoration: none !important;
+}
+
+// Brand-green focus ring on every text-like control (native + bootstrap).
+.form-control,
+.form-select,
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+    &:focus,
+    &:focus-visible {
+        border-color: $color1 !important;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba($color1, 0.18) !important;
+    }
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: $color1;
+}
+
+// Softer corners everywhere per the logo's rounded character.
+.btn,
+.card,
+.form-control,
+.form-select,
+.modal-content,
+.alert,
+.nav-pills .nav-link {
+    border-radius: $border-radius;
+}
+
+.btn {
+    font-weight: 600;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+
+    &:active {
+        transform: translateY(1px);
+    }
 }

@@ -101,15 +101,28 @@ const AdminUserDetailsPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const provinceOptions = useMemo(
-    () => [{ id: "__none", value: "", name: `— ${t("users.form.city")} —` },
-      ...TR_PROVINCES.map((p) => ({ id: p, value: p, name: p }))],
-    [t]
-  );
-  const districtList = TR_DISTRICTS[formik.values.city] || null;
+  const provinceOptions = useMemo(() => {
+    const opts = [{ id: "__none", value: "", name: `— ${t("users.form.city")} —` },
+      ...TR_PROVINCES.map((p) => ({ id: p, value: p, name: p }))];
+    const cur = formik.values.city;
+    if (cur && !opts.some((o) => o.value === cur)) opts.push({ id: `keep-${cur}`, value: cur, name: cur });
+    return opts;
+  }, [t, formik.values.city]);
+
+  const districtList =
+    TR_DISTRICTS[formik.values.city] ||
+    TR_DISTRICTS[Object.keys(TR_DISTRICTS).find(
+      (k) => k.toLocaleLowerCase("tr") === (formik.values.city || "").toLocaleLowerCase("tr")
+    )] ||
+    null;
   const districtOptions = districtList
-    ? [{ id: "__none", value: "", name: `— ${t("users.form.district")} —` },
-      ...districtList.map((d) => ({ id: d, value: d, name: d }))]
+    ? (() => {
+        const opts = [{ id: "__none", value: "", name: `— ${t("users.form.district")} —` },
+          ...districtList.map((d) => ({ id: d, value: d, name: d }))];
+        const cur = formik.values.district;
+        if (cur && !opts.some((o) => o.value === cur)) opts.push({ id: `keep-${cur}`, value: cur, name: cur });
+        return opts;
+      })()
     : null;
 
   const phone = { name: "phoneNumber", label: t("users.form.phoneNumber"), asInput: "ReactInputMask", mask: "(999) 999-9999" };
