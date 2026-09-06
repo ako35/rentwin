@@ -7,7 +7,13 @@ $bp: 992px;
   position: relative;
   padding: 170px 0 0;
   overflow: hidden;
-  background: linear-gradient(to bottom right, rgba(v.$color1, 0.05) 0%, transparent 42%, v.$color4 100%);
+  // Soft green-to-slate gradient: a green wash behind the illustration (top
+  // right), a fainter one on the left, over a vertical light-green -> slate base
+  // so the white search card below reads as a distinct, raised focal point.
+  background:
+    radial-gradient(60% 52% at 88% -5%, rgba(v.$color1, 0.16), transparent 60%),
+    radial-gradient(48% 44% at -8% 22%, rgba(v.$color1, 0.08), transparent 58%),
+    linear-gradient(180deg, #eef5f0 0%, v.$color4 46%, #e9eef4 100%);
 
   @media (max-width: $bp) {
     padding-top: 116px;
@@ -16,12 +22,25 @@ $bp: 992px;
   &::before {
     content: '';
     position: absolute;
-    top: -140px;
-    right: -160px;
-    width: 480px;
-    height: 480px;
+    top: -160px;
+    right: -180px;
+    width: 520px;
+    height: 520px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(v.$color1, 0.12), transparent 70%);
+    background: radial-gradient(circle, rgba(v.$color1, 0.14), transparent 70%);
+    pointer-events: none;
+  }
+
+  // faint dotted texture for depth, masked so it fades before the search card
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 60%;
+    background-image: radial-gradient(rgba(v.$color5, 0.05) 1px, transparent 1.4px);
+    background-size: 22px 22px;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
+    mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
     pointer-events: none;
   }
 
@@ -119,15 +138,15 @@ $bp: 992px;
     @include m.flexbox(row, center, center);
     position: relative;
 
-    // soft green glow so the illustration melts into the light ground
+    // soft green platform glow so the illustration sits on a surface, not floats
     &::before {
       content: '';
       position: absolute;
-      width: 80%;
-      aspect-ratio: 1 / 0.82;
+      width: 86%;
+      aspect-ratio: 1 / 0.78;
       border-radius: 50%;
-      background: rgba(v.$color1, 0.1);
-      filter: blur(60px);
+      background: rgba(v.$color1, 0.16);
+      filter: blur(56px);
       z-index: 0;
     }
 
