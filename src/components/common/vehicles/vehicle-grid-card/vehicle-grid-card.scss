@@ -21,8 +21,8 @@
 
     &__image {
         @include m.flexbox(row, center, center);
-        aspect-ratio: 16 / 10;
-        padding: 1rem 1.25rem;
+        height: 170px;
+        padding: 0.75rem 1rem;
         background-color: v.$color4;
         border-bottom: 1px solid v.$color3;
 
@@ -35,9 +35,9 @@
     }
 
     &__body {
-        @include m.flexbox(column, flex-start, stretch, 0.75rem);
+        @include m.flexbox(column, flex-start, stretch, 0.6rem);
         flex: 1;
-        padding: 1rem 1.1rem 1.1rem;
+        padding: 0.85rem 1rem 1rem;
     }
 
     &__name {
