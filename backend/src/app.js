@@ -20,6 +20,7 @@ const corporatesRoutes = require("./modules/corporates/corporates.routes");
 const extrasRoutes = require("./modules/extras/extras.routes");
 const announcementsRoutes = require("./modules/announcements/announcements.routes");
 const ledgerRoutes = require("./modules/ledger/ledger.routes");
+const { getSitemap } = require("./modules/sitemap/sitemap.controller");
 const notFound = require("./middleware/not-found");
 const errorHandler = require("./middleware/error-handler");
 
@@ -83,6 +84,10 @@ api.use(announcementsRoutes);
 api.use(ledgerRoutes);
 
 app.use("/api", api);
+
+// Served at the site root (see vercel.json rewrite) so search engines find it
+// at https://rentwin.com.tr/sitemap.xml.
+app.get("/sitemap.xml", getSitemap);
 
 app.use(notFound);
 app.use(errorHandler);

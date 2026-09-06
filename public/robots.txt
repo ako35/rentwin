@@ -4,5 +4,6 @@ Disallow: /admin
 Disallow: /auth
 Disallow: /user
 Disallow: /forbidden
+Disallow: /api/
 
 Sitemap: https://rentwin.com.tr/sitemap.xml
