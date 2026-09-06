@@ -65,6 +65,30 @@ enum InspectionResult {
   Defective
 }
 
+enum LedgerDirection {
+  DEBIT
+  CREDIT
+}
+
+enum LedgerSource {
+  MANUAL
+  AUTO_CONTRACT
+  AUTO_PAYMENT
+}
+
+enum LedgerCategory {
+  RENTAL
+  EXTRA
+  TRAFFIC_FINE
+  DAMAGE
+  FUEL
+  MANUAL_DEBIT
+  PAYMENT
+  REFUND
+  DISCOUNT
+  MANUAL_CREDIT
+}
+
 model User {
   id                 String        @id @default(uuid())
   firstName          String
@@ -90,6 +114,7 @@ model User {
   reservations       Reservation[] @relation("ReservationCustomer")
   contracts          Contract[]    @relation("ContractCustomer")
   referenceContracts Contract[]    @relation("ContractReferenceCustomer")
+  ledgerEntries      LedgerEntry[] @relation("UserLedger")
 }
 
 model VehicleImage {
@@ -288,6 +313,7 @@ model Contract {
   extensions        ContractExtension[]
   vehicleChanges    ContractVehicleChange[]
   invoice           Invoice?
+  ledgerEntries     LedgerEntry[]
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
 }
@@ -366,6 +392,33 @@ model ContractPayment {
   note       String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+// Double-entry current-account ledger. One row per debit/credit movement on a
+// customer (User) account. Contract grand totals and contract payments are
+// mirrored here (source AUTO_*) and kept in sync from the contract flow;
+// everything else (traffic fines, damage, manual charges, off-contract
+// collections) is entered by hand (source MANUAL). The running balance is
+// computed at read time, never stored.
+model LedgerEntry {
+  id                String          @id @default(uuid())
+  userId            String
+  user              User            @relation("UserLedger", fields: [userId], references: [id], onDelete: Cascade)
+  date              DateTime        @default(now())
+  direction         LedgerDirection
+  category          LedgerCategory
+  amount            Float
+  description       String?
+  method            String?
+  contractId        String?
+  contract          Contract?       @relation(fields: [contractId], references: [id], onDelete: SetNull)
+  contractPaymentId String?         @unique
+  invoiceNo         String?
+  source            LedgerSource    @default(MANUAL)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([userId, date])
 }
 
 // Catalogue of billable extras (child seat, extra driver, GPS, ...).
