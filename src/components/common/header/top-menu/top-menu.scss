@@ -4,7 +4,8 @@
 $bpsm: 576px;
 
 .top-bar {
-    background-color: v.$color5;
+    background-color: v.$color4;
+    border-bottom: 1px solid v.$color3;
     font-size: 0.8rem;
 
     @media (max-width: $bpsm) {
@@ -20,17 +21,18 @@ $bpsm: 576px;
         @include m.flexbox(row, flex-start, center, 0.8rem);
 
         a {
-            color: rgba(255, 255, 255, 0.75);
+            color: v.$color5_3;
             text-decoration: none;
+            transition: color 0.15s ease;
 
-            &:hover { color: #fff; }
+            &:hover { color: v.$color5; }
         }
     }
 
     &__sep {
         width: 1px;
         height: 13px;
-        background-color: rgba(255, 255, 255, 0.25);
+        background-color: v.$color3;
     }
 
     &__social {
@@ -40,7 +42,7 @@ $bpsm: 576px;
         a {
             display: inline-flex;
             font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.6);
+            color: v.$color5_4;
             transition: color 0.15s ease;
 
             &:hover { color: v.$color1; }

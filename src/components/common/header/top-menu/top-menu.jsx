@@ -15,7 +15,7 @@ const socials = [
   { title: "linkedin", url: linkedin, icon: <BsLinkedin /> },
 ];
 
-// Thin dark strip above the main header row: contact details + social links.
+// Thin light strip above the main header row: contact details + social links.
 const TopMenu = () => (
   <div className="top-bar">
     <Container className="top-bar__inner">
