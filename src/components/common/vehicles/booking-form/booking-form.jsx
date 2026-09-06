@@ -174,7 +174,6 @@ const BookingForm = () => {
   // checked for — reset it if any of them change so the user re-checks.
   useEffect(() => {
     setVehicleAvailable(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     formik.values.pickUpDate,
     formik.values.pickUpTime,
