@@ -11,6 +11,7 @@ import { constants } from "../../../constants";
 import "./style.scss";
 
 const { routes } = constants;
+const API_URL = import.meta.env.VITE_APP_API_URL;
 
 const LocationsPage = () => {
   const { t } = useTranslation("locations");
@@ -46,12 +47,22 @@ const LocationsPage = () => {
                 to={`${routes.locations}/${utils.functions.slugify(loc.name)}`}
                 className="location-card"
               >
-                <span className="location-card__icon">
-                  <BsGeoAltFill />
+                <span className="location-card__media">
+                  {loc.imageId ? (
+                    <img
+                      src={`${API_URL}/files/display/${loc.imageId}`}
+                      alt={loc.name}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <BsGeoAltFill />
+                  )}
                 </span>
-                <span className="location-card__name">{loc.name}</span>
-                <span className="location-card__cta">
-                  {t("cardCta")} <BsArrowRight />
+                <span className="location-card__body">
+                  <span className="location-card__name">{loc.name}</span>
+                  <span className="location-card__cta">
+                    {t("cardCta")} <BsArrowRight />
+                  </span>
                 </span>
               </Link>
             ))}

@@ -236,6 +236,7 @@ model Branch {
 model Location {
   id        String   @id @default(uuid())
   name      String   @unique
+  imageId   String? // orphan VehicleImage.id used as a generic blob store (see modules/files)
   createdAt DateTime @default(now())
 }
 

@@ -466,12 +466,13 @@
       "acilis": "Alış",
       "ekstralarTitle": "Ekstralar",
       "kbs": {
-        "title": "KBS Bildirimi",
-        "entered": "KBS'e bildirildi",
+        "title": "KABİS Bildirimi",
+        "statusLabel": "KABİS bildirim durumu",
         "statusDone": "Bildirildi",
         "statusPending": "Bekliyor",
         "dateLabel": "Bildirim tarihi",
-        "hint": "Bu kiralama henüz KBS'e (Kimlik Bildirim Sistemi) bildirilmedi."
+        "filedBy": "Bildiren",
+        "hint": "Bu kiralama henüz KABİS'e (Kimlik Bildirme Sistemi) bildirilmedi."
       },
       "print": {
         "menu": "Yazdır",
@@ -529,7 +530,7 @@
           "location": "Yer",
           "km": "Kilometre",
           "fuel": "Yakıt Seviyesi",
-          "kbs": "KBS Bildirim Tarihi",
+          "kbs": "KABİS Bildirim Tarihi",
           "kbsNotYet": "Girilmedi",
           "damageTitle": "Hasar Krokisi",
           "diagramFront": "Ön",
@@ -940,11 +941,22 @@
   },
   "rentalLocations": {
     "pageTitle": "Lokasyon Yönetimi",
-    "hint": "Burada eklediğiniz lokasyonlar, araç alış/bırakış yeri alanlarında seçenek olarak sunulur.",
+    "hint": "Burada eklediğiniz lokasyonlar, araç alış/bırakış yeri alanlarında seçenek olarak sunulur ve lokasyon tanıtım sayfalarında görselleriyle listelenir.",
     "nameLabel": "Lokasyon Adı",
     "namePlaceholder": "Örn. İzmir Havalimanı",
     "add": "Ekle",
+    "addTitle": "Yeni Lokasyon",
+    "editTitle": "Lokasyonu Düzenle",
+    "edit": "Düzenle",
+    "save": "Kaydet",
+    "cancel": "Vazgeç",
+    "imageLabel": "Lokasyon Görseli",
+    "imageEmpty": "Görsel yok",
+    "imageSelect": "Görsel Seç",
+    "imageRemove": "Kaldır",
+    "imageHint": "Önerilen: yatay (16:9), en fazla 5 MB. Görsel eklenmezse tanıtım sayfasında konum simgesi gösterilir.",
     "table": {
+      "image": "Görsel",
       "name": "Lokasyon Adı",
       "actions": "İşlemler"
     },
@@ -953,6 +965,8 @@
     "toasts": {
       "createSuccess": "Lokasyon başarıyla eklendi.",
       "createError": "Lokasyon eklenirken bir hata oluştu.",
+      "updateSuccess": "Lokasyon güncellendi.",
+      "updateError": "Lokasyon güncellenirken bir hata oluştu.",
       "deleteSuccess": "Lokasyon başarıyla silindi.",
       "deleteError": "Lokasyon silinirken bir hata oluştu.",
       "deleteConfirmTitle": "Bu lokasyonu silmek istediğinizden emin misiniz?",

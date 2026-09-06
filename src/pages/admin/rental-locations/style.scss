@@ -21,9 +21,65 @@
         margin-bottom: 1rem;
     }
 
-    &__form {
+    &__table {
+        td {
+            vertical-align: middle;
+        }
+    }
+
+    &__thumb {
+        @include m.flexbox(row, center, center);
+        width: 68px;
+        height: 46px;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: v.$color4;
+        border: 1px solid v.$color3;
+        color: v.$color5_3;
+        font-size: 1.1rem;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__modal {
+        .admin-rental-locations-page__image {
+            @include m.flexbox(row, center, center);
+            width: 100%;
+            height: 190px;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: v.$color4;
+            border: 1px dashed v.$color3;
+            margin-bottom: 0.6rem;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+    }
+
+    &__image-empty {
+        @include m.flexbox(column, center, center, 0.4rem);
+        color: v.$color5_3;
+        font-size: 0.85rem;
+
+        svg {
+            font-size: 1.8rem;
+        }
+    }
+
+    &__image-actions {
         @include m.flexbox(row, flex-start, center, 0.5rem);
-        max-width: 420px;
-        margin-bottom: 1.25rem;
+        margin-bottom: 0.4rem;
+
+        .btn {
+            @include m.flexbox(row, center, center, 0.35rem);
+        }
     }
 }

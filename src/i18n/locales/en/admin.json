@@ -466,12 +466,13 @@
       "acilis": "Pick-up",
       "ekstralarTitle": "Extras",
       "kbs": {
-        "title": "KBS Notification",
-        "entered": "Filed in KBS",
+        "title": "KABİS Notification",
+        "statusLabel": "KABİS notification status",
         "statusDone": "Filed",
         "statusPending": "Pending",
         "dateLabel": "Filing date",
-        "hint": "This rental has not been filed in KBS (identity notification system) yet."
+        "filedBy": "Filed by",
+        "hint": "This rental has not been filed in KABİS (identity notification system) yet."
       },
       "print": {
         "menu": "Print",
@@ -529,7 +530,7 @@
           "location": "Location",
           "km": "Odometer",
           "fuel": "Fuel Level",
-          "kbs": "KBS Filing Date",
+          "kbs": "KABİS Filing Date",
           "kbsNotYet": "Not filed",
           "damageTitle": "Damage Diagram",
           "diagramFront": "Front",
@@ -940,11 +941,22 @@
   },
   "rentalLocations": {
     "pageTitle": "Location Management",
-    "hint": "Locations you add here become the pick-up/drop-off options in vehicle location fields.",
+    "hint": "Locations you add here become the pick-up/drop-off options in vehicle location fields and are listed with their images on the location landing pages.",
     "nameLabel": "Location Name",
     "namePlaceholder": "e.g. Izmir Airport",
     "add": "Add",
+    "addTitle": "New Location",
+    "editTitle": "Edit Location",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "imageLabel": "Location Image",
+    "imageEmpty": "No image",
+    "imageSelect": "Choose Image",
+    "imageRemove": "Remove",
+    "imageHint": "Recommended: landscape (16:9), max 5 MB. Without an image the landing page shows a location icon.",
     "table": {
+      "image": "Image",
       "name": "Location Name",
       "actions": "Actions"
     },
@@ -953,6 +965,8 @@
     "toasts": {
       "createSuccess": "Location added successfully.",
       "createError": "There was an error adding the location.",
+      "updateSuccess": "Location updated.",
+      "updateError": "There was an error updating the location.",
       "deleteSuccess": "Location deleted successfully.",
       "deleteError": "There was an error deleting the location.",
       "deleteConfirmTitle": "Are you sure you want to delete this location?",

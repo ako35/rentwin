@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 import { BsShieldCheck, BsShieldExclamation } from "react-icons/bs";
 import moment from "moment/moment";
 
-// Left card: tracks whether this rental was filed in KBS (Kimlik Bildirim
+// Left card: tracks whether this rental was filed in KABİS (Kimlik Bildirme
 // Sistemi), on which date and by whom. Saved with the contract on "Kaydet";
 // the filer name is stamped server-side on the not-filed -> filed transition.
 const KbsSection = ({ formik }) => {
@@ -19,10 +19,6 @@ const KbsSection = ({ formik }) => {
     if (!checked) formik.setFieldValue("kbsNotifiedBy", "");
   };
 
-  const stamp = entered
-    ? [moment(value).format("DD.MM.YYYY"), by].filter(Boolean).join(" · ")
-    : null;
-
   return (
     <section className={`contract-card contract-page__kbs ${entered ? "is-done" : "is-pending"}`}>
       <h3>{c("title")}</h3>
@@ -31,7 +27,7 @@ const KbsSection = ({ formik }) => {
         <Form.Check
           type="switch"
           id="kbs-entered"
-          label={c("entered")}
+          label={c("statusLabel")}
           checked={entered}
           onChange={(e) => toggle(e.target.checked)}
         />
@@ -51,7 +47,11 @@ const KbsSection = ({ formik }) => {
               onChange={(e) => formik.setFieldValue("kbsNotifiedAt", e.target.value)}
             />
           </label>
-          {stamp && <p className="contract-page__kbs-stamp">{stamp}</p>}
+          {by && (
+            <p className="contract-page__kbs-stamp">
+              {c("filedBy")}: {by}
+            </p>
+          )}
         </>
       ) : (
         <p className="contract-page__kbs-hint">{c("hint")}</p>

@@ -11,6 +11,7 @@ import { constants } from "../../../../constants";
 import "../style.scss";
 
 const { routes } = constants;
+const API_URL = import.meta.env.VITE_APP_API_URL;
 
 const LocationDetailPage = () => {
   const { slug } = useParams();
@@ -64,6 +65,12 @@ const LocationDetailPage = () => {
         <Link to={routes.locations} className="location-detail__back">
           &larr; {t("detail.backToList")}
         </Link>
+
+        {location.imageId && (
+          <div className="location-detail__hero">
+            <img src={`${API_URL}/files/display/${location.imageId}`} alt={name} />
+          </div>
+        )}
 
         <p className="location-detail__lead">{t("detail.lead", { name })}</p>
 
