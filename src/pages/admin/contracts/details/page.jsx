@@ -310,6 +310,7 @@ const ContractDetail = () => {
 
         <ContractActions
           isCreate={isCreate}
+          contractId={contractId}
           updating={updating}
           deleting={deleting}
           canSave={isCreate ? formik.isValid : formik.isValid && formik.dirty}

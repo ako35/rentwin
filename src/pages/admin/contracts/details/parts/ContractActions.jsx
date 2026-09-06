@@ -1,17 +1,41 @@
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Button, Spinner } from "react-bootstrap";
+import { Button, Dropdown, Spinner } from "react-bootstrap";
+import { constants } from "../../../../../constants";
+
+const PRINT_DOCS = ["sozlesme", "ek1", "tutanak"];
 
 // Sticky bottom action bar. Dangerous / secondary actions sit on the left,
 // primary flow actions on the right.
 // Create: "Vazgeç" | "Oluştur ve Aç".
-// Edit (open): "Kontratı İptal Et", "Sil" | "Yazdır", "Araç Teslim Al", "Kaydet".
+// Edit (open): "Kontratı İptal Et", "Sil" | "Yazdır ▾", "Araç Teslim Al", "Kaydet".
 // Edit (closed DONE/CANCELLED): the form is read-only, so only "Geri Aç" shows.
 const ContractActions = ({
-  isCreate, updating, deleting, canSave, status,
+  isCreate, contractId, updating, deleting, canSave, status,
   onDiscard, onDelete, onVehicleReturn, onCancelContract, onReopen,
 }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
+
+  const printMenu = (
+    <Dropdown>
+      <Dropdown.Toggle variant="outline-secondary" id="contract-print-menu">
+        {t("reservations.contract.print.menu")}
+      </Dropdown.Toggle>
+      <Dropdown.Menu>
+        {PRINT_DOCS.map((doc) => (
+          <Dropdown.Item
+            key={doc}
+            as={Link}
+            to={`${constants.routes.adminContracts}/${contractId}/yazdir/${doc}`}
+            target="_blank"
+          >
+            {t(`reservations.contract.print.${doc}.tab`)}
+          </Dropdown.Item>
+        ))}
+      </Dropdown.Menu>
+    </Dropdown>
+  );
 
   if (isCreate) {
     return (
@@ -53,9 +77,7 @@ const ContractActions = ({
         )}
       </div>
       <div className="contract-page__actionbar-right">
-        <Button variant="outline-secondary" type="button" onClick={() => window.print()}>
-          {c("print")}
-        </Button>
+        {printMenu}
         {closed ? (
           <Button variant="outline-secondary" type="button" disabled={updating} onClick={onReopen}>
             {updating && <Spinner animation="border" size="sm" />} {c("reopenContract")}

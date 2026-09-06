@@ -1,0 +1,219 @@
+@use '../../../../styles/variables' as v;
+
+// Full-screen printable document surface. Isolated from the admin chrome so
+// the browser's "Print / Save as PDF" only picks up the sheet.
+.cprint {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  overflow-y: auto;
+  background: v.$color3_5;
+  padding: 0 0 4rem;
+
+  &__toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.6rem 1rem;
+    background: #fff;
+    border-bottom: 1px solid v.$color3;
+
+    button {
+      border: 1px solid v.$color3;
+      background: #fff;
+      border-radius: 8px;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: v.$color5;
+      cursor: pointer;
+
+      &:hover { background: v.$color4; }
+    }
+  }
+
+  &__toolbar-tabs {
+    display: flex;
+    gap: 0.35rem;
+
+    button.is-active {
+      background: v.$color1;
+      border-color: v.$color1;
+      color: #fff;
+    }
+  }
+
+  &__toolbar-print {
+    background: v.$color1 !important;
+    border-color: v.$color1 !important;
+    color: #fff !important;
+
+    &:hover { background: v.$color2 !important; }
+  }
+}
+
+.cprint-sheet {
+  width: 210mm;
+  max-width: 100%;
+  min-height: 297mm;
+  margin: 1.5rem auto;
+  padding: 18mm 16mm;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.12);
+  color: #000;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.cprint-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid #000;
+
+  &__brand { font-size: 18px; font-weight: 800; letter-spacing: 0.02em; }
+  &__meta { font-size: 9px; color: #333; margin-top: 0.15rem; max-width: 90mm; }
+  &__doc { text-align: right; }
+  &__title { font-size: 13px; font-weight: 700; text-transform: uppercase; }
+  &__no, &__date { font-size: 10px; margin-top: 0.15rem; }
+}
+
+.cprint-block {
+  margin-top: 0.9rem;
+  break-inside: avoid;
+
+  h2 {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 0 0 0.4rem;
+    padding-bottom: 0.15rem;
+    border-bottom: 1px solid #000;
+  }
+
+  &--body { break-inside: auto; }
+}
+
+.cprint-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.3rem 1rem;
+}
+
+.cprint-field {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px dotted #999;
+  padding: 0.15rem 0;
+
+  span { font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.03em; color: #555; }
+  strong { font-size: 11px; font-weight: 600; }
+
+  &--wide { grid-column: 1 / -1; }
+}
+
+.cprint-state {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    border: 1px solid #000;
+    padding: 0.3rem 0.45rem;
+    font-size: 10px;
+    text-align: left;
+  }
+
+  thead th { background: #eee; text-align: center; font-weight: 700; }
+  tbody th { width: 32mm; background: #f6f6f6; font-weight: 600; }
+  tbody td { height: 8mm; }
+}
+
+.cprint-diagram {
+  figure { margin: 0; text-align: center; }
+  svg { width: 100%; height: auto; }
+  figcaption { font-size: 8.5px; text-transform: uppercase; color: #555; margin-top: 0.1rem; }
+
+  &__top {
+    max-width: 130mm;
+    margin: 0 auto;
+  }
+
+  &__ends {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 0.4rem;
+
+    figure { width: 32mm; }
+  }
+
+  &__legend { font-size: 9px; color: #333; margin: 0.5rem 0 0; text-align: center; }
+}
+
+.cprint-check {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.25rem 0.75rem;
+
+  li { font-size: 10px; display: flex; align-items: center; gap: 0.35rem; }
+
+  &__box {
+    width: 10px;
+    height: 10px;
+    border: 1px solid #000;
+    flex-shrink: 0;
+  }
+}
+
+.cprint-notes {
+  height: 22mm;
+  border: 1px solid #000;
+}
+
+.cprint-placeholder {
+  border: 1px dashed #999;
+  padding: 0.6rem;
+  color: #777;
+  font-style: italic;
+}
+
+.cprint-sign {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+  break-inside: avoid;
+
+  span { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.03em; color: #333; }
+  &__line { margin-top: 14mm; border-top: 1px solid #000; }
+}
+
+@media print {
+  body { visibility: hidden; }
+  .cprint, .cprint * { visibility: visible; }
+  .cprint {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    overflow: visible;
+    padding: 0;
+  }
+  .no-print { display: none !important; }
+  .cprint-sheet {
+    width: auto;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    min-height: 0;
+  }
+  @page { size: A4; margin: 14mm; }
+}

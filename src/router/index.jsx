@@ -12,6 +12,7 @@ import {
   AdminNewCustomerPage,
   AdminNewVehiclePage,
   AdminContractDetailsPage,
+  AdminContractPrintPage,
   AdminContractsPage,
   AdminReservationsPage,
   AdminReservationFormPage,
@@ -188,6 +189,10 @@ const router = createBrowserRouter([
           {
             path: ":contractId",
             element: <AdminContractDetailsPage />,
+          },
+          {
+            path: ":contractId/yazdir/:docType",
+            element: <AdminContractPrintPage />,
           },
         ],
       },

@@ -9,6 +9,7 @@ import AdminBranchesPage from "./admin/branches/page";
 import AdminRentalLocationsPage from "./admin/rental-locations/page";
 import AdminContractsPage from "./admin/contracts/page"
 import AdminContractDetailsPage from "./admin/contracts/details/page";
+import AdminContractPrintPage from "./admin/contracts/print/page";
 import AdminReservationsPage from "./admin/reservations/page";
 import AdminReservationFormPage from "./admin/reservations/form/page";
 import AdminUsersPage from "./admin/users/page";
@@ -47,6 +48,7 @@ export {
     AdminRentalLocationsPage,
     AdminContractsPage,
     AdminContractDetailsPage,
+    AdminContractPrintPage,
     AdminReservationsPage,
     AdminReservationFormPage,
     AdminUsersPage,
