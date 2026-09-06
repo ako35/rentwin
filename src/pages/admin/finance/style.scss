@@ -1,0 +1,188 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+.finance-page {
+  &__toolbar {
+    @include m.flexbox(row, space-between, center, 1rem);
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+
+    h2 { font-size: 1.3rem; color: v.$color5; margin: 0; }
+  }
+
+  &__toolbar-controls {
+    @include m.flexbox(row, flex-end, center, 0.6rem);
+    flex-wrap: wrap;
+
+    .form-check { margin: 0; }
+    .form-control { max-width: 220px; }
+  }
+
+  &__head {
+    @include m.flexbox(row, space-between, flex-start, 1rem);
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+
+    h2 {
+      @include m.flexbox(row, flex-start, center, 0.6rem);
+      font-size: 1.35rem;
+      color: v.$color5;
+      margin: 0.25rem 0 0;
+    }
+  }
+
+  &__back {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: v.$color1;
+    text-decoration: none;
+
+    &:hover { color: v.$color2; }
+  }
+
+  &__code {
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    background-color: v.$color3_5;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: v.$color5_2;
+  }
+
+  &__balance {
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    background-color: v.$color3;
+    color: v.$color5;
+
+    &.is-negative { background-color: #f7d9d9; color: #a52626; }
+    &.is-positive { background-color: #d6f2df; color: #1c7a3e; }
+  }
+
+  &__actions {
+    @include m.flexbox(row, flex-start, center, 0.6rem);
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  &__actions-spacer { flex: 1; }
+
+  &__filters {
+    @include m.flexbox(row, flex-start, flex-end, 0.75rem);
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+
+    label {
+      @include m.flexbox(column, flex-start, stretch, 0.2rem);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: v.$color5_3;
+    }
+
+    .form-control, .form-select { min-width: 150px; }
+  }
+
+  &__panel {
+    background-color: #fff;
+    border: 1px solid v.$color3;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+  }
+
+  &__row { cursor: pointer; }
+  &__name { font-weight: 600; }
+}
+
+.ledger-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+
+  thead th {
+    text-align: left;
+    padding: 0.65rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: v.$color5_3;
+    background-color: v.$color4;
+    border-bottom: 1px solid v.$color3;
+  }
+
+  tbody td {
+    padding: 0.6rem 1rem;
+    color: v.$color5;
+    border-bottom: 1px solid v.$color3;
+    vertical-align: top;
+  }
+
+  tbody tr:hover td { background-color: v.$color4; }
+
+  tfoot td {
+    padding: 0.7rem 1rem;
+    font-weight: 700;
+    color: v.$color5;
+    background-color: v.$color4;
+    border-top: 2px solid v.$color3;
+  }
+
+  &__bal { font-weight: 700; font-variant-numeric: tabular-nums; }
+  &__bal.is-negative { color: #a52626; }
+
+  &__doc { color: v.$color1; font-weight: 600; text-decoration: none; }
+  &__note { color: v.$color5_3; }
+  &__opening td { background-color: v.$color3_5; font-weight: 600; color: v.$color5_3; }
+  &__empty { text-align: center; color: v.$color5_3; padding: 2rem 0 !important; }
+  &__act { width: 4.5rem; white-space: nowrap; text-align: right; }
+}
+
+.ledger-badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+
+  &--debit { background-color: #fdecc8; color: #9a6a00; }
+  &--credit { background-color: #d6f2df; color: #1c7a3e; }
+}
+
+.ledger-code {
+  display: inline-block;
+  padding: 0.12rem 0.55rem;
+  border-radius: 999px;
+  background-color: v.$color3_5;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: v.$color5_2;
+}
+
+.finance-modal .form-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: v.$color5_3;
+  margin-bottom: 0.15rem;
+}
+
+// local ghost buttons (finance table actions)
+.finance-page .ghost-btn {
+  @include m.flexbox(row, center, center);
+  width: 1.8rem;
+  height: 1.8rem;
+  border: none;
+  border-radius: 8px;
+  background-color: transparent;
+  color: v.$color5_3;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+
+  &:hover { background-color: v.$color3_5; color: v.$color5; }
+  &--danger:hover { background-color: rgba(225, 29, 72, 0.1); color: #e11d48; }
+}

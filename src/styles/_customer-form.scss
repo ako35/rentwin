@@ -21,6 +21,20 @@
     &:disabled { opacity: 0.7; }
   }
 
+  &__topbar {
+    @include m.flexbox(row, flex-end, center);
+    margin-bottom: 0.6rem;
+  }
+
+  &__ledger-link {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: v.$color1;
+    text-decoration: none;
+
+    &:hover { color: v.$color2; }
+  }
+
   &__head {
     @include m.flexbox(row, space-between, center, 1rem);
     margin-bottom: 1rem;

@@ -775,6 +775,86 @@
     "copyright": "© 2014 - {{year}} Rentwin Software. All Rights Reserved",
     "requestSupport": "Request Support"
   },
+  "finance": {
+    "pageTitle": "Current Accounts",
+    "onlyDebtors": "Debtors only",
+    "searchPlaceholder": "Name, company, email…",
+    "loadError": "Could not load account data.",
+    "backToList": "Account list",
+    "currentBalance": "Current Balance",
+    "collectAction": "Record Payment",
+    "chargeAction": "Add Charge",
+    "printStatement": "Print Statement",
+    "openStatement": "Account Statement →",
+    "collectTitle": "Record a Payment",
+    "chargeTitle": "Add a Charge",
+    "saved": "Entry added.",
+    "saveError": "Something went wrong while saving.",
+    "deleted": "Entry deleted.",
+    "deleteConfirmTitle": "Delete entry",
+    "deleteConfirmText": "Delete this ledger entry?",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "filters": {
+      "from": "From",
+      "to": "To",
+      "category": "Category",
+      "allCategories": "All",
+      "clear": "Clear",
+      "apply": "Filter"
+    },
+    "table": {
+      "date": "Date",
+      "doc": "Doc No",
+      "description": "Description",
+      "debit": "Debit",
+      "credit": "Credit",
+      "balance": "Balance",
+      "opening": "Opening balance",
+      "empty": "No movements.",
+      "totals": "Total"
+    },
+    "list": {
+      "code": "Account Code",
+      "name": "Account Name",
+      "type": "Type",
+      "empty": "No accounts."
+    },
+    "fields": {
+      "date": "Date",
+      "category": "Category",
+      "amount": "Amount (TL)",
+      "method": "Payment Method",
+      "invoiceNo": "Invoice No",
+      "description": "Description"
+    },
+    "categories": {
+      "RENTAL": "Rental",
+      "EXTRA": "Extra Service",
+      "TRAFFIC_FINE": "Traffic Fine / Toll",
+      "DAMAGE": "Damage",
+      "FUEL": "Missing Fuel",
+      "MANUAL_DEBIT": "Manual Charge",
+      "PAYMENT": "Payment",
+      "REFUND": "Refund",
+      "DISCOUNT": "Discount",
+      "MANUAL_CREDIT": "Manual Credit"
+    },
+    "methods": {
+      "Cash": "Cash",
+      "CreditCard": "Credit Card",
+      "Transfer": "Bank Transfer",
+      "Other": "Other"
+    },
+    "statement": {
+      "title": "Account Statement",
+      "account": "Account",
+      "closingBalance": "Closing Balance",
+      "note": "This statement is for information only. A negative balance means the account owes."
+    }
+  },
   "newCustomer": {
     "title": "New Customer",
     "create": "Create",

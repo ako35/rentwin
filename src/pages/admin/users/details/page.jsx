@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
@@ -157,6 +157,11 @@ const AdminUserDetailsPage = () => {
 
   return (
     <Form noValidate onSubmit={formik.handleSubmit} className="customer-form">
+      <div className="customer-form__topbar">
+        <Link to={`${routes.adminFinance}/cari/${userId}`} className="customer-form__ledger-link">
+          {t("finance.openStatement")}
+        </Link>
+      </div>
       <fieldset disabled={disabled} className="customer-form__fieldset">
         <div className="customer-form__segmented" role="tablist">
           <button

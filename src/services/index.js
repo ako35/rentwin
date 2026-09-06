@@ -21,6 +21,8 @@ import { addExtra, deleteExtra, getExtras, updateExtra } from "./extra/extra-ser
 
 import { addAnnouncement, deleteAnnouncement, getActiveAnnouncements, getAnnouncements, updateAnnouncement } from "./announcement/announcement-service";
 
+import { addLedgerEntry, deleteLedgerEntry, getUserLedger, updateLedgerEntry } from "./ledger/ledger-service";
+
 import { encryptedLocalStorage } from "./encrypt-storage/encrypt-storage";
 import { authHeader } from "./auth-header/auth-header";
 
@@ -138,6 +140,12 @@ export const services = {
         addAnnouncement,
         updateAnnouncement,
         deleteAnnouncement,
+    },
+    ledger: {
+        getUserLedger,
+        addLedgerEntry,
+        updateLedgerEntry,
+        deleteLedgerEntry,
     },
     encryptedLocalStorage,
     authHeader

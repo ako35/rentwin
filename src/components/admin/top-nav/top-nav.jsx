@@ -116,7 +116,9 @@ const AdminTopNav = () => {
                 <BsListUl className="admin-top-nav__item-icon" /> {t("topNav.rentalLocationList")}
               </NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link onClick={comingSoon("finans")}>{t("topNav.finance")}</Nav.Link>
+            <Nav.Link as={Link} to={routes.adminFinance} active={pathname.startsWith(routes.adminFinance)}>
+              {t("topNav.finance")}
+            </Nav.Link>
             <NavDropdown title={t("topNav.system")} active={pathname.startsWith(routes.adminAnnouncements)}>
               <NavDropdown.Item as={Link} to={routes.adminAnnouncements}>
                 <BsMegaphone className="admin-top-nav__item-icon" /> {t("topNav.announcements")}

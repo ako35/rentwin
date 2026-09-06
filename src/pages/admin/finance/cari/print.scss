@@ -1,0 +1,111 @@
+@use '../../../../styles/variables' as v;
+
+.sprint {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  overflow-y: auto;
+  background: v.$color3_5;
+  padding: 0 0 4rem;
+
+  &__toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.6rem 1rem;
+    background: #fff;
+    border-bottom: 1px solid v.$color3;
+
+    button {
+      border: 1px solid v.$color3;
+      background: #fff;
+      border-radius: 8px;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: v.$color5;
+      cursor: pointer;
+
+      &:hover { background: v.$color4; }
+    }
+  }
+
+  &__toolbar-print {
+    background: v.$color1 !important;
+    border-color: v.$color1 !important;
+    color: #fff !important;
+
+    &:hover { background: v.$color2 !important; }
+  }
+}
+
+.sprint-sheet {
+  width: 210mm;
+  max-width: 100%;
+  min-height: 297mm;
+  margin: 1.5rem auto;
+  padding: 18mm 16mm;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.12);
+  color: #000;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.sprint-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid #000;
+
+  &__brand { font-size: 18px; font-weight: 800; }
+  &__meta { font-size: 9px; color: #333; margin-top: 0.15rem; max-width: 90mm; }
+  &__doc { text-align: right; }
+  &__title { font-size: 13px; font-weight: 700; text-transform: uppercase; }
+}
+
+.sprint-info {
+  display: flex;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  margin: 0.9rem 0;
+
+  div { display: flex; flex-direction: column; }
+  span { font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.03em; color: #555; }
+  strong { font-size: 12px; }
+}
+
+.sprint-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th, td {
+    border: 1px solid #000;
+    padding: 0.3rem 0.45rem;
+    font-size: 10px;
+    text-align: left;
+  }
+
+  thead th { background: #eee; font-weight: 700; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  tfoot td { font-weight: 700; background: #f6f6f6; }
+}
+
+.sprint-note {
+  margin-top: 1.2rem;
+  font-size: 9px;
+  color: #444;
+}
+
+@media print {
+  body { visibility: hidden; }
+  .sprint, .sprint * { visibility: visible; }
+  .sprint { position: absolute; inset: 0; background: #fff; overflow: visible; padding: 0; }
+  .no-print { display: none !important; }
+  .sprint-sheet { width: auto; margin: 0; padding: 0; box-shadow: none; min-height: 0; }
+  @page { size: A4; margin: 14mm; }
+}

@@ -111,6 +111,7 @@ const routes = {
   adminContactMessages: "/admin/contact-messages",
   adminDashboard: "/admin",
   adminExtras: "/admin/extras",
+  adminFinance: "/admin/finans",
   adminBranches: "/admin/branches",
   adminRentalLocations: "/admin/rental-locations",
   adminContracts: "/admin/contracts",

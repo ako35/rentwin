@@ -5,6 +5,9 @@ import AdminContactMessagesPage from "./admin/contact-messages/page"
 import AdminContactMessageDetailsPage from "./admin/contact-messages/details/page"
 import AdminDashboard from "./admin/dashboard/page"
 import AdminExtrasPage from "./admin/extras/page";
+import AdminFinancePage from "./admin/finance/page";
+import AdminCariLedgerPage from "./admin/finance/cari/page";
+import AdminCariStatementPrintPage from "./admin/finance/cari/print";
 import AdminBranchesPage from "./admin/branches/page";
 import AdminRentalLocationsPage from "./admin/rental-locations/page";
 import AdminContractsPage from "./admin/contracts/page"
@@ -44,6 +47,9 @@ export {
     AdminContactMessageDetailsPage,
     AdminDashboard,
     AdminExtrasPage,
+    AdminFinancePage,
+    AdminCariLedgerPage,
+    AdminCariStatementPrintPage,
     AdminBranchesPage,
     AdminRentalLocationsPage,
     AdminContractsPage,

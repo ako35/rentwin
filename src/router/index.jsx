@@ -7,6 +7,9 @@ import {
   AdminContactMessagesPage,
   AdminDashboard,
   AdminExtrasPage,
+  AdminFinancePage,
+  AdminCariLedgerPage,
+  AdminCariStatementPrintPage,
   AdminBranchesPage,
   AdminRentalLocationsPage,
   AdminNewCustomerPage,
@@ -149,6 +152,14 @@ const router = createBrowserRouter([
       {
         path: "extras",
         element: <AdminExtrasPage />,
+      },
+      {
+        path: "finans",
+        children: [
+          { index: true, element: <AdminFinancePage /> },
+          { path: "cari/:userId", element: <AdminCariLedgerPage /> },
+          { path: "cari/:userId/ekstre", element: <AdminCariStatementPrintPage /> },
+        ],
       },
       {
         path: "coming-soon/:module",

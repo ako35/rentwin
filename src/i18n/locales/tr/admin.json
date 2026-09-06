@@ -775,6 +775,86 @@
     "copyright": "© 2014 - {{year}} Rentwin Yazılım. Tüm Hakları Saklıdır",
     "requestSupport": "Destek Talep Et"
   },
+  "finance": {
+    "pageTitle": "Cari Hesaplar",
+    "onlyDebtors": "Sadece borçlular",
+    "searchPlaceholder": "Ad, unvan, e-posta…",
+    "loadError": "Cari bilgileri yüklenemedi.",
+    "backToList": "Cari listesi",
+    "currentBalance": "Güncel Bakiye",
+    "collectAction": "Tahsilat Al",
+    "chargeAction": "Masraf Yansıt",
+    "printStatement": "Ekstre Yazdır",
+    "openStatement": "Cari Ekstre →",
+    "collectTitle": "Tahsilat / Ödeme Al",
+    "chargeTitle": "Hizmet / Masraf Yansıt",
+    "saved": "Kayıt eklendi.",
+    "saveError": "Kayıt sırasında bir hata oluştu.",
+    "deleted": "Kayıt silindi.",
+    "deleteConfirmTitle": "Kaydı sil",
+    "deleteConfirmText": "Bu cari hareket kaydı silinsin mi?",
+    "cancel": "İptal",
+    "save": "Kaydet",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "filters": {
+      "from": "Başlangıç",
+      "to": "Bitiş",
+      "category": "Kategori",
+      "allCategories": "Tümü",
+      "clear": "Temizle",
+      "apply": "Filtrele"
+    },
+    "table": {
+      "date": "Tarih",
+      "doc": "Belge No",
+      "description": "Açıklama",
+      "debit": "Borç",
+      "credit": "Alacak",
+      "balance": "Bakiye",
+      "opening": "Devir bakiyesi",
+      "empty": "Hareket bulunmuyor.",
+      "totals": "Toplam"
+    },
+    "list": {
+      "code": "Cari Kodu",
+      "name": "Cari Adı",
+      "type": "Tip",
+      "empty": "Cari bulunmuyor."
+    },
+    "fields": {
+      "date": "Tarih",
+      "category": "Kategori",
+      "amount": "Tutar (TL)",
+      "method": "Ödeme Şekli",
+      "invoiceNo": "Fatura No",
+      "description": "Açıklama"
+    },
+    "categories": {
+      "RENTAL": "Kiralama",
+      "EXTRA": "Ek Hizmet",
+      "TRAFFIC_FINE": "Trafik Cezası / HGS",
+      "DAMAGE": "Hasar",
+      "FUEL": "Eksik Yakıt",
+      "MANUAL_DEBIT": "Manuel Borç",
+      "PAYMENT": "Tahsilat",
+      "REFUND": "İade",
+      "DISCOUNT": "İskonto",
+      "MANUAL_CREDIT": "Manuel Alacak"
+    },
+    "methods": {
+      "Cash": "Nakit",
+      "CreditCard": "Kredi Kartı",
+      "Transfer": "Havale / EFT",
+      "Other": "Diğer"
+    },
+    "statement": {
+      "title": "Cari Hesap Ekstresi",
+      "account": "Cari",
+      "closingBalance": "Kapanış Bakiyesi",
+      "note": "Bu ekstre bilgilendirme amaçlıdır. Bakiye eksi ise cari borçludur."
+    }
+  },
   "newCustomer": {
     "title": "Yeni Müşteri",
     "create": "Oluştur",
