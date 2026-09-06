@@ -124,29 +124,3 @@ export const buildRecordLabels = (t) => {
     deleteConfirm: k("deleteConfirm"), deleteConfirmText: k("deleteConfirmText"),
   };
 };
-
-// Field rows for the "Yeni Müşteri" modal — [name, label, placeholder, required].
-export const newCustFields = (t, isCorp) =>
-  isCorp
-    ? [
-        ["companyTitle", t("users.form.corpName"), t("users.form.ph.corpName"), true],
-        ["firstName", t("users.form.corpContactFirst"), t("users.form.ph.firstName"), true],
-        ["lastName", t("users.form.corpContactLast"), t("users.form.ph.lastName"), true],
-        ["nationalId", t("users.form.corpTaxNo"), t("users.form.ph.taxNo"), true],
-        ["taxOffice", t("users.form.taxOffice"), t("users.form.ph.taxOffice"), true],
-        ["phoneNumber", t("users.form.corpPhone"), t("users.form.ph.phone"), true],
-        ["email", t("users.form.email"), t("users.form.ph.email"), true],
-        ["address", t("users.form.address"), t("users.form.ph.address"), true],
-        ["city", t("users.form.city"), t("users.form.ph.city"), true],
-        ["district", t("users.form.district"), t("users.form.ph.district"), true],
-      ]
-    : [
-        ["firstName", t("users.form.firstName"), t("users.form.ph.firstName"), true],
-        ["lastName", t("users.form.lastName"), t("users.form.ph.lastName"), true],
-        ["nationalId", t("users.form.nationalId"), t("users.form.ph.nationalId"), true],
-        ["email", t("users.form.email"), t("users.form.ph.email"), true],
-        ["phoneNumber", t("users.form.phoneNumber"), t("users.form.ph.phone"), false],
-        ["address", t("users.form.address"), t("users.form.ph.address"), false],
-        ["city", t("users.form.city"), t("users.form.ph.city"), false],
-        ["district", t("users.form.district"), t("users.form.ph.district"), false],
-      ];
