@@ -432,6 +432,9 @@
       "vehicleChange": {
         "date": "Değişiklik Tarihi",
         "time": "Değişiklik Saati",
+        "dateTime": "Değişiklik Tarihi / Saati",
+        "now": "Şu An",
+        "fuelNotSet": "Belirtilmedi",
         "newVehicle": "Yeni Araç",
         "selectVehicle": "Araç seçin",
         "returnGroup": "İade Alınan Araç",

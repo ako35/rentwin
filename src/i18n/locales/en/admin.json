@@ -432,6 +432,9 @@
       "vehicleChange": {
         "date": "Change Date",
         "time": "Change Time",
+        "dateTime": "Change Date / Time",
+        "now": "Now",
+        "fuelNotSet": "Not set",
         "newVehicle": "New Vehicle",
         "selectVehicle": "Select vehicle",
         "returnGroup": "Returned Vehicle",

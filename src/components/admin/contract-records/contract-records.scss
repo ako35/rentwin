@@ -63,20 +63,6 @@
 
   }
 
-  &__group-label {
-    display: block;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    color: v.$color1;
-    margin: 0.7rem 0 0.35rem;
-
-    &:first-child {
-      margin-top: 0;
-    }
-  }
-
   &__form-actions {
     @include m.flexbox(row, flex-end, center, 0.5rem);
     margin-top: 0.6rem;
