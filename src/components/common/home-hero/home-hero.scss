@@ -113,17 +113,38 @@ $bp: 992px;
     @include m.flexbox(row, center, center);
 
     .fleet-car {
+      position: relative;
       width: 100%;
       max-width: 560px;
 
       &__art,
       &__photo {
+        position: relative;
+        z-index: 1;
         display: block;
         width: 100%;
         height: auto;
       }
 
-      &__photo { filter: drop-shadow(0 24px 34px rgba(15, 23, 42, 0.2)); }
+      // Soft ground shadow so a background-removed photo sits on the surface
+      // instead of floating. The silhouette-hugging drop-shadow + a blurred
+      // ground ellipse together read as real contact.
+      &--photo .fleet-car__photo {
+        filter: drop-shadow(0 26px 22px rgba(15, 23, 42, 0.24))
+          drop-shadow(0 6px 8px rgba(15, 23, 42, 0.12));
+      }
+
+      &--photo::after {
+        content: '';
+        position: absolute;
+        left: 12%;
+        right: 12%;
+        bottom: 4%;
+        height: 42px;
+        background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.28), transparent 72%);
+        filter: blur(6px);
+        z-index: 0;
+      }
     }
 
     @media (max-width: $bp) {
