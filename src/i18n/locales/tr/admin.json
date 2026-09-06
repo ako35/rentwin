@@ -758,6 +758,7 @@
     "codeLabel": "Şube Kodu",
     "namePlaceholder": "Örn. İstanbul Şube",
     "codePlaceholder": "Örn. IST",
+    "codeAutoHint": "Şube kodu kayıt sırasında otomatik atanır.",
     "table": {
       "name": "Şube Adı",
       "code": "Şube Kodu",

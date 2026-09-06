@@ -758,6 +758,7 @@
     "codeLabel": "Branch Code",
     "namePlaceholder": "e.g. Istanbul Branch",
     "codePlaceholder": "e.g. IST",
+    "codeAutoHint": "The branch code is assigned automatically when you save.",
     "table": {
       "name": "Branch Name",
       "code": "Branch Code",

@@ -8,7 +8,7 @@ import { services } from "../../../services";
 import { utils } from "../../../utils";
 import "./style.scss";
 
-const EMPTY_FORM = { name: "", code: "" };
+const EMPTY_FORM = { name: "" };
 
 const AdminBranchesPage = () => {
   const { t } = useTranslation("admin");
@@ -70,7 +70,7 @@ const AdminBranchesPage = () => {
 
   const openEdit = (branch) => {
     setEditingId(branch.id);
-    setForm({ name: branch.name, code: branch.code });
+    setForm({ name: branch.name });
     setShowModal(true);
   };
 
@@ -138,8 +138,8 @@ const AdminBranchesPage = () => {
             <table className="branch-table">
               <thead>
                 <tr>
-                  <th>{t("branches.table.name")}</th>
                   <th>{t("branches.table.code")}</th>
+                  <th>{t("branches.table.name")}</th>
                   <th>{t("branches.table.vehicleCount")}</th>
                   <th className="branch-table__actions-col">{t("branches.table.actions")}</th>
                 </tr>
@@ -152,10 +152,10 @@ const AdminBranchesPage = () => {
                 )}
                 {branches.map((branch) => (
                   <tr key={branch.id}>
-                    <td className="branch-table__name">{branch.name}</td>
                     <td>
                       <span className="branch-table__code">{branch.code}</span>
                     </td>
+                    <td className="branch-table__name">{branch.name}</td>
                     <td>
                       <span
                         className={`branch-table__count${branch.vehicleCount ? " is-active" : ""}`}
@@ -196,26 +196,20 @@ const AdminBranchesPage = () => {
           <Modal.Title>{editingId ? t("branches.editBranch") : t("branches.addBranch")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form.Group className="mb-3">
+          <Form.Group>
             <Form.Label>{t("branches.nameLabel")}</Form.Label>
             <Form.Control
               value={form.name}
               placeholder={t("branches.namePlaceholder")}
+              autoFocus
               onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
           </Form.Group>
-          <Form.Group>
-            <Form.Label>{t("branches.codeLabel")}</Form.Label>
-            <Form.Control
-              value={form.code}
-              placeholder={t("branches.codePlaceholder")}
-              onChange={(e) => setForm({ ...form, code: e.target.value })}
-            />
-          </Form.Group>
+          {!editingId && <p className="branch-modal__hint">{t("branches.codeAutoHint")}</p>}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-primary" onClick={() => setShowModal(false)}>{t("branches.cancel")}</Button>
-          <Button onClick={handleSave} disabled={saving || !form.name || !form.code}>{t("branches.save")}</Button>
+          <Button onClick={handleSave} disabled={saving || !form.name}>{t("branches.save")}</Button>
         </Modal.Footer>
       </Modal>
     </div>
