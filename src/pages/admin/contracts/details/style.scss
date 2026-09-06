@@ -325,77 +325,147 @@
     border-radius: 6px;
   }
 
-  /* ---- pricing block ---- */
-  &__pricing-block {
+  /* ---- pricing block: invoice summary ---- */
+  .pricing {
     background-color: v.$color4;
     border: 1px solid v.$color3;
-    border-radius: 6px;
-    padding: 0.6rem 0.8rem;
-  }
+    border-radius: 10px;
+    padding: 0.5rem 0.85rem 0.7rem;
 
-  &__price-row {
-    @include m.flexbox(row, space-between, center, 0.75rem);
-    padding: 0.28rem 0;
-    border-bottom: 1px dashed v.$color3;
-    font-size: 0.82rem;
+    &__group {
+      padding: 0.45rem 0;
+      border-bottom: 1px solid v.$color3_5;
 
-    label { color: v.$color5_3; margin: 0; white-space: nowrap; }
-    > span { font-weight: 600; color: v.$color5; text-align: right; }
+      &:last-of-type { border-bottom: none; }
 
-    .form-control {
-      max-width: 110px;
+      h4 {
+        font-size: 0.64rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: v.$color5_4;
+        margin: 0 0 0.3rem;
+      }
+    }
+
+    &__row {
+      @include m.flexbox(row, space-between, center, 0.75rem);
+      min-height: 2rem;
+      padding: 0.1rem 0;
+      font-size: 0.82rem;
+
+      &--stack {
+        @include m.flexbox(column, flex-start, stretch, 0.3rem);
+
+        @media (min-width: 520px) {
+          @include m.flexbox(row, space-between, center, 0.75rem);
+        }
+      }
+    }
+
+    &__label { color: v.$color5_3; white-space: nowrap; }
+
+    &__amount {
+      font-weight: 700;
+      color: v.$color5;
       text-align: right;
-      display: inline-block;
+      font-variant-numeric: tabular-nums;
+    }
+
+    &__row--emph {
+      .pricing__label { color: v.$color5; font-weight: 600; }
+      .pricing__amount { color: v.$color1; font-size: 0.9rem; }
+    }
+
+    &__field {
+      @include m.flexbox(row, flex-end, center, 0.4rem);
+
+      .form-control {
+        max-width: 96px;
+        text-align: right;
+        background-color: #fff;
+        border-color: v.$color3;
+
+        &:disabled { background-color: v.$color4; }
+      }
+    }
+
+    &__unit { color: v.$color5_3; font-size: 0.78rem; white-space: nowrap; }
+
+    &__control {
+      @include m.flexbox(row, flex-end, center, 0.5rem);
+      flex-wrap: wrap;
+
+      .form-check { margin: 0; font-size: 0.78rem; }
+      .form-check-input { cursor: pointer; }
+    }
+
+    &__control-input {
+      max-width: 88px;
+      text-align: right;
       background-color: #fff;
-      border-color: v.$color2_4;
+      border-color: v.$color3;
     }
 
-    &--blue > span { color: #2f74c0; }
-  }
+    // ₺ / % toggle
+    &__segmented {
+      display: inline-flex;
+      border: 1px solid v.$color3;
+      border-radius: 8px;
+      overflow: hidden;
 
-  // Fiş / checkout summary — total + running balance stand out on brand green.
-  &__checkout {
-    margin-top: 0.6rem;
-    border-radius: 8px;
-    background: linear-gradient(135deg, v.$color1, v.$color2);
-    color: #fff;
-    padding: 0.5rem 0.85rem;
-  }
+      button {
+        border: 0;
+        background: #fff;
+        padding: 0.32rem 0.62rem;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: v.$color5_3;
+        cursor: pointer;
+        transition: background-color 0.12s ease, color 0.12s ease;
 
-  &__checkout-row {
-    @include m.flexbox(row, space-between, center, 0.75rem);
-    padding: 0.15rem 0;
-
-    span { font-size: 0.78rem; opacity: 0.9; }
-    strong { font-size: 1.1rem; font-weight: 800; }
-
-    &--balance {
-      border-top: 1px solid rgba(255, 255, 255, 0.25);
-      margin-top: 0.15rem;
-      padding-top: 0.3rem;
-
-      strong { font-size: 0.95rem; }
+        & + button { border-left: 1px solid v.$color3; }
+        &.is-active { background-color: v.$color1; color: #fff; }
+      }
     }
-  }
 
-  &__price-input {
-    @include m.flexbox(row, flex-end, center, 0.4rem);
-    font-weight: 600;
-    color: v.$color5;
-  }
+    // soft-green summary — total + running balance
+    &__summary {
+      margin-top: 0.7rem;
+      padding: 0.7rem 0.9rem;
+      border-radius: 12px;
+      background-color: rgba(62, 184, 70, 0.08);
+      border: 1px solid rgba(62, 184, 70, 0.25);
+    }
 
-  &__discount,
-  &__km {
-    @include m.flexbox(row, flex-end, center, 0.5rem);
-    flex-wrap: wrap;
+    &__summary-total {
+      @include m.flexbox(row, space-between, baseline, 0.75rem);
 
-    .form-control { max-width: 90px; }
-    .form-check { margin: 0; white-space: nowrap; font-size: 0.78rem; }
-  }
+      span { font-size: 0.8rem; font-weight: 600; color: v.$color5_2; }
+      strong {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: v.$color1;
+        font-variant-numeric: tabular-nums;
+      }
+    }
 
-  &__price-actions {
-    @include m.flexbox(row, flex-end, center, 0.5rem);
-    margin-top: 0.5rem;
+    &__summary-balance {
+      @include m.flexbox(row, space-between, center, 0.75rem);
+      margin-top: 0.35rem;
+      padding-top: 0.35rem;
+      border-top: 1px solid rgba(62, 184, 70, 0.2);
+
+      span { font-size: 0.76rem; color: v.$color5_3; }
+      strong {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: v.$color5;
+        font-variant-numeric: tabular-nums;
+      }
+
+      &.is-negative strong { color: #a52626; }
+    }
   }
 
   // Read-only vehicle info as chips right under the vehicle picker.

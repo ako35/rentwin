@@ -376,6 +376,11 @@
       "corporateTitle": "Corporate Title",
       "taxOffice": "Tax Office",
       "taxNo": "Tax No",
+      "pricingGroups": {
+        "service": "Service Items",
+        "discountLimits": "Discount & Limits",
+        "taxTotal": "Tax & Grand Total"
+      },
       "dailyPrice": "Daily Price (TL)",
       "rentalAmount": "Rental Amount",
       "day": "days",

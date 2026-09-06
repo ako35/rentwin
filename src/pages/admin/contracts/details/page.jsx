@@ -301,7 +301,6 @@ const ContractDetail = () => {
               extensionDays={extensionDays}
               extensionTotal={extensionTotal}
               recordLabels={recordLabels}
-              updating={updating}
               money={money}
             />
           </div>

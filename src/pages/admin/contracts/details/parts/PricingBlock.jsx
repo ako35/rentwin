@@ -1,101 +1,133 @@
 import { useTranslation } from "react-i18next";
-import { Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
-// The right card's pricing block: daily price + add-ons + discount + km limit
-// + VAT, with the running subtotal/total mirrored from the backend formula.
-const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionTotal, collected, isCreate, updating, money }) => {
+// The right card's pricing block, laid out as an invoice summary: service items,
+// discount & limits, tax & total — each an editable input or a read-only amount.
+// Totals are reactive (computed in the parent's useMemo), so there is no manual
+// "recalculate" step — the action bar's "Kaydet" persists the figures.
+const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionTotal, collected, money }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
-
   const setV = (name) => (e) => formik.setFieldValue(name, e.target.value);
-  const priceInput = (name, label, suffix = "TL") => (
-    <div className="contract-page__price-row">
-      <label>{label}</label>
-      <span className="contract-page__price-input">
-        <Form.Control type="number" size="sm" value={formik.values[name]} onChange={setV(name)} />
-        {suffix}
-      </span>
+  const num = (v) => Number(v) || 0;
+  const balance = num(collected) - pricing.total;
+
+  const AmountRow = ({ label, value, emph }) => (
+    <div className={`pricing__row${emph ? " pricing__row--emph" : ""}`}>
+      <span className="pricing__label">{label}</span>
+      <span className="pricing__amount">{value} TL</span>
     </div>
   );
-  const priceRO = (label, value, kind) => (
-    <div className={`contract-page__price-row${kind ? ` contract-page__price-row--${kind}` : ""}`}>
-      <label>{label}</label>
-      <span>{value}</span>
+
+  const InputRow = ({ name, label, suffix = "TL" }) => (
+    <div className="pricing__row">
+      <span className="pricing__label">{label}</span>
+      <span className="pricing__field">
+        <Form.Control type="number" value={formik.values[name]} onChange={setV(name)} />
+        <span className="pricing__unit">{suffix}</span>
+      </span>
     </div>
   );
 
   return (
-    <div className="contract-page__pricing-block">
-      <div className="contract-page__price-row">
-        <label>{c("dailyPrice")}</label>
-        <span className="contract-page__price-input">
-          <Form.Control type="number" size="sm" value={formik.values.dailyPrice} onChange={setV("dailyPrice")} />
-          TL × {billableDays} {c("day")}{extensionDays ? ` (+${extensionDays})` : ""}
-        </span>
-      </div>
-      {priceRO(c("rentalAmount"), `${money(pricing.rental)} TL`)}
-      {priceInput("extrasTotal", c("extrasTotal"))}
-      {priceInput("oneWayFee", c("oneWayFee"))}
-      {priceRO(c("subtotal"), `${money(pricing.rental + pricing.addOns)} TL`, "blue")}
+    <div className="pricing">
+      <section className="pricing__group">
+        <h4>{c("pricingGroups.service")}</h4>
+        <div className="pricing__row">
+          <span className="pricing__label">{c("dailyPrice")}</span>
+          <span className="pricing__field">
+            <Form.Control type="number" value={formik.values.dailyPrice} onChange={setV("dailyPrice")} />
+            <span className="pricing__unit">
+              TL × {billableDays}
+              {extensionDays ? ` (+${extensionDays})` : ""}
+            </span>
+          </span>
+        </div>
+        <AmountRow label={c("rentalAmount")} value={money(pricing.rental)} />
+        <InputRow name="extrasTotal" label={c("extrasTotal")} />
+        <InputRow name="oneWayFee" label={c("oneWayFee")} />
+        <AmountRow label={c("subtotal")} value={money(pricing.rental + pricing.addOns)} emph />
+      </section>
 
-      <div className="contract-page__price-row">
-        <label>{c("discount")}</label>
-        <span className="contract-page__discount">
-          <Form.Check
-            inline type="radio" id="disc-flat" label={c("discountFlat")}
-            checked={!formik.values.discountIsPercent}
-            onChange={() => formik.setFieldValue("discountIsPercent", false)}
-          />
-          <Form.Check
-            inline type="radio" id="disc-pct" label={c("discountPercent")}
-            checked={formik.values.discountIsPercent}
-            onChange={() => formik.setFieldValue("discountIsPercent", true)}
-          />
-          <Form.Control type="number" size="sm" value={formik.values.discount} onChange={setV("discount")} />
-          <Form.Check
-            type="checkbox" id="disc-daily" label={c("discountDailyOnly")}
-            checked={formik.values.discountDailyOnly}
-            onChange={(e) => formik.setFieldValue("discountDailyOnly", e.target.checked)}
-          />
-        </span>
-      </div>
+      <section className="pricing__group">
+        <h4>{c("pricingGroups.discountLimits")}</h4>
+        <div className="pricing__row pricing__row--stack">
+          <span className="pricing__label">{c("discount")}</span>
+          <div className="pricing__control">
+            <div className="pricing__segmented" role="group">
+              <button
+                type="button"
+                className={!formik.values.discountIsPercent ? "is-active" : ""}
+                onClick={() => formik.setFieldValue("discountIsPercent", false)}
+              >
+                ₺
+              </button>
+              <button
+                type="button"
+                className={formik.values.discountIsPercent ? "is-active" : ""}
+                onClick={() => formik.setFieldValue("discountIsPercent", true)}
+              >
+                %
+              </button>
+            </div>
+            <Form.Control
+              type="number"
+              className="pricing__control-input"
+              value={formik.values.discount}
+              onChange={setV("discount")}
+            />
+            <Form.Check
+              type="switch"
+              id="disc-daily"
+              label={c("discountDailyOnly")}
+              checked={formik.values.discountDailyOnly}
+              onChange={(e) => formik.setFieldValue("discountDailyOnly", e.target.checked)}
+            />
+          </div>
+        </div>
+        <div className="pricing__row pricing__row--stack">
+          <span className="pricing__label">{c("kmLimit")}</span>
+          <div className="pricing__control">
+            <span className="pricing__field">
+              <Form.Control
+                type="number"
+                value={formik.values.kmLimit}
+                onChange={setV("kmLimit")}
+                disabled={formik.values.unlimitedKm}
+              />
+              <span className="pricing__unit">km</span>
+            </span>
+            <Form.Check
+              type="switch"
+              id="km-unl"
+              label={c("unlimitedKm")}
+              checked={formik.values.unlimitedKm}
+              onChange={(e) => formik.setFieldValue("unlimitedKm", e.target.checked)}
+            />
+          </div>
+        </div>
+      </section>
 
-      <div className="contract-page__price-row">
-        <label>{c("kmLimit")}</label>
-        <span className="contract-page__km">
-          <Form.Control
-            type="number" size="sm" value={formik.values.kmLimit} onChange={setV("kmLimit")}
-            disabled={formik.values.unlimitedKm}
-          /> km
-          <Form.Check
-            type="checkbox" id="km-unl" label={c("unlimitedKm")}
-            checked={formik.values.unlimitedKm}
-            onChange={(e) => formik.setFieldValue("unlimitedKm", e.target.checked)}
-          />
-        </span>
-      </div>
+      <section className="pricing__group">
+        <h4>{c("pricingGroups.taxTotal")}</h4>
+        {extensionTotal > 0 && <AmountRow label={c("uzatmaAmount")} value={money(extensionTotal)} />}
+        {num(formik.values.returnExtraAmount) > 0 && (
+          <AmountRow label={c("returnExtraAmount")} value={money(formik.values.returnExtraAmount)} />
+        )}
+        <InputRow name="vatRate" label={c("vatRate")} suffix="%" />
+        <AmountRow label={c("contractAmount")} value={money(pricing.subtotal)} />
+      </section>
 
-      {priceRO(c("uzatmaAmount"), `${money(extensionTotal)} TL`)}
-      {priceRO(c("returnExtraAmount"), `${money(formik.values.returnExtraAmount)} TL`)}
-      {priceInput("vatRate", c("vatRate"), "%")}
-      {priceRO(c("contractAmount"), `${money(pricing.subtotal)} TL`)}
-
-      <div className="contract-page__checkout">
-        <div className="contract-page__checkout-row">
+      <div className="pricing__summary">
+        <div className="pricing__summary-total">
           <span>{c("totalAmount")}</span>
           <strong>{money(pricing.total)} TL</strong>
         </div>
-        <div className="contract-page__checkout-row contract-page__checkout-row--balance">
+        <div className={`pricing__summary-balance${balance < 0 ? " is-negative" : ""}`}>
           <span>{c("balance")}</span>
-          <strong>{money((collected || 0) - pricing.total)} TL</strong>
+          <strong>{money(balance)} TL</strong>
         </div>
       </div>
-
-      {!isCreate && (
-        <div className="contract-page__price-actions">
-          <Button type="submit" variant="outline-primary" size="sm" disabled={updating}>{c("recalc")}</Button>
-        </div>
-      )}
     </div>
   );
 };

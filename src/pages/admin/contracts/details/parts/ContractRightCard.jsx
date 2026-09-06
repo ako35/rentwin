@@ -22,7 +22,7 @@ const ContractRightCard = ({
   customers, customer, invoice, extensions, vehicleChanges,
   refreshCustomers, onRequestNewCustomer, onInvoiceCreated, loadData, loadPayments,
   selectedCar, billableDays, pricing, collected, extensionDays, extensionTotal,
-  recordLabels, updating, money,
+  recordLabels, money,
 }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
@@ -140,8 +140,6 @@ const ContractRightCard = ({
         extensionDays={extensionDays}
         extensionTotal={extensionTotal}
         collected={collected}
-        isCreate={isCreate}
-        updating={updating}
         money={money}
       />
     </section>

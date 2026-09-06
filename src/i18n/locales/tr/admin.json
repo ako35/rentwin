@@ -376,6 +376,11 @@
       "corporateTitle": "Cari Ünvan",
       "taxOffice": "Vergi Dairesi",
       "taxNo": "Vergi No",
+      "pricingGroups": {
+        "service": "Hizmet Kalemleri",
+        "discountLimits": "İndirim & Limitler",
+        "taxTotal": "Vergi & Genel Toplam"
+      },
       "dailyPrice": "Günlük Fiyat (TL)",
       "rentalAmount": "Kiralama Tutarı",
       "day": "Gün",
