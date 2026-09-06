@@ -139,15 +139,11 @@ const ContractRightCard = ({
         billableDays={billableDays}
         extensionDays={extensionDays}
         extensionTotal={extensionTotal}
+        collected={collected}
         isCreate={isCreate}
         updating={updating}
         money={money}
       />
-
-      <div className="contract-page__balance">
-        <strong>{money(collected - pricing.total)} TL</strong>
-        <span>{c("balance").toUpperCase()}</span>
-      </div>
     </section>
   );
 };

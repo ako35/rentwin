@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { CustomForm } from "../../../../../components";
 import { buildFuelEighthsOptions } from "../../../../../utils/fuel-eighths";
-import RoRow from "./RoRow";
 
 // Left card: pick-up/drop-off locations + date range + vehicle picker, then the
 // hand-over odometer + fuel (prefilled from the car, editable) and the read-only
@@ -78,13 +77,23 @@ const VehicleSection = ({ formik, locationNames, vehicleOptions, selectedCar, is
       {isCreate && showNoAvailable && (
         <p className="text-muted mb-2" style={{ fontSize: "0.8rem" }}>{c("noAvailableCars")}</p>
       )}
+      {selectedCar && (
+        <div className="contract-page__car-chips">
+          {selectedCar.branch?.name && (
+            <span className="contract-page__chip">
+              <em>{c("branch")}</em>{selectedCar.branch.name}
+            </span>
+          )}
+          {fuelTransmission && <span className="contract-page__chip">{fuelTransmission}</span>}
+          {selectedCar.licensePlate && (
+            <span className="contract-page__chip contract-page__chip--plate">{selectedCar.licensePlate}</span>
+          )}
+        </div>
+      )}
       <div className="contract-page__pair">
         <CustomForm formik={formik} name="pickUpKm" label={c("pickUpKm")} type="number" />
         <CustomForm formik={formik} name="pickUpFuelEighths" label={c("pickUpFuelLevel")} type="select" itemsArr={fuelOptions} />
       </div>
-      <RoRow label={c("branch")} value={selectedCar?.branch?.name} />
-      <RoRow label={c("fuelTransmission")} value={fuelTransmission} />
-      <RoRow label={c("plate")} value={selectedCar?.licensePlate} />
     </section>
   );
 };

@@ -3,7 +3,7 @@ import { Button, Form } from "react-bootstrap";
 
 // The right card's pricing block: daily price + add-ons + discount + km limit
 // + VAT, with the running subtotal/total mirrored from the backend formula.
-const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionTotal, isCreate, updating, money }) => {
+const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionTotal, collected, isCreate, updating, money }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
 
@@ -79,7 +79,17 @@ const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionT
       {priceRO(c("returnExtraAmount"), `${money(formik.values.returnExtraAmount)} TL`)}
       {priceInput("vatRate", c("vatRate"), "%")}
       {priceRO(c("contractAmount"), `${money(pricing.subtotal)} TL`)}
-      {priceRO(c("totalAmount"), `${money(pricing.total)} TL`, "total")}
+
+      <div className="contract-page__checkout">
+        <div className="contract-page__checkout-row">
+          <span>{c("totalAmount")}</span>
+          <strong>{money(pricing.total)} TL</strong>
+        </div>
+        <div className="contract-page__checkout-row contract-page__checkout-row--balance">
+          <span>{c("balance")}</span>
+          <strong>{money((collected || 0) - pricing.total)} TL</strong>
+        </div>
+      </div>
 
       {!isCreate && (
         <div className="contract-page__price-actions">

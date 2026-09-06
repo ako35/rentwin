@@ -131,18 +131,58 @@
     strong { color: v.$color5; text-align: right; }
   }
 
-  // Edit-mode customer tab: label + value both left-aligned (create mode look),
-  // instead of the label-left / value-right split of a plain &__ro row.
-  &__cust-summary {
-    .contract-page__ro {
-      justify-content: flex-start;
-      align-items: flex-start;
-      gap: 0.75rem;
+  // Edit-mode customer tab: compact label/value grid + a balance status badge.
+  &__cust-head {
+    @include m.flexbox(row, space-between, center, 0.5rem);
+    flex-wrap: wrap;
+    margin-bottom: 0.6rem;
+  }
 
-      span { flex: 0 0 132px; white-space: normal; }
-      strong { text-align: left; }
+  &__cust-type {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: v.$color1;
+  }
+
+  &__bal-badge {
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    background-color: v.$color3;
+    color: v.$color5;
+
+    &.is-negative { background-color: #f7d9d9; color: #a52626; }
+    &.is-positive { background-color: #d6f2df; color: #1c7a3e; }
+  }
+
+  &__cust-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem 1rem;
+    margin: 0;
+
+    > div { min-width: 0; }
+
+    dt {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: v.$color5_3;
+      margin-bottom: 0.05rem;
+    }
+
+    dd {
+      margin: 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: v.$color5;
+      word-break: break-word;
     }
   }
+
+  &__cust-grid-wide { grid-column: 1 / -1; }
 
   &__link {
     display: inline-block;
@@ -305,13 +345,39 @@
     label { color: v.$color5_3; margin: 0; white-space: nowrap; }
     > span { font-weight: 600; color: v.$color5; text-align: right; }
 
-    .form-control { max-width: 110px; text-align: right; display: inline-block; }
+    .form-control {
+      max-width: 110px;
+      text-align: right;
+      display: inline-block;
+      background-color: #fff;
+      border-color: v.$color2_4;
+    }
 
     &--blue > span { color: #2f74c0; }
-    &--total {
-      border-bottom: none;
-      label { font-weight: 700; color: v.$color5; }
-      > span { font-size: 1.05rem; font-weight: 800; color: #c0392b; }
+  }
+
+  // Fiş / checkout summary — total + running balance stand out on brand green.
+  &__checkout {
+    margin-top: 0.6rem;
+    border-radius: 8px;
+    background: linear-gradient(135deg, v.$color1, v.$color2);
+    color: #fff;
+    padding: 0.5rem 0.85rem;
+  }
+
+  &__checkout-row {
+    @include m.flexbox(row, space-between, center, 0.75rem);
+    padding: 0.15rem 0;
+
+    span { font-size: 0.78rem; opacity: 0.9; }
+    strong { font-size: 1.1rem; font-weight: 800; }
+
+    &--balance {
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+      margin-top: 0.15rem;
+      padding-top: 0.3rem;
+
+      strong { font-size: 0.95rem; }
     }
   }
 
@@ -335,16 +401,30 @@
     margin-top: 0.5rem;
   }
 
-  &__balance {
-    @include m.flexbox(column, center, flex-start, 0.1rem);
-    border-left: 4px solid #e0a800;
-    background-color: v.$color4;
-    border-radius: 4px;
-    padding: 0.6rem 1rem;
-    margin-top: 0.9rem;
+  // Read-only vehicle info as chips right under the vehicle picker.
+  &__car-chips {
+    @include m.flexbox(row, flex-start, center, 0.35rem);
+    flex-wrap: wrap;
+    margin: -0.35rem 0 0.6rem;
+  }
 
-    strong { font-size: 1.3rem; color: #d9822b; }
-    span { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; color: v.$color5_3; }
+  &__chip {
+    @include m.flexbox(row, flex-start, center, 0.3rem);
+    padding: 0.12rem 0.55rem;
+    border-radius: 999px;
+    background-color: v.$color3;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: v.$color5;
+
+    em { font-style: normal; color: v.$color5_3; }
+
+    &--plate {
+      background-color: #fdeaea;
+      color: #b93a3a;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
   }
 
   &__actions {
