@@ -19,17 +19,20 @@
         color: inherit;
     }
 
+    // Fleet photos are portrait phone shots (~375x666) with the car in a
+    // narrow mid band, so "contain" leaves it tiny. "cover" crops the empty
+    // top/bottom instead and lets the car fill the frame.
     &__image {
-        @include m.flexbox(row, center, center);
         height: 190px;
-        padding: 0.5rem 0.75rem;
         background-color: v.$color4;
         border-bottom: 1px solid v.$color3;
+        overflow: hidden;
 
         img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
+            object-position: center;
             display: block;
         }
     }
