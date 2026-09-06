@@ -420,7 +420,7 @@
       "cancelConfirmText": "Araç serbest bırakılır, tutar cari bakiyeden düşer. Kontrat kaydı listede kalır.",
       "cancelledSuccess": "Kontrat iptal edildi.",
       "reopenConfirmTitle": "Kontratı yeniden açmak istiyor musunuz?",
-      "reopenConfirmText": "Durum 'Açık' olur ve kontrat tekrar düzenlenebilir.",
+      "reopenConfirmText": "Durum 'Açık' olur ve kontrat tekrar düzenlenebilir. Teslim alımında km aşımı / eksik yakıt için otomatik yansıtılan ekstralar geri alınır, tutar eski haline döner.",
       "reopenedSuccess": "Kontrat yeniden açıldı.",
       "print": "Yazdır",
       "individual": "Bireysel",

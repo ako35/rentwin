@@ -420,7 +420,7 @@
       "cancelConfirmText": "The vehicle is freed and the amount drops out of the balance. The record stays in the list.",
       "cancelledSuccess": "Contract cancelled.",
       "reopenConfirmTitle": "Reopen this contract?",
-      "reopenConfirmText": "The status returns to Open and the contract becomes editable again.",
+      "reopenConfirmText": "The status returns to Open and the contract becomes editable again. The km-overage / missing-fuel charges added automatically at hand-back are reverted and the total returns to its previous figure.",
       "reopenedSuccess": "Contract reopened.",
       "print": "Print",
       "individual": "Individual",
