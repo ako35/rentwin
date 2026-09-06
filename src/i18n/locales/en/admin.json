@@ -475,13 +475,11 @@
         "statusPending": "Pending",
         "statusReleased": "Released",
         "dateLabel": "Filing date",
-        "filedBy": "Filed by",
         "hint": "This rental has not been filed in KABİS (identity notification system) yet.",
         "releaseAction": "Release from KABİS",
         "releaseConfirmTitle": "Release the KABİS record",
         "releaseConfirmText": "The KABİS record will be released (exit notification) before the vehicle is returned. Do you confirm?",
         "releasedDate": "Release date",
-        "releasedBy": "Released by",
         "releaseUndo": "Undo release"
       },
       "print": {

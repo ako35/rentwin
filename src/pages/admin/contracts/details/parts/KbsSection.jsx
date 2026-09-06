@@ -14,9 +14,7 @@ const KbsSection = ({ formik }) => {
   const c = (key) => t(`reservations.contract.kbs.${key}`);
 
   const reportedAt = formik.values.kbsNotifiedAt || "";
-  const reportedBy = formik.values.kbsNotifiedBy || "";
   const releasedAt = formik.values.kbsReleasedAt || "";
-  const releasedBy = formik.values.kbsReleasedBy || "";
   const status = kbsStatus(formik.values);
   const released = status === "released";
 
@@ -75,11 +73,6 @@ const KbsSection = ({ formik }) => {
               onChange={(e) => formik.setFieldValue("kbsNotifiedAt", e.target.value)}
             />
           </label>
-          {reportedBy && (
-            <p className="contract-page__kbs-stamp">
-              {c("filedBy")}: {reportedBy}
-            </p>
-          )}
 
           {status === "reported" && (
             <button type="button" className="contract-page__kbs-release" onClick={release}>
@@ -92,11 +85,6 @@ const KbsSection = ({ formik }) => {
               <p className="contract-page__kbs-stamp">
                 {c("releasedDate")}: {moment(releasedAt).format("DD.MM.YYYY HH:mm")}
               </p>
-              {releasedBy && (
-                <p className="contract-page__kbs-stamp">
-                  {c("releasedBy")}: {releasedBy}
-                </p>
-              )}
               <button type="button" className="contract-page__kbs-undo" onClick={undoRelease}>
                 {c("releaseUndo")}
               </button>

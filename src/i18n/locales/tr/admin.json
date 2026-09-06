@@ -475,13 +475,11 @@
         "statusPending": "Bekliyor",
         "statusReleased": "Çıkış Yapıldı",
         "dateLabel": "Bildirim tarihi",
-        "filedBy": "Bildiren",
         "hint": "Bu kiralama henüz KABİS'e (Kimlik Bildirme Sistemi) bildirilmedi.",
         "releaseAction": "KABİS'ten Düş",
         "releaseConfirmTitle": "KABİS kaydını düş",
         "releaseConfirmText": "Araç teslim alınmadan KABİS kaydı düşülecek (çıkış bildirimi). Onaylıyor musunuz?",
         "releasedDate": "Çıkış tarihi",
-        "releasedBy": "Çıkış yapan",
         "releaseUndo": "Çıkışı geri al"
       },
       "print": {
