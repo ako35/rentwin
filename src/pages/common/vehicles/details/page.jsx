@@ -1,4 +1,5 @@
 import { Col, Container, Row } from "react-bootstrap";
+import { Link, useParams } from "react-router-dom";
 import {
   BookingForm,
   DetailsPanel,
@@ -8,9 +9,7 @@ import {
   Spacer,
 } from "../../../../components";
 import { useEffect, useState } from "react";
-import { utils } from "../../../../utils";
 import { services } from "../../../../services";
-import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { setVehicle } from "../../../../store";
@@ -22,6 +21,7 @@ const API_URL = import.meta.env.VITE_APP_API_URL;
 const VehicleDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [vehicle, setVehicleState] = useState(null);
+  const [notFound, setNotFound] = useState(false);
   const { vehicleId } = useParams();
   const dispatch = useDispatch();
   const { t } = useTranslation("vehicles");
@@ -34,6 +34,8 @@ const VehicleDetailsPage = () => {
     description: vehicleName ? t("seoDetailsDescription", { name: vehicleName }) : undefined,
     image: vehicle?.image ? `${API_URL}/files/display/${vehicle.image}` : undefined,
     type: "product",
+    noindex: notFound,
+    statusCode: notFound ? 404 : undefined,
   });
 
   const loadData = async () => {
@@ -42,7 +44,7 @@ const VehicleDetailsPage = () => {
       dispatch(setVehicle(data));
       setVehicleState(data);
     } catch (error) {
-      utils.functions.swalToast(t("loadError"), "error");
+      setNotFound(true);
     } finally {
       setLoading(false);
     }
@@ -52,6 +54,20 @@ const VehicleDetailsPage = () => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (notFound) {
+    return (
+      <>
+        <PageHeader title={t("detailsPageTitle")} />
+        <Spacer />
+        <Container className="vehicle-details">
+          <p>{t("loadError")}</p>
+          <Link to="/vehicles">{tCommon("nav.vehicles")}</Link>
+        </Container>
+        <Spacer />
+      </>
+    );
+  }
 
   return (
     <>
