@@ -6,6 +6,7 @@ const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 const { ALLOWED_SORT_FIELDS } = require("./contracts.shared");
 const { nextContractNo } = require("./contract-fields");
+const { syncContractDebit, voidContractLedger, restoreContractLedger } = require("../../lib/ledger");
 
 // Assign a fresh contract number, retrying on the rare create-race collision.
 const createContractWithNo = async (data, client = prisma) => {
@@ -187,9 +188,14 @@ const setContractStatus = (status) =>
     const contract = await prisma.contract.update({
       where: { id: existing.id },
       data: { status },
-      select: { id: true, status: true },
     });
-    res.json(contract);
+
+    // Keep the current-account ledger in step with the lifecycle change.
+    if (status === "CANCELLED") await voidContractLedger(contract.id);
+    else if (status === "CREATED") await restoreContractLedger(contract);
+    else await syncContractDebit(contract);
+
+    res.json({ id: contract.id, status: contract.status });
   });
 
 const returnContract = setContractStatus("DONE");

@@ -3,6 +3,7 @@ const HttpError = require("../../lib/http-error");
 const { parseFrontendDateTime, hoursBetween, round2 } = require("../../lib/dates");
 const { checkAvailability } = require("../../lib/availability");
 const { serializeContract, serializeUser } = require("../../lib/serializers");
+const { syncContractDebit } = require("../../lib/ledger");
 const asyncHandler = require("../../middleware/async-handler");
 const { customerTotals } = require("../users/customer-fields");
 const { CAR_INCLUDE } = require("./contracts.shared");
@@ -46,6 +47,7 @@ const updateContract = asyncHandler(async (req, res) => {
     include: CAR_INCLUDE,
   });
 
+  await syncContractDebit(contract);
   res.json(serializeContract(contract));
 });
 
@@ -115,6 +117,7 @@ const extendContract = asyncHandler(async (req, res) => {
     },
     include: CAR_INCLUDE,
   });
+  await syncContractDebit(updated);
   res.json(serializeContract(updated));
 });
 

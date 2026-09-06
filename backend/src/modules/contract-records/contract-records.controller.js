@@ -2,6 +2,17 @@ const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const asyncHandler = require("../../middleware/async-handler");
 const { hoursBetween, round2 } = require("../../lib/dates");
+const { mirrorPayment, unmirrorPayment } = require("../../lib/ledger");
+
+// Contract payments are mirrored into the current-account ledger as AUTO_PAYMENT
+// credits so the cari statement and customer balances stay complete.
+const syncPaymentToLedger = async (payment) => {
+  const contract = await prisma.contract.findUnique({
+    where: { id: payment.contractId },
+    select: { id: true, userId: true, referenceUserId: true },
+  });
+  if (contract) await mirrorPayment(payment, contract);
+};
 
 // Generic CRUD for records that hang off a contract (drivers / payments / extras).
 // URL segment -> Prisma model + accepted payload shape.
@@ -117,6 +128,7 @@ const createRecord = asyncHandler(async (req, res) => {
     data: { ...buildData(resource, req.body), contractId: req.params.contractId },
   });
   if (resource.recomputeExtrasTotal) await syncExtrasTotal(req.params.contractId);
+  if (resource.model === "contractPayment") await syncPaymentToLedger(record);
   res.status(201).json(record);
 });
 
@@ -129,6 +141,7 @@ const updateRecord = asyncHandler(async (req, res) => {
     data: buildData(resource, req.body, { partial: true }),
   });
   if (resource.recomputeExtrasTotal) await syncExtrasTotal(target.contractId);
+  if (resource.model === "contractPayment") await syncPaymentToLedger(record);
   res.json(record);
 });
 
@@ -138,6 +151,7 @@ const deleteRecord = asyncHandler(async (req, res) => {
   if (!target) throw new HttpError(404, "Record not found.");
   await prisma[resource.model].delete({ where: { id: req.params.id } });
   if (resource.recomputeExtrasTotal) await syncExtrasTotal(target.contractId);
+  if (resource.model === "contractPayment") await unmirrorPayment(target.id);
   res.json({ message: "Record deleted." });
 });
 

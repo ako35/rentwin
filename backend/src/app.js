@@ -19,6 +19,7 @@ const locationsRoutes = require("./modules/locations/locations.routes");
 const corporatesRoutes = require("./modules/corporates/corporates.routes");
 const extrasRoutes = require("./modules/extras/extras.routes");
 const announcementsRoutes = require("./modules/announcements/announcements.routes");
+const ledgerRoutes = require("./modules/ledger/ledger.routes");
 const notFound = require("./middleware/not-found");
 const errorHandler = require("./middleware/error-handler");
 
@@ -79,6 +80,7 @@ api.use(locationsRoutes);
 api.use(corporatesRoutes);
 api.use(extrasRoutes);
 api.use(announcementsRoutes);
+api.use(ledgerRoutes);
 
 app.use("/api", api);
 
