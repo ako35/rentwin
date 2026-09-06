@@ -7,8 +7,7 @@ $breakpoint: 992px;
     @include m.flexbox(row, flex-end, center, 0.4rem);
     flex-shrink: 0;
 
-    // Prominent brand-green pill for the account / register CTA.
-    .dropdown-toggle,
+    // Register CTA (logged-out): the one prominent brand-green pill here.
     &__cta {
         border-radius: 999px;
         padding: 0.5rem 1.2rem;
@@ -27,7 +26,39 @@ $breakpoint: 992px;
         }
     }
 
-    .dropdown-toggle::after { margin-left: 0.5rem; }
+    // Account menu (logged-in): a secondary control, not a CTA. Soft slate pill
+    // with a letter avatar + chevron; faint green wash on hover / when open.
+    &__account.dropdown-toggle {
+        @include m.flexbox(row, center, center, 0.5rem);
+        border-radius: 999px;
+        padding: 0.35rem 0.85rem 0.35rem 0.4rem;
+        font-size: 0.88rem;
+        font-weight: 600;
+        background-color: v.$color3_5;
+        border: 1px solid v.$color3;
+        color: v.$color5_2;
+
+        &::after { display: none; }
+
+        &:hover,
+        &:focus,
+        &:active,
+        &.show {
+            background-color: rgba(v.$color1, 0.09) !important;
+            border-color: rgba(v.$color1, 0.35) !important;
+            color: v.$color2 !important;
+        }
+    }
+
+    &__account-caret {
+        font-size: 0.7rem;
+        opacity: 0.6;
+        transition: transform 0.15s ease;
+    }
+
+    &__account.show &__account-caret {
+        transform: rotate(180deg);
+    }
 
     &__login {
         padding: 0.5rem 0.7rem;

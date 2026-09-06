@@ -1,12 +1,14 @@
 import { useDispatch, useSelector } from "react-redux"
 import './user-menu.scss'
 import { Button, Dropdown } from "react-bootstrap"
+import { BsChevronDown } from "react-icons/bs"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { constants } from "../../../../constants"
 import { Link } from "react-router-dom"
 import { utils } from "../../../../utils"
 import { logout } from "../../../../store"
+import InitialsAvatar from "../../initials-avatar/initials-avatar"
 
 const {
   routes: {
@@ -35,8 +37,15 @@ const UserMenu = () => {
         isLoggedIn
         ? (
           <Dropdown align="end">
-              <Dropdown.Toggle>
-                {user?.firstName || t('userMenu.guest')} {user?.lastName || ''}
+              <Dropdown.Toggle variant="light" className="user-menu__account">
+                <InitialsAvatar
+                  name={`${user?.firstName || t('userMenu.guest')} ${user?.lastName || ''}`}
+                  size={22}
+                />
+                <span className="user-menu__account-name">
+                  {user?.firstName || t('userMenu.guest')} {user?.lastName || ''}
+                </span>
+                <BsChevronDown className="user-menu__account-caret" aria-hidden="true" />
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 {

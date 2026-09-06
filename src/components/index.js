@@ -30,6 +30,7 @@ import BottomMenu from './common/header/bottom-menu/bottom-menu'
 import TopMenu from './common/header/top-menu/top-menu'
 import UserMenu from './common/header/user-menu/user-menu'
 import Header from './common/header/header'
+import InitialsAvatar from './common/initials-avatar/initials-avatar'
 import JsonLd from './common/json-ld/json-ld'
 import KvkkConsent from './common/kvkk-consent/kvkk-consent'
 import Loading from './common/loading/loading'
@@ -83,6 +84,7 @@ export{
     TopMenu,
     UserMenu,
     Header,
+    InitialsAvatar,
     JsonLd,
     KvkkConsent,
     Loading,
