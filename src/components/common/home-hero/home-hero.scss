@@ -7,7 +7,7 @@ $bp: 992px;
   position: relative;
   padding: 170px 0 0;
   overflow: hidden;
-  background: linear-gradient(160deg, v.$color4 0%, #ffffff 50%, rgba(v.$color1, 0.06) 100%);
+  background: linear-gradient(to bottom right, rgba(v.$color1, 0.05) 0%, transparent 42%, v.$color4 100%);
 
   @media (max-width: $bp) {
     padding-top: 116px;
@@ -82,19 +82,25 @@ $bp: 992px;
 
   &__trust {
     @include m.reset-list;
-    @include m.flexbox(column, flex-start, flex-start, 0.55rem);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem 1.25rem;
     margin-top: 1.5rem;
 
     li {
-      @include m.flexbox(row, flex-start, center, 0.55rem);
-      font-size: 0.92rem;
+      @include m.flexbox(row, flex-start, center, 0.5rem);
+      font-size: 0.9rem;
       font-weight: 600;
       color: v.$color5_2;
 
-      svg { flex-shrink: 0; color: v.$color1; font-size: 1.1rem; }
+      svg { flex-shrink: 0; color: v.$color1; font-size: 1.05rem; }
     }
 
-    @media (max-width: $bp) { align-items: center; }
+    @media (max-width: $bp) {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      li { justify-content: center; }
+    }
   }
 
   &__browse {
