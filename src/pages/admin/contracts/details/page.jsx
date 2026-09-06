@@ -128,7 +128,9 @@ const ContractDetail = () => {
 
   const handleDelete = () => {
     utils.functions
-      .swalQuestion(t("reservations.toasts.deleteConfirmTitle"), t("reservations.toasts.deleteConfirmText"))
+      .swalQuestion(t("reservations.toasts.deleteConfirmTitle"), t("reservations.toasts.deleteConfirmText"), {
+        danger: true,
+      })
       .then(async (res) => {
         if (!res.isConfirmed) return;
         setDeleting(true);

@@ -1,5 +1,14 @@
-import Swal from "sweetalert2"
+// No-CSS build: SweetAlert2's own styles are compiled from SCSS in
+// src/styles/styles.scss with our brand variables. The default "sweetalert2"
+// entry injects its own (purple) stylesheet at runtime and would override them.
+import Swal from "sweetalert2/dist/sweetalert2.js"
 import moment from "moment/moment"
+import i18n from "../../i18n"
+
+// SweetAlert2 button labels — localized (common:swal.*) with a literal fallback
+// so a missing key never leaks "swal.confirm" into a live dialog.
+const swalLabel = (key, fallback) =>
+    i18n.exists(`common:swal.${key}`) ? i18n.t(`common:swal.${key}`) : fallback
 
 // FORM CHECK FUNCTION
 export const validCheck = (field, obj) => {
@@ -12,12 +21,22 @@ export const validCheck = (field, obj) => {
 }
 
 // SWEET ALERT FUNCTION
-export const swalQuestion = (title, text) => {
+// options.danger  -> destructive confirm: amber "!" icon, rose confirm button,
+//                    focus starts on Cancel. Pass { danger: true } from any
+//                    delete handler. Non-destructive confirms (logout, status
+//                    change) keep the green "?" default.
+export const swalQuestion = (title, text, options = {}) => {
+    const { danger = false, confirmText, cancelText } = options
     return Swal.fire({
         title: title,
         text: text,
-        icon: 'question',
-        showCancelButton: true
+        icon: danger ? 'warning' : 'question',
+        showCancelButton: true,
+        reverseButtons: true,
+        focusCancel: danger,
+        confirmButtonText: confirmText || swalLabel(danger ? 'delete' : 'confirm', danger ? 'Sil' : 'Onayla'),
+        cancelButtonText: cancelText || swalLabel('cancel', 'Vazgeç'),
+        customClass: danger ? { confirmButton: 'swal2-confirm--danger' } : undefined,
     })
 }
 

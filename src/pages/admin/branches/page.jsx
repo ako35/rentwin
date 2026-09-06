@@ -98,7 +98,7 @@ const AdminBranchesPage = () => {
 
   const handleDelete = (branch) => {
     utils.functions
-      .swalQuestion(t("branches.toasts.deleteConfirmTitle"), t("branches.toasts.deleteConfirmText"))
+      .swalQuestion(t("branches.toasts.deleteConfirmTitle"), t("branches.toasts.deleteConfirmText"), { danger: true })
       .then(async (result) => {
         if (!result.isConfirmed) return;
         try {

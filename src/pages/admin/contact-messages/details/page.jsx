@@ -67,7 +67,8 @@ const AdminContactMessageDetailsPage = () => {
   const handleDelete = () => {
     utils.functions.swalQuestion(
       t("contactMessages.toasts.deleteConfirmTitle"),
-      t("contactMessages.toasts.deleteConfirmText")
+      t("contactMessages.toasts.deleteConfirmText"),
+      { danger: true }
     )
     .then((result) => {
       if (result.isConfirmed) {

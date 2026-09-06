@@ -108,7 +108,7 @@ const ContractRecords = ({
   };
 
   const remove = (row) => {
-    utils.functions.swalQuestion(labels.deleteConfirm, labels.deleteConfirmText).then(async (r) => {
+    utils.functions.swalQuestion(labels.deleteConfirm, labels.deleteConfirmText, { danger: true }).then(async (r) => {
       if (!r.isConfirmed) return;
       try {
         await services.contract.deleteRecord(resource, row.id);

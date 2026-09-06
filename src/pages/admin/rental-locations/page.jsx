@@ -110,7 +110,7 @@ const AdminRentalLocationsPage = () => {
 
   const handleDelete = (location) => {
     utils.functions
-      .swalQuestion(t("rentalLocations.toasts.deleteConfirmTitle"), t("rentalLocations.toasts.deleteConfirmText"))
+      .swalQuestion(t("rentalLocations.toasts.deleteConfirmTitle"), t("rentalLocations.toasts.deleteConfirmText"), { danger: true })
       .then(async (result) => {
         if (!result.isConfirmed) return;
         try {

@@ -60,7 +60,14 @@ $input-btn-focus-color: rgba($color1, 0.2);
 $input-focus-border-color: $color1;
 $component-active-bg: $color1;
 
-/* SWEETALERT */
-$swal2-confirm-button-background-color: $color1;
-$swal2-cancel-button-background-color: $color2;
+/* SWEETALERT2 — brand palette. Button text / danger mode wired in
+   src/utils/functions/functions.js (swalQuestion); icon tint + button shape
+   in styles.scss (.swal2-* overrides). */
+$swal2-border-radius: 14px;
+$swal2-confirm-button-background-color: $color1;   // green — affirmative confirm
+$swal2-cancel-button-background-color: $color3_5;   // slate-100 — neutral "Vazgeç"
+$swal2-cancel-button-color: $color5;                // dark slate text on the light cancel button
+$swal2-deny-button-background-color: $accent-rose;  // rose — destructive confirm (danger mode)
 $swal2-success: $color1;
+$swal2-question: $color1;                           // emerald "?" ring
+$swal2-warning: $accent-amber;                      // amber "!" triangle (danger confirms)

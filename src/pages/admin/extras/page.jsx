@@ -61,7 +61,7 @@ const AdminExtrasPage = () => {
 
   const handleDelete = (extra) => {
     utils.functions
-      .swalQuestion(t("extras.toasts.deleteConfirm"), t("extras.toasts.deleteConfirmText"))
+      .swalQuestion(t("extras.toasts.deleteConfirm"), t("extras.toasts.deleteConfirmText"), { danger: true })
       .then(async (result) => {
         if (!result.isConfirmed) return;
         try {

@@ -92,7 +92,7 @@ const ReturnExtraTab = ({ isCreate, contractId, pickUpKm, kmLimit, onChange, mon
   };
 
   const remove = (row) => {
-    utils.functions.swalQuestion(rc("deleteConfirm"), rc("deleteConfirmText")).then(async (r) => {
+    utils.functions.swalQuestion(rc("deleteConfirm"), rc("deleteConfirmText"), { danger: true }).then(async (r) => {
       if (!r.isConfirmed) return;
       try {
         await services.contract.deleteRecord("returnCharges", row.id);

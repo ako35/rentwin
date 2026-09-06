@@ -103,3 +103,91 @@ textarea.is-invalid {
     font-weight: 500;
     color: $accent-rose;
 }
+
+// SweetAlert2 — brand polish the SCSS vars can't reach: soft-tinted icon disc,
+// rounded / weighted buttons, brand focus rings, and the danger-mode confirm
+// button emitted by swalQuestion({ danger: true }) for destructive actions.
+.swal2-popup {
+    border-radius: 16px;
+    padding-bottom: 1.6em;
+    font-family: $font-family-sans-serif;
+}
+
+.swal2-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: $color5;
+}
+
+.swal2-html-container {
+    font-size: 0.95rem;
+    color: $color5-3;
+}
+
+.swal2-icon {
+    border-width: 0.2em;
+
+    &.swal2-question {
+        border-color: rgba($color1, 0.35);
+        background-color: rgba($color1, 0.08);
+
+        .swal2-icon-content {
+            color: $color1;
+        }
+    }
+
+    &.swal2-warning {
+        border-color: rgba($accent-amber, 0.4);
+        background-color: rgba($accent-amber, 0.1);
+
+        .swal2-icon-content {
+            color: $accent-amber;
+        }
+    }
+}
+
+.swal2-actions {
+    gap: 0.5rem;
+}
+
+.swal2-styled {
+    &.swal2-confirm,
+    &.swal2-cancel,
+    &.swal2-deny {
+        border-radius: 10px;
+        font-weight: 600;
+        padding: 0.55em 1.6em;
+        box-shadow: none;
+        transition: background-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    &.swal2-confirm:focus-visible {
+        box-shadow: 0 0 0 3px rgba($color1, 0.4);
+    }
+
+    &.swal2-cancel {
+        background-color: $color3-5;
+        color: $color5;
+
+        &:hover {
+            background-color: #e2e8f0;
+        }
+
+        &:focus-visible {
+            box-shadow: 0 0 0 3px rgba($color5, 0.18);
+        }
+    }
+
+    // danger mode — destructive confirm (swalQuestion { danger: true })
+    &.swal2-confirm.swal2-confirm--danger {
+        background-color: $accent-rose;
+
+        &:hover {
+            background-color: #be123c;
+        }
+
+        &:focus-visible {
+            box-shadow: 0 0 0 3px rgba($accent-rose, 0.4);
+        }
+    }
+}

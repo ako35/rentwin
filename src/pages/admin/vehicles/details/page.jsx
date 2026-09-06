@@ -123,7 +123,8 @@ const AdminVehicleDetailsPage = () => {
     utils.functions
       .swalQuestion(
         t("vehicles.toasts.deleteConfirmTitle"),
-        t("vehicles.toasts.deleteConfirmText")
+        t("vehicles.toasts.deleteConfirmText"),
+        { danger: true }
       )
       .then((result) => {
         if (result.isConfirmed) removeVehicle();

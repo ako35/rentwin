@@ -69,7 +69,7 @@ const AdminAnnouncementsPage = () => {
 
   const handleDelete = (announcement) => {
     utils.functions
-      .swalQuestion(t("announcementsPage.toasts.deleteConfirmTitle"), t("announcementsPage.toasts.deleteConfirmText"))
+      .swalQuestion(t("announcementsPage.toasts.deleteConfirmTitle"), t("announcementsPage.toasts.deleteConfirmText"), { danger: true })
       .then(async (result) => {
         if (!result.isConfirmed) return;
         try {

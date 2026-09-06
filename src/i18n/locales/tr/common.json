@@ -48,6 +48,11 @@
     "show": "Şifreyi Göster",
     "hide": "Şifreyi Gizle"
   },
+  "swal": {
+    "confirm": "Onayla",
+    "delete": "Evet, Sil",
+    "cancel": "Vazgeç"
+  },
   "options": {
     "fuelTypes": {
       "Diesel": "Dizel",

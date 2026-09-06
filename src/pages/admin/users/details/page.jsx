@@ -69,7 +69,7 @@ const AdminUserDetailsPage = () => {
 
   const handleDelete = () => {
     utils.functions
-      .swalQuestion(t("users.toasts.deleteConfirmTitle"), t("users.toasts.deleteConfirmText"))
+      .swalQuestion(t("users.toasts.deleteConfirmTitle"), t("users.toasts.deleteConfirmText"), { danger: true })
       .then((result) => {
         if (result.isConfirmed) removeUser();
       });

@@ -173,7 +173,7 @@ const AdminCariLedgerPage = () => {
   };
 
   const removeEntry = (entry) => {
-    utils.functions.swalQuestion(f("deleteConfirmTitle"), f("deleteConfirmText")).then(async (res) => {
+    utils.functions.swalQuestion(f("deleteConfirmTitle"), f("deleteConfirmText"), { danger: true }).then(async (res) => {
       if (!res.isConfirmed) return;
       try {
         await services.ledger.deleteLedgerEntry(entry.id);

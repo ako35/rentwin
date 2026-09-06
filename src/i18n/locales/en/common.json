@@ -48,6 +48,11 @@
     "show": "Show Password",
     "hide": "Hide Password"
   },
+  "swal": {
+    "confirm": "Confirm",
+    "delete": "Yes, Delete",
+    "cancel": "Cancel"
+  },
   "options": {
     "fuelTypes": {
       "Diesel": "Diesel",

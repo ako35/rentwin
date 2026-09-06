@@ -101,7 +101,8 @@ const RecordsPanel = ({ vehicleId, config }) => {
     utils.functions
       .swalQuestion(
         t("vehicles.records.deleteConfirmTitle"),
-        t("vehicles.records.deleteConfirmText")
+        t("vehicles.records.deleteConfirmText"),
+        { danger: true }
       )
       .then(async (result) => {
         if (!result.isConfirmed) return;
