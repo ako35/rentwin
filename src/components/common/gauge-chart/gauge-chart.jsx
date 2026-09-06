@@ -3,7 +3,7 @@ import "./gauge-chart.scss";
 const RADIUS = 90;
 const SEMI_CIRCUMFERENCE = Math.PI * RADIUS;
 
-const GaugeChart = ({ value = 0, label, color = "#1b7a43" }) => {
+const GaugeChart = ({ value = 0, label, color = "#3eb846" }) => {
   const clamped = Math.min(100, Math.max(0, value));
   const offset = SEMI_CIRCUMFERENCE * (1 - clamped / 100);
 

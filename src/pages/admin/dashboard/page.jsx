@@ -64,7 +64,7 @@ const AdminDashboard = () => {
                 <GaugeChart
                   value={fleetStats?.occupancyRate}
                   label={t("dashboard.occupancy")}
-                  color="#1b7a43"
+                  color="#3eb846"
                 />
                 <GaugeChart
                   value={fleetStats?.outOfServiceRate}
