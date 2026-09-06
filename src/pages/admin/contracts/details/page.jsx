@@ -16,6 +16,7 @@ import KbsSection from "./parts/KbsSection";
 import ContractRightCard from "./parts/ContractRightCard";
 import ContractActions from "./parts/ContractActions";
 import NewCustomerModal from "./parts/NewCustomerModal";
+import VehicleReturnModal from "./parts/VehicleReturnModal";
 import {
   fetchCustomers,
   formatMoney,
@@ -40,6 +41,7 @@ const ContractDetail = () => {
   const [updating, setUpdating] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [newCustModal, setNewCustModal] = useState(false);
+  const [returnModal, setReturnModal] = useState(false);
 
   const {
     loading,
@@ -166,43 +168,14 @@ const ContractDetail = () => {
       });
   };
 
-  // "Araç Teslim Al" -> DONE. If the rental is filed in KABİS but not released,
-  // the backend blocks the close (409 KBS_NOT_RELEASED); we then offer to
-  // release KABİS and close in one chained step.
-  const handleVehicleReturn = () => {
-    utils.functions
-      .swalQuestion(
-        t("reservations.contract.returnConfirmTitle"),
-        t("reservations.contract.returnConfirmText")
-      )
-      .then(async (res) => {
-        if (!res.isConfirmed) return;
-        setUpdating(true);
-        try {
-          await services.contract.returnContract(contractId);
-          utils.functions.swalToast(t("reservations.contract.returnedSuccess"), "success");
-          loadData();
-        } catch (err) {
-          if (err?.response?.data?.code !== "KBS_NOT_RELEASED") {
-            utils.functions.swalToast(t("reservations.toasts.updateError"), "error");
-            return;
-          }
-          const ask = await utils.functions.swalQuestion(
-            t("reservations.contract.kbsReleaseBeforeCloseTitle"),
-            t("reservations.contract.kbsReleaseBeforeCloseText")
-          );
-          if (!ask.isConfirmed) return;
-          try {
-            await services.contract.returnContract(contractId, { releaseKbs: true });
-            utils.functions.swalToast(t("reservations.contract.returnedWithKbsSuccess"), "success");
-            loadData();
-          } catch {
-            utils.functions.swalToast(t("reservations.toasts.updateError"), "error");
-          }
-        } finally {
-          setUpdating(false);
-        }
-      });
+  // "Araç Teslim Al" opens the return modal — the operator enters the hand-back
+  // km/fuel there, overage is auto-priced, and the contract closes on confirm.
+  const handleVehicleReturn = () => setReturnModal(true);
+
+  const handleReturned = () => {
+    setReturnModal(false);
+    utils.functions.swalToast(t("reservations.contract.returnedSuccess"), "success");
+    loadData();
   };
 
   const handleCancelContract = runStatusAction(
@@ -364,6 +337,16 @@ const ContractDetail = () => {
         show={newCustModal}
         onHide={() => setNewCustModal(false)}
         onCreated={handleNewCustomerCreated}
+      />
+
+      <VehicleReturnModal
+        show={returnModal}
+        onHide={() => setReturnModal(false)}
+        contractId={contractId}
+        values={formik.values}
+        billableDays={billableDays}
+        money={money}
+        onReturned={handleReturned}
       />
     </div>
   );

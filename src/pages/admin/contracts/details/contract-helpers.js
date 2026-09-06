@@ -15,8 +15,11 @@ export const EMPTY_CONTRACT = {
   dropOffDate: "", dropOffTime: "", carId: "", status: "", userId: "",
   contractNo: "", customerNote: "", adminNote: "", flightNo: "",
   pickUpKm: "", pickUpFuelEighths: "",
+  returnKm: "", returnFuelEighths: "",
   dailyPrice: "", extrasTotal: "", oneWayFee: "", returnExtraAmount: "",
-  deposit: "", kmLimit: "", unlimitedKm: true, vatRate: 20,
+  deposit: "", kmLimit: "", unlimitedKm: true,
+  dailyKmLimit: "", monthlyKmLimit: "", kmOverageFee: "", fuelFeePerEighth: "",
+  vatRate: 20,
   referenceUserId: "",
   kbsNotifiedAt: "", kbsNotifiedBy: "", kbsReleasedAt: "", kbsReleasedBy: "",
 };
@@ -76,6 +79,39 @@ export const computePricing = (values, billableDays) => {
   return { rental, addOns, subtotal, total };
 };
 
+const round2 = (n) => Math.round(n * 100) / 100;
+
+// Km allowance for the whole rental — the stricter of daily×days and
+// monthly×months. A blank limit is no cap on that axis; unlimitedKm or both
+// blank -> Infinity (no limit). Mirrors backend contract-fields.computeAllowedKm.
+export const computeAllowedKm = (values, contractedDays) => {
+  if (values.unlimitedKm) return Infinity;
+  const daily = Number(values.dailyKmLimit) || 0;
+  const monthly = Number(values.monthlyKmLimit) || 0;
+  const dailyCap = daily > 0 ? daily * contractedDays : Infinity;
+  const monthlyCap = monthly > 0 ? monthly * Math.ceil(contractedDays / 30) : Infinity;
+  return Math.min(dailyCap, monthlyCap);
+};
+
+// Return-time overage: excess km × ₺/km and missing fuel eighths × ₺/(1/8).
+// `readings` carries the return modal's live inputs.
+export const computeReturnOverage = (values, readings) => {
+  const { pickUpKm, returnKm, pickUpFuelEighths, returnFuelEighths, contractedDays } = readings;
+  const allowedKm = computeAllowedKm(values, contractedDays);
+  const usedKm = Math.max(0, (Number(returnKm) || 0) - (Number(pickUpKm) || 0));
+  const excessKm =
+    returnKm === "" || returnKm == null || !Number.isFinite(allowedKm)
+      ? 0
+      : Math.max(0, usedKm - allowedKm);
+  const kmCharge = round2(excessKm * (Number(values.kmOverageFee) || 0));
+  const missingEighths = Math.max(
+    0,
+    (Number(pickUpFuelEighths) || 0) - (Number(returnFuelEighths) || 0)
+  );
+  const fuelCharge = round2(missingEighths * (Number(values.fuelFeePerEighth) || 0));
+  return { allowedKm, usedKm, excessKm, kmCharge, missingEighths, fuelCharge };
+};
+
 // Contract patch payload sent to updateContract (create + edit both use it).
 export const buildContractDto = (values) => ({
   pickUpTime: utils.functions.combineDateAndTime(values.pickUpDate, values.pickUpTime),
@@ -90,7 +126,12 @@ export const buildContractDto = (values) => ({
   // returnExtraAmount is derived from the itemised return charges (ReturnExtraTab)
   // and cached server-side — it is never written from this form.
   deposit: values.deposit, kmLimit: values.unlimitedKm ? "" : values.kmLimit,
-  unlimitedKm: values.unlimitedKm, vatRate: values.vatRate,
+  unlimitedKm: values.unlimitedKm,
+  dailyKmLimit: values.unlimitedKm ? "" : values.dailyKmLimit,
+  monthlyKmLimit: values.unlimitedKm ? "" : values.monthlyKmLimit,
+  kmOverageFee: values.unlimitedKm ? "" : values.kmOverageFee,
+  fuelFeePerEighth: values.fuelFeePerEighth,
+  vatRate: values.vatRate,
   referenceUserId: values.referenceUserId || null,
   kbsNotifiedAt: values.kbsNotifiedAt || null,
   kbsReleasedAt: values.kbsReleasedAt || null,
@@ -107,10 +148,15 @@ export const contractToFormValues = (r) => ({
   contractNo: r.contractNo || "", flightNo: r.flightNo || "",
   pickUpKm: r.pickUpKm ?? "",
   pickUpFuelEighths: r.pickUpFuelEighths != null ? String(r.pickUpFuelEighths) : "",
+  returnKm: r.returnKm ?? "",
+  returnFuelEighths: r.returnFuelEighths != null ? String(r.returnFuelEighths) : "",
   dailyPrice: r.dailyPrice ?? "", extrasTotal: r.extrasTotal ?? "",
   oneWayFee: r.oneWayFee ?? "", returnExtraAmount: r.returnExtraAmount ?? "",
   deposit: r.deposit ?? "", kmLimit: r.kmLimit ?? "",
-  unlimitedKm: r.unlimitedKm ?? true, vatRate: r.vatRate ?? 20,
+  unlimitedKm: r.unlimitedKm ?? true,
+  dailyKmLimit: r.dailyKmLimit ?? "", monthlyKmLimit: r.monthlyKmLimit ?? "",
+  kmOverageFee: r.kmOverageFee ?? "", fuelFeePerEighth: r.fuelFeePerEighth ?? "",
+  vatRate: r.vatRate ?? 20,
   referenceUserId: r.referenceUserId || "",
   kbsNotifiedAt: r.kbsNotifiedAt ? utils.functions.getDate(r.kbsNotifiedAt) : "",
   kbsNotifiedBy: r.kbsNotifiedBy || "",

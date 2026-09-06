@@ -11,6 +11,7 @@ import ReturnExtraTab from "./ReturnExtraTab";
 import ExtensionTab from "./ExtensionTab";
 import VehicleChangeTab from "./VehicleChangeTab";
 import PricingBlock from "./PricingBlock";
+import { computeAllowedKm } from "../contract-helpers";
 
 const SUB_TABS = ["summary", "payments", "returnExtra", "extension", "vehicleChange"];
 
@@ -109,7 +110,10 @@ const ContractRightCard = ({
             isCreate={isCreate}
             contractId={contractId}
             pickUpKm={formik.values.pickUpKm}
-            kmLimit={formik.values.unlimitedKm ? "" : formik.values.kmLimit}
+            kmLimit={(() => {
+              const a = computeAllowedKm(formik.values, billableDays);
+              return Number.isFinite(a) ? Math.round(a) : "";
+            })()}
             onChange={loadData}
             money={money}
           />
