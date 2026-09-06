@@ -242,7 +242,7 @@ const ContractDetail = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="contract-page">
+    <div className="contract-page contract-page--detail">
       <ContractRibbon
         isCreate={isCreate}
         contractId={contractId}

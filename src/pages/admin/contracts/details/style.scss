@@ -354,4 +354,34 @@
   }
 
   &__actions-spacer { flex: 1; }
+
+  // Sticky footer: dangerous / secondary actions left, primary flow right.
+  // The screen scrolls under it; content gets bottom padding to clear it.
+  &--detail { padding-bottom: 4.5rem; }
+
+  &__actionbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1030;
+    @include m.flexbox(row, space-between, center, 0.75rem);
+    flex-wrap: wrap;
+    padding: 0.6rem 1.15rem;
+    background-color: #fff;
+    border-top: 1px solid v.$color3;
+    box-shadow: 0 -6px 16px rgba(51, 64, 58, 0.1);
+
+    @media (max-width: 500px) {
+      padding: 0.5rem 0.55rem;
+    }
+  }
+
+  &__actionbar-left,
+  &__actionbar-right {
+    @include m.flexbox(row, flex-start, center, 0.5rem);
+    flex-wrap: wrap;
+  }
+
+  &__actionbar-right { justify-content: flex-end; }
 }
