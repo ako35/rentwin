@@ -4,36 +4,28 @@
 $breakpoint: 992px;
 
 .reservation-search {
-    // Desktop: a single horizontal glass bar floating over the lower third
-    // of the hero, with a margin on each side.
-    position: absolute;
-    z-index: 10;
-    left: 50%;
-    bottom: 8%;
-    transform: translateX(-50%);
-    width: calc(100% - 4rem);
-    max-width: 1180px;
+    // Floating glass card that sits on the light hero, slightly overlapping the
+    // split section above it.
+    position: relative;
+    z-index: 2;
+    margin: -1.25rem 0 2.5rem;
 
     display: flex;
     flex-direction: column;
-    gap: 0.55rem;
-    padding: 0.85rem 1rem 1rem;
-    background-color: rgba(255, 255, 255, 0.16);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    border-radius: 20px;
-    box-shadow: 0 24px 50px -14px rgba(15, 23, 42, 0.45);
+    gap: 0.6rem;
+    padding: 1.1rem 1.2rem 1.25rem;
+    background-color: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(14px) saturate(150%);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 22px;
+    box-shadow: 0 30px 60px -24px rgba(15, 23, 42, 0.22), 0 2px 8px rgba(15, 23, 42, 0.05);
 
     @media (max-width: $breakpoint) {
-        position: static;
-        transform: none;
-        width: auto;
-        max-width: none;
-        margin: -2.5rem 1rem 0;
+        margin: 0.5rem 0 1.5rem;
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
-        background-color: v.$color4;
+        background-color: #fff;
         border-color: v.$color3;
     }
 
@@ -44,14 +36,10 @@ $breakpoint: 992px;
         padding: 0.1rem 0.2rem;
         font-size: 0.8rem;
         font-weight: 600;
-        color: #fff;
+        color: v.$color5_2;
         cursor: pointer;
 
         input { accent-color: v.$color1; width: 15px; height: 15px; }
-
-        @media (max-width: $breakpoint) {
-            color: v.$color5;
-        }
     }
 
     &__row {
@@ -67,13 +55,13 @@ $breakpoint: 992px;
         min-width: 0;
         padding: 0.4rem 0.75rem;
         background-color: #fff;
-        border: 1px solid transparent;
+        border: 1px solid v.$color3;
         border-radius: 14px;
         transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
         &:focus-within {
-            border-color: v.$color2;
-            box-shadow: 0 0 0 3px v.$color2_5;
+            border-color: v.$color1;
+            box-shadow: 0 0 0 3px rgba(v.$color1, 0.18);
         }
 
         label {
@@ -111,14 +99,14 @@ $breakpoint: 992px;
             font-weight: 600;
             color: v.$color5;
 
-            &:focus { outline: none; }
+            &:focus { outline: none; box-shadow: none !important; }
 
             &::placeholder {
                 font-weight: 500;
                 color: v.$color5_4;
             }
 
-            &.is-invalid { color: #e11d48; }
+            &.is-invalid { color: v.$accent-rose; }
         }
     }
 
@@ -133,13 +121,7 @@ $breakpoint: 992px;
         margin: 0;
         font-size: 0.8rem;
         font-weight: 600;
-        color: #fff;
-        text-shadow: 0 1px 4px rgba(15, 23, 42, 0.6);
-
-        @media (max-width: $breakpoint) {
-            color: #e11d48;
-            text-shadow: none;
-        }
+        color: v.$accent-rose;
     }
 
     &__submit {
@@ -153,9 +135,12 @@ $breakpoint: 992px;
         letter-spacing: 0.02em;
         white-space: nowrap;
         cursor: pointer;
-        transition: background-color 0.15s ease, transform 0.1s ease;
+        transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 
-        &:hover { background-color: v.$color2; }
+        &:hover {
+            background-color: v.$color2;
+            box-shadow: 0 10px 22px -8px rgba(v.$color1, 0.6);
+        }
         &:active { transform: translateY(1px); }
 
         @media (max-width: $breakpoint) {

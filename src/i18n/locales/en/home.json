@@ -11,21 +11,17 @@
     "differentDropOff": "Return to a different location",
     "submit": "Search"
   },
-  "heroCta": "Rent a Car Now",
-  "slider": [
-    {
-      "id": 1,
-      "image": "slider1.jpg",
-      "title": "Start Your Journey with Confidence",
-      "subtitle": "A well-kept fleet and transparent pricing — book the right car for your needs in minutes."
-    },
-    {
-      "id": 2,
-      "image": "slider2.jpg",
-      "title": "The Right Car at the Right Price",
-      "subtitle": "Vehicles for every need, from economy to comfort; easy booking, smooth handover."
-    }
-  ],
+  "hero": {
+    "eyebrow": "Fleet Rental",
+    "title": "Start your journey with confidence",
+    "lead": "A well-kept fleet of passenger and commercial cars, transparent pricing and a smooth handover — reserve the right car for your needs in minutes.",
+    "browseCta": "Browse all cars",
+    "trust": [
+      "Transparent pricing, no surprise fees",
+      "Well-maintained, fully insured fleet",
+      "Online booking, 24/7 support"
+    ]
+  },
   "sections": {
     "popularCars": {
       "title1": "Popular",

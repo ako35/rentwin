@@ -35,7 +35,7 @@ import PageHeader from './common/page-header/page-header'
 import PasswordInput from './common/password-input/password-input'
 import ReservationSearch from './common/reservation-search/reservation-search'
 import SectionHeader from './common/section-header/section-header'
-import Slider from './common/slider/slider'
+import HomeHero from './common/home-hero/home-hero'
 import Spacer from './common/spacer/spacer'
 import UserAvatar from './common/user/avatar/avatar'
 import UserPasswordForm from './common/user/password-form/password-form'
@@ -86,7 +86,7 @@ export{
     PasswordInput,
     ReservationSearch,
     SectionHeader,
-    Slider,
+    HomeHero,
     Spacer,
     UserAvatar,
     UserPasswordForm,

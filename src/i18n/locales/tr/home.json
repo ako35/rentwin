@@ -11,21 +11,17 @@
     "differentDropOff": "Farklı bir yerde bırakmak istiyorum",
     "submit": "Araç Ara"
   },
-  "heroCta": "Hemen Araç Kirala",
-  "slider": [
-    {
-      "id": 1,
-      "image": "slider1.jpg",
-      "title": "Yolculuğunuza Güvenle Başlayın",
-      "subtitle": "Bakımlı araç filomuz ve şeffaf fiyatlarımızla, ihtiyacınıza uygun aracı dakikalar içinde kiralayın."
-    },
-    {
-      "id": 2,
-      "image": "slider2.jpg",
-      "title": "Doğru Araç, Uygun Fiyat",
-      "subtitle": "Ekonomiden konfora her ihtiyaca uygun araçlar; kolay rezervasyon, sorunsuz teslimat."
-    }
-  ],
+  "hero": {
+    "eyebrow": "Filo Kiralama",
+    "title": "Yolculuğunuza güvenle başlayın",
+    "lead": "Bakımlı binek ve ticari araç filomuz, şeffaf fiyatlarımız ve sorunsuz teslimatımızla ihtiyacınıza uygun aracı dakikalar içinde ayırtın.",
+    "browseCta": "Tüm araçları gör",
+    "trust": [
+      "Ek ücret sürprizi yok, şeffaf fiyat",
+      "Bakımlı ve sigortalı geniş filo",
+      "Online rezervasyon, 7/24 destek"
+    ]
+  },
   "sections": {
     "popularCars": {
       "title1": "Popüler",

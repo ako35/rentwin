@@ -1,0 +1,134 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+$bp: 992px;
+
+.home-hero {
+  position: relative;
+  padding: 170px 0 0;
+  overflow: hidden;
+  background: linear-gradient(160deg, v.$color4 0%, #ffffff 50%, rgba(v.$color1, 0.06) 100%);
+
+  @media (max-width: $bp) {
+    padding-top: 116px;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -140px;
+    right: -160px;
+    width: 480px;
+    height: 480px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(v.$color1, 0.12), transparent 70%);
+    pointer-events: none;
+  }
+
+  &__inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  &__split {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: center;
+    gap: 2rem;
+    padding-bottom: 3rem;
+
+    @media (max-width: $bp) {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+      padding-bottom: 1.5rem;
+      text-align: center;
+    }
+  }
+
+  &__eyebrow {
+    display: inline-block;
+    padding: 0.32rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(v.$color1, 0.12);
+    color: v.$color2;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  &__title {
+    margin: 1rem 0 0;
+    font-size: 3.1rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: v.$color5;
+
+    @media (max-width: 1200px) { font-size: 2.6rem; }
+    @media (max-width: $bp) { font-size: 2.2rem; }
+    @media (max-width: 480px) { font-size: 1.8rem; }
+  }
+
+  &__lead {
+    margin: 1rem 0 0;
+    max-width: 34rem;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: v.$color5_2;
+
+    @media (max-width: $bp) { margin-inline: auto; }
+  }
+
+  &__trust {
+    @include m.reset-list;
+    @include m.flexbox(column, flex-start, flex-start, 0.55rem);
+    margin-top: 1.5rem;
+
+    li {
+      @include m.flexbox(row, flex-start, center, 0.55rem);
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: v.$color5_2;
+
+      svg { flex-shrink: 0; color: v.$color1; font-size: 1.1rem; }
+    }
+
+    @media (max-width: $bp) { align-items: center; }
+  }
+
+  &__browse {
+    @include m.flexbox(row, center, center, 0.4rem);
+    width: fit-content;
+    margin-top: 1.75rem;
+    font-weight: 700;
+    color: v.$color2;
+
+    &:hover { color: v.$color1; }
+
+    @media (max-width: $bp) { margin-inline: auto; }
+  }
+
+  &__visual {
+    @include m.flexbox(row, center, center);
+
+    .fleet-car {
+      width: 100%;
+      max-width: 560px;
+
+      &__art,
+      &__photo {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      &__photo { filter: drop-shadow(0 24px 34px rgba(15, 23, 42, 0.2)); }
+    }
+
+    @media (max-width: $bp) {
+      order: -1;
+      .fleet-car { max-width: 400px; }
+    }
+  }
+}
