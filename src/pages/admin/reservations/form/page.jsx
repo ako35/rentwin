@@ -143,6 +143,12 @@ const AdminReservationFormPage = () => {
     { id: "__none", value: "", name: `— ${c("selectLocation")} —` },
     ...locations.map((l) => ({ id: l.id, value: l.name, name: l.name })),
   ];
+  // Keep a saved location that is no longer in the list as a selectable option.
+  [formik.values.pickUpLocation, formik.values.dropOffLocation].forEach((val) => {
+    if (val && !locationOptions.some((o) => o.value === val)) {
+      locationOptions.push({ id: `keep-${val}`, value: val, name: val });
+    }
+  });
   const vehicleOptions = useMemo(
     () => buildVehicleOptions(availableCars, { isCreate: true, placeholder: c("selectVehicle") }),
     // eslint-disable-next-line react-hooks/exhaustive-deps

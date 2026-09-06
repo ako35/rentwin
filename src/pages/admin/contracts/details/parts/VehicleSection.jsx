@@ -11,10 +11,18 @@ const VehicleSection = ({ formik, locationNames, vehicleOptions, selectedCar, is
   const { t: tCommon } = useTranslation("common");
   const c = (key) => t(`reservations.contract.${key}`);
   const fuelOptions = buildFuelEighthsOptions(t);
+  // A saved contract may carry a location that is no longer in the Location list
+  // (renamed, removed, or a legacy free-text value). Keep it as an option so the
+  // dropdown still shows it and a later save never silently drops it.
   const locationOptions = [
     { id: "__none", value: "", name: `— ${c("selectLocation")} —` },
     ...locationNames.map((name) => ({ id: name, value: name, name })),
   ];
+  [formik.values.pickUpLocation, formik.values.dropOffLocation].forEach((val) => {
+    if (val && !locationOptions.some((o) => o.value === val)) {
+      locationOptions.push({ id: `keep-${val}`, value: val, name: val });
+    }
+  });
 
   const fuelTransmission = selectedCar
     ? `${tCommon(`options.fuelTypes.${selectedCar.fuelType}`)} / ${tCommon(
