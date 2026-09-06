@@ -5,10 +5,10 @@ import moment from "moment/moment";
 import { services } from "../../../../services";
 import { constants } from "../../../../constants";
 import { Loading } from "../../../../components";
-import VehicleDiagram from "./VehicleDiagram";
+import ContractTextDoc from "./ContractTextDoc";
+import Tutanak from "./Tutanak";
 import "./style.scss";
 
-const { website } = constants;
 const DOC_TYPES = ["sozlesme", "ek1", "tutanak"];
 
 const fmtDate = (v) => (v ? moment(v).format("DD.MM.YYYY") : "—");
@@ -79,231 +79,6 @@ const ContractPrintPage = () => {
   if (loading) return <Loading />;
   if (error || !data) return <div className="cprint">{p("loadError")}</div>;
 
-  const Field = ({ label, value, wide }) => (
-    <div className={`cprint-field${wide ? " cprint-field--wide" : ""}`}>
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </div>
-  );
-
-  const CompanyHeader = ({ subtitle }) => (
-    <header className="cprint-head">
-      <div>
-        <div className="cprint-head__brand">{website.name}</div>
-        <div className="cprint-head__meta">
-          {website.address} · {website.phone} · {website.email}
-        </div>
-      </div>
-      <div className="cprint-head__doc">
-        <div className="cprint-head__title">{subtitle}</div>
-        <div className="cprint-head__no">
-          {p("contractNo")}: <strong>{data.contractNo}</strong>
-        </div>
-        <div className="cprint-head__date">
-          {p("date")}: {data.today}
-        </div>
-      </div>
-    </header>
-  );
-
-  const PartiesBlock = () => (
-    <section className="cprint-block">
-      <h2>{p("partiesTitle")}</h2>
-      <div className="cprint-grid">
-        <Field label={p("lessor")} value={website.name} />
-        <Field label={p("lesseeType")} value={data.customerType} />
-        <Field label={p("lessee")} value={data.customerName} wide />
-        <Field label={p("idNo")} value={data.idNo} />
-        <Field label={p("phone")} value={data.phone} />
-        {data.contactPerson && <Field label={p("contactPerson")} value={data.contactPerson} />}
-        {data.taxOffice && <Field label={p("taxOffice")} value={data.taxOffice} />}
-        <Field label={p("address")} value={data.address} wide />
-      </div>
-    </section>
-  );
-
-  const VehicleBlock = () => (
-    <section className="cprint-block">
-      <h2>{p("vehicleTitle")}</h2>
-      <div className="cprint-grid">
-        <Field label={p("vehicle")} value={data.carName} />
-        <Field label={p("plate")} value={data.plate} />
-        <Field label={p("modelYear")} value={data.modelYear} />
-        <Field label={p("transmission")} value={data.transmission} />
-        <Field label={p("fuelType")} value={data.fuelType} />
-        <Field label={p("color")} value={data.color} />
-        <Field label={p("chassisNo")} value={data.chassisNo} />
-      </div>
-    </section>
-  );
-
-  const RentalBlock = () => (
-    <section className="cprint-block">
-      <h2>{p("rentalTitle")}</h2>
-      <div className="cprint-grid">
-        <Field label={p("pickUp")} value={data.pickUp} />
-        <Field label={p("dropOff")} value={data.dropOff} />
-        <Field label={p("pickUpLocation")} value={data.pickUpLocation} />
-        <Field label={p("dropOffLocation")} value={data.dropOffLocation} />
-      </div>
-    </section>
-  );
-
-  const Signatures = ({ leftLabel, rightLabel }) => (
-    <section className="cprint-sign">
-      <div>
-        <span>{leftLabel}</span>
-        <div className="cprint-sign__line" />
-      </div>
-      <div>
-        <span>{rightLabel}</span>
-        <div className="cprint-sign__line" />
-      </div>
-    </section>
-  );
-
-  const TextShell = ({ titleKey }) => (
-    <>
-      <CompanyHeader subtitle={p(`${titleKey}.title`)} />
-      <PartiesBlock />
-      <VehicleBlock />
-      <RentalBlock />
-      <section className="cprint-block cprint-block--body">
-        <h2>{p(`${titleKey}.bodyTitle`)}</h2>
-        <p className="cprint-placeholder">{p(`${titleKey}.placeholder`)}</p>
-      </section>
-      <Signatures leftLabel={p("signLessor")} rightLabel={p("signLessee")} />
-    </>
-  );
-
-  const Tutanak = () => {
-    const k = (key) => p(`tutanak.${key}`);
-    const equipment = k("equipmentList").split("|");
-
-    const Cell = ({ label, value }) => (
-      <div className="tut-cell">
-        <span>{label}</span>
-        <strong>{value || "—"}</strong>
-      </div>
-    );
-
-    return (
-      <div className="tut">
-        <header className="tut-head">
-          <div>
-            <div className="tut-head__brand">{website.name}</div>
-            <div className="tut-head__meta">
-              {website.address} · {website.phone} · {website.email}
-            </div>
-          </div>
-          <div className="tut-head__right">
-            <div className="tut-head__title">{k("title")}</div>
-            <div className="tut-head__badges">
-              <span>
-                {p("contractNo")}: <strong>{data.contractNo}</strong>
-              </span>
-              <span className="tut-head__date">{data.today}</span>
-            </div>
-          </div>
-        </header>
-
-        <div className="tut-cols">
-          <section className="tut-card">
-            <h3>{p("partiesTitle")}</h3>
-            <div className="tut-card__grid">
-              <Cell label={p("lessee")} value={data.customerName} />
-              {data.contactPerson && <Cell label={p("contactPerson")} value={data.contactPerson} />}
-              <Cell label={p("idNo")} value={data.idNo} />
-              <Cell label={p("phone")} value={data.phone} />
-              {data.taxOffice && <Cell label={p("taxOffice")} value={data.taxOffice} />}
-            </div>
-            <div className="tut-card__wide">
-              <span>{p("address")}</span>
-              <strong>{data.address}</strong>
-            </div>
-          </section>
-
-          <section className="tut-card">
-            <h3>{p("vehicleTitle")}</h3>
-            <div className="tut-card__grid">
-              <Cell label={p("vehicle")} value={data.carName} />
-              <Cell label={p("plate")} value={data.plate} />
-              <Cell label={p("chassisNo")} value={data.chassisNo} />
-              <Cell label={p("fuelType")} value={`${data.fuelType} · ${data.transmission}`} />
-            </div>
-            <table className="tut-state">
-              <thead>
-                <tr>
-                  <th />
-                  <th>{k("atDelivery")}</th>
-                  <th>{k("atReturn")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th>{k("dateTime")}</th>
-                  <td>{data.pickUp}</td>
-                  <td />
-                </tr>
-                <tr>
-                  <th>{k("location")}</th>
-                  <td>{data.pickUpLocation}</td>
-                  <td>{data.dropOffLocation}</td>
-                </tr>
-                <tr>
-                  <th>{k("km")}</th>
-                  <td>{data.outKm}</td>
-                  <td />
-                </tr>
-                <tr>
-                  <th>{k("fuel")}</th>
-                  <td>{data.outFuel}</td>
-                  <td />
-                </tr>
-              </tbody>
-            </table>
-          </section>
-        </div>
-
-        <div className="tut-body">
-          <section className="tut-body__diagram">
-            <h3>{k("damageTitle")}</h3>
-            <VehicleDiagram />
-          </section>
-          <section className="tut-body__equip">
-            <h3>{k("equipmentTitle")}</h3>
-            <ul className="tut-check">
-              {equipment.map((item) => (
-                <li key={item}>
-                  <span className="tut-check__box" /> {item.trim()}
-                </li>
-              ))}
-            </ul>
-          </section>
-        </div>
-
-        <section className="tut-notes">
-          <h3>
-            {k("notesTitle")}
-            <span className="tut-notes__kbs">
-              {k("kbs")}: {data.kbs}
-            </span>
-          </h3>
-          <div className="tut-notes__lines" />
-        </section>
-
-        <div className="tut-sign">
-          <div>
-            <span>{k("signDeliver")}</span>
-          </div>
-          <div>
-            <span>{k("signReceive")}</span>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="cprint">
       <div className="cprint__toolbar no-print">
@@ -328,7 +103,11 @@ const ContractPrintPage = () => {
       </div>
 
       <article className="cprint-sheet">
-        {docType === "tutanak" ? <Tutanak /> : <TextShell titleKey={docType} />}
+        {docType === "tutanak" ? (
+          <Tutanak data={data} p={p} />
+        ) : (
+          <ContractTextDoc titleKey={docType} data={data} p={p} />
+        )}
       </article>
     </div>
   );
