@@ -116,6 +116,67 @@
     display: grid;
     grid-template-columns: 1.4fr 1fr;
     gap: 0.5rem;
+
+    &--even { grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+  }
+
+  // --- Alış / Bırakış grouped panels + rental-day badge ---
+  &__rentgroups {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.1rem;
+
+    @media (max-width: 1200px) { grid-template-columns: 1fr; }
+  }
+
+  &__rentgroup {
+    padding: 0.7rem 0.75rem 0;
+    background-color: v.$color4;
+    border: 1px solid v.$color3;
+    border-radius: 10px;
+
+    .form-label { font-size: 0.72rem; }
+    .form-control,
+    .form-select {
+      &:not(:disabled) { background-color: #fff; }
+    }
+  }
+
+  &__rentgroup-cap {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: v.$color1;
+  }
+
+  &__days-badge {
+    padding: 0.16rem 0.65rem;
+    border-radius: 999px;
+    background-color: rgba(v.$color1, 0.12);
+    color: v.$color2;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  .contract-card--vehicle h3 {
+    @include m.flexbox(row, space-between, center, 0.5rem);
+  }
+
+  // Read-only inputs in the contract card: unmistakably not editable.
+  .contract-card {
+    .form-control:disabled,
+    .form-select:disabled {
+      background-color: #e8edf3;
+      border-style: dashed;
+      color: v.$color5_4;
+    }
   }
 
   &__ro {
@@ -468,30 +529,37 @@
     }
   }
 
-  // Read-only vehicle info as chips right under the vehicle picker.
-  &__car-chips {
-    @include m.flexbox(row, flex-start, center, 0.35rem);
+  // One-line vehicle summary card under the picker (replaces loose chips).
+  &__car-summary {
+    @include m.flexbox(row, flex-start, center, 0.65rem);
     flex-wrap: wrap;
-    margin: -0.35rem 0 0.6rem;
+    margin: -0.35rem 0 0.9rem;
+    padding: 0.5rem 0.65rem;
+    background-color: v.$color4;
+    border: 1px solid v.$color3;
+    border-radius: 10px;
   }
 
-  &__chip {
-    @include m.flexbox(row, flex-start, center, 0.3rem);
-    padding: 0.12rem 0.55rem;
-    border-radius: 999px;
-    background-color: v.$color3;
-    font-size: 0.75rem;
+  &__plate {
+    padding: 0.22rem 0.6rem;
+    border-radius: 6px;
+    background-color: #1e293b;
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  &__car-specs {
+    @include m.flexbox(row, flex-start, center, 0.9rem);
+    flex-wrap: wrap;
+    font-size: 0.8rem;
     font-weight: 600;
-    color: v.$color5;
+    color: v.$color5_2;
 
-    em { font-style: normal; color: v.$color5_3; }
-
-    &--plate {
-      background-color: #fdeaea;
-      color: #b93a3a;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-    }
+    > span { @include m.flexbox(row, flex-start, center, 0.3rem); }
+    svg { flex-shrink: 0; color: v.$color1; font-size: 0.95rem; }
   }
 
   &__actions {
