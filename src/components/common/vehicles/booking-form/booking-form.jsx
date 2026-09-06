@@ -169,6 +169,21 @@ const BookingForm = () => {
     validationSchema: utils.validations.bookingFormValidationSchema,
     onSubmit,
   });
+
+  // A confirmed availability result only applies to the dates/locations it was
+  // checked for — reset it if any of them change so the user re-checks.
+  useEffect(() => {
+    setVehicleAvailable(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    formik.values.pickUpDate,
+    formik.values.pickUpTime,
+    formik.values.dropOffDate,
+    formik.values.dropOffTime,
+    formik.values.pickUpLocation,
+    formik.values.dropOffLocation,
+  ]);
+
   return (
     <div className="booking-form">
       <SectionHeader title1={t("booking.sectionTitle1")} title2={t("booking.sectionTitle2")} />
@@ -192,16 +207,14 @@ const BookingForm = () => {
           </InputGroup>
           <Button
             variant="secondary"
-            className={`w-100 ${!isLoggedIn || "d-none"}`}
+            className={`w-100 ${vehicleAvailable ? "d-none" : ""}`}
             disabled={loading}
             onClick={handleAvailability}
           >
             {loading && <Spinner animation="border" size="sm" />} {t("booking.checkAvailability")}
           </Button>
         </fieldset>
-        <fieldset
-          className={`mt-5 ${vehicleAvailable && isLoggedIn} || 'd-none'`}
-        >
+        <fieldset className={`mt-5 ${vehicleAvailable && isLoggedIn ? "" : "d-none"}`}>
           <Alert variant="success">
             <KvkkConsent formik={formik} name="terms" ns="vehicles" i18nKey="booking.termsLabel" />
             <ButtonGroup className="mt-3 w-100">
