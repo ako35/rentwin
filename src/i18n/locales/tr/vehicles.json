@@ -12,7 +12,16 @@
     "range": "{{pickUp}} → {{dropOff}}",
     "clear": "Temizle",
     "hint": "Bir araç seç, rezervasyon formu bu bilgilerle dolacak.",
-    "noResults": "Seçtiğiniz tarih aralığında müsait araç bulunamadı."
+    "noResults": "Seçtiğiniz tarih aralığında müsait araç bulunamadı.",
+    "resultsCount": "{{count}} araç"
+  },
+  "filters": {
+    "title": "Filtrele",
+    "clear": "Temizle",
+    "transmission": "Vites",
+    "fuelType": "Yakıt",
+    "brand": "Marka",
+    "noMatch": "Seçili filtrelere uygun araç bulunamadı."
   },
   "sections": {
     "vehicleModels": {

@@ -1,14 +1,48 @@
 @use '../../../styles/variables' as v;
 @use '../../../styles/mixins' as m;
 
+$breakpointmd: 900px;
+
 .vehicles {
 
-    &__list {
-        @include m.flexbox(column, flex-start, stretch, 0.9rem);
+    &__layout {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.5rem;
+
+        @media (max-width: $breakpointmd) {
+            flex-direction: column;
+        }
+    }
+
+    &__results {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__results-count {
+        margin-bottom: 1rem;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: v.$color5_3;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.1rem;
+
+        @media (max-width: 1100px) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (max-width: 560px) {
+            grid-template-columns: 1fr;
+        }
     }
 
     &__pagination {
-        margin-top: 1.5rem;
+        margin-top: 1.75rem;
     }
 
     &__search-summary {
@@ -16,32 +50,30 @@
         flex-wrap: wrap;
         margin-bottom: 1.5rem;
         padding: 0.85rem 1.15rem;
-        background-color: v.$color3-4;
+        background-color: #fff;
         border: 1px solid v.$color3;
-        border-radius: 10px;
+        border-radius: 12px;
     }
 
     &__search-summary-text {
         @include m.flexbox(column, center, flex-start, 0.15rem);
-
-        small {
-            color: v.$color5-3;
-        }
     }
 
     &__search-summary-location {
-        font-weight: 700;
+        @include m.flexbox(row, flex-start, center, 0.35rem);
+        font-weight: 600;
         color: v.$color1;
     }
 
     &__search-summary-range {
-        font-weight: 600;
-        color: v.$color5;
+        font-weight: 500;
+        color: v.$color5_2;
+        font-size: 0.9rem;
     }
 
     &__empty {
         text-align: center;
-        color: v.$color5-3;
-        padding: 2rem 0;
+        color: v.$color5_3;
+        padding: 2.5rem 0;
     }
 }
