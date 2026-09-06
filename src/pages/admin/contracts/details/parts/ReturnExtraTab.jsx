@@ -77,8 +77,8 @@ const ReturnExtraTab = ({ isCreate, contractId, pickUpKm, kmLimit, onChange, mon
   };
 
   const submit = (e) => {
-    e.preventDefault();
-    persist(form);
+    e?.preventDefault?.();
+    if (!saving) persist(form);
   };
 
   const startEdit = (row) => {
@@ -250,7 +250,15 @@ const ReturnExtraTab = ({ isCreate, contractId, pickUpKm, kmLimit, onChange, mon
         </tbody>
       </Table>
 
-      <form className="contract-records__form" onSubmit={submit}>
+      <div
+        className="contract-records__form"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+            e.preventDefault();
+            submit(e);
+          }
+        }}
+      >
         <div className="contract-records__fields">
           <Form.Group>
             <Form.Label>{c("category")}</Form.Label>
@@ -295,11 +303,11 @@ const ReturnExtraTab = ({ isCreate, contractId, pickUpKm, kmLimit, onChange, mon
               {rc("cancel")}
             </Button>
           )}
-          <Button type="submit" size="sm" disabled={saving}>
+          <Button type="button" size="sm" disabled={saving} onClick={submit}>
             {saving && <Spinner animation="border" size="sm" />} {editing ? rc("save") : rc("add")}
           </Button>
         </div>
-      </form>
+      </div>
 
       <div className="contract-page__rex-total">
         <span>{c("total")}</span>

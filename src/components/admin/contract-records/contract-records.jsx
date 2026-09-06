@@ -74,8 +74,12 @@ const ContractRecords = ({
     setValues(next);
   };
 
+  // This block lives *inside* the contract's outer <form>, so it is a plain
+  // <div>, not a nested <form> (browsers make nested forms inert — the submit
+  // never fires). The add button is type="button"; Enter in a field is caught
+  // here so it adds the record instead of submitting the whole contract.
   const submit = async (e) => {
-    e.preventDefault();
+    e?.preventDefault?.();
     setSaving(true);
     try {
       if (editing) await services.contract.updateRecord(resource, editing.id, values);
@@ -191,7 +195,15 @@ const ContractRecords = ({
         </tbody>
       </Table>
 
-      <form className="contract-records__form" onSubmit={submit}>
+      <div
+        className="contract-records__form"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+            e.preventDefault();
+            if (!saving) submit(e);
+          }
+        }}
+      >
         <div className="contract-records__fields">
           {fields.map((field) => (
             <Form.Group key={field.name}>
@@ -223,11 +235,11 @@ const ContractRecords = ({
               {labels.cancel}
             </Button>
           )}
-          <Button type="submit" size="sm" disabled={saving}>
+          <Button type="button" size="sm" disabled={saving} onClick={submit}>
             {saving && <Spinner animation="border" size="sm" />} {editing ? labels.save : labels.add}
           </Button>
         </div>
-      </form>
+      </div>
 
       {footer}
     </div>
