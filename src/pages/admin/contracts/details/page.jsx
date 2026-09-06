@@ -164,9 +164,45 @@ const ContractDetail = () => {
       });
   };
 
-  const handleVehicleReturn = runStatusAction(
-    services.contract.returnContract, "returnConfirmTitle", "returnConfirmText", "returnedSuccess"
-  );
+  // "Araç Teslim Al" -> DONE. If the rental is filed in KABİS but not released,
+  // the backend blocks the close (409 KBS_NOT_RELEASED); we then offer to
+  // release KABİS and close in one chained step.
+  const handleVehicleReturn = () => {
+    utils.functions
+      .swalQuestion(
+        t("reservations.contract.returnConfirmTitle"),
+        t("reservations.contract.returnConfirmText")
+      )
+      .then(async (res) => {
+        if (!res.isConfirmed) return;
+        setUpdating(true);
+        try {
+          await services.contract.returnContract(contractId);
+          utils.functions.swalToast(t("reservations.contract.returnedSuccess"), "success");
+          loadData();
+        } catch (err) {
+          if (err?.response?.data?.code !== "KBS_NOT_RELEASED") {
+            utils.functions.swalToast(t("reservations.toasts.updateError"), "error");
+            return;
+          }
+          const ask = await utils.functions.swalQuestion(
+            t("reservations.contract.kbsReleaseBeforeCloseTitle"),
+            t("reservations.contract.kbsReleaseBeforeCloseText")
+          );
+          if (!ask.isConfirmed) return;
+          try {
+            await services.contract.returnContract(contractId, { releaseKbs: true });
+            utils.functions.swalToast(t("reservations.contract.returnedWithKbsSuccess"), "success");
+            loadData();
+          } catch {
+            utils.functions.swalToast(t("reservations.toasts.updateError"), "error");
+          }
+        } finally {
+          setUpdating(false);
+        }
+      });
+  };
+
   const handleCancelContract = runStatusAction(
     services.contract.cancelContract, "cancelConfirmTitle", "cancelConfirmText", "cancelledSuccess"
   );

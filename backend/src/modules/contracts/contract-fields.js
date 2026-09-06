@@ -54,12 +54,14 @@ const pickContractFields = (body) => {
   if ("unlimitedKm" in body) data.unlimitedKm = Boolean(body.unlimitedKm);
   if ("discountIsPercent" in body) data.discountIsPercent = Boolean(body.discountIsPercent);
   if ("discountDailyOnly" in body) data.discountDailyOnly = Boolean(body.discountDailyOnly);
-  // KBS (Kimlik Bildirim Sistemi) notification date — "" / null clears it.
-  if ("kbsNotifiedAt" in body) {
-    const raw = body.kbsNotifiedAt;
-    const parsed = raw ? new Date(raw) : null;
-    data.kbsNotifiedAt = parsed && !Number.isNaN(parsed.getTime()) ? parsed : null;
-  }
+  // KABİS (Kimlik Bildirme Sistemi) filing / release dates — "" / null clears them.
+  ["kbsNotifiedAt", "kbsReleasedAt"].forEach((field) => {
+    if (field in body) {
+      const raw = body[field];
+      const parsed = raw ? new Date(raw) : null;
+      data[field] = parsed && !Number.isNaN(parsed.getTime()) ? parsed : null;
+    }
+  });
   if ("corporateId" in body) data.corporateId = body.corporateId || null;
   // Reference account: this contract's total is billed to this customer instead
   // of the driver (see customerTotals in users/customer-fields.js).

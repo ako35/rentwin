@@ -307,8 +307,10 @@ model Contract {
   kmLimit           Int?
   unlimitedKm       Boolean             @default(true)
   vatRate           Float               @default(20)
-  kbsNotifiedAt     DateTime? // when the rental was filed in KBS (Kimlik Bildirim Sistemi); null = not filed
+  kbsNotifiedAt     DateTime? // when the rental was filed in KABİS (Kimlik Bildirme Sistemi); null = not filed
   kbsNotifiedBy     String? // display name of the admin who filed it, stamped on the null -> set transition
+  kbsReleasedAt     DateTime? // when the KABİS record was released (çıkış); requires kbsNotifiedAt to be set
+  kbsReleasedBy     String? // display name of the admin who released it, stamped on the null -> set transition
   drivers           ContractDriver[]
   payments          ContractPayment[]
   extras            ContractExtra[]

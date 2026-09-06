@@ -8,6 +8,7 @@ const asyncHandler = require("../../middleware/async-handler");
 const { customerTotals } = require("../users/customer-fields");
 const { CAR_INCLUDE } = require("./contracts.shared");
 const { num, pickContractFields, computeTotal } = require("./contract-fields");
+const { kbsStamp } = require("./kbs");
 
 // The contract detail screen's write paths: patch the contract, read it back
 // in full, extend the drop-off, and issue the invoice.
@@ -32,15 +33,29 @@ const updateContract = asyncHandler(async (req, res) => {
 
   const contractFields = pickContractFields(req.body);
 
-  // KBS: stamp who filed it on the null -> set transition, clear it when unset.
+  // KABİS filing / release: stamp the acting admin on each null -> set
+  // transition; a release needs a filing; clearing the filing clears the release.
   if ("kbsNotifiedAt" in contractFields) {
-    const wasSet = !!existing.kbsNotifiedAt;
-    const nowSet = !!contractFields.kbsNotifiedAt;
-    if (nowSet && !wasSet) {
-      const last = (req.user.lastName || "").trim();
-      contractFields.kbsNotifiedBy = `${req.user.firstName || ""}${last ? ` ${last.charAt(0)}.` : ""}`.trim() || null;
-    } else if (!nowSet) {
+    const nowFiled = !!contractFields.kbsNotifiedAt;
+    if (nowFiled && !existing.kbsNotifiedAt) {
+      contractFields.kbsNotifiedBy = kbsStamp(req.user);
+    } else if (!nowFiled) {
       contractFields.kbsNotifiedBy = null;
+      contractFields.kbsReleasedAt = null;
+      contractFields.kbsReleasedBy = null;
+    }
+  }
+  if ("kbsReleasedAt" in contractFields) {
+    const nowReleased = !!contractFields.kbsReleasedAt;
+    const filed =
+      "kbsNotifiedAt" in contractFields ? contractFields.kbsNotifiedAt : existing.kbsNotifiedAt;
+    if (nowReleased && !filed) {
+      throw new HttpError(400, "KABİS kaydı düşülmeden önce bildirim yapılmalı.");
+    }
+    if (nowReleased && !existing.kbsReleasedAt) {
+      contractFields.kbsReleasedBy = kbsStamp(req.user);
+    } else if (!nowReleased) {
+      contractFields.kbsReleasedBy = null;
     }
   }
 

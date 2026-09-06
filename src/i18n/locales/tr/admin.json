@@ -361,6 +361,9 @@
       "returnConfirmTitle": "Araç teslim alındı mı?",
       "returnConfirmText": "Kontrat 'Tamamlandı' olarak işaretlenecek.",
       "returnedSuccess": "Kontrat tamamlandı.",
+      "returnedWithKbsSuccess": "KABİS kaydı düşüldü ve kontrat tamamlandı.",
+      "kbsReleaseBeforeCloseTitle": "KABİS kaydı düşülmedi",
+      "kbsReleaseBeforeCloseText": "Kontrat kapatılmadan önce KABİS çıkış bildirimi yapılmalı. KABİS'ten düşülüp kontrat kapatılsın mı?",
       "cancelConfirmTitle": "Kontratı iptal etmek istediğinize emin misiniz?",
       "cancelConfirmText": "Araç serbest bırakılır, tutar cari bakiyeden düşer. Kontrat kaydı listede kalır.",
       "cancelledSuccess": "Kontrat iptal edildi.",
@@ -470,9 +473,16 @@
         "statusLabel": "KABİS bildirim durumu",
         "statusDone": "Bildirildi",
         "statusPending": "Bekliyor",
+        "statusReleased": "Çıkış Yapıldı",
         "dateLabel": "Bildirim tarihi",
         "filedBy": "Bildiren",
-        "hint": "Bu kiralama henüz KABİS'e (Kimlik Bildirme Sistemi) bildirilmedi."
+        "hint": "Bu kiralama henüz KABİS'e (Kimlik Bildirme Sistemi) bildirilmedi.",
+        "releaseAction": "KABİS'ten Düş",
+        "releaseConfirmTitle": "KABİS kaydını düş",
+        "releaseConfirmText": "Araç teslim alınmadan KABİS kaydı düşülecek (çıkış bildirimi). Onaylıyor musunuz?",
+        "releasedDate": "Çıkış tarihi",
+        "releasedBy": "Çıkış yapan",
+        "releaseUndo": "Çıkışı geri al"
       },
       "print": {
         "menu": "Yazdır",

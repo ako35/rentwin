@@ -532,13 +532,14 @@
 
   &__actionbar-right { justify-content: flex-end; }
 
-  // KBS (Kimlik Bildirim Sistemi) notification tracker — left column.
+  // KABİS (Kimlik Bildirme Sistemi) lifecycle tracker — left column.
   // Compound with .contract-card so the accent border wins the shorthand.
   &__kbs.contract-card {
     border-left: 3px solid #f59e0b;
     transition: border-color 0.15s ease;
 
-    &.is-done { border-left-color: v.$color1; }
+    &.is-reported { border-left-color: v.$color1; }
+    &.is-released { border-left-color: v.$color2; }
   }
 
   &__kbs-row {
@@ -562,13 +563,17 @@
 
     svg { font-size: 0.85rem; }
 
-    &.is-done { background-color: v.$color1; color: #fff; }
     &.is-pending { background-color: #fdecc8; color: #9a6a00; }
+    &.is-reported { background-color: v.$color1; color: #fff; }
+    &.is-released { background-color: v.$color2; color: #fff; }
+  }
+
+  &__kbs-track {
+    margin-top: 0.8rem;
   }
 
   &__kbs-date {
     display: block;
-    margin: 0.8rem 0 0;
 
     span {
       display: block;
@@ -592,5 +597,43 @@
     margin: 0.7rem 0 0;
     font-size: 0.8rem;
     color: v.$color5_3;
+  }
+
+  &__kbs-release {
+    @include m.flexbox(row, center, center, 0.4rem);
+    margin-top: 0.9rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid v.$color1;
+    border-radius: 10px;
+    background-color: rgba(v.$color1, 0.08);
+    color: v.$color2;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover { background-color: rgba(v.$color1, 0.16); }
+  }
+
+  &__kbs-released {
+    margin-top: 0.75rem;
+    padding-top: 0.65rem;
+    border-top: 1px dashed v.$color3;
+
+    .contract-page__kbs-stamp { color: v.$color2; }
+  }
+
+  &__kbs-undo {
+    margin-top: 0.4rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: v.$color5_3;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover { color: v.$accent-rose; }
   }
 }

@@ -41,10 +41,10 @@ export const deleteContract = async (id) => {
 
 // Contract lifecycle: "Araç Teslim Al" -> DONE, "Kontratı İptal Et" -> CANCELLED,
 // "Geri Aç" -> CREATED. Each returns { id, status }.
-export const returnContract = async (id) => {
+export const returnContract = async (id, payload = {}) => {
   const response = await axios.post(
     `${API_URL}/contracts/admin/${id}/return/auth`,
-    {},
+    payload,
     services.authHeader()
   );
   return response.data;

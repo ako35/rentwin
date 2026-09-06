@@ -3,7 +3,10 @@ const HttpError = require("../lib/http-error");
 // eslint-disable-next-line no-unused-vars
 const errorHandler = (err, req, res, next) => {
   if (err instanceof HttpError) {
-    return res.status(err.status).json({ message: err.message });
+    return res.status(err.status).json({
+      message: err.message,
+      ...(err.code ? { code: err.code } : {}),
+    });
   }
 
   if (err.code === "P2002") {

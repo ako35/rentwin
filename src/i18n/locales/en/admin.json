@@ -361,6 +361,9 @@
       "returnConfirmTitle": "Has the vehicle been returned?",
       "returnConfirmText": "The contract will be marked as Done.",
       "returnedSuccess": "Contract completed.",
+      "returnedWithKbsSuccess": "KABİS record released and contract completed.",
+      "kbsReleaseBeforeCloseTitle": "KABİS record not released",
+      "kbsReleaseBeforeCloseText": "The KABİS exit notification must be made before closing the contract. Release from KABİS and close the contract?",
       "cancelConfirmTitle": "Are you sure you want to cancel this contract?",
       "cancelConfirmText": "The vehicle is freed and the amount drops out of the balance. The record stays in the list.",
       "cancelledSuccess": "Contract cancelled.",
@@ -470,9 +473,16 @@
         "statusLabel": "KABİS notification status",
         "statusDone": "Filed",
         "statusPending": "Pending",
+        "statusReleased": "Released",
         "dateLabel": "Filing date",
         "filedBy": "Filed by",
-        "hint": "This rental has not been filed in KABİS (identity notification system) yet."
+        "hint": "This rental has not been filed in KABİS (identity notification system) yet.",
+        "releaseAction": "Release from KABİS",
+        "releaseConfirmTitle": "Release the KABİS record",
+        "releaseConfirmText": "The KABİS record will be released (exit notification) before the vehicle is returned. Do you confirm?",
+        "releasedDate": "Release date",
+        "releasedBy": "Released by",
+        "releaseUndo": "Undo release"
       },
       "print": {
         "menu": "Print",

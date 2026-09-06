@@ -6,6 +6,7 @@ const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 const { ALLOWED_SORT_FIELDS } = require("./contracts.shared");
 const { nextContractNo } = require("./contract-fields");
+const { kbsStamp, kbsBlocksClose } = require("./kbs");
 const { syncContractDebit, voidContractLedger, restoreContractLedger } = require("../../lib/ledger");
 
 // Assign a fresh contract number, retrying on the rare create-race collision.
@@ -198,7 +199,37 @@ const setContractStatus = (status) =>
     res.json({ id: contract.id, status: contract.status });
   });
 
-const returnContract = setContractStatus("DONE");
+// "Araç Teslim Al" -> DONE. A rental filed in KABİS must have its KABİS record
+// released first; the caller may pass { releaseKbs: true } to release it and
+// close the contract in one step (chained).
+const returnContract = asyncHandler(async (req, res) => {
+  const existing = await prisma.contract.findUnique({ where: { id: req.params.id } });
+  if (!existing) throw new HttpError(404, "Contract not found.");
+
+  const needsRelease = kbsBlocksClose(existing);
+  const releaseKbs = req.body?.releaseKbs === true;
+  if (needsRelease && !releaseKbs) {
+    throw new HttpError(
+      409,
+      "Kontrat kapatılmadan önce KABİS kaydı düşülmelidir.",
+      "KBS_NOT_RELEASED"
+    );
+  }
+
+  const contract = await prisma.contract.update({
+    where: { id: existing.id },
+    data: {
+      status: "DONE",
+      ...(needsRelease && releaseKbs
+        ? { kbsReleasedAt: new Date(), kbsReleasedBy: kbsStamp(req.user) }
+        : {}),
+    },
+  });
+
+  await syncContractDebit(contract);
+  res.json({ id: contract.id, status: contract.status });
+});
+
 const cancelContract = setContractStatus("CANCELLED");
 const reopenContract = setContractStatus("CREATED");
 

@@ -18,7 +18,18 @@ export const EMPTY_CONTRACT = {
   dailyPrice: "", extrasTotal: "", oneWayFee: "", returnExtraAmount: "",
   discount: "", discountIsPercent: false, discountDailyOnly: true,
   deposit: "", kmLimit: "", unlimitedKm: true, vatRate: 20,
-  referenceUserId: "", kbsNotifiedAt: "", kbsNotifiedBy: "",
+  referenceUserId: "",
+  kbsNotifiedAt: "", kbsNotifiedBy: "", kbsReleasedAt: "", kbsReleasedBy: "",
+};
+
+// Derived KABİS state from the contract form values.
+// pending  — not filed
+// reported — filed, not yet released (blocks contract close)
+// released — filed and released (çıkış bildirimi yapıldı)
+export const kbsStatus = (v) => {
+  if (v.kbsReleasedAt) return "released";
+  if (v.kbsNotifiedAt) return "reported";
+  return "pending";
 };
 
 // Blank "Yeni Müşteri" quick-add form.
@@ -85,6 +96,7 @@ export const buildContractDto = (values) => ({
   unlimitedKm: values.unlimitedKm, vatRate: values.vatRate,
   referenceUserId: values.referenceUserId || null,
   kbsNotifiedAt: values.kbsNotifiedAt || null,
+  kbsReleasedAt: values.kbsReleasedAt || null,
 });
 
 // Merge a loaded reservation onto EMPTY_CONTRACT for formik.
@@ -107,6 +119,8 @@ export const contractToFormValues = (r) => ({
   referenceUserId: r.referenceUserId || "",
   kbsNotifiedAt: r.kbsNotifiedAt ? utils.functions.getDate(r.kbsNotifiedAt) : "",
   kbsNotifiedBy: r.kbsNotifiedBy || "",
+  kbsReleasedAt: r.kbsReleasedAt || "",
+  kbsReleasedBy: r.kbsReleasedBy || "",
 });
 
 // <select> options for the vehicle picker; create mode gets a leading blank row.
