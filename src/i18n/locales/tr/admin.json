@@ -460,6 +460,14 @@
       "recalc": "Tutar Hesapla",
       "acilis": "Alış",
       "ekstralarTitle": "Ekstralar",
+      "kbs": {
+        "title": "KBS Bildirimi",
+        "entered": "KBS'e girildi",
+        "statusDone": "Girildi",
+        "statusPending": "Bekliyor",
+        "dateLabel": "KBS giriş tarihi",
+        "hint": "Bu kiralama henüz KBS'e (Kimlik Bildirim Sistemi) girilmedi."
+      },
       "newTitle": "Yeni Kontrat",
       "createSave": "Oluştur ve Aç",
       "createdSuccess": "Kontrat oluşturuldu.",

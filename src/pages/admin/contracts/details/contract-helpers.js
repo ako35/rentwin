@@ -18,7 +18,7 @@ export const EMPTY_CONTRACT = {
   dailyPrice: "", extrasTotal: "", oneWayFee: "", returnExtraAmount: "",
   discount: "", discountIsPercent: false, discountDailyOnly: true,
   deposit: "", kmLimit: "", unlimitedKm: true, vatRate: 20,
-  referenceUserId: "",
+  referenceUserId: "", kbsNotifiedAt: "",
 };
 
 // Blank "Yeni Müşteri" quick-add form.
@@ -84,6 +84,7 @@ export const buildContractDto = (values) => ({
   deposit: values.deposit, kmLimit: values.unlimitedKm ? "" : values.kmLimit,
   unlimitedKm: values.unlimitedKm, vatRate: values.vatRate,
   referenceUserId: values.referenceUserId || null,
+  kbsNotifiedAt: values.kbsNotifiedAt || null,
 });
 
 // Merge a loaded reservation onto EMPTY_CONTRACT for formik.
@@ -104,6 +105,7 @@ export const contractToFormValues = (r) => ({
   deposit: r.deposit ?? "", kmLimit: r.kmLimit ?? "",
   unlimitedKm: r.unlimitedKm ?? true, vatRate: r.vatRate ?? 20,
   referenceUserId: r.referenceUserId || "",
+  kbsNotifiedAt: r.kbsNotifiedAt ? utils.functions.getDate(r.kbsNotifiedAt) : "",
 });
 
 // <select> options for the vehicle picker; create mode gets a leading blank row.

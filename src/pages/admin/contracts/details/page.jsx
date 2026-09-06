@@ -12,6 +12,7 @@ import { useContractData } from "./use-contract-data";
 import ContractRibbon from "./parts/ContractRibbon";
 import VehicleSection from "./parts/VehicleSection";
 import ExtrasSection from "./parts/ExtrasSection";
+import KbsSection from "./parts/KbsSection";
 import ContractRightCard from "./parts/ContractRightCard";
 import ContractActions from "./parts/ContractActions";
 import NewCustomerModal from "./parts/NewCustomerModal";
@@ -273,6 +274,7 @@ const ContractDetail = () => {
               onChange={loadData}
               money={money}
             />
+            {!isCreate && <KbsSection formik={formik} />}
           </div>
 
           {/* ---------- RIGHT ---------- */}

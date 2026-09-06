@@ -281,6 +281,7 @@ model Contract {
   kmLimit           Int?
   unlimitedKm       Boolean             @default(true)
   vatRate           Float               @default(20)
+  kbsNotifiedAt     DateTime? // when the rental was filed in KBS (Kimlik Bildirim Sistemi); null = not filed
   drivers           ContractDriver[]
   payments          ContractPayment[]
   extras            ContractExtra[]

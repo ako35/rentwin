@@ -460,6 +460,14 @@
       "recalc": "Recalculate",
       "acilis": "Pick-up",
       "ekstralarTitle": "Extras",
+      "kbs": {
+        "title": "KBS Notification",
+        "entered": "Filed in KBS",
+        "statusDone": "Filed",
+        "statusPending": "Pending",
+        "dateLabel": "KBS filing date",
+        "hint": "This rental has not been filed in KBS (identity notification system) yet."
+      },
       "newTitle": "New Contract",
       "createSave": "Create and Open",
       "createdSuccess": "Contract created.",
