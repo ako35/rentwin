@@ -1,0 +1,50 @@
+@use "../../../styles/variables" as v;
+
+.privacy-policy {
+  max-width: 52rem;
+  margin: 0 auto;
+  color: v.$color5;
+  line-height: 1.7;
+
+  &__intro {
+    font-size: 1.02rem;
+    color: v.$color5_3;
+  }
+
+  &__updated {
+    margin-top: 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: v.$color1;
+  }
+
+  &__section {
+    margin-top: 2rem;
+
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: v.$color5;
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid v.$color3;
+    }
+
+    p {
+      margin-bottom: 0.75rem;
+    }
+
+    ul {
+      margin: 0.25rem 0 0.5rem;
+      padding-left: 1.2rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+
+      strong {
+        color: v.$color5;
+      }
+    }
+  }
+}

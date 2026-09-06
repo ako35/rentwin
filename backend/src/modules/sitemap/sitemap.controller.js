@@ -21,6 +21,7 @@ const STATIC_ROUTES = [
   { path: "/lokasyonlar", changefreq: "weekly", priority: "0.7" },
   { path: "/about", changefreq: "monthly", priority: "0.5" },
   { path: "/contact", changefreq: "monthly", priority: "0.5" },
+  { path: "/privacy-policy", changefreq: "yearly", priority: "0.3" },
 ];
 
 const urlEntry = ({ path, lastmod, changefreq, priority }) =>

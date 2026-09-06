@@ -8,8 +8,70 @@
     "privacyPolicy": "Gizlilik Politikası"
   },
   "privacyPolicy": {
-    "title": "Gizlilik Politikası",
-    "placeholder": "Gizlilik politikası metni yakında bu sayfada yayınlanacaktır. Kişisel verilerinizle ilgili sorularınız için info@rentwin.com.tr adresinden bize ulaşabilirsiniz."
+    "title": "Gizlilik ve Kişisel Verilerin Korunması Politikası",
+    "metaDescription": "Rentwin markası altında sunulan araç kiralama ve rezervasyon hizmetlerinde kişisel verilerinizin KVKK kapsamında nasıl işlendiğine dair aydınlatma metni.",
+    "intro": "6698 sayılı Kişisel Verilerin Korunması Kanunu (\"KVKK\") kapsamında, Rentwin markası altında sunulan araç kiralama ve çevrimiçi rezervasyon hizmetleri aracılığıyla işlenen kişisel verileriniz hakkında sizi bilgilendirmek isteriz.",
+    "updated": "Son güncelleme: Eylül 2026",
+    "sections": [
+      {
+        "heading": "1. Veri Sorumlusunun Kimliği",
+        "paragraphs": [
+          "Kişisel verileriniz, KVKK uyarınca veri sorumlusu sıfatıyla, Rentwin markası altında faaliyet gösteren ve kiralama sözleşmesine taraf olan araç kiralama işletmesi (\"Rentwin\" veya \"İşletme\") tarafından aşağıda açıklanan kapsamda işlenmektedir.",
+          "Belirli bir kiralama işleminde veri sorumlusu sıfatını taşıyan işletmenin ticari unvanı ve adres bilgileri, imzaladığınız kiralama sözleşmesinde yer alır ve info@rentwin.com.tr adresinden talep edilebilir. Rentwin, bu işletmeler arasında ortak rezervasyon, tahsilat ve müşteri hizmetleri altyapısını sağlar."
+        ]
+      },
+      {
+        "heading": "2. İşlenen Kişisel Verileriniz ve İşleme Amaçları",
+        "paragraphs": [
+          "Kiralama süreçlerinin yürütülmesi ile web sitesi ve rezervasyon hizmetlerinin sunulması amacıyla aşağıdaki verileriniz işlenmektedir:"
+        ],
+        "list": [
+          "Kimlik Bilgileri — Ad, soyad, T.C. kimlik numarası, sürücü belgesi (ehliyet) seri/sıra numarası ve sınıfı, doğum tarihi. Araç kiralama sözleşmesinin kurulması ile EGM Araç Kiralama Kayıt Sistemi (KABİS) ve diğer yasal bildirimlerin yapılması amacıyla işlenir.",
+          "İletişim Bilgileri — Telefon numarası, e-posta adresi, adres bilgisi. Rezervasyon, teyit ve bilgilendirme süreçlerinin yürütülmesi amacıyla işlenir.",
+          "Finansal Bilgiler — Fatura bilgileri ile ödeme kuruluşları aracılığıyla güvenli (maskelenmiş) olarak alınan kredi kartı ve ödeme bilgileri. e-Fatura/e-Arşiv düzenlenmesi, tahsilat, depozito ve iade işlemleri amacıyla işlenir.",
+          "İşlem ve Araç Kullanım Bilgileri — Kiralama geçmişi, teslim alma/iade tutanakları, kilometre ve yakıt bilgileri; kiralık araçlarda bulunan GPS/Araç Takip Sistemi konum verileri. Araç ve yol güvenliğinin sağlanması, filo yönetimi, hukuki yükümlülüklerin yerine getirilmesi ve olası hukuki uyuşmazlıkların takibi amacıyla işlenir.",
+          "Dijital İz Kayıtları — Web sitesi ve rezervasyon paneli kullanımına ilişkin çerez ve log kayıtları. Hizmetin sunulması ve güvenliğin sağlanması amacıyla işlenir."
+        ]
+      },
+      {
+        "heading": "3. Kişisel Verilerin Aktarıldığı Taraflar",
+        "paragraphs": [
+          "Kişisel verileriniz, KVKK'nın 8. ve 9. maddelerinde belirtilen şartlara uygun olarak ve yalnızca ilgili amaçla sınırlı olmak üzere aşağıdaki taraflara aktarılabilir:"
+        ],
+        "list": [
+          "Emniyet Genel Müdürlüğü (KABİS – Araç Kiralama Kayıt Sistemi) ve yetkili kamu kurum ve kuruluşlarına — yasal zorunluluklar gereği,",
+          "Hazine ve Maliye Bakanlığı ile Gelir İdaresi Başkanlığı e-belge entegratörlerine — e-Fatura/e-Arşiv süreçleri için,",
+          "Ödeme kuruluşları ve bankalara — tahsilat ve iade işlemleri için,",
+          "Rentwin markası altında faaliyet gösteren diğer işletmelere ve ortak hizmet altyapısı sağlayıcılarına — rezervasyon, çağrı merkezi ve müşteri hizmetlerinin yürütülmesi için,",
+          "Hukuk müşavirleri, mali müşavirler, sigorta şirketleri ve icra dairelerine — hakların tesisi ve hukuki uyuşmazlıkların takibi için."
+        ]
+      },
+      {
+        "heading": "4. Kişisel Veri Toplamanın Yöntemi ve Hukuki Sebepleri",
+        "paragraphs": [
+          "Kişisel verileriniz; web sitemiz, rezervasyon formları, çağrı merkezimiz ve kiralama sözleşmesi aracılığıyla sözlü, yazılı veya elektronik ortamda toplanmaktadır. İşlemenin hukuki sebepleri şunlardır:"
+        ],
+        "list": [
+          "KVKK md. 5/2-c — Bir sözleşmenin kurulması veya ifasıyla doğrudan doğruya ilgili olması (kiralama sözleşmesi),",
+          "KVKK md. 5/2-ç — Veri sorumlusunun hukuki yükümlülüğünü yerine getirebilmesi (KABİS bildirimi ile vergi ve kimlik bildirim mevzuatı),",
+          "KVKK md. 5/2-f — İlgili kişinin temel hak ve özgürlüklerine zarar vermemek kaydıyla veri sorumlusunun meşru menfaati (araç güvenliği ve GPS ile konum takibi, dolandırıcılığın önlenmesi),",
+          "KVKK md. 5/1 — Açık rızanızın bulunması (yalnızca zorunlu olmayan ticari elektronik ileti ve pazarlama faaliyetleri için)."
+        ]
+      },
+      {
+        "heading": "5. KVKK'nın 11. Maddesi Kapsamındaki Haklarınız",
+        "paragraphs": [
+          "Veri sahibi olarak; kişisel verilerinizin işlenip işlenmediğini öğrenme, işlenmişse buna ilişkin bilgi talep etme, işlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme, yurt içinde veya yurt dışında verilerin aktarıldığı üçüncü kişileri bilme, eksik veya yanlış işlenmiş verilerin düzeltilmesini isteme, KVKK'da öngörülen şartlar çerçevesinde verilerin silinmesini veya yok edilmesini isteme, bu işlemlerin verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme, münhasıran otomatik sistemlerle analiz sonucu aleyhinize bir sonuç ortaya çıkmasına itiraz etme ve verilerin kanuna aykırı işlenmesi sebebiyle zarara uğramanız hâlinde zararın giderilmesini talep etme haklarına sahipsiniz."
+        ]
+      },
+      {
+        "heading": "6. Başvuru ve İletişim",
+        "paragraphs": [
+          "KVKK'nın 11. maddesi kapsamındaki taleplerinizi; yazılı olarak Kültür Mah. 260 Sk. No: 3 E, Aliağa / İzmir adresine ya da info@rentwin.com.tr e-posta adresine iletebilirsiniz. Başvurularınız, Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca en geç 30 gün içinde sonuçlandırılır.",
+          "Bu politika, mevzuattaki değişiklikler ve hizmet süreçlerindeki güncellemeler doğrultusunda zaman zaman revize edilebilir. Güncel metin her zaman bu sayfada yayımlanır."
+        ]
+      }
+    ]
   },
   "userMenu": {
     "guest": "Misafir",

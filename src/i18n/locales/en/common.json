@@ -8,8 +8,70 @@
     "privacyPolicy": "Privacy Policy"
   },
   "privacyPolicy": {
-    "title": "Privacy Policy",
-    "placeholder": "The privacy policy will be published on this page soon. For questions about your personal data, contact us at info@rentwin.com.tr."
+    "title": "Privacy & Personal Data Protection Policy",
+    "metaDescription": "How your personal data is processed under Turkey's KVKK law across the car rental and reservation services offered under the Rentwin brand.",
+    "intro": "Under Turkish Personal Data Protection Law No. 6698 (\"KVKK\"), we want to inform you about the personal data processed through the car rental and online reservation services offered under the Rentwin brand.",
+    "updated": "Last updated: September 2026",
+    "sections": [
+      {
+        "heading": "1. Identity of the Data Controller",
+        "paragraphs": [
+          "Your personal data is processed, in the capacity of data controller under the KVKK, by the car rental business operating under the Rentwin brand that is a party to your rental agreement (\"Rentwin\" or the \"Business\"), within the scope described below.",
+          "The trade name and address of the business acting as data controller for a specific rental are stated in the rental agreement you sign and can be requested at info@rentwin.com.tr. Rentwin provides the shared reservation, collection and customer service infrastructure across these businesses."
+        ]
+      },
+      {
+        "heading": "2. Personal Data Processed and Purposes",
+        "paragraphs": [
+          "The following data is processed in order to carry out rental processes and to provide the website and reservation services:"
+        ],
+        "list": [
+          "Identity data — First and last name, Turkish ID number, driving licence serial/sequence number and class, date of birth. Processed to establish the rental agreement and to make the mandatory notification to the General Directorate of Security's Car Rental Registration System (KABİS) and other legal filings.",
+          "Contact data — Phone number, e-mail address, address. Processed to carry out reservation, confirmation and information processes.",
+          "Financial data — Invoice details and credit card/payment information received securely (masked) via payment institutions. Processed for issuing e-Invoice/e-Archive documents and for collection, deposit and refund transactions.",
+          "Transaction and vehicle usage data — Rental history, handover/return reports, mileage and fuel data; GPS/vehicle tracking location data from the rented vehicles. Processed to ensure vehicle and road safety, for fleet management, to fulfil legal obligations and to pursue potential legal disputes.",
+          "Digital trace records — Cookie and log records relating to use of the website and reservation panel. Processed to provide the service and ensure security."
+        ]
+      },
+      {
+        "heading": "3. Parties to Whom Personal Data Is Transferred",
+        "paragraphs": [
+          "In accordance with Articles 8 and 9 of the KVKK and limited to the relevant purpose, your personal data may be transferred to the following parties:"
+        ],
+        "list": [
+          "The General Directorate of Security (KABİS – Car Rental Registration System) and other authorised public institutions — as required by law,",
+          "e-document integrators of the Ministry of Treasury and Finance and the Revenue Administration — for e-Invoice/e-Archive processes,",
+          "Payment institutions and banks — for collection and refund transactions,",
+          "Other businesses operating under the Rentwin brand and shared service infrastructure providers — to carry out reservation, call centre and customer services,",
+          "Legal advisors, financial advisors, insurance companies and enforcement offices — to establish rights and pursue legal disputes."
+        ]
+      },
+      {
+        "heading": "4. Method of Collection and Legal Grounds",
+        "paragraphs": [
+          "Your personal data is collected verbally, in writing or electronically through our website, reservation forms, call centre and the rental agreement. The legal grounds for processing are:"
+        ],
+        "list": [
+          "KVKK Art. 5/2-c — Direct relation to the conclusion or performance of a contract (the rental agreement),",
+          "KVKK Art. 5/2-ç — Compliance with the data controller's legal obligation (KABİS notification, tax and identity-notification legislation),",
+          "KVKK Art. 5/2-f — Legitimate interests of the data controller, provided this does not harm your fundamental rights and freedoms (vehicle security and GPS location tracking, fraud prevention),",
+          "KVKK Art. 5/1 — Your explicit consent (only for non-mandatory commercial electronic messages and marketing activities)."
+        ]
+      },
+      {
+        "heading": "5. Your Rights Under Article 11 of the KVKK",
+        "paragraphs": [
+          "As a data subject you have the right to: learn whether your personal data is processed; request information if it has been processed; learn the purpose of processing and whether it is used in line with that purpose; know the third parties to whom the data is transferred domestically or abroad; request correction of incomplete or inaccurate data; request erasure or destruction of the data within the conditions set out in the KVKK; request that such actions be notified to third parties to whom the data was transferred; object to a result against you arising solely from automated analysis; and request compensation for damage suffered due to unlawful processing."
+        ]
+      },
+      {
+        "heading": "6. Applications and Contact",
+        "paragraphs": [
+          "You may submit your requests under Article 11 of the KVKK in writing to Kültür Mah. 260 Sk. No: 3 E, Aliağa / İzmir, or by e-mail to info@rentwin.com.tr. Your applications are concluded within 30 days at the latest, in accordance with the Communiqué on the Procedures and Principles of Application to the Data Controller.",
+          "This policy may be revised from time to time in line with legislative changes and updates to our service processes. The current text is always published on this page."
+        ]
+      }
+    ]
   },
   "userMenu": {
     "guest": "Guest",
