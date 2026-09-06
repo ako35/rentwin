@@ -22,7 +22,6 @@ const CustomerSummary = ({ customer, userId, money }) => {
     rows.push([c("customerName"), customer ? `${customer.firstName} ${customer.lastName}`.trim() : ""]);
     rows.push([c("custNationalId"), customer?.nationalId]);
   }
-  rows.push([c("custCode"), customer?.customerCode]);
   rows.push([c("customerEmail"), customer?.email]);
   rows.push([c("customerPhone"), customer?.phoneNumber]);
   rows.push([`${t("users.form.city")} / ${t("users.form.district")}`, [customer?.city, customer?.district].filter(Boolean).join(" / ")]);
