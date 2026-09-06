@@ -13,7 +13,6 @@ const PAGE_SIZES = [10, 25, 50, 100];
 
 const AdminUsersPage = () => {
   const { t } = useTranslation("admin");
-  const { i18n } = useTranslation("common");
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -71,11 +70,14 @@ const AdminUsersPage = () => {
     setApplied(search.trim());
   };
 
-  const money = (v) =>
-    Number(v || 0).toLocaleString(i18n.language, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+  // The customer list only flags risk — exact debit/credit/balance figures live
+  // in the Finance module. A debtor stands out immediately here.
+  const balanceBadge = (balance) => {
+    const value = Number(balance || 0);
+    if (value < -0.005) return { key: "debtor", cls: "is-debtor" };
+    if (value > 0.005) return { key: "creditor", cls: "is-creditor" };
+    return { key: "settled", cls: "is-settled" };
+  };
 
   const totalPages = Math.max(1, Math.ceil(total / size));
   const from = total === 0 ? 0 : page * size + 1;
@@ -134,15 +136,13 @@ const AdminUsersPage = () => {
                 <th>{c("nationalId")}</th>
                 <th>{c("phone")}</th>
                 <th>{c("email")}</th>
-                <th className="text-end">{c("debit")}</th>
-                <th className="text-end">{c("credit")}</th>
-                <th className="text-end">{c("balance")}</th>
+                <th>{c("balanceStatus")}</th>
               </tr>
             </thead>
             <tbody>
               {rows.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="text-center text-muted">{c("empty")}</td>
+                  <td colSpan={7} className="text-center text-muted">{c("empty")}</td>
                 </tr>
               )}
               {rows.map((r) => (
@@ -159,10 +159,13 @@ const AdminUsersPage = () => {
                   <td>{r.nationalId || "—"}</td>
                   <td>{r.phoneNumber || "—"}</td>
                   <td className="customer-list__email">{r.email}</td>
-                  <td className="text-end">{money(r.debit)}</td>
-                  <td className="text-end">{money(r.credit)}</td>
-                  <td className={`text-end${r.balance < 0 ? " customer-list__neg" : ""}`}>
-                    {money(r.balance)}
+                  <td>
+                    {(() => {
+                      const b = balanceBadge(r.balance);
+                      return (
+                        <span className={`customer-list__bal-badge ${b.cls}`}>{c(b.key)}</span>
+                      );
+                    })()}
                   </td>
                 </tr>
               ))}

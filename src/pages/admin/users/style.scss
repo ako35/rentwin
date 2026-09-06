@@ -72,7 +72,28 @@
 
   &__on { color: #1b7a43; font-weight: 700; }
   &__off { color: #c0392b; font-weight: 700; }
-  &__neg { color: #c0392b; font-weight: 600; }
+
+  &__bal-badge {
+    display: inline-block;
+    padding: 0.12rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+
+    &.is-debtor {
+      background-color: rgba(v.$accent-rose, 0.12);
+      color: v.$accent-rose;
+    }
+    &.is-creditor {
+      background-color: rgba(v.$color1, 0.14);
+      color: v.$color2;
+    }
+    &.is-settled {
+      background-color: v.$color3-5;
+      color: v.$color5-3;
+    }
+  }
 
   &__pager {
     @include m.flexbox(row, flex-end, center, 0.35rem);

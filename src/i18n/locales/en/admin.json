@@ -685,9 +685,10 @@
       "nationalId": "ID / Tax No",
       "phone": "Phone",
       "email": "Email",
-      "debit": "Debit",
-      "credit": "Credit",
-      "balance": "Balance",
+      "balanceStatus": "Balance Status",
+      "debtor": "In Debt",
+      "creditor": "In Credit",
+      "settled": "Settled",
       "empty": "No customer found"
     },
     "toasts": {

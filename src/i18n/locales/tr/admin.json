@@ -685,9 +685,10 @@
       "nationalId": "TC / Vergi No",
       "phone": "Telefon",
       "email": "E-posta",
-      "debit": "Borç",
-      "credit": "Alacak",
-      "balance": "Bakiye",
+      "balanceStatus": "Bakiye Durumu",
+      "debtor": "Borçlu",
+      "creditor": "Alacaklı",
+      "settled": "Bakiye Yok",
       "empty": "Müşteri bulunamadı"
     },
     "toasts": {
