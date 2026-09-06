@@ -6,24 +6,13 @@
   "seoDetailsTitle": "Rent a {{name}} | Rentwin",
   "seoDetailsDescription": "Rent the {{name}} with Rentwin. Great rates, smooth handover, and dependable service — book your reservation now.",
   "loadError": "Vehicle information cannot be loaded",
+  "emptyList": "There are no vehicles to display right now.",
   "searchSummary": {
     "title": "Your search",
     "range": "{{pickUp}} → {{dropOff}}",
     "clear": "Clear",
     "hint": "Pick a vehicle and the booking form will be pre-filled.",
-    "noResults": "No vehicles are available for the selected date range.",
-    "resultsCount": "{{count}} results found for your search.",
-    "sortLabel": "Sort:",
-    "sortRecommended": "Recommended",
-    "sortBrand": "Brand (A-Z)",
-    "sortModel": "Model (A-Z)"
-  },
-  "filters": {
-    "title": "Filter",
-    "clear": "Clear filters",
-    "transmission": "Transmission",
-    "fuelType": "Fuel Type",
-    "brand": "Brand"
+    "noResults": "No vehicles are available for the selected date range."
   },
   "sections": {
     "vehicleModels": {

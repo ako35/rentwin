@@ -6,24 +6,13 @@
   "seoDetailsTitle": "{{name}} Kiralama | Rentwin",
   "seoDetailsDescription": "{{name}} aracını Rentwin güvencesiyle kiralayın. Uygun fiyat, sorunsuz teslimat ve güvenilir hizmet için hemen rezervasyon yapın.",
   "loadError": "Araç bilgileri yüklenemedi",
+  "emptyList": "Şu anda listelenecek araç bulunmuyor.",
   "searchSummary": {
     "title": "Arama kriterlerin",
     "range": "{{pickUp}} → {{dropOff}}",
     "clear": "Temizle",
     "hint": "Bir araç seç, rezervasyon formu bu bilgilerle dolacak.",
-    "noResults": "Seçtiğiniz tarih aralığında müsait araç bulunamadı.",
-    "resultsCount": "Aramanız için {{count}} sonuç bulundu.",
-    "sortLabel": "Sırala:",
-    "sortRecommended": "Önerilen",
-    "sortBrand": "Marka (A-Z)",
-    "sortModel": "Model (A-Z)"
-  },
-  "filters": {
-    "title": "Filtrele",
-    "clear": "Filtreleri Temizle",
-    "transmission": "Vites Tipi",
-    "fuelType": "Yakıt Tipi",
-    "brand": "Araç Markası"
+    "noResults": "Seçtiğiniz tarih aralığında müsait araç bulunamadı."
   },
   "sections": {
     "vehicleModels": {
