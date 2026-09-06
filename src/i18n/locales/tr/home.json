@@ -8,20 +8,22 @@
     "pickUpTime": "Alış Saati",
     "dropOffDate": "Bırakış Tarihi",
     "dropOffTime": "Bırakış Saati",
-    "submit": "ARAÇ ARA"
+    "differentDropOff": "Farklı bir yerde bırakmak istiyorum",
+    "submit": "Araç Ara"
   },
+  "heroCta": "Hemen Araç Kirala",
   "slider": [
     {
       "id": 1,
       "image": "slider1.jpg",
-      "title": "Şehir Kaçamağı: Yeşil Vahayı Keşfedin",
-      "subtitle": "Lüks SUV'larımızla şehir macerasına çıkın. Yemyeşil bitki örtüsüyle çevrili şirin arnavut kaldırımlı sokaklarda ilerleyin, şehrin karmaşasından uzaklaşın. Metropolün içindeki gizli cennetleri ve huzurlu vahayı keşfedin."
+      "title": "Yolculuğunuza Güvenle Başlayın",
+      "subtitle": "Bakımlı araç filomuz ve şeffaf fiyatlarımızla, ihtiyacınıza uygun aracı dakikalar içinde kiralayın."
     },
     {
       "id": 2,
       "image": "slider2.jpg",
-      "title": "Performansın Gücünü Ortaya Çıkarın",
-      "subtitle": "Doğanın büyüleyici güzelliğiyle çevrili virajlı yollarda yüksek performanslı araçlarımızın heyecanını yaşayın. Hassas mühendislik ve gelişmiş güvenlik özellikleriyle araçlarımız, heyecan ve profesyonelliği bir araya getiren bir sürüş deneyimi sunar."
+      "title": "Doğru Araç, Uygun Fiyat",
+      "subtitle": "Ekonomiden konfora her ihtiyaca uygun araçlar; kolay rezervasyon, sorunsuz teslimat."
     }
   ],
   "sections": {

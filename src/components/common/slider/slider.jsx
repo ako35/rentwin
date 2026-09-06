@@ -1,7 +1,11 @@
 import "./slider.scss";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectFade, Pagination, Navigation, Autoplay } from "swiper";
+import { constants } from "../../../constants";
+
+const { routes } = constants;
 
 const Slider = () => {
   const { t } = useTranslation("home");
@@ -23,6 +27,9 @@ const Slider = () => {
           <div className="content">
             <h2>{item.title}</h2>
             <p>{item.subtitle}</p>
+            <Link to={routes.vehicles} className="slider__cta">
+              {t("heroCta")}
+            </Link>
           </div>
           <img src={`/img/${item.image}`} alt={item.title} title={item.title} />
         </SwiperSlide>

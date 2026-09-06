@@ -29,10 +29,11 @@ const ReservationSearch = () => {
     initialValues: utils.initialValues.reservationSearchInitialValues(),
     validationSchema: utils.validations.reservationSearchValidationSchema,
     onSubmit: (values) => {
+      const pickUpLocation = values.pickUpLocation.trim();
       dispatch(
         setSearchCriteria({
-          pickUpLocation: values.pickUpLocation.trim(),
-          dropOffLocation: values.dropOffLocation.trim(),
+          pickUpLocation,
+          dropOffLocation: values.differentDropOff ? values.dropOffLocation.trim() : pickUpLocation,
           pickUpDate: values.pickUpDate,
           pickUpTime: values.pickUpTime,
           dropOffDate: values.dropOffDate,
@@ -88,29 +89,33 @@ const ReservationSearch = () => {
 
   return (
     <form className="reservation-search" onSubmit={formik.handleSubmit} noValidate>
-      <div className="reservation-search__body">
-        <div className="reservation-search__fields">
-          <div className="reservation-search__row">
-            {locationField("pickUpLocation", "pickUpLocationLabel", "pickUpLocationPlaceholder")}
-            {field("pickUpDate", "pickUpDate", <BsCalendarEvent className="reservation-search__icon" />, {
-              type: "date",
-              min: utils.functions.getCurrentDate(),
-            })}
-            {field("pickUpTime", "pickUpTime", <BsClock className="reservation-search__icon" />, {
-              type: "time",
-            })}
-          </div>
-          <div className="reservation-search__row">
-            {locationField("dropOffLocation", "dropOffLocationLabel", "dropOffLocationPlaceholder")}
-            {field("dropOffDate", "dropOffDate", <BsCalendarEvent className="reservation-search__icon" />, {
-              type: "date",
-              min: formik.values.pickUpDate || utils.functions.getCurrentDate(),
-            })}
-            {field("dropOffTime", "dropOffTime", <BsClock className="reservation-search__icon" />, {
-              type: "time",
-            })}
-          </div>
-        </div>
+      <label className="reservation-search__toggle">
+        <input
+          type="checkbox"
+          checked={formik.values.differentDropOff}
+          onChange={(e) => formik.setFieldValue("differentDropOff", e.target.checked)}
+        />
+        {t("reservationSearch.differentDropOff")}
+      </label>
+
+      <div className="reservation-search__row">
+        {locationField("pickUpLocation", "pickUpLocationLabel", "pickUpLocationPlaceholder")}
+        {formik.values.differentDropOff &&
+          locationField("dropOffLocation", "dropOffLocationLabel", "dropOffLocationPlaceholder")}
+        {field("pickUpDate", "pickUpDate", <BsCalendarEvent className="reservation-search__icon" />, {
+          type: "date",
+          min: utils.functions.getCurrentDate(),
+        })}
+        {field("pickUpTime", "pickUpTime", <BsClock className="reservation-search__icon" />, {
+          type: "time",
+        })}
+        {field("dropOffDate", "dropOffDate", <BsCalendarEvent className="reservation-search__icon" />, {
+          type: "date",
+          min: formik.values.pickUpDate || utils.functions.getCurrentDate(),
+        })}
+        {field("dropOffTime", "dropOffTime", <BsClock className="reservation-search__icon" />, {
+          type: "time",
+        })}
         <button type="submit" className="reservation-search__submit">
           {t("reservationSearch.submit")}
         </button>

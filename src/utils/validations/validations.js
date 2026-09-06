@@ -72,7 +72,12 @@ const tSearch = (key) => () => i18n.t(`reservationSearch.${key}`, { ns: "validat
 
 export const reservationSearchValidationSchema = Yup.object({
     pickUpLocation: Yup.string().trim().required(tSearch("pickUpLocationRequired")),
-    dropOffLocation: Yup.string().trim().required(tSearch("dropOffLocationRequired")),
+    differentDropOff: Yup.boolean(),
+    dropOffLocation: Yup.string().trim().when("differentDropOff", {
+        is: true,
+        then: (s) => s.required(tSearch("dropOffLocationRequired")),
+        otherwise: (s) => s.notRequired(),
+    }),
     pickUpDate: Yup.string().required(tSearch("pickUpDateRequired")),
     pickUpTime: Yup.string().required(tSearch("pickUpTimeRequired")),
     dropOffDate: Yup.string().required(tSearch("dropOffDateRequired")),
