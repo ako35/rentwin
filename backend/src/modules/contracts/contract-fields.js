@@ -30,6 +30,10 @@ const CONTRACT_NUMBER_FIELDS = [
   "returnExtraAmount",
   "deposit",
   "kmLimit",
+  "dailyKmLimit",
+  "monthlyKmLimit",
+  "kmOverageFee",
+  "fuelFeePerEighth",
   "vatRate",
 ];
 
@@ -77,6 +81,24 @@ const computeTotal = (r, pickUp, dropOff) => {
   return round2(subtotal * (1 + (rate === null ? 20 : rate) / 100));
 };
 
+// Whole rental days from the contracted pick-up -> drop-off window, min 1.
+const rentalDays = (pickUp, dropOff) => Math.max(1, Math.ceil(hoursBetween(pickUp, dropOff) / 24));
+
+// Km allowance for the whole rental: the stricter of (daily x days) and
+// (monthly x months). A missing limit is treated as no cap on that axis; if
+// both are missing (or km is unlimited) there is no limit -> null. The frontend
+// mirrors this in contract-helpers.computeAllowedKm.
+const computeAllowedKm = (r, pickUp, dropOff) => {
+  if (r.unlimitedKm) return null;
+  const days = rentalDays(pickUp, dropOff);
+  const daily = num(r.dailyKmLimit) ? num(r.dailyKmLimit) * days : Infinity;
+  const monthly = num(r.monthlyKmLimit)
+    ? num(r.monthlyKmLimit) * Math.ceil(days / 30)
+    : Infinity;
+  const effective = Math.min(daily, monthly);
+  return Number.isFinite(effective) ? effective : null;
+};
+
 module.exports = {
   CONTRACT_NOTE_FIELDS,
   CONTRACT_NUMBER_FIELDS,
@@ -84,4 +106,6 @@ module.exports = {
   nextContractNo,
   pickContractFields,
   computeTotal,
+  computeAllowedKm,
+  rentalDays,
 };

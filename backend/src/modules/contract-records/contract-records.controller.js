@@ -3,6 +3,7 @@ const HttpError = require("../../lib/http-error");
 const asyncHandler = require("../../middleware/async-handler");
 const { hoursBetween, round2 } = require("../../lib/dates");
 const { mirrorPayment, unmirrorPayment } = require("../../lib/ledger");
+const { recomputeContractFinancials } = require("../contracts/contract-financials");
 
 // Contract payments are mirrored into the current-account ledger as AUTO_PAYMENT
 // credits so the cari statement and customer balances stay complete.
@@ -54,8 +55,8 @@ const RESOURCES = {
     dateFields: [],
     numberFields: ["amount", "quantity"],
     orderBy: [{ createdAt: "asc" }],
-    // After any change, cache the summed line totals on Contract.returnExtraAmount.
-    recomputeReturnExtra: true,
+    // After any change, resync Contract.returnExtraAmount + totalPrice + ledger.
+    recomputeFinancials: true,
   },
 };
 
@@ -80,14 +81,15 @@ const syncExtrasTotal = async (contractId) => {
     .catch(() => {});
 };
 
-// Cache the summed return-charge line totals on Contract.returnExtraAmount so the
-// grand total (computeTotal / computePricing) picks them up.
-const syncReturnExtraTotal = async (contractId) => {
-  const rows = await prisma.contractReturnCharge.findMany({ where: { contractId } });
-  const total = rows.reduce((sum, r) => sum + r.amount * r.quantity, 0);
-  await prisma.contract
-    .update({ where: { id: contractId }, data: { returnExtraAmount: round2(total) } })
-    .catch(() => {});
+// After a total-affecting sub-record change (extras or return charges), bring the
+// contract's cached returnExtraAmount / totalPrice and the AUTO_CONTRACT ledger
+// debit back in step. Swallows errors so a sub-record write still succeeds.
+const resyncFinancials = async (contractId) => {
+  try {
+    await recomputeContractFinancials(contractId);
+  } catch {
+    /* the sub-record write itself succeeded; totals catch up on the next save */
+  }
 };
 
 const getResource = (name) => {
@@ -153,7 +155,8 @@ const createRecord = asyncHandler(async (req, res) => {
     data: { ...buildData(resource, req.body), contractId: req.params.contractId },
   });
   if (resource.recomputeExtrasTotal) await syncExtrasTotal(req.params.contractId);
-  if (resource.recomputeReturnExtra) await syncReturnExtraTotal(req.params.contractId);
+  if (resource.recomputeExtrasTotal || resource.recomputeFinancials)
+    await resyncFinancials(req.params.contractId);
   if (resource.model === "contractPayment") await syncPaymentToLedger(record);
   res.status(201).json(record);
 });
@@ -167,7 +170,8 @@ const updateRecord = asyncHandler(async (req, res) => {
     data: buildData(resource, req.body, { partial: true }),
   });
   if (resource.recomputeExtrasTotal) await syncExtrasTotal(target.contractId);
-  if (resource.recomputeReturnExtra) await syncReturnExtraTotal(target.contractId);
+  if (resource.recomputeExtrasTotal || resource.recomputeFinancials)
+    await resyncFinancials(target.contractId);
   if (resource.model === "contractPayment") await syncPaymentToLedger(record);
   res.json(record);
 });
@@ -178,7 +182,8 @@ const deleteRecord = asyncHandler(async (req, res) => {
   if (!target) throw new HttpError(404, "Record not found.");
   await prisma[resource.model].delete({ where: { id: req.params.id } });
   if (resource.recomputeExtrasTotal) await syncExtrasTotal(target.contractId);
-  if (resource.recomputeReturnExtra) await syncReturnExtraTotal(target.contractId);
+  if (resource.recomputeExtrasTotal || resource.recomputeFinancials)
+    await resyncFinancials(target.contractId);
   if (resource.model === "contractPayment") await unmirrorPayment(target.id);
   res.json({ message: "Record deleted." });
 });
