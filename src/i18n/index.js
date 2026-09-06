@@ -8,6 +8,7 @@ import trFooter from "./locales/tr/footer.json";
 import trHome from "./locales/tr/home.json";
 import trAbout from "./locales/tr/about.json";
 import trContact from "./locales/tr/contact.json";
+import trLocations from "./locales/tr/locations.json";
 import trAuth from "./locales/tr/auth.json";
 import trVehicles from "./locales/tr/vehicles.json";
 import trUser from "./locales/tr/user.json";
@@ -21,6 +22,7 @@ import enFooter from "./locales/en/footer.json";
 import enHome from "./locales/en/home.json";
 import enAbout from "./locales/en/about.json";
 import enContact from "./locales/en/contact.json";
+import enLocations from "./locales/en/locations.json";
 import enAuth from "./locales/en/auth.json";
 import enVehicles from "./locales/en/vehicles.json";
 import enUser from "./locales/en/user.json";
@@ -36,6 +38,7 @@ const resources = {
     home: trHome,
     about: trAbout,
     contact: trContact,
+    locations: trLocations,
     auth: trAuth,
     vehicles: trVehicles,
     user: trUser,
@@ -50,6 +53,7 @@ const resources = {
     home: enHome,
     about: enAbout,
     contact: enContact,
+    locations: enLocations,
     auth: enAuth,
     vehicles: enVehicles,
     user: enUser,
@@ -81,6 +85,7 @@ i18n
       "home",
       "about",
       "contact",
+      "locations",
       "auth",
       "vehicles",
       "user",

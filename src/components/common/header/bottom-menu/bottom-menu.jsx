@@ -1,5 +1,5 @@
 import { Container, Nav, Navbar } from "react-bootstrap"
-import { BsCarFrontFill, BsHeadphones, BsInfoCircleFill } from "react-icons/bs"
+import { BsCarFrontFill, BsGeoAltFill, BsHeadphones, BsInfoCircleFill } from "react-icons/bs"
 import {ImHome} from "react-icons/im"
 import { Link, useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next"
@@ -8,7 +8,7 @@ import { UserMenu, LanguageSwitcher } from '../../../'
 import './bottom-menu.scss'
 
 const {
-  routes: { home, vehicles, about, contact },
+  routes: { home, vehicles, locations, about, contact },
 } = constants;
 
 const navigationLinks = [
@@ -21,6 +21,11 @@ const navigationLinks = [
     direct: vehicles,
     icon: <BsCarFrontFill />,
     key: "vehicles",
+  },
+  {
+    direct: locations,
+    icon: <BsGeoAltFill />,
+    key: "locations",
   },
   {
     direct: about,

@@ -1,0 +1,26 @@
+{
+  "pageTitle": "Lokasyonlarımız",
+  "seoTitle": "Araç Kiralama Lokasyonları | Rentwin",
+  "seoDescription": "Rentwin'in araç kiralama hizmeti verdiği tüm lokasyonlar. Bulunduğunuz bölgeyi seçin, uygun fiyatlı ve bakımlı kiralık araçları keşfedin.",
+  "intro": "Rentwin olarak aşağıdaki lokasyonlarda araç kiralama hizmeti veriyoruz. Bölgenizi seçin, o noktadan teslim alabileceğiniz araçları ve şartları görün.",
+  "cardCta": "Detaylar",
+  "empty": "Şu anda listelenecek lokasyon bulunmuyor.",
+  "detail": {
+    "seoTitle": "{{name}} Araç Kiralama | Rentwin",
+    "seoDescription": "{{name}} bölgesinde uygun fiyatlı ve bakımlı kiralık araçlar. Rentwin güvencesiyle online rezervasyon yapın, aracınızı {{name}} noktasından teslim alın.",
+    "heading": "{{name}} Araç Kiralama",
+    "lead": "{{name}} bölgesinde araç mı kiralamak istiyorsunuz? Rentwin'in bakımlı filosuyla {{name}} ve çevresinde şehir içi, iş ve tatil seyahatleriniz için doğru aracı kolayca bulabilirsiniz. Şeffaf fiyatlandırma, sorunsuz teslimat ve 7/24 destek.",
+    "whyTitle": "{{name}} için neden Rentwin?",
+    "why": [
+      "Bakımlı ve sigortalı geniş araç filosu",
+      "Ek ücret sürprizi olmayan şeffaf fiyatlandırma",
+      "{{name}} noktasından hızlı teslim alma ve bırakma",
+      "Online rezervasyon ve esnek iptal koşulları"
+    ],
+    "mapTitle": "{{name}} Konumu",
+    "vehiclesCta": "Araçları Gör",
+    "reserveCta": "Hemen Rezervasyon Yap",
+    "backToList": "Tüm lokasyonlar",
+    "notFound": "Aradığınız lokasyon bulunamadı."
+  }
+}

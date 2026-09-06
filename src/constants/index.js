@@ -121,6 +121,7 @@ const routes = {
   // COMMON ROUTES
   about: "/about",
   contact: "/contact",
+  locations: "/lokasyonlar",
   forbidden: "/forbidden",
   home: "/",
   login: "/auth/login",

@@ -21,6 +21,8 @@ import AdminNewCustomerPage from "./admin/users/new/page";
 // COMMON PAGES
 import AboutPage from "./common/about/page";
 import ContactPage from "./common/contact/page";
+import LocationsPage from "./common/locations/page";
+import LocationDetailPage from "./common/locations/details/page";
 import ErrorPage from "./common/error/page";
 import HomePage from "./common/home/page";
 import LoadingPage from "./common/loading/page";
@@ -57,6 +59,8 @@ export {
     // COMMON PAGES
     AboutPage,
     ContactPage,
+    LocationsPage,
+    LocationDetailPage,
     ErrorPage,
     HomePage,
     LoadingPage,

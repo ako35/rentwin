@@ -35,6 +35,19 @@ export const combineDateAndTime = (date, time) => {
     return moment(`${date} ${time}`).format("MM/DD/YYYY HH:mm:ss");
 }
 
+// URL slug from a display name — Turkish letters folded to ASCII so the
+// location SEO routes stay clean (Aliağa -> aliaga, İzmir -> izmir).
+export const slugify = (value = "") => {
+    const map = { ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u", İ: "i", I: "i" };
+    return value
+        .toString()
+        .trim()
+        .replace(/[çğıöşüİI]/g, (c) => map[c] ?? c)
+        .toLocaleLowerCase("en")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
 export const getCurrentDate = () => {
     return moment().format("YYYY-MM-DD");
 }

@@ -2,6 +2,7 @@
   "nav": {
     "home": "Home",
     "vehicles": "Vehicles",
+    "locations": "Locations",
     "about": "About Us",
     "contact": "Contact Us",
     "privacyPolicy": "Privacy Policy"

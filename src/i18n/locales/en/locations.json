@@ -1,0 +1,26 @@
+{
+  "pageTitle": "Our Locations",
+  "seoTitle": "Car Rental Locations | Rentwin",
+  "seoDescription": "Every location Rentwin serves. Pick your area and discover well-kept rental cars at fair prices.",
+  "intro": "Rentwin offers car rental at the locations below. Choose your area to see the vehicles you can pick up there and the terms that apply.",
+  "cardCta": "Details",
+  "empty": "There are no locations to display right now.",
+  "detail": {
+    "seoTitle": "{{name}} Car Rental | Rentwin",
+    "seoDescription": "Affordable, well-maintained rental cars in {{name}}. Book online with Rentwin and pick up your car at {{name}}.",
+    "heading": "Car Rental in {{name}}",
+    "lead": "Looking to rent a car in {{name}}? With Rentwin's well-kept fleet you can easily find the right vehicle for city, business, and holiday trips in and around {{name}}. Transparent pricing, smooth handover, and 24/7 support.",
+    "whyTitle": "Why Rentwin for {{name}}?",
+    "why": [
+      "A large fleet of maintained, insured vehicles",
+      "Transparent pricing with no surprise fees",
+      "Fast pick-up and drop-off at {{name}}",
+      "Online booking with flexible cancellation"
+    ],
+    "mapTitle": "{{name}} Location",
+    "vehiclesCta": "View Vehicles",
+    "reserveCta": "Book Now",
+    "backToList": "All locations",
+    "notFound": "The location you are looking for was not found."
+  }
+}

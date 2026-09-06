@@ -22,6 +22,8 @@ import {
   ContactPage,
   ErrorPage,
   HomePage,
+  LocationsPage,
+  LocationDetailPage,
   LoginPage,
   PrivacyPolicyPage,
   RegisterPage,
@@ -50,6 +52,19 @@ const router = createBrowserRouter([
       {
         path: "contact",
         element: <ContactPage />,
+      },
+      {
+        path: "lokasyonlar",
+        children: [
+          {
+            index: true,
+            element: <LocationsPage />,
+          },
+          {
+            path: ":slug",
+            element: <LocationDetailPage />,
+          },
+        ],
       },
       {
         path: "privacy-policy",

@@ -4,12 +4,12 @@ import { constants } from "../../../constants";
 import "./footer.scss";
 import { Col, Container, Row } from "react-bootstrap";
 import { ContactInfo, QuickLink } from "../../";
-import { BsHeadphones, BsInfoCircleFill, BsCarFrontFill } from "react-icons/bs";
+import { BsHeadphones, BsInfoCircleFill, BsCarFrontFill, BsGeoAltFill } from "react-icons/bs";
 import { MdPrivacyTip } from "react-icons/md";
 import { ImHome } from "react-icons/im";
 
 const {
-  routes: { about, contact, home, privacyPolicy, vehicles },
+  routes: { about, contact, home, locations, privacyPolicy, vehicles },
 } = constants;
 
 const quickLinks = [
@@ -22,6 +22,11 @@ const quickLinks = [
     direct: vehicles,
     icon: <BsCarFrontFill />,
     key: "vehicles",
+  },
+  {
+    direct: locations,
+    icon: <BsGeoAltFill />,
+    key: "locations",
   },
   {
     direct: about,

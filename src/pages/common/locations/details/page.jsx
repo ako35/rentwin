@@ -1,0 +1,108 @@
+import { useEffect, useMemo, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { Container } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+import { BsArrowRight, BsCheck2, BsGeoAltFill } from "react-icons/bs";
+import { Loading, PageHeader, Spacer } from "../../../../components";
+import { usePageMeta } from "../../../../hooks/use-page-meta";
+import { services } from "../../../../services";
+import { utils } from "../../../../utils";
+import { constants } from "../../../../constants";
+import "../style.scss";
+
+const { routes } = constants;
+
+const LocationDetailPage = () => {
+  const { slug } = useParams();
+  const { t } = useTranslation("locations");
+
+  const [loading, setLoading] = useState(true);
+  const [locations, setLocations] = useState([]);
+
+  useEffect(() => {
+    services.location
+      .getLocations()
+      .then((data) => setLocations(data || []))
+      .catch(() => setLocations([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const location = useMemo(
+    () => locations.find((l) => utils.functions.slugify(l.name) === slug),
+    [locations, slug]
+  );
+  const name = location?.name || "";
+
+  usePageMeta(
+    name ? t("detail.seoTitle", { name }) : t("seoTitle"),
+    name ? t("detail.seoDescription", { name }) : t("seoDescription")
+  );
+
+  if (loading) return <Loading height={400} />;
+
+  if (!location) {
+    return (
+      <Container className="locations-page">
+        <Spacer />
+        <p className="locations-page__empty">{t("detail.notFound")}</p>
+        <p>
+          <Link to={routes.locations}>{t("detail.backToList")}</Link>
+        </p>
+        <Spacer />
+      </Container>
+    );
+  }
+
+  const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(`${name} İzmir`)}&output=embed`;
+  const bullets = t("detail.why", { name, returnObjects: true });
+
+  return (
+    <>
+      <PageHeader title={t("detail.heading", { name })} />
+      <Spacer />
+      <Container className="location-detail">
+        <Link to={routes.locations} className="location-detail__back">
+          &larr; {t("detail.backToList")}
+        </Link>
+
+        <p className="location-detail__lead">{t("detail.lead", { name })}</p>
+
+        <div className="location-detail__actions">
+          <Link to={routes.vehicles} className="btn btn-primary">
+            {t("detail.vehiclesCta")} <BsArrowRight />
+          </Link>
+          <Link to={routes.home} className="btn btn-outline-primary">
+            {t("detail.reserveCta")}
+          </Link>
+        </div>
+
+        <Spacer />
+        <h2 className="location-detail__subtitle">{t("detail.whyTitle", { name })}</h2>
+        <ul className="location-detail__list">
+          {(Array.isArray(bullets) ? bullets : []).map((item, index) => (
+            <li key={index}>
+              <BsCheck2 /> {item}
+            </li>
+          ))}
+        </ul>
+
+        <Spacer />
+        <h2 className="location-detail__subtitle">
+          <BsGeoAltFill /> {t("detail.mapTitle", { name })}
+        </h2>
+        <div className="location-detail__map">
+          <iframe
+            title={t("detail.mapTitle", { name })}
+            src={mapSrc}
+            loading="lazy"
+            allowFullScreen=""
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </div>
+      </Container>
+      <Spacer />
+    </>
+  );
+};
+
+export default LocationDetailPage;
