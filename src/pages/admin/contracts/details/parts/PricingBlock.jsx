@@ -2,6 +2,31 @@ import { useTranslation } from "react-i18next";
 import { Form } from "react-bootstrap";
 import { computeAllowedKm } from "../contract-helpers";
 
+// Defined at module scope (not inside PricingBlock) so their component identity
+// stays stable across the parent's re-renders — otherwise every keystroke would
+// remount the <input> and drop focus.
+const AmountRow = ({ label, value, emph }) => (
+  <div className={`pricing__row${emph ? " pricing__row--emph" : ""}`}>
+    <span className="pricing__label">{label}</span>
+    <span className="pricing__amount">{value} TL</span>
+  </div>
+);
+
+const InputRow = ({ formik, name, label, suffix = "TL", disabled = false }) => (
+  <div className="pricing__row">
+    <span className="pricing__label">{label}</span>
+    <span className="pricing__field">
+      <Form.Control
+        type="number"
+        value={formik.values[name]}
+        onChange={(e) => formik.setFieldValue(name, e.target.value)}
+        disabled={disabled}
+      />
+      <span className="pricing__unit">{suffix}</span>
+    </span>
+  </div>
+);
+
 // The right card's pricing block, laid out as an invoice summary: service items,
 // limits, tax & total — each an editable input or a read-only amount. Totals are
 // reactive (computed in the parent's useMemo), so there is no manual
@@ -13,28 +38,6 @@ const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionT
   const num = (v) => Number(v) || 0;
   const balance = num(collected) - pricing.total;
   const allowedKm = computeAllowedKm(formik.values, billableDays);
-
-  const AmountRow = ({ label, value, emph }) => (
-    <div className={`pricing__row${emph ? " pricing__row--emph" : ""}`}>
-      <span className="pricing__label">{label}</span>
-      <span className="pricing__amount">{value} TL</span>
-    </div>
-  );
-
-  const InputRow = ({ name, label, suffix = "TL", disabled = false }) => (
-    <div className="pricing__row">
-      <span className="pricing__label">{label}</span>
-      <span className="pricing__field">
-        <Form.Control
-          type="number"
-          value={formik.values[name]}
-          onChange={setV(name)}
-          disabled={disabled}
-        />
-        <span className="pricing__unit">{suffix}</span>
-      </span>
-    </div>
-  );
 
   return (
     <div className="pricing">
@@ -51,8 +54,8 @@ const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionT
           </span>
         </div>
         <AmountRow label={c("rentalAmount")} value={money(pricing.rental)} />
-        <InputRow name="extrasTotal" label={c("extrasTotal")} />
-        <InputRow name="oneWayFee" label={c("oneWayFee")} />
+        <InputRow formik={formik} name="extrasTotal" label={c("extrasTotal")} />
+        <InputRow formik={formik} name="oneWayFee" label={c("oneWayFee")} />
         <AmountRow label={c("subtotal")} value={money(pricing.rental + pricing.addOns)} emph />
       </section>
 
@@ -72,9 +75,9 @@ const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionT
         </div>
         {!formik.values.unlimitedKm && (
           <>
-            <InputRow name="dailyKmLimit" label={c("dailyKmLimit")} suffix="km/gün" />
-            <InputRow name="monthlyKmLimit" label={c("monthlyKmLimit")} suffix="km/ay" />
-            <InputRow name="kmOverageFee" label={c("kmOverageFee")} suffix="₺/km" />
+            <InputRow formik={formik} name="dailyKmLimit" label={c("dailyKmLimit")} suffix="km/gün" />
+            <InputRow formik={formik} name="monthlyKmLimit" label={c("monthlyKmLimit")} suffix="km/ay" />
+            <InputRow formik={formik} name="kmOverageFee" label={c("kmOverageFee")} suffix="₺/km" />
             <div className="pricing__row">
               <span className="pricing__label">{c("allowedKmForRental")}</span>
               <span className="pricing__amount">
@@ -85,7 +88,7 @@ const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionT
             </div>
           </>
         )}
-        <InputRow name="fuelFeePerEighth" label={c("fuelFeePerEighth")} suffix="₺ / (1/8)" />
+        <InputRow formik={formik} name="fuelFeePerEighth" label={c("fuelFeePerEighth")} suffix="₺ / (1/8)" />
       </section>
 
       <section className="pricing__group">
@@ -94,7 +97,7 @@ const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionT
         {num(formik.values.returnExtraAmount) > 0 && (
           <AmountRow label={c("returnExtraAmount")} value={money(formik.values.returnExtraAmount)} />
         )}
-        <InputRow name="vatRate" label={c("vatRate")} suffix="%" />
+        <InputRow formik={formik} name="vatRate" label={c("vatRate")} suffix="%" />
         <AmountRow label={c("contractAmount")} value={money(pricing.subtotal)} />
       </section>
 
