@@ -111,10 +111,25 @@ $bp: 992px;
 
   &__visual {
     @include m.flexbox(row, center, center);
+    position: relative;
+
+    // soft green glow so the illustration melts into the light ground
+    &::before {
+      content: '';
+      position: absolute;
+      width: 80%;
+      aspect-ratio: 1 / 0.82;
+      border-radius: 50%;
+      background: rgba(v.$color1, 0.1);
+      filter: blur(60px);
+      z-index: 0;
+    }
 
     .fleet-car {
+      position: relative;
+      z-index: 1;
       width: 100%;
-      max-width: 620px;
+      max-width: 530px;
 
       &__illustration,
       &__art {
@@ -126,7 +141,9 @@ $bp: 992px;
 
     @media (max-width: $bp) {
       order: -1;
-      .fleet-car { max-width: 440px; }
+
+      &::before { width: 90%; filter: blur(44px); }
+      .fleet-car { max-width: 380px; }
     }
   }
 }
