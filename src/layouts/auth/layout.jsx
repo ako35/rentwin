@@ -4,6 +4,7 @@ import { constants } from "../../constants"
 import { GiCancel, GiHomeGarage } from "react-icons/gi"
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { usePageMeta } from "../../hooks/use-page-meta";
 import './style.scss'
 import { useEffect } from "react";
 
@@ -14,6 +15,8 @@ const AuthLayout = () => {
   const navigate = useNavigate();
   const { t } = useTranslation("auth");
   const { t: tHeader } = useTranslation("header");
+
+  usePageMeta({ title: "Rentwin", noindex: true });
 
   const { pathname } = useLocation();
 

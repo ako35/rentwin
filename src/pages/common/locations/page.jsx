@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { BsArrowRight, BsGeoAltFill } from "react-icons/bs";
-import { Loading, PageHeader, Spacer } from "../../../components";
+import { JsonLd, Loading, PageHeader, Spacer } from "../../../components";
 import { usePageMeta } from "../../../hooks/use-page-meta";
+import { breadcrumbLd } from "../../../utils/seo";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
 import { constants } from "../../../constants";
@@ -15,6 +16,7 @@ const API_URL = import.meta.env.VITE_APP_API_URL;
 
 const LocationsPage = () => {
   const { t } = useTranslation("locations");
+  const { t: tCommon } = useTranslation("common");
   usePageMeta(t("seoTitle"), t("seoDescription"));
 
   const [loading, setLoading] = useState(true);
@@ -30,6 +32,13 @@ const LocationsPage = () => {
 
   return (
     <>
+      <JsonLd
+        id="ld-breadcrumb"
+        data={breadcrumbLd([
+          { name: tCommon("nav.home"), path: "/" },
+          { name: t("pageTitle") },
+        ])}
+      />
       <PageHeader title={t("pageTitle")} />
       <Spacer />
       <Container className="locations-page">

@@ -20,6 +20,8 @@ const VehicleCard = (props) => {
           <img
             src={`${API_URL}/files/display/${props.image}`}
             alt={[props.brand, props.model].filter(Boolean).join(" ")}
+            loading="lazy"
+            decoding="async"
           />
         </div>
         <h4>{[props.brand, props.model].filter(Boolean).join(" ")}</h4>

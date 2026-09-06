@@ -1,12 +1,14 @@
 {
   "notFound": {
-    "code": 404,
-    "title": "Hata! Sayfa Bulunamadı",
-    "desc": "Aradığınız sayfa kaldırılmış, adı değiştirilmiş veya geçici olarak kullanılamıyor olabilir. Lütfen daha sonra tekrar deneyin."
+    "code": "404",
+    "title": "Sayfa bulunamadı",
+    "desc": "Aradığınız sayfa kaldırılmış, adı değiştirilmiş veya geçici olarak kullanılamıyor olabilir."
   },
   "forbidden": {
-    "code": 403,
-    "title": "Hata! Erişim Yasak!",
-    "desc": "Bu sayfaya erişim izniniz yok. Aksini düşünüyorsanız lütfen yöneticiyle iletişime geçin."
-  }
+    "code": "403",
+    "title": "Erişim izniniz yok",
+    "desc": "Bu sayfaya erişim yetkiniz bulunmuyor. Bir hata olduğunu düşünüyorsanız yöneticiyle iletişime geçin."
+  },
+  "homeCta": "Ana sayfaya dön",
+  "vehiclesCta": "Araçlara göz at"
 }

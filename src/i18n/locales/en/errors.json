@@ -1,12 +1,14 @@
 {
   "notFound": {
-    "code": 404,
-    "title": "Oops! Page Not Found",
-    "desc": "The page you are looking for might have been removed had its name changed or is temporarily unavailable. Please try again later."
+    "code": "404",
+    "title": "Page not found",
+    "desc": "The page you are looking for may have been removed, renamed, or is temporarily unavailable."
   },
   "forbidden": {
-    "code": 403,
-    "title": "Oops! Forbidden Access!",
-    "desc": "You don't have permission to access this page. If you think otherwise, please contact the administrator."
-  }
+    "code": "403",
+    "title": "Access denied",
+    "desc": "You don't have permission to view this page. If you think this is a mistake, contact the administrator."
+  },
+  "homeCta": "Back to home",
+  "vehiclesCta": "Browse cars"
 }

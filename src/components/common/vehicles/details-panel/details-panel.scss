@@ -8,13 +8,13 @@ $breakpointsm: 400px;
     .panel-title{
         @include m.flexbox(row, space-between, center);
 
-        h1{
+        h2{
             font-size: 1.6rem;
             margin: 0;
         }
     }
 
-    h2{
+    > h2{
         font-size: 1.15rem;
     }
 

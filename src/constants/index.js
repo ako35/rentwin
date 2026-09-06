@@ -137,8 +137,15 @@ const rentwinAddress = "KÜLTÜR MAH. 260 SK. NO: 3 E ALİAĞA / İZMİR";
 
 const website = {
   name: "Rentwin",
+  url: "https://rentwin.com.tr",
   address: rentwinAddress,
+  streetAddress: "Kültür Mah. 260 Sk. No: 3 E",
+  addressLocality: "Aliağa",
+  addressRegion: "İzmir",
+  postalCode: "35800",
+  addressCountry: "TR",
   phone: "0507 350 31 35",
+  phoneE164: "+905073503135",
   mapUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rentwinAddress)}`,
   mapEmbedUrl: `https://www.google.com/maps?q=${encodeURIComponent(rentwinAddress)}&output=embed`,
   email: "info@rentwin.com.tr",
@@ -147,7 +154,20 @@ const website = {
   twitter: "https://twitter.com/rentwin/",
   linkedin: "https://www.linkedin.com/company/rentwin/",
   youtube: "https://www.youtube.com/channel/rentwin/",
+  // For schema.org openingHoursSpecification.
+  openingHours: [
+    { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "19:00" },
+    { days: ["Saturday"], opens: "09:00", closes: "17:00" },
+  ],
 };
+
+website.sameAs = [
+  website.instagram,
+  website.facebook,
+  website.twitter,
+  website.linkedin,
+  website.youtube,
+];
 
 const transmissionTypes = [
   {

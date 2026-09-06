@@ -3,8 +3,9 @@ import { Link, useParams } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { BsArrowRight, BsCheck2, BsGeoAltFill } from "react-icons/bs";
-import { Loading, PageHeader, Spacer } from "../../../../components";
+import { JsonLd, Loading, PageHeader, Spacer } from "../../../../components";
 import { usePageMeta } from "../../../../hooks/use-page-meta";
+import { breadcrumbLd } from "../../../../utils/seo";
 import { services } from "../../../../services";
 import { utils } from "../../../../utils";
 import { constants } from "../../../../constants";
@@ -16,6 +17,7 @@ const API_URL = import.meta.env.VITE_APP_API_URL;
 const LocationDetailPage = () => {
   const { slug } = useParams();
   const { t } = useTranslation("locations");
+  const { t: tCommon } = useTranslation("common");
 
   const [loading, setLoading] = useState(true);
   const [locations, setLocations] = useState([]);
@@ -33,11 +35,14 @@ const LocationDetailPage = () => {
     [locations, slug]
   );
   const name = location?.name || "";
+  const missing = !loading && !location;
 
-  usePageMeta(
-    name ? t("detail.seoTitle", { name }) : t("seoTitle"),
-    name ? t("detail.seoDescription", { name }) : t("seoDescription")
-  );
+  usePageMeta({
+    title: name ? t("detail.seoTitle", { name }) : t("seoTitle"),
+    description: name ? t("detail.seoDescription", { name }) : t("seoDescription"),
+    noindex: missing,
+    statusCode: missing ? 404 : undefined,
+  });
 
   if (loading) return <Loading height={400} />;
 
@@ -59,6 +64,14 @@ const LocationDetailPage = () => {
 
   return (
     <>
+      <JsonLd
+        id="ld-breadcrumb"
+        data={breadcrumbLd([
+          { name: tCommon("nav.home"), path: "/" },
+          { name: t("pageTitle"), path: routes.locations },
+          { name },
+        ])}
+      />
       <PageHeader title={t("detail.heading", { name })} />
       <Spacer />
       <Container className="location-detail">

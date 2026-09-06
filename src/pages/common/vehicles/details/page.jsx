@@ -2,6 +2,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import {
   BookingForm,
   DetailsPanel,
+  JsonLd,
   Loading,
   PageHeader,
   Spacer,
@@ -14,29 +15,34 @@ import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { setVehicle } from "../../../../store";
 import { usePageMeta } from "../../../../hooks/use-page-meta";
+import { breadcrumbLd, vehicleLd } from "../../../../utils/seo";
+
+const API_URL = import.meta.env.VITE_APP_API_URL;
 
 const VehicleDetailsPage = () => {
   const [loading, setLoading] = useState(true);
-  const [vehicleName, setVehicleName] = useState("");
+  const [vehicle, setVehicleState] = useState(null);
   const { vehicleId } = useParams();
   const dispatch = useDispatch();
   const { t } = useTranslation("vehicles");
+  const { t: tCommon } = useTranslation("common");
 
-  usePageMeta(
-    vehicleName ? t("seoDetailsTitle", { name: vehicleName }) : t("detailsPageTitle"),
-    vehicleName ? t("seoDetailsDescription", { name: vehicleName }) : undefined
-  );
+  const vehicleName = vehicle ? `${vehicle.brand} ${vehicle.model}`.trim() : "";
+
+  usePageMeta({
+    title: vehicleName ? t("seoDetailsTitle", { name: vehicleName }) : t("detailsPageTitle"),
+    description: vehicleName ? t("seoDetailsDescription", { name: vehicleName }) : undefined,
+    image: vehicle?.image ? `${API_URL}/files/display/${vehicle.image}` : undefined,
+    type: "product",
+  });
 
   const loadData = async () => {
     try {
       const data = await services.vehicle.getVehicleById(vehicleId);
       dispatch(setVehicle(data));
-      setVehicleName(`${data.brand} ${data.model}`.trim());
+      setVehicleState(data);
     } catch (error) {
-      utils.functions.swalToast(
-        t("loadError"),
-        "error"
-      );
+      utils.functions.swalToast(t("loadError"), "error");
     } finally {
       setLoading(false);
     }
@@ -46,9 +52,34 @@ const VehicleDetailsPage = () => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <>
-      <PageHeader title={t("detailsPageTitle")} />
+      {vehicle && (
+        <>
+          <JsonLd
+            id="ld-breadcrumb"
+            data={breadcrumbLd([
+              { name: tCommon("nav.home"), path: "/" },
+              { name: tCommon("nav.vehicles"), path: "/vehicles" },
+              { name: vehicleName },
+            ])}
+          />
+          <JsonLd
+            id="ld-vehicle"
+            data={vehicleLd({
+              name: vehicleName,
+              brand: vehicle.brand,
+              model: vehicle.model,
+              image: vehicle.image ? `${API_URL}/files/display/${vehicle.image}` : undefined,
+              transmission: vehicle.transmission,
+              fuelType: vehicle.fuelType,
+              path: `/vehicles/${vehicleId}`,
+            })}
+          />
+        </>
+      )}
+      <PageHeader title={vehicleName || t("detailsPageTitle")} />
       <Spacer height={50} />
       <Container className="vehicle-details">
         <Row>

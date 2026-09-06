@@ -39,7 +39,7 @@ const DetailsPanel = () => {
   return (
     <div className="details-panel">
       <div className="panel-title">
-        <h1 className="text-primary">{vehicleName}</h1>
+        <h2 className="text-primary">{vehicleName}</h2>
       </div>
       <Card>
         <img

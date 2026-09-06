@@ -30,6 +30,7 @@ import BottomMenu from './common/header/bottom-menu/bottom-menu'
 import TopMenu from './common/header/top-menu/top-menu'
 import UserMenu from './common/header/user-menu/user-menu'
 import Header from './common/header/header'
+import JsonLd from './common/json-ld/json-ld'
 import Loading from './common/loading/loading'
 import PageHeader from './common/page-header/page-header'
 import PasswordInput from './common/password-input/password-input'
@@ -81,6 +82,7 @@ export{
     TopMenu,
     UserMenu,
     Header,
+    JsonLd,
     Loading,
     PageHeader,
     PasswordInput,

@@ -1,4 +1,8 @@
 {
+  "seo": {
+    "title": "Rentwin | Aliağa & İzmir Araç Kiralama — Şeffaf Fiyat",
+    "description": "Rentwin ile Aliağa ve İzmir'de bakımlı filodan uygun fiyatlı araç kiralayın. Ek ücret sürprizi yok, sorunsuz teslimat, dakikalar içinde online rezervasyon."
+  },
   "reservationSearch": {
     "pickUpLocationLabel": "Alış Yeri",
     "pickUpLocationPlaceholder": "Lokasyon seçin",

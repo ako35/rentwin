@@ -1,0 +1,52 @@
+@use "../../../styles/variables" as v;
+@use "../../../styles/mixins" as m;
+
+.error-page {
+  min-height: 100vh;
+  @include m.flexbox(row, center, center, 0);
+  padding: 2rem 1rem;
+  background: linear-gradient(to bottom right, rgba(v.$color1, 0.05) 0%, transparent 45%, v.$color4 100%);
+
+  &__inner {
+    max-width: 30rem;
+    text-align: center;
+  }
+
+  &__logo {
+    display: inline-block;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: v.$color1;
+    text-decoration: none;
+
+    span { color: v.$color2; }
+  }
+
+  &__code {
+    margin: 0;
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1;
+    color: rgba(v.$color1, 0.25);
+  }
+
+  &__title {
+    margin: 0.5rem 0 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: v.$color5;
+  }
+
+  &__desc {
+    margin: 0 0 1.75rem;
+    color: v.$color5_3;
+    line-height: 1.6;
+  }
+
+  &__actions {
+    @include m.flexbox(row, center, center, 0.75rem);
+    flex-wrap: wrap;
+  }
+}

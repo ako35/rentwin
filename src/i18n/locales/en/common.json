@@ -7,6 +7,10 @@
     "contact": "Contact Us",
     "privacyPolicy": "Privacy Policy"
   },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "placeholder": "The privacy policy will be published on this page soon. For questions about your personal data, contact us at info@rentwin.com.tr."
+  },
   "userMenu": {
     "guest": "Guest",
     "login": "login",

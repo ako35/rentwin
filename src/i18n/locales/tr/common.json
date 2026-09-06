@@ -7,6 +7,10 @@
     "contact": "İletişim",
     "privacyPolicy": "Gizlilik Politikası"
   },
+  "privacyPolicy": {
+    "title": "Gizlilik Politikası",
+    "placeholder": "Gizlilik politikası metni yakında bu sayfada yayınlanacaktır. Kişisel verilerinizle ilgili sorularınız için info@rentwin.com.tr adresinden bize ulaşabilirsiniz."
+  },
   "userMenu": {
     "guest": "Misafir",
     "login": "Giriş Yap",
