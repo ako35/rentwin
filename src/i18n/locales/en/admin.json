@@ -465,7 +465,7 @@
         "entered": "Filed in KBS",
         "statusDone": "Filed",
         "statusPending": "Pending",
-        "dateLabel": "KBS filing date",
+        "dateLabel": "Filing date",
         "hint": "This rental has not been filed in KBS (identity notification system) yet."
       },
       "print": {

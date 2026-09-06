@@ -31,6 +31,19 @@ const updateContract = asyncHandler(async (req, res) => {
   });
 
   const contractFields = pickContractFields(req.body);
+
+  // KBS: stamp who filed it on the null -> set transition, clear it when unset.
+  if ("kbsNotifiedAt" in contractFields) {
+    const wasSet = !!existing.kbsNotifiedAt;
+    const nowSet = !!contractFields.kbsNotifiedAt;
+    if (nowSet && !wasSet) {
+      const last = (req.user.lastName || "").trim();
+      contractFields.kbsNotifiedBy = `${req.user.firstName || ""}${last ? ` ${last.charAt(0)}.` : ""}`.trim() || null;
+    } else if (!nowSet) {
+      contractFields.kbsNotifiedBy = null;
+    }
+  }
+
   const totalPrice = computeTotal({ ...existing, ...contractFields }, parsedPickUp, parsedDropOff);
 
   const contract = await prisma.contract.update({

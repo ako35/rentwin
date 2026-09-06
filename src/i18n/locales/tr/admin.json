@@ -462,11 +462,11 @@
       "ekstralarTitle": "Ekstralar",
       "kbs": {
         "title": "KBS Bildirimi",
-        "entered": "KBS'e girildi",
-        "statusDone": "Girildi",
+        "entered": "KBS'e bildirildi",
+        "statusDone": "Bildirildi",
         "statusPending": "Bekliyor",
-        "dateLabel": "KBS giriş tarihi",
-        "hint": "Bu kiralama henüz KBS'e (Kimlik Bildirim Sistemi) girilmedi."
+        "dateLabel": "Bildirim tarihi",
+        "hint": "Bu kiralama henüz KBS'e (Kimlik Bildirim Sistemi) bildirilmedi."
       },
       "print": {
         "menu": "Yazdır",

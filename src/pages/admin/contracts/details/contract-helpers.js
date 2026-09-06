@@ -18,7 +18,7 @@ export const EMPTY_CONTRACT = {
   dailyPrice: "", extrasTotal: "", oneWayFee: "", returnExtraAmount: "",
   discount: "", discountIsPercent: false, discountDailyOnly: true,
   deposit: "", kmLimit: "", unlimitedKm: true, vatRate: 20,
-  referenceUserId: "", kbsNotifiedAt: "",
+  referenceUserId: "", kbsNotifiedAt: "", kbsNotifiedBy: "",
 };
 
 // Blank "Yeni Müşteri" quick-add form.
@@ -106,6 +106,7 @@ export const contractToFormValues = (r) => ({
   unlimitedKm: r.unlimitedKm ?? true, vatRate: r.vatRate ?? 20,
   referenceUserId: r.referenceUserId || "",
   kbsNotifiedAt: r.kbsNotifiedAt ? utils.functions.getDate(r.kbsNotifiedAt) : "",
+  kbsNotifiedBy: r.kbsNotifiedBy || "",
 });
 
 // <select> options for the vehicle picker; create mode gets a leading blank row.

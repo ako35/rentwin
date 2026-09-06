@@ -463,23 +463,36 @@
   &__actionbar-right { justify-content: flex-end; }
 
   // KBS (Kimlik Bildirim Sistemi) notification tracker — left column.
+  // Compound with .contract-card so the accent border wins the shorthand.
+  &__kbs.contract-card {
+    border-left: 3px solid #f59e0b;
+    transition: border-color 0.15s ease;
+
+    &.is-done { border-left-color: v.$color1; }
+  }
+
   &__kbs-row {
     @include m.flexbox(row, space-between, center, 0.75rem);
     flex-wrap: wrap;
 
-    .form-check { margin: 0; }
+    .form-check { margin: 0; min-height: auto; padding-left: 2.6rem; }
+    .form-check-input { width: 2rem; height: 1.1rem; margin-left: -2.6rem; cursor: pointer; }
     .form-check-label { font-size: 0.9rem; font-weight: 600; color: v.$color5; }
   }
 
   &__kbs-badge {
-    padding: 0.15rem 0.65rem;
+    @include m.flexbox(row, center, center, 0.3rem);
+    padding: 0.18rem 0.7rem;
     border-radius: 999px;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.03em;
+    white-space: nowrap;
 
-    &.is-done { background-color: #d6f2df; color: #1c7a3e; }
+    svg { font-size: 0.85rem; }
+
+    &.is-done { background-color: v.$color1; color: #fff; }
     &.is-pending { background-color: #fdecc8; color: #9a6a00; }
   }
 
@@ -496,6 +509,13 @@
     }
 
     .form-control { max-width: 200px; }
+  }
+
+  &__kbs-stamp {
+    margin: 0.35rem 0 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: v.$color1;
   }
 
   &__kbs-hint {
