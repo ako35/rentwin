@@ -1,47 +1,49 @@
 @use '../../../../styles/variables' as v;
 @use '../../../../styles/mixins' as m;
 
-$breakpoint: 992px;
-$breakpointsm: 576px;
+$bpsm: 576px;
 
-.top-menu{
-    @include m.flexbox(row, space-between, center, 1rem);
-    border-bottom: 1px solid v.$color1-5;
-    flex: 1;
-    padding: 1rem;
+.top-bar {
+    background-color: v.$color5;
+    font-size: 0.8rem;
 
-    @media (max-width: $breakpoint) {
-        border-bottom: 0;        
-    }
-
-    @media (max-width: $breakpointsm) {
+    @media (max-width: $bpsm) {
         display: none;
     }
 
-    ul{
-        @include m.reset-list();
+    &__inner {
+        @include m.flexbox(row, space-between, center, 1rem);
+        min-height: 38px;
+    }
 
-        a{
-            @include m.flexbox($align-items: center, $gap: 0.5rem);
+    &__contact {
+        @include m.flexbox(row, flex-start, center, 0.8rem);
+
+        a {
+            color: rgba(255, 255, 255, 0.75);
             text-decoration: none;
-            color: v.$color1;
 
-            &:hover{
-                color: v.$color2;
-            }
+            &:hover { color: #fff; }
         }
+    }
 
-        &.contact-bar {
-            @include m.flexbox($gap: 1rem);
-            font-size: 0.8rem;
+    &__sep {
+        width: 1px;
+        height: 13px;
+        background-color: rgba(255, 255, 255, 0.25);
+    }
 
-            @media (max-width: $breakpoint) {
-                flex: 1;
-            }
-        }
+    &__social {
+        @include m.reset-list;
+        @include m.flexbox(row, flex-end, center, 0.95rem);
 
-        &.social-bar {
-            @include m.flexbox(row, flex-end, center, 1rem);
+        a {
+            display: inline-flex;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.6);
+            transition: color 0.15s ease;
+
+            &:hover { color: v.$color1; }
         }
     }
 }

@@ -1,29 +1,27 @@
 import { Container } from "react-bootstrap";
-import { TopMenu, BottomMenu } from "../../";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { TopMenu, BottomMenu } from "../../";
 import "./header.scss";
 
 const Header = () => {
   const { t } = useTranslation("header");
 
   return (
-    <Container className="p-0 fixed-top">
-      <div className="header">
-        <Link to="/" title={t("goToHomepage")}>
-          <div className="logo">
-            <div className="logo_text">
+    <header className="site-header fixed-top">
+      <TopMenu />
+      <div className="site-header__bar">
+        <Container className="p-0 site-header__row">
+          <Link to="/" title={t("goToHomepage")} className="site-header__brand">
+            <span className="site-header__logo">
               RENT<span>WIN</span>
-              <p>{t("slogan")}</p>
-            </div>
-          </div>
-        </Link>
-        <div className="menus">
-          <TopMenu />
+            </span>
+            <span className="site-header__tagline">{t("slogan")}</span>
+          </Link>
           <BottomMenu />
-        </div>
+        </Container>
       </div>
-    </Container>
+    </header>
   );
 };
 

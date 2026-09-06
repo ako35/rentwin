@@ -1,6 +1,4 @@
 import { Container, Nav, Navbar } from "react-bootstrap"
-import { BsCarFrontFill, BsGeoAltFill, BsHeadphones, BsInfoCircleFill } from "react-icons/bs"
-import {ImHome} from "react-icons/im"
 import { Link, useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { constants } from "../../../../constants"
@@ -12,32 +10,12 @@ const {
 } = constants;
 
 const navigationLinks = [
-  {
-    direct: home,
-    icon: <ImHome />,
-    key: "home",
-  },
-  {
-    direct: vehicles,
-    icon: <BsCarFrontFill />,
-    key: "vehicles",
-  },
-  {
-    direct: locations,
-    icon: <BsGeoAltFill />,
-    key: "locations",
-  },
-  {
-    direct: about,
-    icon: <BsInfoCircleFill />,
-    key: 'about',
-  },
-  {
-    direct: contact,
-    icon: <BsHeadphones />,
-    key: 'contact',
-  }
-]
+  { direct: home, key: "home" },
+  { direct: vehicles, key: "vehicles" },
+  { direct: locations, key: "locations" },
+  { direct: about, key: "about" },
+  { direct: contact, key: "contact" },
+];
 
 const BottomMenu = () => {
   const { pathname } = useLocation();
@@ -52,7 +30,7 @@ const BottomMenu = () => {
               {
                 navigationLinks.map(item => (
                   <Nav.Link key={item.key} as={Link} to={item.direct} active={pathname === item.direct}>
-                    {item.icon} {t(`nav.${item.key}`)}
+                    {t(`nav.${item.key}`)}
                   </Nav.Link>
                 ))
               }

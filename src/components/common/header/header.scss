@@ -1,83 +1,55 @@
 @use '../../../styles/variables' as v;
 @use '../../../styles/mixins' as m;
 
-$breakpoint: 992px;
-$breakpointsm: 576px;
+$bp: 992px;
+$bpsm: 576px;
 
-.header{
-    @include m.flexbox($align-items: stretch);
-    background-color: v.$color4;
-    border-radius: 5px;
-    box-shadow: 0 0 5px 1px v.$color1-4;
-
-    @media (max-width: $breakpoint) {
-        @include m.flexbox(column, space-between, stretch);
-        position: relative;
+.site-header {
+    &__bar {
+        background-color: #fff;
+        border-bottom: 1px solid v.$color3;
+        box-shadow: 0 1px 14px rgba(15, 23, 42, 0.05);
     }
 
-    .logo{
-        @include m.flexbox(row, center, center);
-        border-radius: 0 0 0 5px;
-        padding: 1rem;
-        height: 100%;
+    &__row {
+        @include m.flexbox(row, space-between, center, 1.75rem);
+        padding-top: 0.7rem;
+        padding-bottom: 0.7rem;
 
-        img{
-            height: 90px;
-            margin: 0;
-        }
-
-        .logo_text {
-            text-align: center;
-            font-size: 2.8rem;
-            line-height: 2.3rem;
-            color: v.$color1;
-            font-weight: 700;
-            white-space: nowrap;
-
-            span {
-                font-size: 2.8rem;
-            }
-
-            p {
-                line-height: 1;
-                font-size: 0.82rem;
-                letter-spacing: 0.06em;
-                font-weight: 600;
-                margin: 0.15rem 0 0;
-            }
-        }
-
-        @media (max-width: $breakpoint) {
-            border-radius: 0;
-        }
-
-        @media (max-width: $breakpointsm) {
-            @include m.flexbox(row, center, center);
-            
-            img{
-                height: 60px;
-            }
-
-            .logo_text{
-                font-size: 2rem;
-                line-height: 2rem;
-
-                span{
-                    font-size: 2rem;
-                }
-
-                p{
-                    font-size: 0.62rem;
-                    letter-spacing: 0.04em;
-                    margin: 0.1rem 0 0;
-                    line-height: 1;
-                }
-            }
+        @media (max-width: $bp) {
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
         }
     }
 
-    .menus{
-        @include m.flexbox(column, center, stretch);
-        flex: 1;
+    &__brand {
+        @include m.flexbox(column, center, flex-start, 0);
+        flex-shrink: 0;
+        text-decoration: none;
+        line-height: 1;
+    }
+
+    &__logo {
+        font-size: 1.95rem;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        color: v.$color1;
+
+        span { color: v.$color1; }
+
+        @media (max-width: $bpsm) { font-size: 1.6rem; }
+    }
+
+    &__tagline {
+        margin-top: 0.2rem;
+        font-size: 0.64rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: v.$color5_3;
+
+        @media (max-width: $bpsm) { font-size: 0.56rem; letter-spacing: 0.1em; }
     }
 }

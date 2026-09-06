@@ -57,10 +57,10 @@ const UserMenu = () => {
         )
         : (
           <>
-            <Button className="text-info text-capitalize" onClick={() => navigate(login)}>
+            <Button variant="link" className="user-menu__login" onClick={() => navigate(login)}>
               {t('userMenu.login')}
             </Button>
-            <Button className="text-info text-capitalize" onClick={() => navigate(register)}>
+            <Button className="user-menu__cta" onClick={() => navigate(register)}>
               {t('userMenu.register')}
             </Button>
           </>

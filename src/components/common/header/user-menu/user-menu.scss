@@ -2,48 +2,68 @@
 @use '../../../../styles/mixins' as m;
 
 $breakpoint: 992px;
-$breakpointsm: 450px;
 
-.user-menu{
-    @include m.flexbox($gap: 0.5rem);
+.user-menu {
+    @include m.flexbox(row, flex-end, center, 0.4rem);
+    flex-shrink: 0;
 
-    .dropdown{
-        @media (max-width: $breakpoint) {
-            width: 100%;         
-        }
+    // Prominent brand-green pill for the account / register CTA.
+    .dropdown-toggle,
+    &__cta {
+        border-radius: 999px;
+        padding: 0.5rem 1.2rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+        background-color: v.$color1;
+        border: 1px solid v.$color1;
+        color: #fff;
 
-        .dropdown-toggle{
-            color: v.$color4;
-
-            @media (max-width: $breakpointsm) {
-                width: 100%;              
-            }
+        &:hover,
+        &:focus,
+        &:active {
+            background-color: v.$color2 !important;
+            border-color: v.$color2 !important;
+            color: #fff !important;
         }
     }
 
-    .dropdown-menu{
-        
-        @media (max-width: $breakpoint) {
+    .dropdown-toggle::after { margin-left: 0.5rem; }
+
+    &__login {
+        padding: 0.5rem 0.7rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: v.$color5_2;
+        text-decoration: none;
+
+        &:hover { color: v.$color1; }
+    }
+
+    .dropdown-menu {
+        border: 1px solid v.$color3;
+        border-radius: 12px;
+        box-shadow: 0 16px 40px -12px rgba(15, 23, 42, 0.18);
+    }
+
+    @media (max-width: $breakpoint) {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+
+        .dropdown { width: 100%; }
+        .dropdown-toggle,
+        &__cta,
+        &__login { width: 100%; }
+
+        .dropdown-menu {
             width: 100%;
             position: static;
             border: none;
+            box-shadow: none;
             margin: 0;
             padding: 0;
         }
-    }
 
-    .dropdown-divider{
-
-        @media (max-width: $breakpoint) {
-            display: none;
-        }
-    }
-
-    .btn-primary{
-
-        &:hover{
-            background-color: v.$color1;
-            border-color: v.$color1;
-        }
+        .dropdown-divider { display: none; }
     }
 }
