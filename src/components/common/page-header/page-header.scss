@@ -24,9 +24,8 @@ $breakpointxs: 400px;
     h1{
         color: v.$color1;
         z-index: 2;
-        font-size: 4rem;
+        font-size: 3.4rem;
         font-weight: 700;
-        text-transform: uppercase;
         text-shadow: 0 0 3px v.$color5;
 
         @media (max-width: $breakpointmd) {
