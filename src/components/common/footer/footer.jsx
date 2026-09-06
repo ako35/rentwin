@@ -90,6 +90,11 @@ const Footer = () => {
         </Row>
         <Row>
           <p className="footer_text">{t('copyright')}</p>
+          <p className="footer_credit">
+            <a href="https://storyset.com/transport" target="_blank" rel="noopener noreferrer">
+              Transport illustrations by Storyset
+            </a>
+          </p>
         </Row>
       </Container>
     </footer>

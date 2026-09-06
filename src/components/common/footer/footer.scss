@@ -72,6 +72,18 @@ footer{
         border-top: 1px solid v.$color1-5;
     }
 
+    .footer_credit{
+        text-align: center;
+        margin: 0.35rem 0 0;
+        font-size: 0.78rem;
+
+        a{
+            color: v.$color5-3;
+
+            &:hover{ color: v.$color1; }
+        }
+    }
+
     @media (max-width: $breakpointxl) {
         text-align: center;
 
