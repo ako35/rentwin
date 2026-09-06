@@ -47,13 +47,16 @@ export const getAdminVehiclesColumns = (t, tCommon) => {
     return [
         {
             name: t("table.vehicle.image"),
+            width: "80px",
             selector: (row) => (
                 <img
                     src={`${API_URL}/files/display/${row?.image[0]}`}
                     alt={row?.model}
                     title={row?.model}
-                    width={80}
+                    width={60}
+                    height={38}
                     style={{
+                        objectFit: "contain",
                         pointerEvents: "none",
                     }}
                 />

@@ -113,6 +113,7 @@ const AdminVehiclesPage = () => {
           paginationServer
           highlightOnHover
           responsive
+          dense
         />
       </div>
     </div>
