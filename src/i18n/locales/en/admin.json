@@ -372,8 +372,6 @@
       },
       "pricingTitle": "Pricing / Payment",
       "calc": "Recalculate",
-      "discountFlat": "Amount",
-      "discountPercent": "%",
       "returnExtraAmount": "Return Extras Amount (TL)",
       "uzatmaAmount": "Extension Amount",
       "contractAmount": "Contract Amount",
@@ -407,7 +405,7 @@
       "taxNo": "Tax No",
       "pricingGroups": {
         "service": "Service Items",
-        "discountLimits": "Discount & Limits",
+        "limits": "Limits",
         "taxTotal": "Tax & Grand Total"
       },
       "dailyPrice": "Daily Price (TL)",
@@ -415,7 +413,6 @@
       "day": "days",
       "extrasTotal": "Extras Amount (TL)",
       "oneWayFee": "One-way Fee (TL)",
-      "discount": "Discount (TL)",
       "subtotal": "Subtotal",
       "vatRate": "VAT (%)",
       "grandTotal": "Grand Total",
@@ -492,7 +489,6 @@
       "firstPickUpDropOff": "First Pick-up - Drop-off",
       "pickUpDropOff": "Pick-up - Drop-off",
       "selectedExtras": "Selected Extras",
-      "discountDailyOnly": "Daily price only",
       "totalAmount": "Total Amount",
       "recalc": "Recalculate",
       "acilis": "Pick-up",

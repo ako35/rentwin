@@ -16,7 +16,6 @@ export const EMPTY_CONTRACT = {
   contractNo: "", customerNote: "", adminNote: "", flightNo: "",
   pickUpKm: "", pickUpFuelEighths: "",
   dailyPrice: "", extrasTotal: "", oneWayFee: "", returnExtraAmount: "",
-  discount: "", discountIsPercent: false, discountDailyOnly: true,
   deposit: "", kmLimit: "", unlimitedKm: true, vatRate: 20,
   referenceUserId: "",
   kbsNotifiedAt: "", kbsNotifiedBy: "", kbsReleasedAt: "", kbsReleasedBy: "",
@@ -71,9 +70,7 @@ export const computePricing = (values, billableDays) => {
   const n = (x) => Number(x) || 0;
   const rental = n(values.dailyPrice) * billableDays;
   const addOns = n(values.extrasTotal) + n(values.oneWayFee) + n(values.returnExtraAmount);
-  const discBase = values.discountDailyOnly ? rental : rental + addOns;
-  const discAmount = values.discountIsPercent ? (discBase * n(values.discount)) / 100 : n(values.discount);
-  const subtotal = rental + addOns - discAmount;
+  const subtotal = rental + addOns;
   const vat = values.vatRate === "" ? 20 : n(values.vatRate);
   const total = subtotal * (1 + vat / 100);
   return { rental, addOns, subtotal, total };
@@ -92,8 +89,6 @@ export const buildContractDto = (values) => ({
   oneWayFee: values.oneWayFee,
   // returnExtraAmount is derived from the itemised return charges (ReturnExtraTab)
   // and cached server-side — it is never written from this form.
-  discount: values.discount, discountIsPercent: values.discountIsPercent,
-  discountDailyOnly: values.discountDailyOnly,
   deposit: values.deposit, kmLimit: values.unlimitedKm ? "" : values.kmLimit,
   unlimitedKm: values.unlimitedKm, vatRate: values.vatRate,
   referenceUserId: values.referenceUserId || null,
@@ -114,8 +109,6 @@ export const contractToFormValues = (r) => ({
   pickUpFuelEighths: r.pickUpFuelEighths != null ? String(r.pickUpFuelEighths) : "",
   dailyPrice: r.dailyPrice ?? "", extrasTotal: r.extrasTotal ?? "",
   oneWayFee: r.oneWayFee ?? "", returnExtraAmount: r.returnExtraAmount ?? "",
-  discount: r.discount ?? "", discountIsPercent: r.discountIsPercent ?? false,
-  discountDailyOnly: r.discountDailyOnly ?? true,
   deposit: r.deposit ?? "", kmLimit: r.kmLimit ?? "",
   unlimitedKm: r.unlimitedKm ?? true, vatRate: r.vatRate ?? 20,
   referenceUserId: r.referenceUserId || "",

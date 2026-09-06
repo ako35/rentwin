@@ -28,7 +28,6 @@ const CONTRACT_NUMBER_FIELDS = [
   "extrasTotal",
   "oneWayFee",
   "returnExtraAmount",
-  "discount",
   "deposit",
   "kmLimit",
   "vatRate",
@@ -52,8 +51,6 @@ const pickContractFields = (body) => {
     if (field in body) data[field] = num(body[field]);
   });
   if ("unlimitedKm" in body) data.unlimitedKm = Boolean(body.unlimitedKm);
-  if ("discountIsPercent" in body) data.discountIsPercent = Boolean(body.discountIsPercent);
-  if ("discountDailyOnly" in body) data.discountDailyOnly = Boolean(body.discountDailyOnly);
   // KABİS (Kimlik Bildirme Sistemi) filing / release dates — "" / null clears them.
   ["kbsNotifiedAt", "kbsReleasedAt"].forEach((field) => {
     if (field in body) {
@@ -69,18 +66,13 @@ const pickContractFields = (body) => {
   return data;
 };
 
-// Contract grand total: (daily price x rental days + extras + one-way + return extras)
-// minus discount (flat or %, optionally applied only to the rental part), plus VAT.
-// The frontend mirrors this in contract-helpers.computePricing.
+// Contract grand total: (daily price x rental days + extras + one-way + return
+// extras) plus VAT. The frontend mirrors this in contract-helpers.computePricing.
 const computeTotal = (r, pickUp, dropOff) => {
   const days = Math.max(1, Math.ceil(hoursBetween(pickUp, dropOff) / 24));
   const rental = (num(r.dailyPrice) || 0) * days;
   const addOns = (num(r.extrasTotal) || 0) + (num(r.oneWayFee) || 0) + (num(r.returnExtraAmount) || 0);
-  const discountBase = r.discountDailyOnly ? rental : rental + addOns;
-  const discount = r.discountIsPercent
-    ? (discountBase * (num(r.discount) || 0)) / 100
-    : num(r.discount) || 0;
-  const subtotal = rental + addOns - discount;
+  const subtotal = rental + addOns;
   const rate = num(r.vatRate);
   return round2(subtotal * (1 + (rate === null ? 20 : rate) / 100));
 };

@@ -372,8 +372,6 @@
       },
       "pricingTitle": "Fiyat / Ödeme",
       "calc": "Tutar Hesapla",
-      "discountFlat": "Tutar",
-      "discountPercent": "%",
       "returnExtraAmount": "Dönüş Ekstrası Tutarı (TL)",
       "uzatmaAmount": "Uzatma Tutarı",
       "contractAmount": "Kontrat Tutarı",
@@ -407,7 +405,7 @@
       "taxNo": "Vergi No",
       "pricingGroups": {
         "service": "Hizmet Kalemleri",
-        "discountLimits": "İndirim & Limitler",
+        "limits": "Limitler",
         "taxTotal": "Vergi & Genel Toplam"
       },
       "dailyPrice": "Günlük Fiyat (TL)",
@@ -415,7 +413,6 @@
       "day": "Gün",
       "extrasTotal": "Ekstra Tutar (TL)",
       "oneWayFee": "Tek Yön Ücreti (TL)",
-      "discount": "İskonto (TL)",
       "subtotal": "Alt Toplam",
       "vatRate": "KDV (%)",
       "grandTotal": "Genel Toplam",
@@ -492,7 +489,6 @@
       "firstPickUpDropOff": "İlk Alış - Bırakış",
       "pickUpDropOff": "Alış - Bırakış",
       "selectedExtras": "Seçili Ekstralar",
-      "discountDailyOnly": "Sadece Günlük Fiyata",
       "totalAmount": "Toplam Tutar",
       "recalc": "Tutar Hesapla",
       "acilis": "Alış",

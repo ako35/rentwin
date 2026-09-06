@@ -50,41 +50,7 @@ const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionT
       </section>
 
       <section className="pricing__group">
-        <h4>{c("pricingGroups.discountLimits")}</h4>
-        <div className="pricing__row pricing__row--stack">
-          <span className="pricing__label">{c("discount")}</span>
-          <div className="pricing__control">
-            <div className="pricing__segmented" role="group">
-              <button
-                type="button"
-                className={!formik.values.discountIsPercent ? "is-active" : ""}
-                onClick={() => formik.setFieldValue("discountIsPercent", false)}
-              >
-                ₺
-              </button>
-              <button
-                type="button"
-                className={formik.values.discountIsPercent ? "is-active" : ""}
-                onClick={() => formik.setFieldValue("discountIsPercent", true)}
-              >
-                %
-              </button>
-            </div>
-            <Form.Control
-              type="number"
-              className="pricing__control-input"
-              value={formik.values.discount}
-              onChange={setV("discount")}
-            />
-            <Form.Check
-              type="switch"
-              id="disc-daily"
-              label={c("discountDailyOnly")}
-              checked={formik.values.discountDailyOnly}
-              onChange={(e) => formik.setFieldValue("discountDailyOnly", e.target.checked)}
-            />
-          </div>
-        </div>
+        <h4>{c("pricingGroups.limits")}</h4>
         <div className="pricing__row pricing__row--stack">
           <span className="pricing__label">{c("kmLimit")}</span>
           <div className="pricing__control">
