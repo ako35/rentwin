@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Button, Form, Modal, Table } from "react-bootstrap";
-import { BsPencil, BsTrash } from "react-icons/bs";
+import { Button, Form, Modal } from "react-bootstrap";
+import { BsBuilding, BsCarFront, BsKey, BsPencil, BsTrash } from "react-icons/bs";
 import { Loading } from "../../../components";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
@@ -14,6 +14,7 @@ const AdminBranchesPage = () => {
   const { t } = useTranslation("admin");
   const [loading, setLoading] = useState(true);
   const [branches, setBranches] = useState([]);
+  const [fleet, setFleet] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -21,14 +22,31 @@ const AdminBranchesPage = () => {
 
   const loadData = async () => {
     try {
-      const data = await services.branch.getBranches();
+      const [data, fleetStats] = await Promise.all([
+        services.branch.getBranches(),
+        services.vehicle.getFleetStats().catch(() => null),
+      ]);
       setBranches(data);
+      setFleet(fleetStats);
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
   };
+
+  const stats = useMemo(
+    () => [
+      { key: "branchCount", icon: <BsBuilding />, value: branches.length },
+      {
+        key: "vehicleCount",
+        icon: <BsCarFront />,
+        value: fleet?.total ?? branches.reduce((s, b) => s + (b.vehicleCount || 0), 0),
+      },
+      { key: "rentedCount", icon: <BsKey />, value: fleet?.rented ?? 0 },
+    ],
+    [branches, fleet]
+  );
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -99,43 +117,78 @@ const AdminBranchesPage = () => {
         <h2>{t("branches.pageTitle")}</h2>
         <Button onClick={openCreate}>{t("branches.addBranch")}</Button>
       </div>
+
       {loading ? (
         <Loading height={300} />
       ) : (
-        <Table hover responsive>
-          <thead>
-            <tr>
-              <th>{t("branches.table.name")}</th>
-              <th>{t("branches.table.code")}</th>
-              <th>{t("branches.table.vehicleCount")}</th>
-              <th>{t("branches.table.actions")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {branches.length === 0 && (
-              <tr>
-                <td colSpan={4} className="text-center">{t("branches.noBranches")}</td>
-              </tr>
-            )}
-            {branches.map((branch) => (
-              <tr key={branch.id}>
-                <td>{branch.name}</td>
-                <td>{branch.code}</td>
-                <td>{branch.vehicleCount}</td>
-                <td className="admin-branches-page__actions">
-                  <Button size="sm" variant="outline-primary" onClick={() => openEdit(branch)} title={t("branches.edit")}>
-                    <BsPencil />
-                  </Button>
-                  {!branch.builtIn && (
-                    <Button size="sm" variant="outline-danger" onClick={() => handleDelete(branch)} title={t("branches.delete")}>
-                      <BsTrash />
-                    </Button>
-                  )}
-                </td>
-              </tr>
+        <>
+          <div className="admin-branches-page__stats">
+            {stats.map((s) => (
+              <div className="stat-card" key={s.key}>
+                <span className="stat-card__icon">{s.icon}</span>
+                <div>
+                  <strong>{s.value}</strong>
+                  <span>{t(`branches.stats.${s.key}`)}</span>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </Table>
+          </div>
+
+          <div className="admin-branches-page__panel">
+            <table className="branch-table">
+              <thead>
+                <tr>
+                  <th>{t("branches.table.name")}</th>
+                  <th>{t("branches.table.code")}</th>
+                  <th>{t("branches.table.vehicleCount")}</th>
+                  <th className="branch-table__actions-col">{t("branches.table.actions")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {branches.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="branch-table__empty">{t("branches.noBranches")}</td>
+                  </tr>
+                )}
+                {branches.map((branch) => (
+                  <tr key={branch.id}>
+                    <td className="branch-table__name">{branch.name}</td>
+                    <td>
+                      <span className="branch-table__code">{branch.code}</span>
+                    </td>
+                    <td>
+                      <span
+                        className={`branch-table__count${branch.vehicleCount ? " is-active" : ""}`}
+                      >
+                        {t("branches.vehicleBadge", { count: branch.vehicleCount || 0 })}
+                      </span>
+                    </td>
+                    <td className="branch-table__actions">
+                      <button
+                        type="button"
+                        className="ghost-btn"
+                        onClick={() => openEdit(branch)}
+                        title={t("branches.edit")}
+                      >
+                        <BsPencil />
+                      </button>
+                      {!branch.builtIn && (
+                        <button
+                          type="button"
+                          className="ghost-btn ghost-btn--danger"
+                          onClick={() => handleDelete(branch)}
+                          title={t("branches.delete")}
+                        >
+                          <BsTrash />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>

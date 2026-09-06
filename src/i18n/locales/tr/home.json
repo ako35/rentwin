@@ -83,17 +83,17 @@
     },
     {
       "id": 2,
-      "image": "person2.jpg",
-      "name": "Emily Wright",
-      "title": "Operasyon Direktörü",
-      "desc": "Emily Wright, Rentwin'in iş stratejisinin şekillenmesinde etkili olmuştur. 2015 yılında ekibe katılan Emily, o zamandan beri şirketin operasyonlarını sadeleştirmek ve müşteriler için araç kiralama sürecini olabildiğince sorunsuz hale getirmek için yorulmadan çalışmıştır. Operasyonel yönetimdeki uzmanlığı, her kiralama noktasının Rentwin'in belirlediği yüksek standartları korumasını sağlar."
-    },
-    {
-      "id": 3,
       "image": "person3.jpg",
       "name": "David Thompson",
       "title": "Teknoloji Direktörü",
       "desc": "Rentwin'in Teknoloji Direktörü olarak David Thompson, yenilikçi teknolojinin şirketin hizmetlerine entegre edilmesinde büyük rol oynamıştır. 2017 yılında ekibe katılan David, müşteri odaklı teknoloji çözümleri geliştirme konusunda geniş bir deneyim getirmiştir. Yenilikçi vizyonu, müşterilerin araçlara göz atmasını, rezervasyon yapmasını ve kiralamasını her zamankinden daha kolay hale getiren Rentwin çevrimiçi rezervasyon sisteminin geliştirilmesine öncülük etmiştir."
+    },
+    {
+      "id": 3,
+      "image": "person2.jpg",
+      "name": "Emily Wright",
+      "title": "Operasyon Direktörü",
+      "desc": "Emily Wright, Rentwin'in iş stratejisinin şekillenmesinde etkili olmuştur. 2015 yılında ekibe katılan Emily, o zamandan beri şirketin operasyonlarını sadeleştirmek ve müşteriler için araç kiralama sürecini olabildiğince sorunsuz hale getirmek için yorulmadan çalışmıştır. Operasyonel yönetimdeki uzmanlığı, her kiralama noktasının Rentwin'in belirlediği yüksek standartları korumasını sağlar."
     }
   ],
   "whatWeDo": {

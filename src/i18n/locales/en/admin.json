@@ -738,6 +738,12 @@
   },
   "branches": {
     "pageTitle": "Branch Management",
+    "stats": {
+      "branchCount": "Total Branches",
+      "vehicleCount": "Total Vehicles",
+      "rentedCount": "Vehicles on Rent"
+    },
+    "vehicleBadge": "{{count}} vehicles",
     "addBranch": "Add Branch",
     "editBranch": "Edit Branch",
     "nameLabel": "Branch Name",

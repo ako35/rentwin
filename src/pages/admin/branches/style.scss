@@ -1,4 +1,5 @@
 @use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
 
 .admin-branches-page {
     &__toolbar {
@@ -9,13 +10,151 @@
 
         h2 {
             font-size: 1.3rem;
-            color: v.$color1;
+            color: v.$color5;
             margin: 0;
         }
     }
 
+    &__stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 0.9rem;
+        margin-bottom: 1.1rem;
+    }
+
+    &__panel {
+        background-color: #fff;
+        border: 1px solid v.$color3;
+        border-radius: 16px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+        overflow: hidden;
+    }
+}
+
+.stat-card {
+    @include m.flexbox(row, flex-start, center, 0.85rem);
+    padding: 0.9rem 1.1rem;
+    background-color: #fff;
+    border: 1px solid v.$color3;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+
+    &__icon {
+        @include m.flexbox(row, center, center);
+        width: 2.4rem;
+        height: 2.4rem;
+        border-radius: 12px;
+        background-color: v.$color1_5;
+        color: v.$color1;
+        font-size: 1.15rem;
+        flex-shrink: 0;
+    }
+
+    strong {
+        display: block;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: v.$color5;
+        line-height: 1.1;
+    }
+
+    span {
+        font-size: 0.78rem;
+        color: v.$color5_3;
+    }
+}
+
+.branch-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead th {
+        text-align: left;
+        padding: 0.7rem 1.1rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: v.$color5_3;
+        background-color: v.$color4;
+        border-bottom: 1px solid v.$color3;
+    }
+
+    tbody td {
+        padding: 0.75rem 1.1rem;
+        font-size: 0.88rem;
+        color: v.$color5;
+        border-bottom: 1px solid v.$color3;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+
+    tbody tr {
+        transition: background-color 0.12s ease;
+
+        &:hover { background-color: v.$color4; }
+    }
+
+    &__name { font-weight: 600; }
+
+    &__empty {
+        text-align: center;
+        color: v.$color5_3;
+        padding: 2rem 0 !important;
+    }
+
+    &__code {
+        display: inline-block;
+        padding: 0.15rem 0.6rem;
+        border-radius: 999px;
+        background-color: v.$color3_5;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: v.$color5_2;
+    }
+
+    &__count {
+        display: inline-block;
+        padding: 0.15rem 0.65rem;
+        border-radius: 999px;
+        background-color: v.$color3_5;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: v.$color5_4;
+
+        &.is-active {
+            background-color: v.$color1_5;
+            color: v.$color1;
+        }
+    }
+
+    &__actions-col { text-align: right; }
+
     &__actions {
-        display: flex;
-        gap: 0.5rem;
+        @include m.flexbox(row, flex-end, center, 0.35rem);
+        white-space: nowrap;
+    }
+}
+
+.ghost-btn {
+    @include m.flexbox(row, center, center);
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    border-radius: 10px;
+    background-color: transparent;
+    color: v.$color5_3;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.12s ease, color 0.12s ease;
+
+    &:hover {
+        background-color: v.$color3_5;
+        color: v.$color5;
+    }
+
+    &--danger:hover {
+        background-color: rgba(225, 29, 72, 0.1);
+        color: #e11d48;
     }
 }

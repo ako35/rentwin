@@ -738,6 +738,12 @@
   },
   "branches": {
     "pageTitle": "Şube Yönetimi",
+    "stats": {
+      "branchCount": "Toplam Şube",
+      "vehicleCount": "Toplam Araç",
+      "rentedCount": "Kiralamadaki Araç"
+    },
+    "vehicleBadge": "{{count}} Araç",
     "addBranch": "Şube Ekle",
     "editBranch": "Şube Düzenle",
     "nameLabel": "Şube Adı",

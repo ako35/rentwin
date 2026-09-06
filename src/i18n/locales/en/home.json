@@ -83,17 +83,17 @@
     },
     {
       "id": 2,
-      "image": "person2.jpg",
-      "name": "Emily Wright",
-      "title": "Chief Operations Officer",
-      "desc": "Emily Wright has been instrumental in shaping Rentwin's business strategy. She joined the team in 2015 and has since worked tirelessly to streamline the company's operations, making the car rental process as smooth as possible for customers. Her expertise in operational management ensures that each rental location maintains the high standards set by Rentwin."
-    },
-    {
-      "id": 3,
       "image": "person3.jpg",
       "name": "David Thompson",
       "title": "Chief Technology Officer",
       "desc": "As the Chief Technology Officer at Rentwin, David Thompson has been crucial in integrating innovative technology into the company's services. He joined the team in 2017 and brought with him extensive experience in developing customer-centric technology solutions. His innovative vision led to the development of the Rentwin online reservation system, making it easier than ever for customers to browse, reserve, and rent vehicles."
+    },
+    {
+      "id": 3,
+      "image": "person2.jpg",
+      "name": "Emily Wright",
+      "title": "Chief Operations Officer",
+      "desc": "Emily Wright has been instrumental in shaping Rentwin's business strategy. She joined the team in 2015 and has since worked tirelessly to streamline the company's operations, making the car rental process as smooth as possible for customers. Her expertise in operational management ensures that each rental location maintains the high standards set by Rentwin."
     }
   ],
   "whatWeDo": {
