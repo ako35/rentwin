@@ -26,12 +26,15 @@
     // "contain" the whole canvas is shrunk to fit the height, so the car renders
     // tiny in the centre. "cover" fills the frame and crops those empty margins
     // away — the car reads large and every card is framed identically. The car
-    // is dead-centre in the source, so object-position stays centred.
+    // is dead-centre in the source, so object-position stays centred. The
+    // horizontal padding pulls the cover scale back a touch so the roof and
+    // wheels keep a little breathing room instead of touching the edges.
     &__image {
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 210px;
+        height: 215px;
+        padding: 0.5rem 2rem;
         background-color: #f5f7fa;
         border-bottom: 1px solid v.$color3;
 
