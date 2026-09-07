@@ -516,6 +516,7 @@
       "kur": "Kur",
       "kurLine": "Kontrat: {{c}} / Güncel: {{g}}",
       "topTabs": { "customer": "Müşteri", "drivers": "Sürücüler", "invoice": "Fatura" },
+      "panels": { "party": "İlgili Taraf", "actions": "Kontrat İşlemleri" },
       "subTabs": {
         "summary": "Özet",
         "deposit": "Depozito",

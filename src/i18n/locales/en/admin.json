@@ -516,6 +516,7 @@
       "kur": "Rate",
       "kurLine": "Contract: {{c}} / Current: {{g}}",
       "topTabs": { "customer": "Customer", "drivers": "Drivers", "invoice": "Invoice" },
+      "panels": { "party": "Party", "actions": "Contract Actions" },
       "subTabs": {
         "summary": "Summary",
         "deposit": "Deposit",

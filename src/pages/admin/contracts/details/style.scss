@@ -188,6 +188,45 @@
     hr { margin: 0.6rem 0; border-color: v.$color3; }
   }
 
+  // Right column: a shell that just stacks its panels with breathing room —
+  // each panel below is its own bordered card so the sections stop bleeding
+  // into one another.
+  .contract-card--right {
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    @include m.flexbox(column, flex-start, stretch, 0.85rem);
+  }
+
+  &__panel {
+    border: 1px solid v.$color3;
+    border-radius: 10px;
+    background-color: #fff;
+    overflow: hidden;
+  }
+
+  // the pricing panel wraps the existing .pricing card — drop its own frame so
+  // the panel is the only border. (Extra &-qualified for specificity over the
+  // later `.contract-page .pricing` base rule.)
+  & &__panel--pricing .pricing {
+    border: 0;
+    border-radius: 0;
+    background-color: #fff;
+  }
+
+  &__panel-head {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: v.$color5_4;
+    background-color: v.$color4;
+    border-bottom: 1px solid v.$color3;
+  }
+
+  &__panel-body { padding: 0.85rem 0.9rem; }
+
   &__pair {
     display: grid;
     grid-template-columns: 1.4fr 1fr;
@@ -439,9 +478,6 @@
 
   &__sub-content {
     min-height: 40px;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid v.$color3;
-    margin-bottom: 0.75rem;
   }
 
   &__top-content { margin-bottom: 0.5rem; }

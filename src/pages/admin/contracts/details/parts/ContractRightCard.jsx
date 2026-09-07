@@ -13,9 +13,18 @@ import PricingBlock from "./PricingBlock";
 
 const SUB_TABS = ["summary", "payments", "returnExtra", "extension", "vehicleChange"];
 
-// The right column of the contract screen: customer / invoice top tabs, the
-// summary / payments / return-extra / extension sub tabs, the pricing block and
-// the running balance. Owns its own tab selection.
+// A titled, bordered section of the right column. Defined at module scope so its
+// identity is stable across re-renders.
+const Panel = ({ title, children, className = "" }) => (
+  <div className={`contract-page__panel ${className}`.trim()}>
+    {title && <div className="contract-page__panel-head">{title}</div>}
+    <div className="contract-page__panel-body">{children}</div>
+  </div>
+);
+
+// The right column of the contract screen, split into clearly separated panels:
+// the party (customer / invoice), the contract-action sub tabs (summary /
+// payments / return-extra / extension / vehicle-change), and the price summary.
 const ContractRightCard = ({
   isCreate, contractId, formik, navKey,
   customers, customer, invoices, extensions, vehicleChanges,
@@ -29,15 +38,15 @@ const ContractRightCard = ({
   const [subTab, setSubTab] = useState("summary");
 
   return (
-    <section className="contract-card">
-      <Nav variant="tabs" activeKey={topTab} onSelect={(k) => k && setTopTab(k)} className="mb-3">
-        <Nav.Item><Nav.Link eventKey="customer">{c("topTabs.customer")}</Nav.Link></Nav.Item>
-        <Nav.Item><Nav.Link eventKey="invoice">{c("topTabs.invoice")}</Nav.Link></Nav.Item>
-      </Nav>
+    <section className="contract-card contract-card--right">
+      <Panel title={c("panels.party")}>
+        <Nav variant="tabs" activeKey={topTab} onSelect={(k) => k && setTopTab(k)} className="mb-3">
+          <Nav.Item><Nav.Link eventKey="customer">{c("topTabs.customer")}</Nav.Link></Nav.Item>
+          <Nav.Item><Nav.Link eventKey="invoice">{c("topTabs.invoice")}</Nav.Link></Nav.Item>
+        </Nav>
 
-      {topTab === "customer" && (
-        <div className="contract-page__top-content">
-          {isCreate ? (
+        {topTab === "customer" && (
+          isCreate ? (
             <CustomerPanel
               formik={formik}
               customers={customers}
@@ -48,12 +57,10 @@ const ContractRightCard = ({
             />
           ) : (
             <CustomerSummary customer={customer} userId={formik.values.userId} money={money} />
-          )}
-        </div>
-      )}
+          )
+        )}
 
-      {topTab === "invoice" && (
-        <div className="contract-page__top-content">
+        {topTab === "invoice" && (
           <InvoiceTab
             isCreate={isCreate}
             contractId={contractId}
@@ -63,84 +70,85 @@ const ContractRightCard = ({
             vatRate={formik.values.vatRate === "" ? 20 : formik.values.vatRate}
             money={money}
           />
+        )}
+      </Panel>
+
+      <Panel title={c("panels.actions")}>
+        <Nav
+          variant="pills"
+          activeKey={subTab}
+          onSelect={(k) => k && setSubTab(k)}
+          className="contract-page__subtabs mb-2"
+        >
+          {SUB_TABS.map((k) => (
+            <Nav.Item key={k}><Nav.Link eventKey={k}>{c(`subTabs.${k}`)}</Nav.Link></Nav.Item>
+          ))}
+        </Nav>
+
+        <div className="contract-page__sub-content">
+          {subTab === "summary" && (
+            <SummaryTab formik={formik} selectedCar={selectedCar} billableDays={billableDays} />
+          )}
+
+          {subTab === "payments" && (
+            <PaymentsTab
+              isCreate={isCreate}
+              contractId={contractId}
+              recordLabels={recordLabels}
+              total={pricing.total}
+              collected={collected}
+              onPaymentsChange={loadPayments}
+              money={money}
+            />
+          )}
+
+          {subTab === "returnExtra" && (
+            <ReturnExtraTab
+              isCreate={isCreate}
+              contractId={contractId}
+              onChange={loadData}
+              money={money}
+            />
+          )}
+
+          {subTab === "extension" && (
+            <ExtensionTab
+              isCreate={isCreate}
+              contractId={contractId}
+              minDate={formik.values.dropOffDate}
+              extensions={extensions}
+              onExtended={loadData}
+              money={money}
+            />
+          )}
+
+          {subTab === "vehicleChange" && (
+            <VehicleChangeTab
+              isCreate={isCreate}
+              contractId={contractId}
+              carId={formik.values.carId}
+              pickUpDate={formik.values.pickUpDate}
+              dropOffDate={formik.values.dropOffDate}
+              dropOffTime={formik.values.dropOffTime}
+              vehicleChanges={vehicleChanges}
+              onChanged={loadData}
+            />
+          )}
         </div>
-      )}
+      </Panel>
 
-      <Nav
-        variant="pills"
-        activeKey={subTab}
-        onSelect={(k) => k && setSubTab(k)}
-        className="contract-page__subtabs mt-3 mb-2"
-      >
-        {SUB_TABS.map((k) => (
-          <Nav.Item key={k}><Nav.Link eventKey={k}>{c(`subTabs.${k}`)}</Nav.Link></Nav.Item>
-        ))}
-      </Nav>
-
-      <div className="contract-page__sub-content">
-        {subTab === "summary" && (
-          <SummaryTab
-            formik={formik}
-            selectedCar={selectedCar}
-            billableDays={billableDays}
-          />
-        )}
-
-        {subTab === "payments" && (
-          <PaymentsTab
-            isCreate={isCreate}
-            contractId={contractId}
-            recordLabels={recordLabels}
-            total={pricing.total}
-            collected={collected}
-            onPaymentsChange={loadPayments}
-            money={money}
-          />
-        )}
-
-        {subTab === "returnExtra" && (
-          <ReturnExtraTab
-            isCreate={isCreate}
-            contractId={contractId}
-            onChange={loadData}
-            money={money}
-          />
-        )}
-
-        {subTab === "extension" && (
-          <ExtensionTab
-            isCreate={isCreate}
-            contractId={contractId}
-            minDate={formik.values.dropOffDate}
-            extensions={extensions}
-            onExtended={loadData}
-            money={money}
-          />
-        )}
-
-        {subTab === "vehicleChange" && (
-          <VehicleChangeTab
-            isCreate={isCreate}
-            contractId={contractId}
-            carId={formik.values.carId}
-            pickUpDate={formik.values.pickUpDate}
-            dropOffDate={formik.values.dropOffDate}
-            dropOffTime={formik.values.dropOffTime}
-            vehicleChanges={vehicleChanges}
-            onChanged={loadData}
-          />
-        )}
+      <div className="contract-page__panel contract-page__panel--pricing">
+        <div className="contract-page__panel-head">{c("pricingTitle")}</div>
+        <PricingBlock
+          formik={formik}
+          pricing={pricing}
+          billableDays={billableDays}
+          extensionDays={extensionDays}
+          extensionTotal={extensionTotal}
+          collected={collected}
+          money={money}
+        />
       </div>
-
-      <PricingBlock
-        formik={formik}
-        pricing={pricing}
-        billableDays={billableDays}
-        extensionDays={extensionDays}
-        extensionTotal={extensionTotal}
-        collected={collected}
-        money={money}
-      />
     </section>
   );
 };
