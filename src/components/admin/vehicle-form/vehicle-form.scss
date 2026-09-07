@@ -180,6 +180,40 @@ $breakpointxl: 1200px;
       transform: translate(-50%, 50%);
     }
   }
+
+  // imagin.studio live preview under the upload box
+  &__carimg {
+    margin-top: 0.75rem;
+    @include m.flexbox(column, flex-start, stretch, 0.5rem);
+
+    &-hint {
+      margin: 0.75rem 0 0;
+      padding: 0.6rem 0.7rem;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: v.$color5_3;
+      background-color: v.$color4;
+      border: 1px dashed v.$color3;
+      border-radius: 8px;
+    }
+
+    &-frame {
+      @include m.flexbox(row, center, center);
+      min-height: 120px;
+      padding: 0.4rem;
+      background-color: v.$color4;
+      border: 1px solid v.$color3;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      color: v.$color5_4;
+
+      img {
+        width: 100%;
+        max-height: 160px;
+        object-fit: contain;
+      }
+    }
+  }
 }
 
 .vehicle-records-panel {

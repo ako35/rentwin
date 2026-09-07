@@ -56,6 +56,14 @@ const AdminNewVehiclePage = () => {
     };
   };
 
+  // "Bu görseli kullan" on the imagin.studio preview: adopt the fetched File so
+  // it saves through the same upload path as a hand-picked image.
+  const handleGeneratedImage = (previewSrc, file) => {
+    setImageSrc(previewSrc);
+    formik.setFieldValue("image", file);
+    formik.setFieldTouched("image", true, false);
+  };
+
   return (
     <Form noValidate onSubmit={formik.handleSubmit}>
       <VehicleForm
@@ -65,6 +73,7 @@ const AdminNewVehiclePage = () => {
         imageError={formik.errors.image}
         fileImageRef={fileImageRef}
         onImageChange={handleImageChange}
+        onGeneratedImage={handleGeneratedImage}
       >
         <ButtonGroup>
           <Button
