@@ -1,39 +1,61 @@
 import { useTranslation } from "react-i18next";
 import { Form } from "react-bootstrap";
+import moment from "moment/moment";
 import { BsClockHistory, BsPatchCheck, BsExclamationTriangle } from "react-icons/bs";
 
 const STATUSES = ["PENDING", "CLEAN", "DEBT"];
-const ICONS = { PENDING: BsClockHistory, CLEAN: BsPatchCheck, DEBT: BsExclamationTriangle };
+const BADGE_ICON = {
+  pending: BsClockHistory,
+  incomplete: BsClockHistory,
+  clean: BsPatchCheck,
+  debt: BsExclamationTriangle,
+};
 
 // Left card: HGS / OGS toll-check tracking. The operator records which date
-// range was queried on the HGS system, the outcome (clean / has a debt), the
-// toll amount and whether it has been reflected to the customer. Saved with the
-// contract on "Kaydet"; a debt is actually charged on the "Dönüş Ekstra" tab.
+// range was queried on the HGS system and the outcome. The check only counts
+// as finished once the queried range reaches the (actual or planned) return
+// date — until then it stays "Devam Ediyor". A reflected debt rolls into the
+// grand total via an auto line on the "Dönüş Ekstra" tab.
 const HgsSection = ({ formik }) => {
   const { t } = useTranslation("admin");
-  const c = (key) => t(`reservations.contract.hgs.${key}`);
+  const c = (key, opts) => t(`reservations.contract.hgs.${key}`, opts);
   const v = formik.values;
 
   const status = v.hgsStatus || "PENDING";
   const isDebt = status === "DEBT";
-  const Icon = ICONS[status];
-
   const setV = (name) => (e) => formik.setFieldValue(name, e.target.value);
+
+  // The date the toll check must reach: the real hand-back if the vehicle is
+  // back, otherwise the contracted drop-off.
+  const returned = Boolean(v.returnedAt);
+  const returnDate = returned
+    ? moment(v.returnedAt).format("YYYY-MM-DD")
+    : v.dropOffDate || "";
+
+  const incomplete =
+    status !== "PENDING" &&
+    !!returnDate &&
+    (!v.hgsCheckedTo || v.hgsCheckedTo < returnDate);
+
+  const badgeState =
+    status === "PENDING" ? "pending" : incomplete ? "incomplete" : status.toLowerCase();
+  const BadgeIcon = BADGE_ICON[badgeState];
+  const badgeText = badgeState === "incomplete" ? c("status.INCOMPLETE") : c(`status.${status}`);
 
   const changeStatus = (next) => {
     formik.setFieldValue("hgsStatus", next === "PENDING" ? "" : next);
-    // First time it leaves "Bekliyor", default the queried range to the rental
-    // window — the operator can still adjust it.
+    // First time it leaves "Bekliyor", default the queried range: start at the
+    // pick-up, end at the (actual or planned) return date.
     if (next !== "PENDING" && !v.hgsCheckedFrom && !v.hgsCheckedTo) {
       if (v.pickUpDate) formik.setFieldValue("hgsCheckedFrom", v.pickUpDate);
-      if (v.dropOffDate) formik.setFieldValue("hgsCheckedTo", v.dropOffDate);
+      if (returnDate) formik.setFieldValue("hgsCheckedTo", returnDate);
     }
     // A debt reflects to the grand total by default; anything else clears it.
     formik.setFieldValue("hgsReflected", next === "DEBT");
   };
 
   return (
-    <section className={`contract-card contract-page__hgs is-${status.toLowerCase()}`}>
+    <section className={`contract-card contract-page__hgs is-${badgeState}`}>
       <h3>{c("title")}</h3>
 
       <div className="contract-page__hgs-row">
@@ -46,9 +68,9 @@ const HgsSection = ({ formik }) => {
             <option key={s} value={s}>{c(`status.${s}`)}</option>
           ))}
         </Form.Select>
-        <span className={`contract-page__hgs-badge is-${status.toLowerCase()}`}>
-          <Icon />
-          {c(`status.${status}`)}
+        <span className={`contract-page__hgs-badge is-${badgeState}`}>
+          <BadgeIcon />
+          {badgeText}
         </span>
       </div>
 
@@ -62,7 +84,7 @@ const HgsSection = ({ formik }) => {
               <Form.Control type="date" value={v.hgsCheckedFrom} onChange={setV("hgsCheckedFrom")} />
             </label>
             <label>
-              <span>{c("to")}</span>
+              <span>{returned ? c("toReturned") : c("toPlanned")}</span>
               <Form.Control
                 type="date"
                 value={v.hgsCheckedTo}
@@ -71,6 +93,24 @@ const HgsSection = ({ formik }) => {
               />
             </label>
           </div>
+
+          {incomplete && (
+            <div className="contract-page__hgs-warn">
+              <BsExclamationTriangle />
+              <div>
+                <p>{c("incompleteWarn", { date: moment(returnDate).format("DD.MM.YYYY") })}</p>
+                {v.hgsCheckedTo !== returnDate && (
+                  <button
+                    type="button"
+                    className="contract-page__hgs-fix"
+                    onClick={() => formik.setFieldValue("hgsCheckedTo", returnDate)}
+                  >
+                    {c("setToReturn", { date: moment(returnDate).format("DD.MM.YYYY") })}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
 
           {isDebt && (
             <div className="contract-page__hgs-debt">

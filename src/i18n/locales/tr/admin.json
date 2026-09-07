@@ -563,14 +563,18 @@
         "status": {
           "PENDING": "Bekliyor",
           "CLEAN": "Kontrol Edildi - Temiz",
-          "DEBT": "Geçiş / Borç Var"
+          "DEBT": "Geçiş / Borç Var",
+          "INCOMPLETE": "Devam Ediyor"
         },
         "from": "Sorgulanan Aralık - Başlangıç",
-        "to": "Sorgulanan Aralık - Bitiş",
+        "toPlanned": "Sorgulanan Aralık - Bitiş (planlanan iade)",
+        "toReturned": "Sorgulanan Aralık - Bitiş (iade tarihi)",
         "amount": "Geçiş / Yansıtılan Tutar (TL)",
         "reflected": "Tutarı Genel Toplam'a yansıt",
         "hint": "Kiralama süresi için HGS/OGS kaçak geçiş sorgusu henüz yapılmadı.",
-        "debtHint": "Yansıtıldığında Genel Toplam'a eklenir ve Dönüş Ekstra sekmesinde \"HGS / OGS\" kalemi olarak görünür."
+        "debtHint": "Yansıtıldığında Genel Toplam'a eklenir ve Dönüş Ekstra sekmesinde \"HGS / OGS\" kalemi olarak görünür.",
+        "incompleteWarn": "Kontrol {{date}} (iade) tarihine kadar tamamlanmadı. Bu tarihe kadar HGS/OGS sorgusu tekrarlanmalı.",
+        "setToReturn": "Bitişi {{date}} yap"
       },
       "kbs": {
         "title": "KABİS Bildirimi",

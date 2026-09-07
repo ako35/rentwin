@@ -563,14 +563,18 @@
         "status": {
           "PENDING": "Pending",
           "CLEAN": "Checked - Clear",
-          "DEBT": "Toll / Debt Found"
+          "DEBT": "Toll / Debt Found",
+          "INCOMPLETE": "In Progress"
         },
         "from": "Queried Range - Start",
-        "to": "Queried Range - End",
+        "toPlanned": "Queried Range - End (planned return)",
+        "toReturned": "Queried Range - End (return date)",
         "amount": "Toll / Reflected Amount (TL)",
         "reflected": "Reflect amount to the grand total",
         "hint": "The HGS/OGS toll query for the rental period has not been done yet.",
-        "debtHint": "When reflected, it is added to the grand total and appears as an \"HGS / OGS\" line on the Return Extras tab."
+        "debtHint": "When reflected, it is added to the grand total and appears as an \"HGS / OGS\" line on the Return Extras tab.",
+        "incompleteWarn": "The check does not reach {{date}} (return date). Re-run the HGS/OGS query up to that date.",
+        "setToReturn": "Set end to {{date}}"
       },
       "kbs": {
         "title": "KABİS Notification",
