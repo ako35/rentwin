@@ -28,7 +28,8 @@ const HgsSection = ({ formik }) => {
       if (v.pickUpDate) formik.setFieldValue("hgsCheckedFrom", v.pickUpDate);
       if (v.dropOffDate) formik.setFieldValue("hgsCheckedTo", v.dropOffDate);
     }
-    if (next !== "DEBT") formik.setFieldValue("hgsReflected", false);
+    // A debt reflects to the grand total by default; anything else clears it.
+    formik.setFieldValue("hgsReflected", next === "DEBT");
   };
 
   return (
