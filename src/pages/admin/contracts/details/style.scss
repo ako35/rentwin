@@ -490,34 +490,29 @@
     &.is-paid { color: v.$color2; }
   }
 
-  /* ---- Dönüş Ekstra: quick chips -> add card -> list -> total ---- */
+  /* ---- Dönüş Ekstra: add button -> add/edit card -> list -> total ---- */
   &__rex {
-    // 1. quick-add chips — the only way to pick a category (no dropdown)
-    &-chips {
-      @include m.flexbox(row, flex-start, center, 0.4rem);
-      flex-wrap: wrap;
-      margin-bottom: 0.7rem;
+    // 1. the closed state — one dashed button that opens the add card
+    &-add {
+      @include m.flexbox(row, center, center, 0.4rem);
+      width: 100%;
+      margin-bottom: 0.8rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px dashed rgba(v.$color2, 0.6);
+      border-radius: 12px;
+      background-color: v.$color4;
+      color: v.$color2;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: background-color 0.12s ease, border-color 0.12s ease;
 
-      button {
-        border: 1px solid v.$color2;
-        background-color: v.$color4;
-        color: v.$color2;
-        border-radius: 999px;
-        padding: 0.24rem 0.72rem;
-        font-size: 0.78rem;
-        font-weight: 600;
-        transition: background-color 0.12s ease, color 0.12s ease;
-
-        &:hover,
-        &.is-active {
-          background-color: v.$color2;
-          color: #fff;
-        }
+      &:hover {
+        background-color: rgba(v.$color1, 0.08);
+        border-color: v.$color2;
       }
     }
 
-    // 2. the add / edit / calculator card — a sunken box clearly lifted off the
-    // list below it
+    // 2. the add / edit card — a sunken box clearly lifted off the list below it
     &-card {
       margin-bottom: 0.8rem;
       padding: 0.7rem 0.75rem 0.75rem;
@@ -528,58 +523,41 @@
 
       &-head {
         @include m.flexbox(row, flex-start, center, 0.5rem);
-        margin-bottom: 0.6rem;
-        font-size: 0.78rem;
-        font-weight: 600;
-        color: v.$color5_3;
-
-        &--calc {
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
-          font-size: 0.74rem;
-          font-weight: 700;
-          color: #9a6a00;
-        }
-      }
-
-      &-foot {
-        @include m.flexbox(row, space-between, center, 0.5rem);
-        flex-wrap: wrap;
-        margin-top: 0.6rem;
-        font-size: 0.8rem;
-        color: v.$color5_2;
-
-        strong { color: v.$color5; }
+        margin-bottom: 0.55rem;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: v.$color5_4;
       }
 
       &-actions {
         @include m.flexbox(row, flex-end, center, 0.5rem);
+        margin-top: 0.7rem;
       }
     }
 
-    // wide Açıklama, compact Tutar — no Adet field (return extras are qty 1)
-    &-form-fields {
+    // category + amount share the top row, note spans full width beneath
+    &-form {
       display: grid;
-      grid-template-columns: minmax(0, 2fr) minmax(90px, 1fr);
-      gap: 0.4rem 0.6rem;
-      align-items: end;
+      grid-template-columns: minmax(0, 1.1fr) minmax(96px, 0.6fr);
+      grid-template-areas:
+        "cat amount"
+        "desc desc";
+      gap: 0.45rem 0.6rem;
 
-      @media (max-width: 480px) { grid-template-columns: 1fr; }
+      @media (max-width: 420px) {
+        grid-template-columns: 1fr;
+        grid-template-areas: "cat" "amount" "desc";
+      }
 
       .form-label { margin-bottom: 0.05rem; font-size: 0.7rem; font-weight: 600; }
-      .form-control { font-size: 0.85rem; }
+      .form-control, .form-select { font-size: 0.85rem; }
     }
 
-    &-calc-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.4rem;
-
-      @media (max-width: 640px) { grid-template-columns: 1fr 1fr; }
-
-      .form-label { margin-bottom: 0.05rem; font-size: 0.68rem; font-weight: 600; }
-      .form-control { font-size: 0.82rem; }
-    }
+    &-f-cat { grid-area: cat; }
+    &-f-amount { grid-area: amount; }
+    &-f-desc { grid-area: desc; }
 
     // 3. list
     &-table {

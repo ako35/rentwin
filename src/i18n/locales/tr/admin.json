@@ -331,10 +331,13 @@
       },
       "returnCharges": {
         "category": "Kalem",
+        "categoryPlaceholder": "Kalem seçin…",
         "description": "Açıklama",
         "amount": "Tutar (TL)",
         "quantity": "Adet",
         "lineTotal": "Tutar",
+        "addLine": "Yeni Ekstra Kalemi Ekle",
+        "addBtn": "Kalem Ekle",
         "newLine": "Yeni kalem",
         "editingLine": "Kalem düzenleniyor",
         "total": "Dönüş Ekstra Toplamı",
@@ -349,14 +352,16 @@
           "FUEL": "Yakıt Farkı",
           "OTHER": "Diğer"
         },
-        "kmCalcTitle": "KM Aşım Hesapla",
-        "pickUpKm": "Alış KM",
-        "returnKm": "Dönüş KM",
-        "allowedKm": "İzin Verilen KM",
-        "unitPrice": "Birim (₺/km)",
-        "excessKm": "Aşım",
-        "calcAmount": "Tutar",
-        "kmExcessNote": "{{km}} km × {{unit}} ₺"
+        "hint": {
+          "HGS_OGS": "Plaka / geçiş noktası",
+          "KM_EXCESS": "Aşılan KM miktarını yazınız…",
+          "ONE_WAY": "Alış / dönüş lokasyonu",
+          "DAMAGE": "Hasar / eksik parça açıklaması",
+          "ROADSIDE": "Yol yardım / çekici detayı",
+          "CLEANING": "Temizlik nedeni",
+          "FUEL": "Eksik yakıt miktarı",
+          "OTHER": "Açıklama (opsiyonel)"
+        }
       },
       "drivers": {
         "firstName": "Ad",

@@ -331,10 +331,13 @@
       },
       "returnCharges": {
         "category": "Item",
+        "categoryPlaceholder": "Select an item…",
         "description": "Description",
         "amount": "Amount (TL)",
         "quantity": "Qty",
         "lineTotal": "Amount",
+        "addLine": "Add Extra Line",
+        "addBtn": "Add Line",
         "newLine": "New line",
         "editingLine": "Editing line",
         "total": "Return Extras Total",
@@ -349,14 +352,16 @@
           "FUEL": "Fuel Difference",
           "OTHER": "Other"
         },
-        "kmCalcTitle": "Mileage Excess Calculator",
-        "pickUpKm": "Pick-up KM",
-        "returnKm": "Return KM",
-        "allowedKm": "Allowed KM",
-        "unitPrice": "Unit (₺/km)",
-        "excessKm": "Excess",
-        "calcAmount": "Amount",
-        "kmExcessNote": "{{km}} km × {{unit}} ₺"
+        "hint": {
+          "HGS_OGS": "Plate / toll point",
+          "KM_EXCESS": "Enter the excess mileage…",
+          "ONE_WAY": "Pick-up / drop-off location",
+          "DAMAGE": "Damage / missing part note",
+          "ROADSIDE": "Roadside / tow detail",
+          "CLEANING": "Reason for cleaning",
+          "FUEL": "Missing fuel amount",
+          "OTHER": "Note (optional)"
+        }
       },
       "drivers": {
         "firstName": "First Name",
