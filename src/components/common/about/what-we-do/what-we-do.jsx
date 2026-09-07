@@ -1,46 +1,46 @@
-import { Col, Container, Row } from 'react-bootstrap'
-import './what-we-do.scss'
-import { useTranslation } from 'react-i18next'
-import { GiCarKey, GiJeep, GiRecycle, GiTimeSynchronization } from 'react-icons/gi'
-import { TbBuildingSkyscraper } from 'react-icons/tb'
-import { RiVipDiamondLine } from 'react-icons/ri'
+import { Container } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+import { GiCarKey, GiJeep, GiRecycle, GiTimeSynchronization } from "react-icons/gi";
+import { TbBuildingSkyscraper } from "react-icons/tb";
+import { RiVipDiamondLine } from "react-icons/ri";
+import "./what-we-do.scss";
 
 const serviceIcons = [
-  <GiCarKey key={0} />,
-  <TbBuildingSkyscraper key={0} />,
-  <GiTimeSynchronization key={0} />,
-  <RiVipDiamondLine key={0} />,
-  <GiRecycle key={0} />,
-  <GiJeep key={0} />,
-]
+  <GiCarKey key="0" />,
+  <TbBuildingSkyscraper key="1" />,
+  <GiTimeSynchronization key="2" />,
+  <RiVipDiamondLine key="3" />,
+  <GiRecycle key="4" />,
+  <GiJeep key="5" />,
+];
 
 const WhatWeDo = () => {
-  const { t } = useTranslation('home');
-  const { desc, services, title } = t('whatWeDo', { returnObjects: true });
-  return (
-    <Container fluid className="what-we-do">
-      <Row>
-        <Col xl={4}>
-          <img src="/img/what_we_do.jpg" alt={title} />
-        </Col>
-        <Col xl={8}>
-          <div>
-            <h2 className='mt-5'>{title}</h2>
-            <p>{desc}</p>
-          </div>
-          <Row className='mb-5 props'>
-            {
-              services.map((item, index) => (
-                <Col sm={6} lg={4} key={index}>
-                  {serviceIcons[index]} <span> {item.title}</span>
-                </Col>
-              ))
-            }
-          </Row>
-        </Col>
-      </Row>
-    </Container>
-  )
-}
+  const { t } = useTranslation("home");
+  const { desc, services, title } = t("whatWeDo", { returnObjects: true });
 
-export default WhatWeDo
+  return (
+    <Container className="what-we-do">
+      <div className="what-we-do__panel">
+        <div className="what-we-do__media">
+          <img src="/img/what_we_do.jpg" alt={title} loading="lazy" decoding="async" />
+        </div>
+
+        <div className="what-we-do__content">
+          <h2 className="what-we-do__title">{title}</h2>
+          <p className="what-we-do__desc">{desc}</p>
+
+          <ul className="what-we-do__services">
+            {services.map((item, index) => (
+              <li className="what-we-do__service" key={item.id}>
+                <span className="what-we-do__service-icon">{serviceIcons[index]}</span>
+                <span className="what-we-do__service-title">{item.title}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Container>
+  );
+};
+
+export default WhatWeDo;

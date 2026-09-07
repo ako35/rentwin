@@ -1,12 +1,98 @@
 @use '../../../../../styles/variables' as v;
+@use '../../../../../styles/mixins' as m;
 
-.team-member{
-    border-radius: 5px;
-    box-shadow: 0 0 10px v.$color1-4;
-    color: v.$color1;
+.team-member {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #fff;
+    border: 1px solid v.$color3;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 26px -18px rgba(15, 23, 42, 0.18);
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
 
-    .card-text{
+    &:hover {
+        box-shadow: 0 20px 40px -18px rgba(15, 23, 42, 0.26);
+        transform: translateY(-3px);
+    }
+
+    // Square and cropped the same way — the source shots vary a lot in tone
+    // and framing. A fixed 1:1 box plus a uniform greyscale treatment (colour
+    // on hover) keeps the row visually consistent despite the mismatched
+    // originals.
+    &__photo {
+        aspect-ratio: 1 / 1;
+        background-color: v.$color3_5;
+        border-bottom: 1px solid v.$color3;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            filter: grayscale(1);
+            transition: filter 0.25s ease;
+        }
+    }
+
+    &:hover &__photo img {
+        filter: grayscale(0);
+    }
+
+    &__body {
+        @include m.flexbox(column, flex-start, stretch, 0.15rem);
+        flex: 1;
+        padding: 1.15rem 1.2rem 1.25rem;
+    }
+
+    &__name {
+        margin: 0;
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        color: v.$color5;
+    }
+
+    &__title {
+        margin: 0;
         font-size: 0.85rem;
-        color: v.$color1-2;
+        font-weight: 600;
+        color: v.$color1;
+    }
+
+    &__desc {
+        margin: 0.7rem 0 0;
+        font-size: 0.86rem;
+        line-height: 1.6;
+        color: v.$color-muted;
+    }
+
+    &__link {
+        @include m.flexbox(row, flex-start, center, 0.4rem);
+        margin-top: 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: v.$color1;
+        text-decoration: none;
+        transition: color 0.15s ease;
+
+        svg:first-of-type {
+            font-size: 0.95rem;
+        }
+
+        svg:last-of-type {
+            font-size: 0.85rem;
+            transition: transform 0.15s ease;
+        }
+
+        &:hover {
+            color: v.$color2;
+
+            svg:last-of-type {
+                transform: translateX(2px);
+            }
+        }
     }
 }

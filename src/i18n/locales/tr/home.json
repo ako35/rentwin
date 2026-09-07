@@ -38,7 +38,8 @@
     },
     "team": {
       "title1": "Bizim",
-      "title2": "Ekibimiz"
+      "title2": "Ekibimiz",
+      "linkedin": "LinkedIn profili"
     }
   },
   "offers": [
@@ -79,26 +80,29 @@
       "image": "patron.jpg",
       "name": "ÇAĞATAY ALTUNTAŞ",
       "title": "Kurucu Ortak ve İcra Kurulu Başkanı",
-      "desc": "ÇAĞATAY ALTUNTAŞ, Rentwin'in arkasındaki itici güçtür. Otomotiv mühendisliği ve iş dünyası geçmişiyle, araç kiralama sektörünü dönüştürmeyi hedefleyerek şirketi 2014 yılında kurdu. Stratejik operasyonları denetleyerek şirketin, müşterilere kendi ihtiyaçlarına uygun üst kalitede araçlar sunma misyonuna sadık kalmasını sağlıyor."
+      "desc": "Otomotiv mühendisliği ve iş dünyası geçmişiyle Rentwin'i 2014'te kurdu. Şirketin stratejisini ve filo kalitesini yönetiyor.",
+      "linkedin": ""
     },
     {
       "id": 2,
       "image": "person3.jpg",
       "name": "David Thompson",
       "title": "Teknoloji Direktörü",
-      "desc": "Rentwin'in Teknoloji Direktörü olarak David Thompson, yenilikçi teknolojinin şirketin hizmetlerine entegre edilmesinde büyük rol oynamıştır. 2017 yılında ekibe katılan David, müşteri odaklı teknoloji çözümleri geliştirme konusunda geniş bir deneyim getirmiştir. Yenilikçi vizyonu, müşterilerin araçlara göz atmasını, rezervasyon yapmasını ve kiralamasını her zamankinden daha kolay hale getiren Rentwin çevrimiçi rezervasyon sisteminin geliştirilmesine öncülük etmiştir."
+      "desc": "Rentwin'in çevrimiçi rezervasyon sistemini kurdu. 2017'den bu yana müşteri odaklı teknoloji çözümlerine liderlik ediyor.",
+      "linkedin": ""
     },
     {
       "id": 3,
       "image": "person2.jpg",
       "name": "Emily Wright",
       "title": "Operasyon Direktörü",
-      "desc": "Emily Wright, Rentwin'in iş stratejisinin şekillenmesinde etkili olmuştur. 2015 yılında ekibe katılan Emily, o zamandan beri şirketin operasyonlarını sadeleştirmek ve müşteriler için araç kiralama sürecini olabildiğince sorunsuz hale getirmek için yorulmadan çalışmıştır. Operasyonel yönetimdeki uzmanlığı, her kiralama noktasının Rentwin'in belirlediği yüksek standartları korumasını sağlar."
+      "desc": "2015'ten bu yana operasyon süreçlerini ve şube standartlarını yönetiyor; kiralama deneyimini uçtan uca sadeleştirdi.",
+      "linkedin": ""
     }
   ],
   "whatWeDo": {
     "title": "Ne Yapıyoruz",
-    "desc": "Rentwin'de sadece araç kiralamanın ötesine geçiyoruz. Müşterilerimizin çeşitli ihtiyaçlarına uygun kapsamlı ulaşım çözümleri sunuyoruz. Filomuz, şehir içi sürüş için mükemmel kompakt ve çevre dostu araçlardan, off-road maceraları ve aile tatilleri için ideal geniş ve sağlam SUV'lara kadar geniş bir araç yelpazesinden oluşuyor. Müşteri odaklı yaklaşımımızla araç kiralama deneyimini yeniden tasarladık; sadece bir araç değil, kalite, güvenilirlik ve kolaylık sözü de sunuyoruz. En son teknoloji rezervasyon sistemimiz, 7/24 müşteri hizmetimiz ve sürdürülebilirliğe olan bağlılığımızla gurur duyuyoruz. Filomuzdaki her araç, güvenli, konforlu ve keyifli bir sürüş deneyimi sağlamak için titizlikle bakımdan geçirilir. Rentwin'de sadece bir hizmet sunmuyoruz; unutulmaz yolculuklar yaratılmasına yardımcı oluyoruz.",
+    "desc": "Rentwin olarak bireysel ve kurumsal ihtiyaçlara özel, bakımlı ve geniş bir filoyla 7/24 kesintisiz kiralama hizmeti sunuyoruz. Şehir içi kompakt araçlardan arazi SUV'larına kadar her yolculuğa uygun çözüm ve son teknoloji rezervasyon sistemi.",
     "services": [
       { "id": 1, "title": "Bireysel Araç Kiralama" },
       { "id": 2, "title": "Kurumsal Filo Çözümleri" },

@@ -1,0 +1,12 @@
+.team {
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+        justify-content: center;
+        gap: 1.5rem;
+
+        @media (max-width: 620px) {
+            grid-template-columns: 1fr;
+        }
+    }
+}

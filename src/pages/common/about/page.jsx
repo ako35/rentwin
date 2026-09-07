@@ -25,6 +25,7 @@ const AboutPage = () => {
       <Team />
       <Spacer />
       <WhatWeDo />
+      <Spacer />
     </>
   )
 }

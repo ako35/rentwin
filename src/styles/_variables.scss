@@ -38,6 +38,9 @@ $color-muted: #475569;
 // Sunken ground (slate-100) — public marketing pages sit on this so white
 // surfaces (cards, header, search bar) read as raised.
 $surface-sunken: #f1f5f9;
+// Barely-there mint (green-50) — a soft brand-tinted panel ground, used where
+// a section should feel "green" without a bright block fill (e.g. What We Do).
+$surface-mint: #f0fdf4;
 // Dark navy "anchor" surfaces — the hero block and the top utility strip.
 // Deliberate depth anchors that pair with the brand green (kept for CTAs /
 // accents / the green bloom behind the hero art). Text on them is white.

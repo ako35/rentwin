@@ -23,6 +23,7 @@ const HomePage = () => {
       <Team />
       <Spacer />
       <WhatWeDo />
+      <Spacer />
     </>
   )
 }
