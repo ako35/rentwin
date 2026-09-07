@@ -498,67 +498,109 @@
     &.is-paid { color: v.$color2; }
   }
 
-  /* ---- Dönüş Ekstra: itemised return-charge matrix ---- */
+  /* ---- Dönüş Ekstra: quick chips -> add card -> list -> total ---- */
   &__rex {
+    // 1. quick-add chips — the only way to pick a category (no dropdown)
     &-chips {
       @include m.flexbox(row, flex-start, center, 0.4rem);
       flex-wrap: wrap;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.7rem;
 
       button {
         border: 1px solid v.$color2;
         background-color: v.$color4;
-        color: v.$color1;
+        color: v.$color2;
         border-radius: 999px;
-        padding: 0.2rem 0.7rem;
+        padding: 0.24rem 0.72rem;
         font-size: 0.78rem;
         font-weight: 600;
+        transition: background-color 0.12s ease, color 0.12s ease;
 
         &:hover,
         &.is-active {
           background-color: v.$color2;
-          color: v.$color4;
+          color: #fff;
         }
       }
     }
 
-    &-calc {
-      margin-bottom: 0.7rem;
-      padding: 0.55rem 0.65rem;
-      background-color: rgba(v.$accent-amber, 0.07);
-      border: 1px solid rgba(v.$accent-amber, 0.4);
-      border-radius: 8px;
+    // 2. the add / edit / calculator card — a sunken box clearly lifted off the
+    // list below it
+    &-card {
+      margin-bottom: 0.8rem;
+      padding: 0.7rem 0.75rem 0.75rem;
+      background-color: v.$surface-sunken;
+      border: 1px solid v.$color3;
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 10px 22px -16px rgba(15, 23, 42, 0.25);
 
       &-head {
-        @include m.flexbox(row, flex-start, center, 0.35rem);
-        font-size: 0.76rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: #9a6a00;
-        margin-bottom: 0.5rem;
-      }
+        @include m.flexbox(row, flex-start, center, 0.5rem);
+        margin-bottom: 0.6rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: v.$color5_3;
 
-      &-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.4rem;
-
-        @media (max-width: 640px) { grid-template-columns: 1fr 1fr; }
-
-        .form-label { margin-bottom: 0.05rem; font-size: 0.68rem; font-weight: 600; }
-        .form-control { font-size: 0.82rem; }
+        &--calc {
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          font-size: 0.74rem;
+          font-weight: 700;
+          color: #9a6a00;
+        }
       }
 
       &-foot {
         @include m.flexbox(row, space-between, center, 0.5rem);
         flex-wrap: wrap;
-        margin-top: 0.55rem;
+        margin-top: 0.6rem;
         font-size: 0.8rem;
         color: v.$color5_2;
 
         strong { color: v.$color5; }
       }
+
+      &-actions {
+        @include m.flexbox(row, flex-end, center, 0.5rem);
+      }
+    }
+
+    // wide Açıklama, compact Tutar — no Adet field (return extras are qty 1)
+    &-form-fields {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(90px, 1fr);
+      gap: 0.4rem 0.6rem;
+      align-items: end;
+
+      @media (max-width: 480px) { grid-template-columns: 1fr; }
+
+      .form-label { margin-bottom: 0.05rem; font-size: 0.7rem; font-weight: 600; }
+      .form-control { font-size: 0.85rem; }
+    }
+
+    &-calc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.4rem;
+
+      @media (max-width: 640px) { grid-template-columns: 1fr 1fr; }
+
+      .form-label { margin-bottom: 0.05rem; font-size: 0.68rem; font-weight: 600; }
+      .form-control { font-size: 0.82rem; }
+    }
+
+    // 3. list
+    &-table {
+      thead th {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: v.$color5_3;
+        border-bottom-color: v.$color3;
+      }
+
+      tbody td { font-size: 0.8rem; vertical-align: middle; }
+      tbody tr:last-child td { border-bottom: none; }
     }
 
     &-badge {
@@ -585,19 +627,30 @@
         background-color: rgba(v.$color1, 0.14);
         color: v.$color2;
       }
+
+      &.cat-ONE_WAY {
+        background-color: rgba(v.$anchor-navy, 0.12);
+        color: v.$anchor-navy;
+      }
     }
 
+    // 4. subtotal — a solid green-tinted footer that explains where the money goes
     &-total {
       @include m.flexbox(row, space-between, center, 1rem);
-      margin-top: 0.6rem;
-      padding: 0.45rem 0.7rem;
-      background-color: v.$color4;
-      border: 1px solid v.$color3;
-      border-radius: 8px;
-      font-size: 0.82rem;
+      margin-top: 0.75rem;
+      padding: 0.6rem 0.8rem;
+      background-color: rgba(v.$color1, 0.08);
+      border: 1px solid rgba(v.$color1, 0.28);
+      border-radius: 10px;
 
-      span { color: v.$color5_3; }
-      strong { font-size: 0.95rem; font-weight: 800; color: v.$color5; }
+      strong { font-size: 1.05rem; font-weight: 800; color: v.$color5; }
+    }
+
+    &-total-label {
+      @include m.flexbox(column, center, flex-start, 0.05rem);
+
+      span { font-size: 0.82rem; font-weight: 600; color: v.$color5_2; }
+      small { font-size: 0.68rem; color: v.$color5_4; }
     }
   }
 

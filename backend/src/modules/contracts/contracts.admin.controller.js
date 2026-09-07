@@ -15,6 +15,7 @@ const { getBusyVehicleIds } = require("../../lib/availability");
 const RETURN_CHARGE_CATEGORIES = [
   "KM_EXCESS",
   "FUEL",
+  "ONE_WAY",
   "DAMAGE",
   "ROADSIDE",
   "CLEANING",

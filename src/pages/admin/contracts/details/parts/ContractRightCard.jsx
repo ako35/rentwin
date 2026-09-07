@@ -115,6 +115,7 @@ const ContractRightCard = ({
               const a = computeAllowedKm(formik.values, billableDays);
               return Number.isFinite(a) ? Math.round(a) : "";
             })()}
+            kmOverageFee={formik.values.kmOverageFee}
             onChange={loadData}
             money={money}
           />

@@ -6,16 +6,32 @@ import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import SaveFirstHint from "./SaveFirstHint";
 
-// Return-time charge matrix: quick-add chips per category, a km-excess
-// calculator, an inline add/edit row and a live "return extras" total. The
-// summed lines are cached on Contract.returnExtraAmount by the backend, which
-// feeds the grand total — so onChange reloads the contract.
-const CATEGORIES = ["HGS_OGS", "KM_EXCESS", "DAMAGE", "ROADSIDE", "CLEANING", "FUEL", "OTHER"];
-const QUICK = ["HGS_OGS", "KM_EXCESS", "DAMAGE", "ROADSIDE", "CLEANING"];
+// Return-time charge list. A row of quick-add chips arms a category, which opens
+// either the km-excess calculator (KM_EXCESS) or a small add card (everything
+// else) — there is no separate category dropdown. The summed lines are cached on
+// Contract.returnExtraAmount by the backend and flow straight into the grand
+// total, so onChange reloads the contract.
+const CATEGORIES = [
+  "HGS_OGS",
+  "KM_EXCESS",
+  "ONE_WAY",
+  "DAMAGE",
+  "ROADSIDE",
+  "CLEANING",
+  "FUEL",
+  "OTHER",
+];
+const EMPTY = { category: null, description: "", amount: "" };
 
-const EMPTY = { category: "HGS_OGS", description: "", amount: "", quantity: 1 };
-
-const ReturnExtraTab = ({ isCreate, contractId, pickUpKm, kmLimit, onChange, money }) => {
+const ReturnExtraTab = ({
+  isCreate,
+  contractId,
+  pickUpKm,
+  kmLimit,
+  kmOverageFee,
+  onChange,
+  money,
+}) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.returnCharges.${key}`, opts);
   const rc = (key) => t(`reservations.contract.records.${key}`);
@@ -76,35 +92,45 @@ const ReturnExtraTab = ({ isCreate, contractId, pickUpKm, kmLimit, onChange, mon
     }
   };
 
-  const submit = (e) => {
-    e?.preventDefault?.();
-    if (!saving) persist(form);
+  const submit = () => {
+    if (saving || !form.category || form.amount === "") return;
+    persist({ category: form.category, description: form.description, amount: form.amount });
   };
 
   const startEdit = (row) => {
+    setCalc(null);
     setEditing(row);
-    setForm({
-      category: row.category,
-      description: row.description || "",
-      amount: row.amount ?? "",
-      quantity: row.quantity ?? 1,
-    });
+    setForm({ category: row.category, description: row.description || "", amount: row.amount ?? "" });
   };
 
   const remove = (row) => {
-    utils.functions.swalQuestion(rc("deleteConfirm"), rc("deleteConfirmText"), { danger: true }).then(async (r) => {
-      if (!r.isConfirmed) return;
-      try {
-        await services.contract.deleteRecord("returnCharges", row.id);
-        await afterChange();
-      } catch {
-        utils.functions.swalToast(rc("error"), "error");
-      }
-    });
+    utils.functions
+      .swalQuestion(rc("deleteConfirm"), rc("deleteConfirmText"), { danger: true })
+      .then(async (r) => {
+        if (!r.isConfirmed) return;
+        try {
+          await services.contract.deleteRecord("returnCharges", row.id);
+          await afterChange();
+        } catch {
+          utils.functions.swalToast(rc("error"), "error");
+        }
+      });
   };
 
-  const openCalc = () =>
-    setCalc({ returnKm: "", allowedKm: kmLimit ? String(kmLimit) : "", unitPrice: "" });
+  const arm = (cat) => {
+    setEditing(null);
+    if (cat === "KM_EXCESS") {
+      setForm(EMPTY);
+      setCalc({
+        returnKm: "",
+        allowedKm: kmLimit ? String(kmLimit) : "",
+        unitPrice: kmOverageFee ? String(kmOverageFee) : "",
+      });
+    } else {
+      setCalc(null);
+      setForm({ category: cat, description: "", amount: "" });
+    }
+  };
 
   const calcExcessKm =
     calc && Number(calc.returnKm)
@@ -120,19 +146,19 @@ const ReturnExtraTab = ({ isCreate, contractId, pickUpKm, kmLimit, onChange, mon
       quantity: 1,
     }).then(() => setCalc(null));
 
+  const formOpen = Boolean(form.category || editing) && !calc;
+
   return (
     <div className="contract-page__rex">
       <div className="contract-page__rex-chips">
-        {QUICK.map((cat) => (
+        {CATEGORIES.map((cat) => (
           <button
             key={cat}
             type="button"
-            className={form.category === cat && !editing ? "is-active" : ""}
-            onClick={() => {
-              reset();
-              if (cat === "KM_EXCESS") openCalc();
-              else setForm({ ...EMPTY, category: cat });
-            }}
+            className={
+              (cat === "KM_EXCESS" ? Boolean(calc) : form.category === cat) ? "is-active" : ""
+            }
+            onClick={() => arm(cat)}
           >
             + {c(`cat.${cat}`)}
           </button>
@@ -140,8 +166,8 @@ const ReturnExtraTab = ({ isCreate, contractId, pickUpKm, kmLimit, onChange, mon
       </div>
 
       {calc && (
-        <div className="contract-page__rex-calc">
-          <div className="contract-page__rex-calc-head">
+        <div className="contract-page__rex-card">
+          <div className="contract-page__rex-card-head contract-page__rex-card-head--calc">
             <BsCalculator /> {c("kmCalcTitle")}
           </div>
           <div className="contract-page__rex-calc-grid">
@@ -174,19 +200,18 @@ const ReturnExtraTab = ({ isCreate, contractId, pickUpKm, kmLimit, onChange, mon
               />
             </Form.Group>
           </div>
-          <div className="contract-page__rex-calc-foot">
+          <div className="contract-page__rex-card-foot">
             <span>
               {c("excessKm")}: <strong>{calcExcessKm} km</strong> · {c("calcAmount")}:{" "}
               <strong>{money(calcAmount)} TL</strong>
             </span>
-            <div>
+            <div className="contract-page__rex-card-actions">
               <Button type="button" variant="outline-secondary" size="sm" onClick={() => setCalc(null)}>
                 {rc("cancel")}
               </Button>
               <Button
                 type="button"
                 size="sm"
-                className="ms-2"
                 disabled={saving || calcExcessKm <= 0 || calcAmount <= 0}
                 onClick={addExcessLine}
               >
@@ -197,7 +222,57 @@ const ReturnExtraTab = ({ isCreate, contractId, pickUpKm, kmLimit, onChange, mon
         </div>
       )}
 
-      <Table hover size="sm" className="mb-2">
+      {formOpen && (
+        <div
+          className="contract-page__rex-card"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+              e.preventDefault();
+              submit();
+            }
+          }}
+        >
+          <div className="contract-page__rex-card-head">
+            <span className={`contract-page__rex-badge cat-${form.category}`}>
+              {c(`cat.${form.category}`)}
+            </span>
+            <span>{editing ? c("editingLine") : c("newLine")}</span>
+          </div>
+          <div className="contract-page__rex-form-fields">
+            <Form.Group>
+              <Form.Label>{c("description")}</Form.Label>
+              <Form.Control
+                autoFocus
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>{c("amount")}</Form.Label>
+              <Form.Control
+                type="number"
+                value={form.amount}
+                onChange={(e) => setForm({ ...form, amount: e.target.value })}
+              />
+            </Form.Group>
+          </div>
+          <div className="contract-page__rex-card-actions">
+            <Button type="button" variant="outline-secondary" size="sm" onClick={reset}>
+              {rc("cancel")}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              disabled={saving || form.amount === ""}
+              onClick={submit}
+            >
+              {saving && <Spinner animation="border" size="sm" />} {editing ? rc("save") : rc("add")}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <Table hover size="sm" className="contract-page__rex-table mb-0">
         <thead>
           <tr>
             <th>{c("category")}</th>
@@ -250,67 +325,11 @@ const ReturnExtraTab = ({ isCreate, contractId, pickUpKm, kmLimit, onChange, mon
         </tbody>
       </Table>
 
-      <div
-        className="contract-records__form"
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
-            e.preventDefault();
-            submit(e);
-          }
-        }}
-      >
-        <div className="contract-records__fields">
-          <Form.Group>
-            <Form.Label>{c("category")}</Form.Label>
-            <Form.Select
-              value={form.category}
-              onChange={(e) => setForm({ ...form, category: e.target.value })}
-            >
-              {CATEGORIES.map((cat) => (
-                <option key={cat} value={cat}>
-                  {c(`cat.${cat}`)}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>{c("description")}</Form.Label>
-            <Form.Control
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>{c("amount")}</Form.Label>
-            <Form.Control
-              type="number"
-              value={form.amount}
-              onChange={(e) => setForm({ ...form, amount: e.target.value })}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>{c("quantity")}</Form.Label>
-            <Form.Control
-              type="number"
-              value={form.quantity}
-              onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-            />
-          </Form.Group>
-        </div>
-        <div className="contract-records__form-actions">
-          {editing && (
-            <Button type="button" variant="outline-secondary" size="sm" onClick={reset}>
-              {rc("cancel")}
-            </Button>
-          )}
-          <Button type="button" size="sm" disabled={saving} onClick={submit}>
-            {saving && <Spinner animation="border" size="sm" />} {editing ? rc("save") : rc("add")}
-          </Button>
-        </div>
-      </div>
-
       <div className="contract-page__rex-total">
-        <span>{c("total")}</span>
+        <div className="contract-page__rex-total-label">
+          <span>{c("total")}</span>
+          <small>{c("totalHint")}</small>
+        </div>
         <strong>{money(total)} TL</strong>
       </div>
     </div>

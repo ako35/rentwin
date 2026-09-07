@@ -16,7 +16,7 @@ export const EMPTY_CONTRACT = {
   contractNo: "", customerNote: "", adminNote: "", flightNo: "",
   pickUpKm: "", pickUpFuelEighths: "",
   returnKm: "", returnFuelEighths: "",
-  dailyPrice: "", oneWayFee: "", returnExtraAmount: "",
+  dailyPrice: "", returnExtraAmount: "",
   deposit: "", kmLimit: "", unlimitedKm: false,
   dailyKmLimit: 300, monthlyKmLimit: "", kmOverageFee: "", fuelFeePerEighth: "",
   vatRate: 20,
@@ -72,7 +72,7 @@ export const computeBillableDays = ({ pickUpDate, pickUpTime, dropOffDate, dropO
 export const computePricing = (values, billableDays) => {
   const n = (x) => Number(x) || 0;
   const rental = n(values.dailyPrice) * billableDays;
-  const addOns = n(values.oneWayFee) + n(values.returnExtraAmount);
+  const addOns = n(values.returnExtraAmount);
   const subtotal = rental + addOns;
   const vat = values.vatRate === "" ? 20 : n(values.vatRate);
   const total = subtotal * (1 + vat / 100);
@@ -122,9 +122,9 @@ export const buildContractDto = (values) => ({
   flightNo: values.flightNo,
   pickUpKm: values.pickUpKm, pickUpFuelEighths: values.pickUpFuelEighths,
   dailyPrice: values.dailyPrice,
-  oneWayFee: values.oneWayFee,
-  // returnExtraAmount is derived from the itemised return charges (ReturnExtraTab)
-  // and cached server-side — it is never written from this form.
+  // extrasTotal / oneWayFee are no longer written from this form — one-off
+  // charges are itemised on the "Dönüş Ekstra" tab and roll up into
+  // returnExtraAmount, which the backend derives and caches.
   deposit: values.deposit, kmLimit: values.unlimitedKm ? "" : values.kmLimit,
   unlimitedKm: values.unlimitedKm,
   dailyKmLimit: values.unlimitedKm ? "" : values.dailyKmLimit,
@@ -151,7 +151,7 @@ export const contractToFormValues = (r) => ({
   returnKm: r.returnKm ?? "",
   returnFuelEighths: r.returnFuelEighths != null ? String(r.returnFuelEighths) : "",
   dailyPrice: r.dailyPrice ?? "",
-  oneWayFee: r.oneWayFee ?? "", returnExtraAmount: r.returnExtraAmount ?? "",
+  returnExtraAmount: r.returnExtraAmount ?? "",
   deposit: r.deposit ?? "", kmLimit: r.kmLimit ?? "",
   unlimitedKm: r.unlimitedKm ?? true,
   dailyKmLimit: r.dailyKmLimit ?? "", monthlyKmLimit: r.monthlyKmLimit ?? "",
