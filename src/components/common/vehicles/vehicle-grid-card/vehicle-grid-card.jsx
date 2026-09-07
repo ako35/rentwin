@@ -23,12 +23,14 @@ const VehicleGridCard = (props) => {
   ];
   if (props.modelYear) specs.push({ icon: <BsCalendar3 />, label: String(props.modelYear) });
 
+  const imageId = Array.isArray(props.image) ? props.image[0] : props.image;
+
   return (
     <Link to={`${routes.vehicles}/${props.id}`} className="vehicle-grid-card">
       <div className="vehicle-grid-card__image">
-        {props.image ? (
+        {imageId ? (
           <img
-            src={`${API_URL}/files/display/${props.image}`}
+            src={`${API_URL}/files/display/${imageId}`}
             alt={name}
             loading="lazy"
             decoding="async"
