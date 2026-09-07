@@ -770,6 +770,7 @@
     "delete": "Sil",
     "name": "İsim",
     "email": "E-posta",
+    "phone": "Telefon",
     "subject": "Konu",
     "message": "Mesaj",
     "toasts": {

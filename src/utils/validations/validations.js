@@ -55,17 +55,19 @@ export const contactFormValidationSchema = Yup.object({
         .min(2, t("contact.nameMin"))
         .max(50, t("contact.nameMax"))
         .required(t("contact.nameRequired")),
-    subject: Yup.string()
-        .min(5, t("contact.subjectMin"))
-        .max(50, t("contact.subjectMax"))
-        .required(t("contact.subjectRequired")),
-    body: Yup.string()
-        .min(20, t("contact.bodyMin"))
-        .max(200, t("contact.bodyMax"))
-        .required(t("contact.bodyRequired")),
     email: Yup.string()
         .email(t("contact.emailInvalid"))
         .required(t("contact.emailRequired")),
+    phone: Yup.string()
+        .matches(/^[0-9+()\s-]{7,20}$/, { message: t("contact.phoneInvalid"), excludeEmptyString: true }),
+    subject: Yup.string()
+        .required(t("contact.subjectRequired")),
+    body: Yup.string()
+        .min(20, t("contact.bodyMin"))
+        .max(500, t("contact.bodyMax"))
+        .required(t("contact.bodyRequired")),
+    kvkk: Yup.boolean()
+        .oneOf([true], t("contact.kvkkRequired")),
 });
 
 // HOMEPAGE RESERVATION SEARCH

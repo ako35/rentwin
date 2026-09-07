@@ -770,6 +770,7 @@
     "delete": "Delete",
     "name": "Name",
     "email": "Email",
+    "phone": "Phone",
     "subject": "Subject",
     "message": "Message",
     "toasts": {

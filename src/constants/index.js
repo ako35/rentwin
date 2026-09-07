@@ -146,6 +146,7 @@ const website = {
   addressCountry: "TR",
   phone: "0507 350 31 35",
   phoneE164: "+905073503135",
+  whatsapp: "https://wa.me/905073503135",
   mapUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rentwinAddress)}`,
   mapEmbedUrl: `https://www.google.com/maps?q=${encodeURIComponent(rentwinAddress)}&output=embed`,
   email: "info@rentwin.com.tr",

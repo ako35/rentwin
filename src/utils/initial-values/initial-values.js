@@ -23,9 +23,11 @@ export const registerFormInitialValues = {
 // CONTACT FORM
 export const contactFormInitialValues = {
     name: "",
+    email: "",
+    phone: "",
     subject: "",
     body: "",
-    email: "",
+    kvkk: false,
 };
 
 // HOMEPAGE RESERVATION SEARCH

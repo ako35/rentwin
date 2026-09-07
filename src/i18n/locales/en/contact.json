@@ -2,13 +2,29 @@
   "pageTitle": "Contact Us",
   "seoTitle": "Contact Us | Rentwin Car Rental",
   "seoDescription": "Reach the Rentwin customer service team for bookings, questions, and feedback. We're always happy to help.",
-  "desc": "At Rentwin, we're always ready to assist you. Our customer service team is available 24/7 to help with your queries, bookings, and feedback. Please don't hesitate to reach out to us via any of the following channels. We look forward to serving you and making your car rental experience the best it can be",
+  "desc": "At Rentwin, we're always ready to assist you. Our customer service team is available 24/7 for your questions, bookings and feedback. Reach us through any of the channels below, or send your request using the form.",
+  "info": {
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "whatsapp": "Message us on WhatsApp"
+  },
   "form": {
     "name": "Name",
     "email": "Email",
+    "phone": "Phone Number",
     "subject": "Subject",
+    "subjectPlaceholder": "Select a subject",
+    "subjects": [
+      "Reservation Request",
+      "Fleet / Corporate Rental",
+      "Complaint / Suggestion",
+      "Other"
+    ],
     "message": "Message",
+    "kvkk": "I have read the <kvkklink>Privacy Notice</kvkklink> and consent to the processing of my personal data.",
     "send": "Send",
-    "successToast": "Message sent successfully!"
+    "successToast": "Message sent successfully!",
+    "errorToast": "Could not send the message, please try again."
   }
 }

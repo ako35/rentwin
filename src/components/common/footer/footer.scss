@@ -96,22 +96,23 @@ $breakpoint: 992px;
         color: rgba(255, 255, 255, 0.72);
     }
 
-    // --- contact info (shared component, re-themed for the dark ground) --
-    .contact-info {
-        color: rgba(255, 255, 255, 0.72);
+    // --- contact info (shared component, plain variant re-themed for dark) --
+    .contact-info--plain {
+        @include m.reset-list;
         @include m.flexbox(column, flex-start, flex-start, 0.85rem);
 
-        .icons svg {
-            color: v.$color1;
-            font-size: 1.1rem;
-        }
-
-        a {
+        li a {
+            @include m.flexbox(row, flex-start, center, 0.55rem);
             color: rgba(255, 255, 255, 0.72);
+            text-decoration: none;
 
-            &:hover {
-                color: #fff;
+            svg {
+                flex-shrink: 0;
+                color: v.$color1;
+                font-size: 1.1rem;
             }
+
+            &:hover { color: #fff; }
         }
     }
 
@@ -150,7 +151,7 @@ $breakpoint: 992px;
         }
 
         ul,
-        .contact-info,
+        .contact-info--plain,
         &__brand {
             align-items: center;
         }

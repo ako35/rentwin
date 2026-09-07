@@ -40,12 +40,14 @@
     "nameRequired": "Please enter your name",
     "subjectMin": "Subject must be at least 5 characters",
     "subjectMax": "Subject must be at most 50 characters",
-    "subjectRequired": "Please enter your subject",
-    "bodyMin": "Body must be at least 20 characters",
-    "bodyMax": "Body must be at most 200 characters",
-    "bodyRequired": "Please enter your body",
+    "subjectRequired": "Please select a subject",
+    "bodyMin": "Message must be at least 20 characters",
+    "bodyMax": "Message must be at most 500 characters",
+    "bodyRequired": "Please enter your message",
     "emailInvalid": "Invalid email address",
-    "emailRequired": "Please enter your email address"
+    "emailRequired": "Please enter your email address",
+    "phoneInvalid": "Please enter a valid phone number",
+    "kvkkRequired": "Please accept the Privacy Notice to continue"
   },
   "reservationSearch": {
     "pickUpLocationRequired": "Select a pick-up location",

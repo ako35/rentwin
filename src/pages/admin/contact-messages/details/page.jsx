@@ -26,6 +26,10 @@ const AdminContactMessageDetailsPage = () => {
       content: "email",
     },
     {
+      title: t("contactMessages.phone"),
+      content: "phone",
+    },
+    {
       title: t("contactMessages.subject"),
       content: "subject",
     },
@@ -93,7 +97,7 @@ const AdminContactMessageDetailsPage = () => {
               <TableRow
                 key={index}
                 title={item.title}
-                content={message[item.content]}
+                content={message[item.content] || "—"}
               />
             ))}
           </tbody>

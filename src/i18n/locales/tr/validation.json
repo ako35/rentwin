@@ -40,12 +40,14 @@
     "nameRequired": "Lütfen isminizi girin",
     "subjectMin": "Konu en az 5 karakter olmalıdır",
     "subjectMax": "Konu en fazla 50 karakter olmalıdır",
-    "subjectRequired": "Lütfen konu girin",
+    "subjectRequired": "Lütfen bir konu seçin",
     "bodyMin": "Mesaj en az 20 karakter olmalıdır",
-    "bodyMax": "Mesaj en fazla 200 karakter olmalıdır",
+    "bodyMax": "Mesaj en fazla 500 karakter olmalıdır",
     "bodyRequired": "Lütfen mesajınızı girin",
     "emailInvalid": "Geçersiz e-posta adresi",
-    "emailRequired": "Lütfen e-posta adresinizi girin"
+    "emailRequired": "Lütfen e-posta adresinizi girin",
+    "phoneInvalid": "Lütfen geçerli bir telefon numarası girin",
+    "kvkkRequired": "Devam etmek için KVKK Aydınlatma Metni'ni onaylayın"
   },
   "reservationSearch": {
     "pickUpLocationRequired": "Alış yerini seçin",

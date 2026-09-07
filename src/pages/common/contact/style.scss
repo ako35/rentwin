@@ -1,14 +1,20 @@
-@use '../../../styles/mixins' as m;
+.contact-info-container {
+  p {
+    margin-top: 2rem;
+    line-height: 1.7;
+  }
+}
 
-.contact-info-container{
-
-    p{
-        text-align: justify;
-        margin-top: 2rem;
+.contact-form {
+  .contact-form__kvkk {
+    .form-check-label {
+      font-size: 0.88rem;
+      line-height: 1.5;
     }
 
-    .contact-info{
-        @include m.flexbox(column, space-between, flex-start, 1rem);
-        margin-bottom: 2rem;
+    a {
+      font-weight: 600;
+      text-decoration: underline;
     }
+  }
 }

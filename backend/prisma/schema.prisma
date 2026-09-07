@@ -496,6 +496,7 @@ model ContactMessage {
   id        String   @id @default(uuid())
   name      String
   email     String
+  phone     String?
   subject   String
   body      String
   createdAt DateTime @default(now())

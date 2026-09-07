@@ -1,26 +1,79 @@
 @use '../../../../styles/variables' as v;
 @use '../../../../styles/mixins' as m;
 
-.contact-info{
-    color: v.$color1;
+.contact-info {
+  @include m.flexbox(column, flex-start, stretch, 1rem);
+
+  &__cards {
     @include m.reset-list;
+    @include m.flexbox(column, flex-start, stretch, 0.75rem);
+  }
 
-    .icons{
-        
-        &:hover{
-            color: v.$color2;
-        }
+  &__card {
+    @include m.flexbox(row, flex-start, center, 0.9rem);
+    padding: 0.9rem 1rem;
+    background-color: #fff;
+    border: 1px solid v.$color3;
+    border-radius: 14px;
+    text-decoration: none;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 
-        svg{
-            font-size: 1.2rem;
-        }
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px -18px rgba(15, 23, 42, 0.3);
+      border-color: v.$color1_4;
     }
+  }
 
-    a{
-        color: v.$color1;
+  &__icon {
+    @include m.flexbox(row, center, center, 0);
+    flex-shrink: 0;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 12px;
+    background-color: rgba(v.$color1, 0.12);
+    color: v.$color2;
+    font-size: 1.3rem;
+  }
 
-        &:hover{
-            color: v.$color2;
-        }
+  &__body {
+    @include m.flexbox(column, center, flex-start, 0.1rem);
+    min-width: 0;
+  }
+
+  &__label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: v.$color5_4;
+  }
+
+  &__value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: v.$color5;
+    word-break: break-word;
+  }
+
+  &__whatsapp {
+    @include m.flexbox(row, center, center, 0.55rem);
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    background-color: #25d366;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: filter 0.15s ease, transform 0.15s ease;
+
+    svg { font-size: 1.35rem; }
+
+    &:hover {
+      color: #fff;
+      filter: brightness(0.95);
+      transform: translateY(-2px);
     }
+  }
 }

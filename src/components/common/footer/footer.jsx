@@ -81,7 +81,7 @@ const Footer = () => {
 
           <Col lg={6} xl={3}>
             <h2>{t("contactUs")}</h2>
-            <ContactInfo />
+            <ContactInfo variant="plain" />
           </Col>
         </Row>
 

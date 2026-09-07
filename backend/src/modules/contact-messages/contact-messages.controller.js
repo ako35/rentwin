@@ -6,12 +6,14 @@ const asyncHandler = require("../../middleware/async-handler");
 const ALLOWED_SORT_FIELDS = ["id", "name", "email", "createdAt"];
 
 const sendMessage = asyncHandler(async (req, res) => {
-  const { name, email, subject, body } = req.body;
+  const { name, email, phone, subject, body } = req.body;
   if (!name || !email || !subject || !body) {
     throw new HttpError(400, "Missing required fields.");
   }
 
-  const message = await prisma.contactMessage.create({ data: { name, email, subject, body } });
+  const message = await prisma.contactMessage.create({
+    data: { name, email, phone: (phone || "").trim() || null, subject, body },
+  });
   res.status(201).json(message);
 });
 
