@@ -54,7 +54,10 @@ const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionT
           </span>
         </div>
         <AmountRow label={c("rentalAmount")} value={money(pricing.rental)} />
-        <InputRow formik={formik} name="extrasTotal" label={c("extrasTotal")} />
+        {/* Read-only — the sum of the itemised charges on the "Dönüş Ekstra" tab
+            (km overage, missing fuel, HGS, damage …). Priced from the rates in
+            the Limitler section and posted automatically on vehicle return. */}
+        <AmountRow label={c("extrasTotal")} value={money(num(formik.values.returnExtraAmount))} />
         <InputRow formik={formik} name="oneWayFee" label={c("oneWayFee")} />
         <AmountRow label={c("subtotal")} value={money(pricing.rental + pricing.addOns)} emph />
       </section>
@@ -94,9 +97,6 @@ const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionT
       <section className="pricing__group">
         <h4>{c("pricingGroups.taxTotal")}</h4>
         {extensionTotal > 0 && <AmountRow label={c("uzatmaAmount")} value={money(extensionTotal)} />}
-        {num(formik.values.returnExtraAmount) > 0 && (
-          <AmountRow label={c("returnExtraAmount")} value={money(formik.values.returnExtraAmount)} />
-        )}
         <InputRow formik={formik} name="vatRate" label={c("vatRate")} suffix="%" />
         <AmountRow label={c("contractAmount")} value={money(pricing.subtotal)} />
       </section>

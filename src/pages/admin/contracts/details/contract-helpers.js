@@ -16,7 +16,7 @@ export const EMPTY_CONTRACT = {
   contractNo: "", customerNote: "", adminNote: "", flightNo: "",
   pickUpKm: "", pickUpFuelEighths: "",
   returnKm: "", returnFuelEighths: "",
-  dailyPrice: "", extrasTotal: "", oneWayFee: "", returnExtraAmount: "",
+  dailyPrice: "", oneWayFee: "", returnExtraAmount: "",
   deposit: "", kmLimit: "", unlimitedKm: false,
   dailyKmLimit: 300, monthlyKmLimit: "", kmOverageFee: "", fuelFeePerEighth: "",
   vatRate: 20,
@@ -72,7 +72,7 @@ export const computeBillableDays = ({ pickUpDate, pickUpTime, dropOffDate, dropO
 export const computePricing = (values, billableDays) => {
   const n = (x) => Number(x) || 0;
   const rental = n(values.dailyPrice) * billableDays;
-  const addOns = n(values.extrasTotal) + n(values.oneWayFee) + n(values.returnExtraAmount);
+  const addOns = n(values.oneWayFee) + n(values.returnExtraAmount);
   const subtotal = rental + addOns;
   const vat = values.vatRate === "" ? 20 : n(values.vatRate);
   const total = subtotal * (1 + vat / 100);
@@ -121,7 +121,7 @@ export const buildContractDto = (values) => ({
   customerNote: values.customerNote, adminNote: values.adminNote,
   flightNo: values.flightNo,
   pickUpKm: values.pickUpKm, pickUpFuelEighths: values.pickUpFuelEighths,
-  dailyPrice: values.dailyPrice, extrasTotal: values.extrasTotal,
+  dailyPrice: values.dailyPrice,
   oneWayFee: values.oneWayFee,
   // returnExtraAmount is derived from the itemised return charges (ReturnExtraTab)
   // and cached server-side — it is never written from this form.
@@ -150,7 +150,7 @@ export const contractToFormValues = (r) => ({
   pickUpFuelEighths: r.pickUpFuelEighths != null ? String(r.pickUpFuelEighths) : "",
   returnKm: r.returnKm ?? "",
   returnFuelEighths: r.returnFuelEighths != null ? String(r.returnFuelEighths) : "",
-  dailyPrice: r.dailyPrice ?? "", extrasTotal: r.extrasTotal ?? "",
+  dailyPrice: r.dailyPrice ?? "",
   oneWayFee: r.oneWayFee ?? "", returnExtraAmount: r.returnExtraAmount ?? "",
   deposit: r.deposit ?? "", kmLimit: r.kmLimit ?? "",
   unlimitedKm: r.unlimitedKm ?? true,

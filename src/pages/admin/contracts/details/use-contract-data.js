@@ -4,8 +4,8 @@ import { services } from "../../../../services";
 import { EMPTY_CONTRACT, fetchCustomers, contractToFormValues } from "./contract-helpers";
 
 // Owns every piece of data the contract screen loads — reference lists
-// (vehicles / branches / extras catalog), the customer list, and, in edit mode,
-// the reservation itself plus its payments / extensions / invoice.
+// (vehicles / locations), the customer list, and, in edit mode, the reservation
+// itself plus its payments / extensions / invoice.
 export const useContractData = ({ isCreate, contractId }) => {
   const [loading, setLoading] = useState(true);
   const [vehicles, setVehicles] = useState([]);
@@ -16,7 +16,6 @@ export const useContractData = ({ isCreate, contractId }) => {
   const [initialValues, setInitialValues] = useState(EMPTY_CONTRACT);
   const [availableCars, setAvailableCars] = useState([]);
   const [payments, setPayments] = useState([]);
-  const [catalog, setCatalog] = useState([]);
   const [extensions, setExtensions] = useState([]);
   const [vehicleChanges, setVehicleChanges] = useState([]);
   const [invoice, setInvoice] = useState(null);
@@ -38,14 +37,12 @@ export const useContractData = ({ isCreate, contractId }) => {
   const refreshCustomers = () => fetchCustomers().then(setCustomers).catch(() => {});
 
   const loadRefData = async () => {
-    const [v, loc, cat] = await Promise.all([
+    const [v, loc] = await Promise.all([
       services.vehicle.getVehicles(),
       services.location.getLocations().catch(() => []),
-      services.extra.getExtras().catch(() => []),
     ]);
     setVehicles(v || []);
     setLocations(loc || []);
-    setCatalog(cat || []);
   };
 
   const loadCreate = async () => {
@@ -102,7 +99,7 @@ export const useContractData = ({ isCreate, contractId }) => {
   return {
     loading,
     vehicles, locations, customers, customer, meta,
-    initialValues, availableCars, payments, catalog, extensions, vehicleChanges, invoice,
+    initialValues, availableCars, payments, extensions, vehicleChanges, invoice,
     setCustomers, setAvailableCars, setInvoice,
     loadData, loadPayments, refreshCustomer, refreshCustomers,
   };

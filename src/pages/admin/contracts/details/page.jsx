@@ -11,7 +11,6 @@ import { Loading } from "../../../../components";
 import { useContractData } from "./use-contract-data";
 import ContractRibbon from "./parts/ContractRibbon";
 import VehicleSection from "./parts/VehicleSection";
-import ExtrasSection from "./parts/ExtrasSection";
 import KbsSection from "./parts/KbsSection";
 import ContractRightCard from "./parts/ContractRightCard";
 import ContractActions from "./parts/ContractActions";
@@ -46,7 +45,7 @@ const ContractDetail = () => {
   const {
     loading,
     vehicles, locations, customers, customer, meta,
-    initialValues, availableCars, payments, catalog, extensions, vehicleChanges, invoice,
+    initialValues, availableCars, payments, extensions, vehicleChanges, invoice,
     setCustomers, setAvailableCars, setInvoice,
     loadData, loadPayments, refreshCustomer, refreshCustomers,
   } = useContractData({ isCreate, contractId });
@@ -282,15 +281,6 @@ const ContractDetail = () => {
               selectedCar={selectedCar}
               isCreate={isCreate}
               showNoAvailable={!availableCars.length}
-            />
-            <ExtrasSection
-              isCreate={isCreate}
-              contractId={contractId}
-              catalog={catalog}
-              recordLabels={recordLabels}
-              extrasTotal={formik.values.extrasTotal}
-              onChange={loadData}
-              money={money}
             />
             {!isCreate && <KbsSection formik={formik} />}
           </div>
