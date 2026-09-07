@@ -314,9 +314,16 @@
         "tax": "VAT",
         "gross": "Grand Total",
         "customer": "Customer / Title",
+        "customerAuto": "Blank = the contract's account",
         "taxNo": "Tax No",
-        "create": "Create Invoice",
-        "none": "No invoice has been created for this contract yet."
+        "note": "Note",
+        "invoicedTotal": "Total Invoiced",
+        "addBtn": "Add Invoice",
+        "newTitle": "New Invoice",
+        "editTitle": "Edit Invoice",
+        "deleteConfirm": "Delete this invoice?",
+        "deleteConfirmText": "This cannot be undone.",
+        "none": "No invoice has been raised for this contract yet."
       },
       "extrasFields": {
         "name": "Extra",
@@ -442,7 +449,6 @@
       "reopenConfirmTitle": "Reopen this contract?",
       "reopenConfirmText": "The status returns to Open and the contract becomes editable again. The km-overage / missing-fuel charges added automatically at hand-back are reverted and the total returns to its previous figure.",
       "reopenedSuccess": "Contract reopened.",
-      "print": "Print",
       "individual": "Individual",
       "corporate": "Corporate",
       "corporateSelect": "Corporate account",

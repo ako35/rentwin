@@ -45,9 +45,9 @@ const ContractDetail = () => {
   const {
     loading,
     vehicles, locations, customers, customer, meta,
-    initialValues, availableCars, payments, extensions, vehicleChanges, invoice,
-    setCustomers, setAvailableCars, setInvoice,
-    loadData, loadPayments, refreshCustomer, refreshCustomers,
+    initialValues, availableCars, payments, extensions, vehicleChanges, invoices,
+    setCustomers, setAvailableCars,
+    loadData, loadPayments, loadInvoices, refreshCustomer, refreshCustomers,
   } = useContractData({ isCreate, contractId });
 
   // A recorded payment moves the customer's cari balance but not the contract
@@ -294,12 +294,12 @@ const ContractDetail = () => {
               navKey={navKey}
               customers={customers}
               customer={customer}
-              invoice={invoice}
+              invoices={invoices}
               extensions={extensions}
               vehicleChanges={vehicleChanges}
               refreshCustomers={refreshCustomers}
               onRequestNewCustomer={openNewCust}
-              onInvoiceCreated={setInvoice}
+              onInvoicesChange={loadInvoices}
               loadData={loadData}
               loadPayments={handlePaymentsChange}
               selectedCar={selectedCar}

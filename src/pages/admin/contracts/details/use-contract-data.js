@@ -18,13 +18,19 @@ export const useContractData = ({ isCreate, contractId }) => {
   const [payments, setPayments] = useState([]);
   const [extensions, setExtensions] = useState([]);
   const [vehicleChanges, setVehicleChanges] = useState([]);
-  const [invoice, setInvoice] = useState(null);
+  const [invoices, setInvoices] = useState([]);
 
   const loadPayments = () =>
     services.contract
       .getRecords(contractId, "payments")
       .then((d) => setPayments(Array.isArray(d) ? d : []))
       .catch(() => setPayments([]));
+
+  const loadInvoices = () =>
+    services.contract
+      .getInvoices(contractId)
+      .then((d) => setInvoices(Array.isArray(d) ? d : []))
+      .catch(() => setInvoices([]));
 
   // Refresh only the customer block (its cari balance moves when a payment is
   // recorded) without reloading the contract into the form and losing edits.
@@ -71,7 +77,7 @@ export const useContractData = ({ isCreate, contractId }) => {
       const r = await services.contract.getContractByIdAdmin(contractId);
       setExtensions(r.extensions || []);
       setVehicleChanges(r.vehicleChanges || []);
-      setInvoice(r.invoice || null);
+      setInvoices(r.invoices || []);
       loadPayments();
       setCustomer(r.customer || null);
       setMeta({ createdAt: r.createdAt, updatedAt: r.updatedAt });
@@ -99,8 +105,8 @@ export const useContractData = ({ isCreate, contractId }) => {
   return {
     loading,
     vehicles, locations, customers, customer, meta,
-    initialValues, availableCars, payments, extensions, vehicleChanges, invoice,
-    setCustomers, setAvailableCars, setInvoice,
-    loadData, loadPayments, refreshCustomer, refreshCustomers,
+    initialValues, availableCars, payments, extensions, vehicleChanges, invoices,
+    setCustomers, setAvailableCars, setInvoices,
+    loadData, loadPayments, loadInvoices, refreshCustomer, refreshCustomers,
   };
 };

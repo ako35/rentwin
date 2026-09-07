@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Nav } from "react-bootstrap";
 import CustomerPanel from "./CustomerPanel";
 import CustomerSummary from "./CustomerSummary";
-import DriversTab from "./DriversTab";
 import InvoiceTab from "./InvoiceTab";
 import SummaryTab from "./SummaryTab";
 import PaymentsTab from "./PaymentsTab";
@@ -14,13 +13,13 @@ import PricingBlock from "./PricingBlock";
 
 const SUB_TABS = ["summary", "payments", "returnExtra", "extension", "vehicleChange"];
 
-// The right column of the contract screen: customer / drivers / invoice top
-// tabs, the summary / payments / return-extra / extension sub tabs, the pricing
-// block and the running balance. Owns its own tab selection.
+// The right column of the contract screen: customer / invoice top tabs, the
+// summary / payments / return-extra / extension sub tabs, the pricing block and
+// the running balance. Owns its own tab selection.
 const ContractRightCard = ({
   isCreate, contractId, formik, navKey,
-  customers, customer, invoice, extensions, vehicleChanges,
-  refreshCustomers, onRequestNewCustomer, onInvoiceCreated, loadData, loadPayments,
+  customers, customer, invoices, extensions, vehicleChanges,
+  refreshCustomers, onRequestNewCustomer, onInvoicesChange, loadData, loadPayments,
   selectedCar, billableDays, pricing, collected, extensionDays, extensionTotal,
   recordLabels, money,
 }) => {
@@ -33,7 +32,6 @@ const ContractRightCard = ({
     <section className="contract-card">
       <Nav variant="tabs" activeKey={topTab} onSelect={(k) => k && setTopTab(k)} className="mb-3">
         <Nav.Item><Nav.Link eventKey="customer">{c("topTabs.customer")}</Nav.Link></Nav.Item>
-        <Nav.Item><Nav.Link eventKey="drivers">{c("topTabs.drivers")}</Nav.Link></Nav.Item>
         <Nav.Item><Nav.Link eventKey="invoice">{c("topTabs.invoice")}</Nav.Link></Nav.Item>
       </Nav>
 
@@ -54,20 +52,15 @@ const ContractRightCard = ({
         </div>
       )}
 
-      {topTab === "drivers" && (
-        <div className="contract-page__top-content">
-          <DriversTab isCreate={isCreate} contractId={contractId} recordLabels={recordLabels} />
-        </div>
-      )}
-
       {topTab === "invoice" && (
         <div className="contract-page__top-content">
           <InvoiceTab
             isCreate={isCreate}
             contractId={contractId}
-            invoice={invoice}
-            onInvoiceCreated={onInvoiceCreated}
+            invoices={invoices}
+            onInvoicesChange={onInvoicesChange}
             total={pricing.total}
+            vatRate={formik.values.vatRate === "" ? 20 : formik.values.vatRate}
             money={money}
           />
         </div>

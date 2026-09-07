@@ -88,10 +88,35 @@ export const changeVehicle = async (id, payload) => {
   return response.data;
 };
 
+export const getInvoices = async (id) => {
+  const response = await axios.get(
+    `${API_URL}/contracts/admin/${id}/invoices/auth`,
+    services.authHeader()
+  );
+  return response.data;
+};
+
 export const createInvoice = async (id, payload = {}) => {
   const response = await axios.post(
     `${API_URL}/contracts/admin/${id}/invoice/auth`,
     payload,
+    services.authHeader()
+  );
+  return response.data;
+};
+
+export const updateInvoice = async (invoiceId, payload = {}) => {
+  const response = await axios.put(
+    `${API_URL}/contracts/admin/invoices/${invoiceId}/auth`,
+    payload,
+    services.authHeader()
+  );
+  return response.data;
+};
+
+export const deleteInvoice = async (invoiceId) => {
+  const response = await axios.delete(
+    `${API_URL}/contracts/admin/invoices/${invoiceId}/auth`,
     services.authHeader()
   );
   return response.data;

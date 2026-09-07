@@ -91,7 +91,7 @@ const getContractByIdAdmin = asyncHandler(async (req, res) => {
       corporate: true,
       extensions: { orderBy: { createdAt: "desc" } },
       vehicleChanges: { orderBy: { changeDate: "desc" } },
-      invoice: true,
+      invoices: { orderBy: { issuedAt: "desc" } },
     },
   });
   if (!contract) throw new HttpError(404, "Contract not found.");
@@ -209,6 +209,46 @@ const changeVehicle = asyncHandler(async (req, res) => {
   res.json(serializeContract(updated));
 });
 
+// gross is VAT-inclusive; split it into net + tax at the contract's rate.
+const splitVat = (gross, rate) => {
+  const net = round2(gross / (1 + (rate ?? 20) / 100));
+  return { netAmount: net, taxAmount: round2(gross - net), grossAmount: round2(gross) };
+};
+
+const nextInvoiceNumber = async () => {
+  const year = new Date().getFullYear();
+  const countThisYear = await prisma.invoice.count({
+    where: { createdAt: { gte: new Date(`${year}-01-01T00:00:00Z`) } },
+  });
+  return `RW-${year}-${String(countThisYear + 1).padStart(5, "0")}`;
+};
+
+const parseIssuedAt = (value) => {
+  const d = value ? new Date(value) : new Date();
+  if (Number.isNaN(d.getTime())) throw new HttpError(400, "Invalid invoice date.");
+  return d;
+};
+
+const P2002 = (err) => {
+  if (err.code === "P2002") {
+    throw new HttpError(409, "That invoice number is already in use.", "INVOICE_NUMBER_TAKEN");
+  }
+  throw err;
+};
+
+// A contract can carry several invoices (partial billing, corrections, extra
+// charges). Each row's number is globally unique; a blank number auto-assigns
+// RW-YYYY-NNNNN. Amounts are entered VAT-inclusive.
+const listInvoices = asyncHandler(async (req, res) => {
+  const contract = await prisma.contract.findUnique({ where: { id: req.params.id }, select: { id: true } });
+  if (!contract) throw new HttpError(404, "Contract not found.");
+  const invoices = await prisma.invoice.findMany({
+    where: { contractId: contract.id },
+    orderBy: { issuedAt: "desc" },
+  });
+  res.json(invoices);
+});
+
 const createInvoice = asyncHandler(async (req, res) => {
   const contract = await prisma.contract.findUnique({
     where: { id: req.params.id },
@@ -219,29 +259,15 @@ const createInvoice = asyncHandler(async (req, res) => {
   });
   if (!contract) throw new HttpError(404, "Contract not found.");
 
-  const existing = await prisma.invoice.findUnique({ where: { contractId: contract.id } });
-  if (existing) throw new HttpError(409, "Invoice already exists for this contract.");
-
-  // The operator enters the real invoice number / date / amount from their
-  // accounting system; each falls back to a sensible default when left blank.
-  let number = (req.body.number || "").trim();
-  if (!number) {
-    const year = new Date().getFullYear();
-    const countThisYear = await prisma.invoice.count({
-      where: { createdAt: { gte: new Date(`${year}-01-01T00:00:00Z`) } },
-    });
-    number = `RW-${year}-${String(countThisYear + 1).padStart(5, "0")}`;
-  }
-
-  const issuedAt = req.body.issuedAt ? new Date(req.body.issuedAt) : new Date();
-  if (Number.isNaN(issuedAt.getTime())) throw new HttpError(400, "Invalid invoice date.");
+  const number = (req.body.number || "").trim() || (await nextInvoiceNumber());
+  const issuedAt = parseIssuedAt(req.body.issuedAt);
 
   const requestedGross = num(req.body.grossAmount);
-  const gross = round2(requestedGross != null ? requestedGross : contract.totalPrice || 0);
+  const gross = requestedGross != null ? requestedGross : contract.totalPrice || 0;
   if (gross < 0) throw new HttpError(400, "Invalid invoice amount.");
-  const rate = contract.vatRate ?? 20;
-  const net = round2(gross / (1 + rate / 100));
-  const tax = round2(gross - net);
+
+  const defaultTitle =
+    contract.corporate?.title || `${contract.user.firstName} ${contract.user.lastName}`.trim();
 
   let invoice;
   try {
@@ -250,23 +276,55 @@ const createInvoice = asyncHandler(async (req, res) => {
         contractId: contract.id,
         number,
         issuedAt,
-        netAmount: net,
-        taxAmount: tax,
-        grossAmount: gross,
-        customerTitle:
-          contract.corporate?.title ||
-          `${contract.user.firstName} ${contract.user.lastName}`.trim(),
-        taxNo: contract.corporate?.taxNo || null,
+        ...splitVat(gross, contract.vatRate),
+        customerTitle: (req.body.customerTitle || "").trim() || defaultTitle,
+        taxNo: (req.body.taxNo || "").trim() || contract.corporate?.taxNo || null,
         note: req.body.note || null,
       },
     });
   } catch (err) {
-    if (err.code === "P2002") {
-      throw new HttpError(409, "That invoice number is already in use.", "INVOICE_NUMBER_TAKEN");
-    }
-    throw err;
+    P2002(err);
   }
   res.status(201).json(invoice);
+});
+
+const updateInvoice = asyncHandler(async (req, res) => {
+  const invoice = await prisma.invoice.findUnique({
+    where: { id: req.params.invoiceId },
+    include: { contract: { select: { vatRate: true } } },
+  });
+  if (!invoice) throw new HttpError(404, "Invoice not found.");
+
+  const data = {};
+  if (req.body.number !== undefined) {
+    const number = (req.body.number || "").trim();
+    if (!number) throw new HttpError(400, "Invoice number cannot be empty.");
+    data.number = number;
+  }
+  if (req.body.issuedAt !== undefined) data.issuedAt = parseIssuedAt(req.body.issuedAt);
+  if (req.body.grossAmount !== undefined) {
+    const gross = num(req.body.grossAmount);
+    if (gross == null || gross < 0) throw new HttpError(400, "Invalid invoice amount.");
+    Object.assign(data, splitVat(gross, invoice.contract.vatRate));
+  }
+  if (req.body.customerTitle !== undefined) data.customerTitle = (req.body.customerTitle || "").trim() || null;
+  if (req.body.taxNo !== undefined) data.taxNo = (req.body.taxNo || "").trim() || null;
+  if (req.body.note !== undefined) data.note = req.body.note || null;
+
+  let updated;
+  try {
+    updated = await prisma.invoice.update({ where: { id: invoice.id }, data });
+  } catch (err) {
+    P2002(err);
+  }
+  res.json(updated);
+});
+
+const deleteInvoice = asyncHandler(async (req, res) => {
+  const invoice = await prisma.invoice.findUnique({ where: { id: req.params.invoiceId } });
+  if (!invoice) throw new HttpError(404, "Invoice not found.");
+  await prisma.invoice.delete({ where: { id: invoice.id } });
+  res.json({ ok: true });
 });
 
 module.exports = {
@@ -274,5 +332,8 @@ module.exports = {
   getContractByIdAdmin,
   extendContract,
   changeVehicle,
+  listInvoices,
   createInvoice,
+  updateInvoice,
+  deleteInvoice,
 };

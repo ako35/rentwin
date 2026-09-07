@@ -314,9 +314,16 @@
         "tax": "KDV",
         "gross": "Genel Toplam",
         "customer": "Müşteri / Ünvan",
+        "customerAuto": "Boş bırakılırsa kontrattaki cari",
         "taxNo": "Vergi No",
-        "create": "Fatura Oluştur",
-        "none": "Bu kontrat için henüz fatura oluşturulmadı."
+        "note": "Açıklama",
+        "invoicedTotal": "Toplam Kesilen Fatura",
+        "addBtn": "Yeni Fatura Ekle",
+        "newTitle": "Yeni Fatura",
+        "editTitle": "Faturayı Düzenle",
+        "deleteConfirm": "Bu faturayı silmek istediğinize emin misiniz?",
+        "deleteConfirmText": "Bu işlem geri alınamaz.",
+        "none": "Bu kontrat için henüz fatura kesilmedi."
       },
       "extrasFields": {
         "name": "Ekstra",
@@ -442,7 +449,6 @@
       "reopenConfirmTitle": "Kontratı yeniden açmak istiyor musunuz?",
       "reopenConfirmText": "Durum 'Açık' olur ve kontrat tekrar düzenlenebilir. Teslim alımında km aşımı / eksik yakıt için otomatik yansıtılan ekstralar geri alınır, tutar eski haline döner.",
       "reopenedSuccess": "Kontrat yeniden açıldı.",
-      "print": "Yazdır",
       "individual": "Bireysel",
       "corporate": "Kurumsal",
       "corporateSelect": "Cari (Kurumsal Müşteri)",

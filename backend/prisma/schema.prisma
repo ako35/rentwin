@@ -324,7 +324,7 @@ model Contract {
   returnCharges     ContractReturnCharge[]
   extensions        ContractExtension[]
   vehicleChanges    ContractVehicleChange[]
-  invoice           Invoice?
+  invoices          Invoice[]
   ledgerEntries     LedgerEntry[]
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
@@ -363,10 +363,12 @@ model ContractVehicleChange {
   createdAt         DateTime @default(now())
 }
 
-// One invoice per contract, numbered per year.
+// Invoices raised against a contract. A contract can have several (partial
+// invoices, corrections, extra charges billed separately). Numbers are globally
+// unique, auto-assigned RW-YYYY-NNNNN when the operator leaves the field blank.
 model Invoice {
   id            String   @id @default(uuid())
-  contractId    String   @unique
+  contractId    String
   contract      Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
   number        String   @unique
   issuedAt      DateTime @default(now())

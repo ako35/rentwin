@@ -16,7 +16,10 @@ const {
   getContractByIdAdmin,
   extendContract,
   changeVehicle,
+  listInvoices,
   createInvoice,
+  updateInvoice,
+  deleteInvoice,
 } = require("./contracts.controller");
 
 const router = Router();
@@ -31,7 +34,10 @@ router.put("/contracts/admin/auth", authenticate, requireAdmin, updateContract);
 router.delete("/contracts/admin/:id/auth", authenticate, requireAdmin, deleteContract);
 router.post("/contracts/admin/:id/extend/auth", authenticate, requireAdmin, extendContract);
 router.post("/contracts/admin/:id/change-vehicle/auth", authenticate, requireAdmin, changeVehicle);
+router.get("/contracts/admin/:id/invoices/auth", authenticate, requireAdmin, listInvoices);
 router.post("/contracts/admin/:id/invoice/auth", authenticate, requireAdmin, createInvoice);
+router.put("/contracts/admin/invoices/:invoiceId/auth", authenticate, requireAdmin, updateInvoice);
+router.delete("/contracts/admin/invoices/:invoiceId/auth", authenticate, requireAdmin, deleteInvoice);
 router.post("/contracts/admin/:id/return/auth", authenticate, requireAdmin, returnContract);
 router.post("/contracts/admin/:id/cancel/auth", authenticate, requireAdmin, cancelContract);
 router.post("/contracts/admin/:id/reopen/auth", authenticate, requireAdmin, reopenContract);
