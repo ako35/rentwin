@@ -72,7 +72,10 @@ const LocationDetailPage = () => {
           { name },
         ])}
       />
-      <PageHeader title={t("detail.heading", { name })} />
+      <PageHeader
+        title={t("detail.heading", { name })}
+        crumbs={[{ label: t("pageTitle"), to: routes.locations }]}
+      />
       <Spacer />
       <Container className="location-detail">
         <Link to={routes.locations} className="location-detail__back">

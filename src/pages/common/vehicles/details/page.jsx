@@ -58,7 +58,10 @@ const VehicleDetailsPage = () => {
   if (notFound) {
     return (
       <>
-        <PageHeader title={t("detailsPageTitle")} />
+        <PageHeader
+          title={t("detailsPageTitle")}
+          crumbs={[{ label: tCommon("nav.vehicles"), to: "/vehicles" }]}
+        />
         <Spacer />
         <Container className="vehicle-details">
           <p>{t("loadError")}</p>
@@ -95,7 +98,10 @@ const VehicleDetailsPage = () => {
           />
         </>
       )}
-      <PageHeader title={vehicleName || t("detailsPageTitle")} />
+      <PageHeader
+        title={vehicleName || t("detailsPageTitle")}
+        crumbs={[{ label: tCommon("nav.vehicles"), to: "/vehicles" }]}
+      />
       <Spacer height={50} />
       <Container className="vehicle-details">
         <Row>
