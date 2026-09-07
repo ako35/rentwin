@@ -10,6 +10,7 @@ const { recomputeContractFinancials } = require("./contract-financials");
 const { round2 } = require("../../lib/dates");
 const { kbsStamp, kbsBlocksClose } = require("./kbs");
 const { syncContractDebit, voidContractLedger, restoreContractLedger } = require("../../lib/ledger");
+const { getBusyVehicleIds } = require("../../lib/availability");
 
 const RETURN_CHARGE_CATEGORIES = [
   "KM_EXCESS",
@@ -142,9 +143,10 @@ const createContract = asyncHandler(async (req, res) => {
   res.status(201).json({ id: contract.id });
 });
 
-// Vehicles free for [pickUpTime, dropOffTime): no overlapping non-cancelled
-// contract or pending/confirmed reservation, and not out of service. Feeds the
-// contract + reservation vehicle pickers.
+// Vehicles free for [pickUpTime, dropOffTime): no overlapping open contract or
+// pending/confirmed reservation, and not out of service. A returned (DONE)
+// contract no longer holds its car. Feeds the contract + reservation vehicle
+// pickers.
 const getAvailableCarsAdmin = asyncHandler(async (req, res) => {
   const { pickUpTime, dropOffTime, excludeContractId, excludeReservationId } = req.query;
   const pickUp = parseFrontendDateTime(pickUpTime);
@@ -153,26 +155,10 @@ const getAvailableCarsAdmin = asyncHandler(async (req, res) => {
     throw new HttpError(400, "Invalid pick-up/drop-off time range.");
   }
 
-  const window = { pickUpTime: { lt: dropOff }, dropOffTime: { gt: pickUp } };
-  const [contractBusy, reservationBusy] = await Promise.all([
-    prisma.contract.findMany({
-      where: {
-        status: { not: "CANCELLED" },
-        id: excludeContractId ? { not: excludeContractId } : undefined,
-        ...window,
-      },
-      select: { carId: true },
-    }),
-    prisma.reservation.findMany({
-      where: {
-        status: { in: ["PENDING", "CONFIRMED"] },
-        id: excludeReservationId ? { not: excludeReservationId } : undefined,
-        ...window,
-      },
-      select: { carId: true },
-    }),
-  ]);
-  const busy = new Set([...contractBusy, ...reservationBusy].map((r) => r.carId));
+  const busy = await getBusyVehicleIds(pickUp, dropOff, {
+    excludeContractId,
+    excludeReservationId,
+  });
 
   const cars = await prisma.vehicle.findMany({
     where: { outOfService: false },
