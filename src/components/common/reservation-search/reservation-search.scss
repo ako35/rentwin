@@ -4,35 +4,31 @@
 $breakpoint: 992px;
 
 .reservation-search {
-    // Floating glass card that sits on the light hero, slightly overlapping the
-    // split section above it.
+    // White card sitting low on the dark emerald hero, just above its lower
+    // edge. Heavy elevation so it clearly floats off the dark anchor block.
     position: relative;
     z-index: 2;
-    margin: -1.25rem 0 2.5rem;
+    margin: -0.5rem 0 2.25rem;
 
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
     padding: 1.1rem 1.2rem 1.25rem;
-    background-color: rgba(255, 255, 255, 0.94);
-    backdrop-filter: blur(16px) saturate(160%);
-    -webkit-backdrop-filter: blur(16px) saturate(160%);
-    // Defined slate-200 hairline so the card edge stays crisp over both the
-    // tinted hero and the sunken page ground it overlaps.
-    border: 1px solid #e2e8f0;
+    background-color: #fff;
+    // Bright rim reads as a crisp edge against the dark emerald behind it.
+    border: 1px solid rgba(255, 255, 255, 0.65);
     border-radius: 22px;
-    // Soft, layered lift — a close ambient shadow plus a wider, fainter cast.
     box-shadow:
         0 1px 0 rgba(255, 255, 255, 0.9) inset,
-        0 2px 6px -2px rgba(15, 23, 42, 0.08),
-        0 26px 50px -24px rgba(15, 23, 42, 0.22);
+        0 24px 45px -12px rgba(0, 0, 0, 0.38),
+        0 8px 18px -8px rgba(0, 0, 0, 0.22);
 
     @media (max-width: $breakpoint) {
-        margin: 0.5rem 0 1.5rem;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        background-color: #fff;
+        margin: 0.75rem 0 1.5rem;
         border-color: v.$color3;
+        box-shadow:
+            0 2px 6px -2px rgba(15, 23, 42, 0.1),
+            0 20px 32px -16px rgba(15, 23, 42, 0.28);
     }
 
     &__toggle {
@@ -141,11 +137,13 @@ $breakpoint: 992px;
         letter-spacing: 0.02em;
         white-space: nowrap;
         cursor: pointer;
+        // Standing depth shadow so the primary action reads as raised.
+        box-shadow: 0 12px 22px -8px rgba(v.$color1, 0.5);
         transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
 
         &:hover {
             background-color: v.$color2;
-            box-shadow: 0 10px 22px -8px rgba(v.$color1, 0.6);
+            box-shadow: 0 16px 28px -8px rgba(v.$color1, 0.62);
         }
         &:active { transform: translateY(1px); }
 

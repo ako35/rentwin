@@ -7,15 +7,14 @@ $bp: 992px;
   position: relative;
   padding: 170px 0 0;
   overflow: hidden;
-  // Soft green-to-slate gradient: a green wash behind the illustration (top
-  // right), a fainter one on the left, over a vertical light-green -> sunken
-  // slate base that settles into the page ground, so the white search card
-  // below reads as a distinct, raised focal point.
+  // Dark navy anchor block — a green bloom behind the illustration (keeps the
+  // green<->navy pairing visible) over a deep navy base. White copy sits on it
+  // and the white search card floats low on it, giving the page a premium,
+  // corporate automotive weight.
   background:
-    radial-gradient(60% 52% at 88% -5%, rgba(v.$color1, 0.18), transparent 60%),
-    radial-gradient(48% 44% at -8% 22%, rgba(v.$color1, 0.09), transparent 58%),
-    linear-gradient(180deg, #e8f3ec 0%, #eef4f2 40%, v.$surface-sunken 100%);
-  border-bottom: 1px solid v.$color3;
+    radial-gradient(56% 48% at 84% -4%, rgba(v.$color1, 0.34), transparent 62%),
+    radial-gradient(44% 40% at -8% 16%, rgba(v.$color1, 0.1), transparent 60%),
+    linear-gradient(180deg, #24365e 0%, v.$anchor-navy 55%, #0d1424 100%);
 
   @media (max-width: $bp) {
     padding-top: 116px;
@@ -29,7 +28,7 @@ $bp: 992px;
     width: 520px;
     height: 520px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(v.$color1, 0.14), transparent 70%);
+    background: radial-gradient(circle, rgba(v.$color1, 0.3), transparent 70%);
     pointer-events: none;
   }
 
@@ -39,7 +38,7 @@ $bp: 992px;
     position: absolute;
     inset: 0 0 auto;
     height: 60%;
-    background-image: radial-gradient(rgba(v.$color5, 0.05) 1px, transparent 1.4px);
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1.4px);
     background-size: 22px 22px;
     -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
     mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
@@ -68,14 +67,15 @@ $bp: 992px;
 
   &__eyebrow {
     display: inline-block;
-    padding: 0.32rem 0.85rem;
+    padding: 0.34rem 0.9rem;
     border-radius: 999px;
-    background: rgba(v.$color1, 0.12);
-    color: v.$color2;
+    background: v.$color1;
+    color: #fff;
     font-size: 0.76rem;
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
+    box-shadow: 0 8px 18px -6px rgba(v.$color1, 0.55);
   }
 
   &__title {
@@ -84,7 +84,7 @@ $bp: 992px;
     font-weight: 800;
     line-height: 1.1;
     letter-spacing: -0.01em;
-    color: v.$color5;
+    color: #fff;
 
     @media (max-width: 1200px) { font-size: 2.6rem; }
     @media (max-width: $bp) { font-size: 2.2rem; }
@@ -96,7 +96,7 @@ $bp: 992px;
     max-width: 34rem;
     font-size: 1.05rem;
     line-height: 1.65;
-    color: v.$color-muted;
+    color: rgba(255, 255, 255, 0.82);
 
     @media (max-width: $bp) { margin-inline: auto; }
   }
@@ -112,9 +112,9 @@ $bp: 992px;
       @include m.flexbox(row, flex-start, center, 0.5rem);
       font-size: 0.9rem;
       font-weight: 600;
-      color: v.$color5_2;
+      color: rgba(255, 255, 255, 0.92);
 
-      svg { flex-shrink: 0; color: v.$color1; font-size: 1.05rem; }
+      svg { flex-shrink: 0; color: #6ee7a8; font-size: 1.05rem; }
     }
 
     @media (max-width: $bp) {
@@ -129,9 +129,9 @@ $bp: 992px;
     width: fit-content;
     margin-top: 1.75rem;
     font-weight: 700;
-    color: v.$color2;
+    color: #6ee7a8;
 
-    &:hover { color: v.$color1; }
+    &:hover { color: #fff; }
 
     @media (max-width: $bp) { margin-inline: auto; }
   }
@@ -147,7 +147,7 @@ $bp: 992px;
       width: 86%;
       aspect-ratio: 1 / 0.78;
       border-radius: 50%;
-      background: rgba(v.$color1, 0.16);
+      background: rgba(v.$color1, 0.32);
       filter: blur(56px);
       z-index: 0;
     }

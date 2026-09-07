@@ -4,10 +4,9 @@
 $bpsm: 576px;
 
 .top-bar {
-    // A touch deeper than the white menu bar below it so the header reads as
-    // two stacked planes — a light frame from the very top of the page.
-    background-color: v.$color3_4;
-    border-bottom: 1px solid v.$color3;
+    // Dark navy utility strip — a firm top edge to the page that bookends the
+    // dark hero block and frames the white menu bar below it.
+    background-color: v.$anchor-navy-deep;
     font-size: 0.8rem;
 
     @media (max-width: $bpsm) {
@@ -23,18 +22,18 @@ $bpsm: 576px;
         @include m.flexbox(row, flex-start, center, 0.8rem);
 
         a {
-            color: v.$color5_3;
+            color: rgba(255, 255, 255, 0.78);
             text-decoration: none;
             transition: color 0.15s ease;
 
-            &:hover { color: v.$color5; }
+            &:hover { color: #fff; }
         }
     }
 
     &__sep {
         width: 1px;
         height: 13px;
-        background-color: v.$color3;
+        background-color: rgba(255, 255, 255, 0.22);
     }
 
     &__social {
@@ -44,10 +43,10 @@ $bpsm: 576px;
         a {
             display: inline-flex;
             font-size: 0.95rem;
-            color: v.$color5_4;
+            color: rgba(255, 255, 255, 0.7);
             transition: color 0.15s ease;
 
-            &:hover { color: v.$color1; }
+            &:hover { color: #6ee7a8; }
         }
     }
 }
