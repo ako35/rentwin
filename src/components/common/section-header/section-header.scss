@@ -7,14 +7,20 @@
     h2{
         font-weight: 600;
         font-size: 2.6rem;
-        color: v.$color2;
+        // Dark heading with the second word in brand green as an accent.
+        color: v.$color5;
 
         span{
             font-weight: 800;
+            color: v.$color1;
         }
     }
 
     p{
-        color: v.$color1;
+        max-width: 46rem;
+        margin: 0.6rem auto 0;
+        color: v.$color-muted;
+        font-size: 1rem;
+        line-height: 1.6;
     }
 }

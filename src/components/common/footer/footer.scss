@@ -5,9 +5,9 @@ $breakpointxl: 1200px;
 $breakpoint: 992px;
 
 footer{
-    background-color: v.$color4;
+    background-color: v.$color3_4;
     padding: 3rem 1rem 5rem 1rem;
-    box-shadow: 0 0 10px 0 v.$color2-5;
+    border-top: 1px solid v.$color3;
     color: v.$color1;
     position: sticky;
     top: 80%;

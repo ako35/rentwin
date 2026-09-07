@@ -14,16 +14,18 @@ $breakpoint: 992px;
     flex-direction: column;
     gap: 0.6rem;
     padding: 1.1rem 1.2rem 1.25rem;
-    background-color: rgba(255, 255, 255, 0.92);
+    background-color: rgba(255, 255, 255, 0.94);
     backdrop-filter: blur(16px) saturate(160%);
     -webkit-backdrop-filter: blur(16px) saturate(160%);
-    border: 1px solid #fff;
+    // Defined slate-200 hairline so the card edge stays crisp over both the
+    // tinted hero and the sunken page ground it overlaps.
+    border: 1px solid #e2e8f0;
     border-radius: 22px;
-    // Deep, soft lift so the card clearly floats above the tinted hero.
+    // Soft, layered lift — a close ambient shadow plus a wider, fainter cast.
     box-shadow:
-        0 1px 0 rgba(255, 255, 255, 0.7) inset,
-        0 40px 70px -28px rgba(15, 23, 42, 0.28),
-        0 8px 20px -12px rgba(15, 23, 42, 0.12);
+        0 1px 0 rgba(255, 255, 255, 0.9) inset,
+        0 2px 6px -2px rgba(15, 23, 42, 0.08),
+        0 26px 50px -24px rgba(15, 23, 42, 0.22);
 
     @media (max-width: $breakpoint) {
         margin: 0.5rem 0 1.5rem;

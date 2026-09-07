@@ -1,0 +1,8 @@
+@use '../../styles/variables' as v;
+
+// Public marketing site sits on a sunken slate-100 ground (deeper than the
+// global slate-50 body) so white surfaces — the hero search card, vehicle and
+// offer cards — read as raised rather than blending into the page.
+.common-main {
+  background-color: v.$surface-sunken;
+}

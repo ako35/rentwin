@@ -8,7 +8,9 @@ $bpsm: 576px;
     &__bar {
         background-color: #fff;
         border-bottom: 1px solid v.$color3;
-        box-shadow: 0 1px 14px rgba(15, 23, 42, 0.05);
+        // Crisp hairline + a soft downward cast so the white bar sits clearly
+        // above the sunken page ground.
+        box-shadow: 0 1px 0 v.$color3, 0 10px 26px -14px rgba(15, 23, 42, 0.14);
     }
 
     &__row {

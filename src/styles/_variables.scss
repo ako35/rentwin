@@ -32,6 +32,12 @@ $color5_2: #0f172ad2;
 $color5_3: #0f172aa3;
 $color5_4: #0f172a7a;
 $color5_5: #0f172a4d;
+// Solid secondary text (slate-600) — for lead / caption / section descriptions.
+// Reads cleaner than the translucent $color5_x over tinted or gradient grounds.
+$color-muted: #475569;
+// Sunken ground (slate-100) — public marketing pages sit on this so white
+// surfaces (cards, header, search bar) read as raised.
+$surface-sunken: #f1f5f9;
 
 // STATUS ACCENTS
 $accent-amber: #f59e0b;

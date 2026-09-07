@@ -28,11 +28,11 @@ $breakpointlg: 992px;
     }
 
     .content{
-        
+
         h3{
             border-bottom: 1px dotted v.$color2;
             padding-bottom: 1rem;
-            color: v.$color1;
+            color: v.$color5;
             position: relative;
 
             &::after{
@@ -64,7 +64,7 @@ $breakpointlg: 992px;
 
         p{
             font-size: 0.9rem;
-            color: v.$color1-2;
+            color: v.$color-muted;
         }
     }
 }
