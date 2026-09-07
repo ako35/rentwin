@@ -22,6 +22,7 @@
     // on hover) keeps the row visually consistent despite the mismatched
     // originals.
     &__photo {
+        @include m.flexbox(row, center, center, 0);
         aspect-ratio: 1 / 1;
         background-color: v.$color3_5;
         border-bottom: 1px solid v.$color3;
@@ -39,6 +40,14 @@
 
     &:hover &__photo img {
         filter: grayscale(0);
+    }
+
+    &__noimg {
+        padding: 1rem;
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-align: center;
+        color: v.$color5_4;
     }
 
     &__body {

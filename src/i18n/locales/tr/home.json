@@ -85,18 +85,19 @@
     },
     {
       "id": 2,
-      "image": "person3.jpg",
-      "name": "David Thompson",
+      "image": "ali-kocan.png",
+      "name": "ALİ KOÇAN",
       "title": "Teknoloji Direktörü",
-      "desc": "Rentwin'in çevrimiçi rezervasyon sistemini kurdu. 2017'den bu yana müşteri odaklı teknoloji çözümlerine liderlik ediyor.",
+      "desc": "Rentwin'in çevrimiçi rezervasyon sistemini ve dijital altyapısını yönetiyor; müşteri odaklı teknoloji çözümleri geliştiriyor.",
       "linkedin": ""
     },
     {
       "id": 3,
-      "image": "person2.jpg",
-      "name": "Emily Wright",
+      "image": "emre-can-cetin.jpg",
+      "imagePos": "center 20%",
+      "name": "EMRE CAN ÇETİN",
       "title": "Operasyon Direktörü",
-      "desc": "2015'ten bu yana operasyon süreçlerini ve şube standartlarını yönetiyor; kiralama deneyimini uçtan uca sadeleştirdi.",
+      "desc": "Filo operasyonlarını ve şube süreçlerini yönetiyor; kiralama deneyimini uçtan uca sadeleştirmeye odaklanıyor.",
       "linkedin": ""
     }
   ],

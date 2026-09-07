@@ -85,18 +85,19 @@
     },
     {
       "id": 2,
-      "image": "person3.jpg",
-      "name": "David Thompson",
+      "image": "ali-kocan.png",
+      "name": "ALİ KOÇAN",
       "title": "Chief Technology Officer",
-      "desc": "Built Rentwin's online reservation system and has led customer-focused technology since joining in 2017.",
+      "desc": "Runs Rentwin's online reservation system and digital infrastructure, building customer-focused technology solutions.",
       "linkedin": ""
     },
     {
       "id": 3,
-      "image": "person2.jpg",
-      "name": "Emily Wright",
+      "image": "emre-can-cetin.jpg",
+      "imagePos": "center 20%",
+      "name": "EMRE CAN ÇETİN",
       "title": "Chief Operations Officer",
-      "desc": "Runs operations and branch standards since 2015, streamlining the rental experience end to end.",
+      "desc": "Runs fleet operations and branch processes, focused on streamlining the rental experience end to end.",
       "linkedin": ""
     }
   ],
