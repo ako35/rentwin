@@ -1,4 +1,4 @@
-import { Col, Container, Row } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { Loading, SectionHeader, Spacer, VehicleGridCard } from "../../../";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -35,15 +35,15 @@ const PopularVehicles = () => {
       />
       <Spacer />
       <Container>
-        <Row className="gy-5">
-          {
-            loading ? <Loading /> : vehicles && vehicles.map((item, index) => (
-              <Col md={6} lg={4} key={item?.id || index}>
-                <VehicleGridCard {...item} />
-              </Col>
-            ))
-          }
-        </Row>
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="popular-vehicles__grid">
+            {vehicles.map((item, index) => (
+              <VehicleGridCard key={item?.id || index} {...item} />
+            ))}
+          </div>
+        )}
       </Container>
     </div>
   );
