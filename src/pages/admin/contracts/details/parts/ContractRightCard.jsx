@@ -68,6 +68,7 @@ const ContractRightCard = ({
             contractId={contractId}
             invoice={invoice}
             onInvoiceCreated={onInvoiceCreated}
+            total={pricing.total}
             money={money}
           />
         </div>

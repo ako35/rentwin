@@ -299,7 +299,10 @@
       },
       "invoice": {
         "number": "Invoice No",
-        "issuedAt": "Date",
+        "issuedAt": "Invoice Date",
+        "amount": "Invoice Amount (VAT incl.)",
+        "numberAuto": "Auto-assigned if left blank",
+        "numberTaken": "That invoice number is already in use.",
         "net": "Net",
         "tax": "VAT",
         "gross": "Grand Total",

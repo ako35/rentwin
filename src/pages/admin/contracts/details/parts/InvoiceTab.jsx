@@ -1,24 +1,44 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Spinner } from "react-bootstrap";
+import { Button, Form, Spinner } from "react-bootstrap";
+import moment from "moment/moment";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import RoRow from "./RoRow";
 import SaveFirstHint from "./SaveFirstHint";
 
-// Top tab: the contract's invoice — show it, or create one.
-const InvoiceTab = ({ isCreate, contractId, invoice, onInvoiceCreated, money }) => {
+// Top tab: the contract's invoice. Before one exists the operator enters the
+// real number / date / amount from their accounting system (each blank field
+// falls back to a default); once created it is shown read-only.
+const InvoiceTab = ({ isCreate, contractId, invoice, onInvoiceCreated, total, money }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
   const [invoicing, setInvoicing] = useState(false);
+  const [form, setForm] = useState({
+    number: "",
+    issuedAt: moment().format("YYYY-MM-DD"),
+    grossAmount: "",
+  });
+  const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const createInvoice = async () => {
     setInvoicing(true);
     try {
-      onInvoiceCreated(await services.contract.createInvoice(contractId));
+      const created = await services.contract.createInvoice(contractId, {
+        number: form.number.trim() || undefined,
+        issuedAt: form.issuedAt || undefined,
+        grossAmount: form.grossAmount !== "" ? Number(form.grossAmount) : undefined,
+      });
+      onInvoiceCreated(created);
       utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
-    } catch {
-      utils.functions.swalToast(t("reservations.contract.records.error"), "error");
+    } catch (err) {
+      const code = err?.response?.data?.code;
+      utils.functions.swalToast(
+        code === "INVOICE_NUMBER_TAKEN"
+          ? c("invoice.numberTaken")
+          : t("reservations.contract.records.error"),
+        "error"
+      );
     } finally {
       setInvoicing(false);
     }
@@ -28,12 +48,46 @@ const InvoiceTab = ({ isCreate, contractId, invoice, onInvoiceCreated, money }) 
 
   if (!invoice) {
     return (
-      <>
+      // Plain <div>, not <form> — this lives inside the contract's outer <Form>.
+      <div
+        className="contract-records__form"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && e.target.tagName !== "TEXTAREA" && !invoicing) {
+            e.preventDefault();
+            createInvoice();
+          }
+        }}
+      >
         <p className="text-muted">{c("invoice.none")}</p>
-        <Button size="sm" disabled={invoicing} onClick={createInvoice}>
-          {invoicing && <Spinner animation="border" size="sm" />} {c("invoice.create")}
-        </Button>
-      </>
+        <div className="contract-records__fields">
+          <Form.Group>
+            <Form.Label>{c("invoice.number")}</Form.Label>
+            <Form.Control
+              value={form.number}
+              onChange={set("number")}
+              placeholder={c("invoice.numberAuto")}
+            />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>{c("invoice.issuedAt")}</Form.Label>
+            <Form.Control type="date" value={form.issuedAt} onChange={set("issuedAt")} />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>{c("invoice.amount")}</Form.Label>
+            <Form.Control
+              type="number"
+              value={form.grossAmount}
+              onChange={set("grossAmount")}
+              placeholder={total ? money(total) : ""}
+            />
+          </Form.Group>
+        </div>
+        <div className="contract-records__form-actions">
+          <Button type="button" size="sm" disabled={invoicing} onClick={createInvoice}>
+            {invoicing && <Spinner animation="border" size="sm" />} {c("invoice.create")}
+          </Button>
+        </div>
+      </div>
     );
   }
 

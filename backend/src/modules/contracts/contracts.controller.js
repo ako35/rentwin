@@ -222,31 +222,50 @@ const createInvoice = asyncHandler(async (req, res) => {
   const existing = await prisma.invoice.findUnique({ where: { contractId: contract.id } });
   if (existing) throw new HttpError(409, "Invoice already exists for this contract.");
 
-  const year = new Date().getFullYear();
-  const countThisYear = await prisma.invoice.count({
-    where: { createdAt: { gte: new Date(`${year}-01-01T00:00:00Z`) } },
-  });
-  const number = `RW-${year}-${String(countThisYear + 1).padStart(5, "0")}`;
+  // The operator enters the real invoice number / date / amount from their
+  // accounting system; each falls back to a sensible default when left blank.
+  let number = (req.body.number || "").trim();
+  if (!number) {
+    const year = new Date().getFullYear();
+    const countThisYear = await prisma.invoice.count({
+      where: { createdAt: { gte: new Date(`${year}-01-01T00:00:00Z`) } },
+    });
+    number = `RW-${year}-${String(countThisYear + 1).padStart(5, "0")}`;
+  }
 
-  const gross = round2(contract.totalPrice || 0);
+  const issuedAt = req.body.issuedAt ? new Date(req.body.issuedAt) : new Date();
+  if (Number.isNaN(issuedAt.getTime())) throw new HttpError(400, "Invalid invoice date.");
+
+  const requestedGross = num(req.body.grossAmount);
+  const gross = round2(requestedGross != null ? requestedGross : contract.totalPrice || 0);
+  if (gross < 0) throw new HttpError(400, "Invalid invoice amount.");
   const rate = contract.vatRate ?? 20;
   const net = round2(gross / (1 + rate / 100));
   const tax = round2(gross - net);
 
-  const invoice = await prisma.invoice.create({
-    data: {
-      contractId: contract.id,
-      number,
-      netAmount: net,
-      taxAmount: tax,
-      grossAmount: gross,
-      customerTitle:
-        contract.corporate?.title ||
-        `${contract.user.firstName} ${contract.user.lastName}`.trim(),
-      taxNo: contract.corporate?.taxNo || null,
-      note: req.body.note || null,
-    },
-  });
+  let invoice;
+  try {
+    invoice = await prisma.invoice.create({
+      data: {
+        contractId: contract.id,
+        number,
+        issuedAt,
+        netAmount: net,
+        taxAmount: tax,
+        grossAmount: gross,
+        customerTitle:
+          contract.corporate?.title ||
+          `${contract.user.firstName} ${contract.user.lastName}`.trim(),
+        taxNo: contract.corporate?.taxNo || null,
+        note: req.body.note || null,
+      },
+    });
+  } catch (err) {
+    if (err.code === "P2002") {
+      throw new HttpError(409, "That invoice number is already in use.", "INVOICE_NUMBER_TAKEN");
+    }
+    throw err;
+  }
   res.status(201).json(invoice);
 });
 

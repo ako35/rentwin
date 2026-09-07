@@ -299,7 +299,10 @@
       },
       "invoice": {
         "number": "Fatura No",
-        "issuedAt": "Tarih",
+        "issuedAt": "Fatura Tarihi",
+        "amount": "Fatura Tutarı (KDV Dahil)",
+        "numberAuto": "Boş bırakılırsa otomatik atanır",
+        "numberTaken": "Bu fatura numarası zaten kullanılmış.",
         "net": "Matrah",
         "tax": "KDV",
         "gross": "Genel Toplam",
