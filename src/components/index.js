@@ -49,7 +49,7 @@ import UserReservationsTable from './common/user/reservations/table/table'
 import BookingForm from './common/vehicles/booking-form/booking-form'
 import DetailsPanel from './common/vehicles/details-panel/details-panel'
 import PopularVehicles from './common/vehicles/popular-vehicles/popular-vehicles'
-import VehicleCard from './common/vehicles/vehicle-card/vehicle-card'
+import VehicleGridCard from './common/vehicles/vehicle-grid-card/vehicle-grid-card'
 import Vehicles from './common/vehicles/vehicles'
 
 export{
@@ -103,6 +103,6 @@ export{
     BookingForm,
     DetailsPanel,
     PopularVehicles,
-    VehicleCard,
+    VehicleGridCard,
     Vehicles
 }

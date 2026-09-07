@@ -4,75 +4,121 @@
 .vehicle-grid-card {
     display: flex;
     flex-direction: column;
+    height: 100%;
     background-color: #fff;
     border: 1px solid v.$color3;
     border-radius: 16px;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 26px -18px rgba(15, 23, 42, 0.18);
     transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 
     &:hover {
-        box-shadow: 0 16px 32px -16px v.$color5_4;
+        box-shadow: 0 20px 40px -18px rgba(15, 23, 42, 0.28);
         border-color: v.$color2_4;
-        transform: translateY(-2px);
+        transform: translateY(-3px);
         color: inherit;
     }
 
-    // Fleet photos are portrait phone shots (~375x666) with the car in a
-    // narrow mid band, so "contain" leaves it tiny. "cover" crops the empty
-    // top/bottom instead and lets the car fill the frame.
+    // Fixed light ground + "contain" so every car — transparent PNG, white
+    // studio shot or phone photo — is framed the same way across the grid.
     &__image {
-        height: 190px;
-        background-color: v.$color4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 200px;
+        padding: 0.85rem;
+        background-color: #f5f7fa;
         border-bottom: 1px solid v.$color3;
-        overflow: hidden;
 
         img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
             display: block;
         }
     }
 
+    &__noimg {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: v.$color5_4;
+    }
+
     &__body {
-        @include m.flexbox(column, flex-start, stretch, 0.6rem);
+        @include m.flexbox(column, flex-start, stretch, 0.65rem);
         flex: 1;
-        padding: 0.85rem 1rem 1rem;
+        padding: 0.9rem 1rem 1rem;
     }
 
     &__name {
         margin: 0;
-        font-size: 1.05rem;
-        font-weight: 600;
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
         color: v.$color5;
     }
 
-    &__badges {
-        @include m.flexbox(row, flex-start, center, 0.4rem);
+    // Inline spec row — small muted icon + label, wraps to a second line if tight.
+    &__specs {
+        @include m.reset-list;
+        @include m.flexbox(row, flex-start, center, 0.35rem 1rem);
         flex-wrap: wrap;
-        flex: 1;
-    }
 
-    &__badge {
-        @include m.flexbox(row, center, center, 0.3rem);
-        padding: 0.28rem 0.6rem;
-        border-radius: 999px;
-        background-color: v.$color3_5;
-        color: v.$color5_2;
-        font-size: 0.78rem;
-        font-weight: 500;
+        li {
+            @include m.flexbox(row, center, center, 0.35rem);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: v.$color-muted;
+            white-space: nowrap;
 
-        svg {
-            color: v.$color2;
-            font-size: 0.9rem;
+            svg {
+                flex-shrink: 0;
+                font-size: 0.95rem;
+                color: v.$color5_4;
+            }
         }
     }
 
+    &__foot {
+        @include m.flexbox(row, space-between, center, 0.75rem);
+        margin-top: auto;
+        padding-top: 0.85rem;
+        border-top: 1px solid v.$color3;
+    }
+
+    &__quote {
+        font-size: 0.74rem;
+        font-weight: 600;
+        line-height: 1.25;
+        color: v.$color-muted;
+    }
+
+    // Embedded, rounded action — deep green so it holds contrast on white,
+    // with a standing shadow so it reads as raised inside the card.
     &__cta {
-        width: 100%;
-        margin-top: 0.25rem;
+        @include m.flexbox(row, center, center, 0.35rem);
+        flex-shrink: 0;
+        padding: 0.55rem 0.95rem;
+        border-radius: 10px;
+        background-color: v.$color2;
+        color: #fff;
+        font-size: 0.82rem;
+        font-weight: 700;
+        white-space: nowrap;
+        box-shadow: 0 10px 18px -7px rgba(v.$color2, 0.5);
+        transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+
+        svg { font-size: 0.9rem; }
+    }
+
+    &:hover &__cta {
+        background-color: #268035;
+        box-shadow: 0 14px 22px -7px rgba(v.$color2, 0.6);
+    }
+
+    &:active &__cta {
+        transform: translateY(1px);
     }
 }

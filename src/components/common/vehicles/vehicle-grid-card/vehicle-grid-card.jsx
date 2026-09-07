@@ -1,43 +1,61 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { GiGasPump, GiGearStick } from "react-icons/gi";
-import { BsCalendar3 } from "react-icons/bs";
-import { Button } from "react-bootstrap";
+import { BsCalendar3, BsArrowRight } from "react-icons/bs";
 import { constants } from "../../../../constants";
 import "./vehicle-grid-card.scss";
 
 const { routes } = constants;
 const API_URL = import.meta.env.VITE_APP_API_URL;
 
+// One vehicle in the marketing grid / homepage rail: photo on a fixed light
+// ground, dark bold name, an inline spec row (transmission · fuel · year) and
+// a footer pairing the quote hint with the "Şimdi Kirala" action. The whole
+// card is the link; the action is a styled span, not a nested <button>.
 const VehicleGridCard = (props) => {
   const { t } = useTranslation("vehicles");
   const { t: tCommon } = useTranslation("common");
   const name = [props.brand, props.model].filter(Boolean).join(" ");
 
+  const specs = [
+    { icon: <GiGearStick />, label: tCommon(`options.transmissionTypes.${props.transmission}`) },
+    { icon: <GiGasPump />, label: tCommon(`options.fuelTypes.${props.fuelType}`) },
+  ];
+  if (props.modelYear) specs.push({ icon: <BsCalendar3 />, label: String(props.modelYear) });
+
   return (
     <Link to={`${routes.vehicles}/${props.id}`} className="vehicle-grid-card">
       <div className="vehicle-grid-card__image">
-        <img src={`${API_URL}/files/display/${props.image}`} alt={name} loading="lazy" />
+        {props.image ? (
+          <img
+            src={`${API_URL}/files/display/${props.image}`}
+            alt={name}
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <span className="vehicle-grid-card__noimg">{name}</span>
+        )}
       </div>
 
       <div className="vehicle-grid-card__body">
-        <h4 className="vehicle-grid-card__name">{name}</h4>
+        <h3 className="vehicle-grid-card__name">{name}</h3>
 
-        <div className="vehicle-grid-card__badges">
-          <span className="vehicle-grid-card__badge">
-            <GiGearStick /> {tCommon(`options.transmissionTypes.${props.transmission}`)}
+        <ul className="vehicle-grid-card__specs">
+          {specs.map((spec) => (
+            <li key={spec.label}>
+              {spec.icon}
+              <span>{spec.label}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="vehicle-grid-card__foot">
+          <span className="vehicle-grid-card__quote">{t("card.quoteHint")}</span>
+          <span className="vehicle-grid-card__cta">
+            {t("card.rentNow")} <BsArrowRight />
           </span>
-          <span className="vehicle-grid-card__badge">
-            <GiGasPump /> {tCommon(`options.fuelTypes.${props.fuelType}`)}
-          </span>
-          {props.modelYear && (
-            <span className="vehicle-grid-card__badge">
-              <BsCalendar3 /> {props.modelYear}
-            </span>
-          )}
         </div>
-
-        <Button className="vehicle-grid-card__cta">{t("card.rentNow")}</Button>
       </div>
     </Link>
   );

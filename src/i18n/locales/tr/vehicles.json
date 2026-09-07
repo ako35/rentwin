@@ -33,7 +33,8 @@
   "card": {
     "doors": "kapı",
     "seats": "koltuk",
-    "rentNow": "Şimdi Kirala"
+    "rentNow": "Şimdi Kirala",
+    "quoteHint": "Fiyat için teklif alın"
   },
   "details": {
     "pricePerHour": "{{price}} $ / saat",
