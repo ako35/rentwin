@@ -1,11 +1,12 @@
 {
-  "quickLinks": "QuickLinks",
+  "quickLinks": "Quick Links",
   "workingHours": "Working Hours",
   "contactUs": "Contact Us",
+  "blurb": "Fast car rental with safe, comfortable vehicles and transparent pricing.",
   "hours": {
     "weekdays": "Mon - Fri: 09:00 AM - 09:00 PM",
     "saturday": "Saturday: 09:00 AM - 07:00 PM",
     "sunday": "Sunday: 09:00 AM - 05:00 PM"
   },
-  "copyright": "© 2023 Rentwin. All rights reserved"
+  "copyright": "Rentwin. All rights reserved."
 }
