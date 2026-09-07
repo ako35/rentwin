@@ -138,6 +138,10 @@ const createContract = asyncHandler(async (req, res) => {
     dropOffTime: parsedDropOff,
     totalPrice: 0,
     status: "CREATED",
+    // Default rental terms: a 300 km/day allowance (the form mirrors this in
+    // EMPTY_CONTRACT); the admin adjusts or switches to unlimited on the detail page.
+    unlimitedKm: false,
+    dailyKmLimit: 300,
     reservationId: reservationId || null,
   });
   res.status(201).json({ id: contract.id });
