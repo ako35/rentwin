@@ -27,6 +27,14 @@ export const useContractData = ({ isCreate, contractId }) => {
       .then((d) => setPayments(Array.isArray(d) ? d : []))
       .catch(() => setPayments([]));
 
+  // Refresh only the customer block (its cari balance moves when a payment is
+  // recorded) without reloading the contract into the form and losing edits.
+  const refreshCustomer = () =>
+    services.contract
+      .getContractByIdAdmin(contractId)
+      .then((r) => setCustomer(r.customer || null))
+      .catch(() => {});
+
   const refreshCustomers = () => fetchCustomers().then(setCustomers).catch(() => {});
 
   const loadRefData = async () => {
@@ -96,6 +104,6 @@ export const useContractData = ({ isCreate, contractId }) => {
     vehicles, locations, customers, customer, meta,
     initialValues, availableCars, payments, catalog, extensions, vehicleChanges, invoice,
     setCustomers, setAvailableCars, setInvoice,
-    loadData, loadPayments, refreshCustomers,
+    loadData, loadPayments, refreshCustomer, refreshCustomers,
   };
 };

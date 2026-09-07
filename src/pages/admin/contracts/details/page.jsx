@@ -48,8 +48,15 @@ const ContractDetail = () => {
     vehicles, locations, customers, customer, meta,
     initialValues, availableCars, payments, catalog, extensions, vehicleChanges, invoice,
     setCustomers, setAvailableCars, setInvoice,
-    loadData, loadPayments, refreshCustomers,
+    loadData, loadPayments, refreshCustomer, refreshCustomers,
   } = useContractData({ isCreate, contractId });
+
+  // A recorded payment moves the customer's cari balance but not the contract
+  // itself — refresh the payments list and the customer block, not the form.
+  const handlePaymentsChange = () => {
+    loadPayments();
+    refreshCustomer();
+  };
 
   const money = (v) => formatMoney(v, i18n.language);
 
@@ -304,7 +311,7 @@ const ContractDetail = () => {
               onRequestNewCustomer={openNewCust}
               onInvoiceCreated={setInvoice}
               loadData={loadData}
-              loadPayments={loadPayments}
+              loadPayments={handlePaymentsChange}
               selectedCar={selectedCar}
               billableDays={billableDays}
               pricing={pricing}
