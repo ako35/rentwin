@@ -32,7 +32,11 @@ const AdminNewVehiclePage = () => {
       await utils.functions.swalToast(t("vehicles.toasts.createSuccess"), "success");
       navigate(`${routes.adminVehicles}`);
     } catch (error) {
-      utils.functions.swalToast(t("vehicles.toasts.createError"), "error");
+      const key =
+        error?.response?.data?.code === "LICENSE_PLATE_TAKEN"
+          ? "vehicles.toasts.plateTaken"
+          : "vehicles.toasts.createError";
+      utils.functions.swalToast(t(key), "error");
     } finally {
       setLoading(false);
     }

@@ -12,6 +12,14 @@ const {
   getVehicleStatus,
 } = require("./vehicles.shared");
 const { pickVehicleFields } = require("./vehicle-fields");
+const { deleteImage } = require("../../lib/blob");
+
+// Prisma unique-constraint violation on Vehicle.licensePlate -> a clean 409.
+const isPlateClash = (err) =>
+  err?.code === "P2002" && (err.meta?.target || []).some((t) => /licensePlate/i.test(t));
+
+const plateTakenError = () =>
+  new HttpError(409, "Bu plaka ile kayıtlı bir araç zaten var.", "LICENSE_PLATE_TAKEN");
 
 const getVehicleById = asyncHandler(async (req, res) => {
   const vehicle = await prisma.vehicle.findUnique({
@@ -102,14 +110,25 @@ const addVehicle = asyncHandler(async (req, res) => {
   const image = await prisma.vehicleImage.findUnique({ where: { id: req.params.imageId } });
   if (!image) throw new HttpError(404, "Image not found.");
 
-  const vehicle = await prisma.vehicle.create({
-    data: {
-      ...pickVehicleFields(req.body),
-      builtIn: false,
-      images: { connect: { id: image.id } },
-    },
-    include: IMAGES_AND_BRANCH_INCLUDE,
-  });
+  let vehicle;
+  try {
+    vehicle = await prisma.vehicle.create({
+      data: {
+        ...pickVehicleFields(req.body),
+        builtIn: false,
+        images: { connect: { id: image.id } },
+      },
+      include: IMAGES_AND_BRANCH_INCLUDE,
+    });
+  } catch (err) {
+    if (isPlateClash(err)) {
+      // The image was uploaded before this failed — don't leave it orphaned.
+      await deleteImage(image.pathname).catch(() => {});
+      await prisma.vehicleImage.delete({ where: { id: image.id } }).catch(() => {});
+      throw plateTakenError();
+    }
+    throw err;
+  }
 
   res.status(201).json(serializeVehicle(vehicle));
 });
@@ -128,11 +147,17 @@ const updateVehicle = asyncHandler(async (req, res) => {
     await prisma.vehicleImage.update({ where: { id: imageId }, data: { vehicleId: id } });
   }
 
-  const vehicle = await prisma.vehicle.update({
-    where: { id },
-    data: pickVehicleFields(req.body),
-    include: IMAGES_AND_BRANCH_INCLUDE,
-  });
+  let vehicle;
+  try {
+    vehicle = await prisma.vehicle.update({
+      where: { id },
+      data: pickVehicleFields(req.body),
+      include: IMAGES_AND_BRANCH_INCLUDE,
+    });
+  } catch (err) {
+    if (isPlateClash(err)) throw plateTakenError();
+    throw err;
+  }
 
   res.json(serializeVehicle(vehicle));
 });

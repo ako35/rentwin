@@ -91,6 +91,7 @@
       "branch": "Branch",
       "branchId": "Branch",
       "licensePlate": "License Plate",
+      "plateTakenWarning": "A vehicle with this licence plate already exists. Enter a different plate.",
       "transmission": "Transmission",
       "fuelType": "Fuel Type",
       "modelYear": "Model Year",
@@ -192,6 +193,7 @@
       "createError": "There was an error while creating the vehicle.",
       "updateSuccess": "Vehicle updated successfully.",
       "updateError": "There was an error updating the vehicle.",
+      "plateTaken": "A vehicle with this licence plate already exists.",
       "deleteSuccess": "Vehicle deleted successfully.",
       "deleteError": "There was an error while deleting the vehicle.",
       "downloadSuccess": "Vehicle data downloaded successfully!",
@@ -566,9 +568,9 @@
         "from": "Queried Range - Start",
         "to": "Queried Range - End",
         "amount": "Toll / Reflected Amount (TL)",
-        "reflected": "Reflected to invoice / collection",
+        "reflected": "Reflect amount to the grand total",
         "hint": "The HGS/OGS toll query for the rental period has not been done yet.",
-        "debtHint": "To charge the customer, add an \"HGS / OGS\" line on the Return Extras tab."
+        "debtHint": "When reflected, it is added to the grand total and appears as an \"HGS / OGS\" line on the Return Extras tab."
       },
       "kbs": {
         "title": "KABİS Notification",

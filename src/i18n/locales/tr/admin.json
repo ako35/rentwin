@@ -91,6 +91,7 @@
       "branch": "Şube",
       "branchId": "Şube",
       "licensePlate": "Plaka",
+      "plateTakenWarning": "Bu plaka ile kayıtlı bir araç zaten var. Farklı bir plaka girin.",
       "transmission": "Vites",
       "fuelType": "Yakıt Tipi",
       "modelYear": "Model Yılı",
@@ -192,6 +193,7 @@
       "createError": "Araç oluşturulurken bir hata oluştu.",
       "updateSuccess": "Araç başarıyla güncellendi.",
       "updateError": "Araç güncellenirken bir hata oluştu.",
+      "plateTaken": "Bu plaka ile kayıtlı bir araç zaten var.",
       "deleteSuccess": "Araç başarıyla silindi.",
       "deleteError": "Araç silinirken bir hata oluştu.",
       "downloadSuccess": "Araç verileri başarıyla indirildi!",
@@ -566,9 +568,9 @@
         "from": "Sorgulanan Aralık - Başlangıç",
         "to": "Sorgulanan Aralık - Bitiş",
         "amount": "Geçiş / Yansıtılan Tutar (TL)",
-        "reflected": "Faturaya / tahsilata yansıtıldı",
+        "reflected": "Tutarı Genel Toplam'a yansıt",
         "hint": "Kiralama süresi için HGS/OGS kaçak geçiş sorgusu henüz yapılmadı.",
-        "debtHint": "Tutarı müşteriye yansıtmak için Dönüş Ekstra sekmesinden \"HGS / OGS\" kalemi ekleyin."
+        "debtHint": "Yansıtıldığında Genel Toplam'a eklenir ve Dönüş Ekstra sekmesinde \"HGS / OGS\" kalemi olarak görünür."
       },
       "kbs": {
         "title": "KABİS Bildirimi",

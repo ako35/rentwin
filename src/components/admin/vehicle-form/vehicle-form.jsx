@@ -29,7 +29,8 @@ const VehicleForm = ({
   const { t: tCommon } = useTranslation("common");
   const [tab, setTab] = useState("vehicle");
 
-  const { branches, brandOptions, modelOptions, handleModelPicked } = useFleetPicklist(formik);
+  const { branches, brandOptions, modelOptions, plateTaken, handleModelPicked } =
+    useFleetPicklist(formik);
 
   const sections = useMemo(
     () => buildVehicleSections({ branches, brandOptions, modelOptions, t, tCommon }),
@@ -88,6 +89,7 @@ const VehicleForm = ({
             onImageChange={onImageChange}
             onGeneratedImage={onGeneratedImage}
             handleModelPicked={handleModelPicked}
+            plateTaken={plateTaken}
           />
         )}
 

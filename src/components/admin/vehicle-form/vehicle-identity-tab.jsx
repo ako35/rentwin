@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Badge, Button, Col, Form, Row } from "react-bootstrap";
+import { Alert, Badge, Button, Col, Form, Row } from "react-bootstrap";
 import CustomForm from "../../common/custom-form/custom-form";
 import EditableSelectField from "./editable-select-field";
 import RegistrationScan from "./registration-scan";
@@ -15,7 +15,7 @@ const REGISTRATION_FIELDS = [
 // fields + notes + the out-of-service switch.
 const VehicleIdentityTab = ({
   formik, disabled, sections, imageSrc, imageError, fileImageRef, onImageChange, onGeneratedImage,
-  handleModelPicked,
+  handleModelPicked, plateTaken,
 }) => {
   const { t } = useTranslation("admin");
 
@@ -57,6 +57,11 @@ const VehicleIdentityTab = ({
             <RegistrationScan onExtracted={handleRegistrationExtracted} />
             <span className="text-muted">{t("vehicles.registrationScan.hint")}</span>
           </div>
+          {plateTaken && (
+            <Alert variant="warning" className="py-2 px-3 mb-3">
+              {t("vehicles.form.plateTakenWarning")}
+            </Alert>
+          )}
           {sections.map((section) => (
             <div key={section.key} className="vehicle-form__section">
               <h4>{t(`vehicles.sections.${section.key}`)}</h4>

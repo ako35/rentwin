@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { services } from "../../../services";
 
+// Plates compare case-insensitively and ignoring spaces ("35 ARL 781" == "35arl781").
+export const normPlate = (p) => (p || "").toUpperCase().replace(/\s+/g, "");
+
 // Loads branches + the distinct brand/model pairs already in the fleet, and
 // derives the brand/model combobox option lists for the vehicle form.
 export const useFleetPicklist = (formik) => {
@@ -13,9 +16,12 @@ export const useFleetPicklist = (formik) => {
       .getVehicles()
       .then((list) =>
         setFleet(
-          (list || [])
-            .map((v) => ({ brand: (v.brand || "").trim(), model: (v.model || "").trim() }))
-            .filter((v) => v.brand || v.model)
+          (list || []).map((v) => ({
+            id: v.id,
+            brand: (v.brand || "").trim(),
+            model: (v.model || "").trim(),
+            plate: normPlate(v.licensePlate),
+          }))
         )
       )
       .catch(() => setFleet([]));
@@ -36,6 +42,14 @@ export const useFleetPicklist = (formik) => {
     return [...new Set(source.map((v) => v.model).filter(Boolean))].sort((a, b) => a.localeCompare(b));
   }, [fleet, selectedBrand]);
 
+  // True when the typed plate already belongs to another vehicle (edit mode
+  // excludes the vehicle being edited).
+  const plateTaken = useMemo(() => {
+    const plate = normPlate(formik.values.licensePlate);
+    if (!plate) return false;
+    return fleet.some((v) => v.plate === plate && v.id !== formik.values.id);
+  }, [fleet, formik.values.licensePlate, formik.values.id]);
+
   // Picking a model that belongs to exactly one brand in the fleet auto-fills Marka.
   const handleModelPicked = (model) => {
     const key = model.trim().toLowerCase();
@@ -48,5 +62,5 @@ export const useFleetPicklist = (formik) => {
     }
   };
 
-  return { branches, brandOptions, modelOptions, handleModelPicked };
+  return { branches, brandOptions, modelOptions, plateTaken, handleModelPicked };
 };

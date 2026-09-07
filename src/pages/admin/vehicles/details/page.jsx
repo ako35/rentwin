@@ -65,7 +65,11 @@ const AdminVehicleDetailsPage = () => {
       await services.vehicle.updateVehicle(vehicleId, imageId, payload);
       utils.functions.swalToast(t("vehicles.toasts.updateSuccess"), "success");
     } catch (error) {
-      utils.functions.swalToast(t("vehicles.toasts.updateError"), "error");
+      const key =
+        error?.response?.data?.code === "LICENSE_PLATE_TAKEN"
+          ? "vehicles.toasts.plateTaken"
+          : "vehicles.toasts.updateError";
+      utils.functions.swalToast(t(key), "error");
     } finally {
       setUpdating(false);
     }
