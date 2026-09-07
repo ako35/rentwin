@@ -1,101 +1,135 @@
 @use '../../../../styles/variables' as v;
 @use '../../../../styles/mixins' as m;
 
-$breakpoint: 992px;
+.who-we-are {
+  @include m.flexbox(column, flex-start, stretch, 3rem);
 
-.who-we-are{
-    p{
-        text-align: justify;
+  // --- intro: fleet render + copy, side by side ---
+  &__intro {
+    display: grid;
+    grid-template-columns: minmax(240px, 360px) 1fr;
+    gap: 2rem;
+    align-items: center;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+
+  &__media {
+    @include m.flexbox(row, center, center, 0);
+    padding: 1.5rem;
+    background-color: v.$surface-mint;
+    border: 1px solid v.$color3;
+    border-radius: 20px;
+    aspect-ratio: 3 / 4;
+
+    @media (max-width: 900px) { aspect-ratio: 16 / 10; }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
+  }
+
+  &__text {
+    h2, p { text-align: left; }
+
+    p {
+      margin: 0 0 1rem;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: v.$color-muted;
+
+      &:last-child { margin-bottom: 0; }
+    }
+  }
+
+  &__heading {
+    margin: 0 0 1.1rem;
+    font-size: 1.9rem;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: v.$color5;
+
+    @media (max-width: 560px) { font-size: 1.5rem; }
+  }
+
+  // --- stat counters ---
+  &__stats {
+    @include m.reset-list;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+
+    @media (max-width: 640px) { grid-template-columns: 1fr; }
+  }
+
+  &__stat {
+    @include m.flexbox(column, center, center, 0.3rem);
+    padding: 1.4rem 1rem;
+    background-color: v.$color4;
+    border: 1px solid v.$color3;
+    border-radius: 16px;
+    text-align: center;
+  }
+
+  &__stat-value {
+    font-size: 2.1rem;
+    font-weight: 800;
+    line-height: 1;
+    color: v.$color2;
+  }
+
+  &__stat-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: v.$color5;
+  }
+
+  // --- mission / vision cards ---
+  &__mv {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+
+    @media (max-width: 760px) { grid-template-columns: 1fr; }
+  }
+
+  &__mv-card {
+    padding: 1.5rem 1.6rem;
+    background-color: #fff;
+    border: 1px solid v.$color3;
+    border-radius: 16px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+
+    h3 {
+      margin: 0.9rem 0 0.5rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: v.$color5;
     }
 
-    .row{
-        gap: 10rem 0;
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      text-align: left;
+      color: v.$color-muted;
     }
+  }
 
-    @media (max-width: $breakpoint) {
-        .row{
-            gap: 5rem 0;
-        }        
-    }
-
-    .img-col{
-        position: relative;
-        display: flex;
-
-        img{
-            width: 100%;
-            object-fit: cover;
-            object-position: top center;
-            height: auto;
-            box-shadow: 0 0 10px v.$color2;
-            border-radius: 5px;
-            max-height: 500px;
-        }
-
-        img.right{
-            margin-left: auto;
-        }
-
-        .border-left{
-            position: absolute;
-            width: 20px;
-            left: 0;
-            top: 0;
-            bottom: 50%;
-            background-color: v.$color4;
-            transform: translate(-50%, -10px);
-            box-shadow: -10px 0px 24px -7px v.$color1;
-        }
-
-        .border-top{
-            position: absolute;
-            height: 20px;
-            left: 0;
-            top: 0;
-            right: 50%;
-            background-color: v.$color4;
-            transform: translate(-10px, -50%);
-            box-shadow: 0px -10px 24px -7px v.$color1;
-        }
-
-        .border-right{
-            position: absolute;
-            width: 20px;
-            right: 0;
-            top: 50%;
-            bottom: 0;
-            background-color: v.$color4;
-            transform: translate(50%, 10px);
-            box-shadow: 10px 0px 24px -7px v.$color1;
-        }
-
-        .border-bottom{
-            position: absolute;
-            height: 20px;
-            left: 50%;
-            bottom: 0;
-            right: 0;
-            background-color: v.$color4;
-            transform: translate(10px, 50%);
-            box-shadow: 0px 10px 24px -7px v.$color1;
-        }
-    }
-
-    .who-we-are-content{
-        @include m.flexbox(column, space-between, center, 1rem);
-
-        .who-we-are-info{
-            
-            > p{
-                margin-bottom: 5rem;
-            }
-
-            h2{
-                font-size: 2.5rem;
-                text-transform: capitalize;
-                color: v.$color2;
-                margin-bottom: 2rem;
-            }
-        }
-    }
+  &__mv-icon {
+    @include m.flexbox(row, center, center, 0);
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 12px;
+    background-color: rgba(v.$color1, 0.12);
+    color: v.$color2;
+    font-size: 1.35rem;
+  }
 }
