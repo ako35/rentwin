@@ -254,7 +254,15 @@ const createInvoice = asyncHandler(async (req, res) => {
     where: { id: req.params.id },
     include: {
       corporate: true,
-      user: { select: { firstName: true, lastName: true } },
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          customerType: true,
+          companyTitle: true,
+          nationalId: true,
+        },
+      },
     },
   });
   if (!contract) throw new HttpError(404, "Contract not found.");
@@ -266,8 +274,16 @@ const createInvoice = asyncHandler(async (req, res) => {
   const gross = requestedGross != null ? requestedGross : contract.totalPrice || 0;
   if (gross < 0) throw new HttpError(400, "Invalid invoice amount.");
 
+  // Bill to: the reference cari if one is set, else the corporate customer's
+  // registered title, else the individual's name. Corporate customers keep
+  // their 10-digit VKN (stored in nationalId) as the invoice tax no.
+  const corporateCustomer = contract.user.customerType === "Kurumsal";
   const defaultTitle =
-    contract.corporate?.title || `${contract.user.firstName} ${contract.user.lastName}`.trim();
+    contract.corporate?.title ||
+    (corporateCustomer && contract.user.companyTitle) ||
+    `${contract.user.firstName} ${contract.user.lastName}`.trim();
+  const defaultTaxNo =
+    contract.corporate?.taxNo || (corporateCustomer ? contract.user.nationalId : null) || null;
 
   let invoice;
   try {
@@ -278,7 +294,7 @@ const createInvoice = asyncHandler(async (req, res) => {
         issuedAt,
         ...splitVat(gross, contract.vatRate),
         customerTitle: (req.body.customerTitle || "").trim() || defaultTitle,
-        taxNo: (req.body.taxNo || "").trim() || contract.corporate?.taxNo || null,
+        taxNo: (req.body.taxNo || "").trim() || defaultTaxNo,
         note: req.body.note || null,
       },
     });
