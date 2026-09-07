@@ -35,6 +35,7 @@ const CONTRACT_NUMBER_FIELDS = [
   "kmOverageFee",
   "fuelFeePerEighth",
   "vatRate",
+  "hgsAmount",
 ];
 
 // Parse a form value to a finite number, or null.
@@ -55,8 +56,11 @@ const pickContractFields = (body) => {
     if (field in body) data[field] = num(body[field]);
   });
   if ("unlimitedKm" in body) data.unlimitedKm = Boolean(body.unlimitedKm);
-  // KABİS (Kimlik Bildirme Sistemi) filing / release dates — "" / null clears them.
-  ["kbsNotifiedAt", "kbsReleasedAt"].forEach((field) => {
+  if ("hgsReflected" in body) data.hgsReflected = Boolean(body.hgsReflected);
+  if ("hgsStatus" in body) data.hgsStatus = body.hgsStatus || null;
+  // Date fields — "" / null clears them.
+  // KABİS filing / release + the HGS/OGS toll-check query range.
+  ["kbsNotifiedAt", "kbsReleasedAt", "hgsCheckedFrom", "hgsCheckedTo"].forEach((field) => {
     if (field in body) {
       const raw = body[field];
       const parsed = raw ? new Date(raw) : null;

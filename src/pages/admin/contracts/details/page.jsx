@@ -12,6 +12,7 @@ import { useContractData } from "./use-contract-data";
 import ContractRibbon from "./parts/ContractRibbon";
 import VehicleSection from "./parts/VehicleSection";
 import KbsSection from "./parts/KbsSection";
+import HgsSection from "./parts/HgsSection";
 import ContractRightCard from "./parts/ContractRightCard";
 import ContractActions from "./parts/ContractActions";
 import NewCustomerModal from "./parts/NewCustomerModal";
@@ -283,6 +284,7 @@ const ContractDetail = () => {
               showNoAvailable={!availableCars.length}
             />
             {!isCreate && <KbsSection formik={formik} />}
+            {!isCreate && <HgsSection formik={formik} />}
           </div>
 
           {/* ---------- RIGHT ---------- */}

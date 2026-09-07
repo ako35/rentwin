@@ -556,6 +556,20 @@
       "recalc": "Tutar Hesapla",
       "acilis": "Alış",
       "ekstralarTitle": "Ekstralar",
+      "hgs": {
+        "title": "HGS / OGS Kontrolü",
+        "status": {
+          "PENDING": "Bekliyor",
+          "CLEAN": "Kontrol Edildi - Temiz",
+          "DEBT": "Geçiş / Borç Var"
+        },
+        "from": "Sorgulanan Aralık - Başlangıç",
+        "to": "Sorgulanan Aralık - Bitiş",
+        "amount": "Geçiş / Yansıtılan Tutar (TL)",
+        "reflected": "Faturaya / tahsilata yansıtıldı",
+        "hint": "Kiralama süresi için HGS/OGS kaçak geçiş sorgusu henüz yapılmadı.",
+        "debtHint": "Tutarı müşteriye yansıtmak için Dönüş Ekstra sekmesinden \"HGS / OGS\" kalemi ekleyin."
+      },
       "kbs": {
         "title": "KABİS Bildirimi",
         "statusLabel": "KABİS bildirim durumu",

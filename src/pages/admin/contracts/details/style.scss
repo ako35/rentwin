@@ -1058,4 +1058,90 @@
 
     &:hover { color: v.$accent-rose; }
   }
+
+  /* ---- HGS / OGS toll check ---- */
+  &__hgs.contract-card {
+    border-left: 3px solid #9ca3af;
+    transition: border-color 0.15s ease;
+
+    &.is-clean { border-left-color: v.$color2; }
+    &.is-debt { border-left-color: v.$accent-rose; }
+  }
+
+  &__hgs-row {
+    @include m.flexbox(row, space-between, center, 0.75rem);
+    flex-wrap: wrap;
+  }
+
+  &__hgs-status {
+    width: auto;
+    min-width: 11rem;
+    font-size: 0.85rem;
+  }
+
+  &__hgs-badge {
+    @include m.flexbox(row, center, center, 0.3rem);
+    padding: 0.18rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+
+    svg { font-size: 0.85rem; }
+
+    &.is-pending { background-color: #e9edf2; color: v.$color5_3; }
+    &.is-clean { background-color: v.$color2; color: #fff; }
+    &.is-debt { background-color: v.$accent-rose; color: #fff; }
+  }
+
+  &__hgs-range {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 0.75rem;
+    margin-top: 0.8rem;
+
+    @media (max-width: 420px) { grid-template-columns: 1fr; }
+
+    label { display: block; }
+
+    span {
+      display: block;
+      margin-bottom: 0.2rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: v.$color5_3;
+    }
+  }
+
+  &__hgs-debt {
+    margin-top: 0.85rem;
+    padding-top: 0.7rem;
+    border-top: 1px dashed v.$color3;
+
+    .form-check { margin: 0.55rem 0 0; min-height: auto; padding-left: 2.6rem; }
+    .form-check-input { width: 2rem; height: 1.1rem; margin-left: -2.6rem; cursor: pointer; }
+    .form-check-label { font-size: 0.85rem; font-weight: 600; color: v.$color5; }
+  }
+
+  &__hgs-amount {
+    display: block;
+
+    span { font-size: 0.72rem; font-weight: 600; color: v.$color5_3; }
+  }
+
+  &__hgs-amount-field {
+    @include m.flexbox(row, flex-start, center, 0.4rem);
+    margin-top: 0.2rem;
+
+    .form-control { max-width: 160px; }
+    span { font-size: 0.82rem; color: v.$color5_3; }
+  }
+
+  &__hgs-hint {
+    margin: 0.7rem 0 0;
+    font-size: 0.78rem;
+    color: v.$color5_3;
+  }
 }

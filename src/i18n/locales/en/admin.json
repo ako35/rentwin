@@ -556,6 +556,20 @@
       "recalc": "Recalculate",
       "acilis": "Pick-up",
       "ekstralarTitle": "Extras",
+      "hgs": {
+        "title": "HGS / OGS Check",
+        "status": {
+          "PENDING": "Pending",
+          "CLEAN": "Checked - Clear",
+          "DEBT": "Toll / Debt Found"
+        },
+        "from": "Queried Range - Start",
+        "to": "Queried Range - End",
+        "amount": "Toll / Reflected Amount (TL)",
+        "reflected": "Reflected to invoice / collection",
+        "hint": "The HGS/OGS toll query for the rental period has not been done yet.",
+        "debtHint": "To charge the customer, add an \"HGS / OGS\" line on the Return Extras tab."
+      },
       "kbs": {
         "title": "KABİS Notification",
         "statusLabel": "KABİS notification status",
