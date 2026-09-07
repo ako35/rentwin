@@ -253,6 +253,7 @@
       "plate": "Plate",
       "customerDriver": "Customer / Driver",
       "filter": "Filter",
+      "allStatuses": "All Statuses",
       "pickUpDate": "Pick-up Date",
       "pickUpTime": "Pick-up Time",
       "dropOffDate": "Drop-off Date",

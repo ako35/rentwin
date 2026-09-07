@@ -8,7 +8,7 @@ import { Loading } from "../../../components";
 import { constants } from "../../../constants";
 import "./style.scss";
 
-const { routes } = constants;
+const { routes, contractStatus } = constants;
 const PAGE_SIZES = [10, 25, 50, 100];
 
 const AdminContractsPage = () => {
@@ -24,7 +24,8 @@ const AdminContractsPage = () => {
   const [size, setSize] = useState(50);
   const [plate, setPlate] = useState("");
   const [customer, setCustomer] = useState("");
-  const [applied, setApplied] = useState({ plate: "", customer: "" });
+  const [status, setStatus] = useState("");
+  const [applied, setApplied] = useState({ plate: "", customer: "", status: "" });
 
   const load = async () => {
     setLoading(true);
@@ -66,7 +67,16 @@ const AdminContractsPage = () => {
 
   const applyFilters = () => {
     setPage(0);
-    setApplied({ plate: plate.trim(), customer: customer.trim() });
+    setApplied({ plate: plate.trim(), customer: customer.trim(), status });
+  };
+
+  // Status is a discrete choice — apply it straight away, keeping the pending
+  // text filters intact.
+  const handleStatusChange = (e) => {
+    const next = e.target.value;
+    setStatus(next);
+    setPage(0);
+    setApplied((a) => ({ ...a, status: next }));
   };
 
   const money = (v) =>
@@ -123,6 +133,14 @@ const AdminContractsPage = () => {
           onChange={(e) => setCustomer(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && applyFilters()}
         />
+        <Form.Select size="sm" value={status} onChange={handleStatusChange} aria-label={c("status")}>
+          <option value="">{c("allStatuses")}</option>
+          {contractStatus.map((s) => (
+            <option key={s.value} value={s.value}>
+              {tCommon(`options.contractStatus.${s.value}`)}
+            </option>
+          ))}
+        </Form.Select>
         <Button size="sm" variant="secondary" onClick={applyFilters}>{c("filter")}</Button>
       </div>
 

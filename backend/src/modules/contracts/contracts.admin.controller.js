@@ -41,8 +41,9 @@ const getContractsByPage = asyncHandler(async (req, res) => {
   });
 
   const { branchId, status, plate, customer } = req.query;
+  const statusFilter = ["CREATED", "CANCELLED", "DONE"].includes(status) ? status : null;
   const where = {
-    ...(status ? { status } : {}),
+    ...(statusFilter ? { status: statusFilter } : {}),
     ...(branchId ? { car: { branchId } } : {}),
     ...(plate
       ? { car: { ...(branchId ? { branchId } : {}), licensePlate: { contains: plate, mode: "insensitive" } } }
