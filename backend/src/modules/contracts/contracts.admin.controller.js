@@ -40,6 +40,9 @@ const getContractsByPage = asyncHandler(async (req, res) => {
   const { page, size, direction, sortField } = parsePageParams(req.query, {
     defaultSize: 20,
     allowedSortFields: ALLOWED_SORT_FIELDS,
+    // Default view: most recent pick-up first.
+    defaultSortField: "pickUpTime",
+    defaultDirection: "DESC",
   });
 
   const { branchId, status, plate, customer } = req.query;
@@ -67,7 +70,7 @@ const getContractsByPage = asyncHandler(async (req, res) => {
       where,
       skip: page * size,
       take: size,
-      orderBy: { [sortField]: direction },
+      orderBy: [{ [sortField]: direction }, { id: "asc" }],
       include: {
         car: { select: { brand: true, model: true, licensePlate: true, branch: { select: { code: true } } } },
         user: { select: { firstName: true, lastName: true, companyTitle: true } },
