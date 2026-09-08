@@ -5,6 +5,7 @@ const { hoursBetween, round2 } = require("../../lib/dates");
 const { mirrorPayment, unmirrorPayment } = require("../../lib/ledger");
 const { recomputeContractFinancials } = require("../contracts/contract-financials");
 const { kbsStamp } = require("../contracts/kbs");
+const { hgsRangesCoverPeriod } = require("../contracts/contract-fields");
 
 // Contract payments are mirrored into the current-account ledger as AUTO_PAYMENT
 // credits so the cari statement and customer balances stay complete.
@@ -68,6 +69,9 @@ const RESOURCES = {
     orderBy: [{ rangeFrom: "asc" }],
     // The acting admin's name is stamped on the row, not taken from the body.
     stampUserAs: "checkedBy",
+    // The operator never sets the result: Contract.hgsStatus is re-derived from
+    // the logged ranges after every change (CHECKED once they span the rental).
+    recomputeHgsStatus: true,
   },
 };
 
@@ -100,6 +104,35 @@ const resyncFinancials = async (contractId) => {
     await recomputeContractFinancials(contractId);
   } catch {
     /* the sub-record write itself succeeded; totals catch up on the next save */
+  }
+};
+
+// HGS check status is derived, never entered by hand: once the logged query
+// ranges span the whole rental window the contract is flagged "CHECKED",
+// otherwise the flag is cleared. Recomputed after any hgsChecks row change;
+// best-effort — the contract screen also derives it live from the log.
+const syncHgsStatus = async (contractId) => {
+  try {
+    const contract = await prisma.contract.findUnique({
+      where: { id: contractId },
+      select: { pickUpTime: true, dropOffTime: true, returnedAt: true },
+    });
+    if (!contract) return;
+    const rows = await prisma.contractHgsCheck.findMany({
+      where: { contractId },
+      select: { rangeFrom: true, rangeTo: true },
+    });
+    const covered = hgsRangesCoverPeriod(
+      rows,
+      contract.pickUpTime,
+      contract.returnedAt || contract.dropOffTime
+    );
+    await prisma.contract.update({
+      where: { id: contractId },
+      data: { hgsStatus: covered ? "CHECKED" : null },
+    });
+  } catch {
+    /* status is a cache; the contract screen derives it live from the log */
   }
 };
 
@@ -168,6 +201,7 @@ const createRecord = asyncHandler(async (req, res) => {
   if (resource.recomputeExtrasTotal) await syncExtrasTotal(req.params.contractId);
   if (resource.recomputeExtrasTotal || resource.recomputeFinancials)
     await resyncFinancials(req.params.contractId);
+  if (resource.recomputeHgsStatus) await syncHgsStatus(req.params.contractId);
   if (resource.model === "contractPayment") await syncPaymentToLedger(record);
   res.status(201).json(record);
 });
@@ -183,6 +217,7 @@ const updateRecord = asyncHandler(async (req, res) => {
   if (resource.recomputeExtrasTotal) await syncExtrasTotal(target.contractId);
   if (resource.recomputeExtrasTotal || resource.recomputeFinancials)
     await resyncFinancials(target.contractId);
+  if (resource.recomputeHgsStatus) await syncHgsStatus(target.contractId);
   if (resource.model === "contractPayment") await syncPaymentToLedger(record);
   res.json(record);
 });
@@ -195,6 +230,7 @@ const deleteRecord = asyncHandler(async (req, res) => {
   if (resource.recomputeExtrasTotal) await syncExtrasTotal(target.contractId);
   if (resource.recomputeExtrasTotal || resource.recomputeFinancials)
     await resyncFinancials(target.contractId);
+  if (resource.recomputeHgsStatus) await syncHgsStatus(target.contractId);
   if (resource.model === "contractPayment") await unmirrorPayment(target.id);
   res.json({ message: "Record deleted." });
 });

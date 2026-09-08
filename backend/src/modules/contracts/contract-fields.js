@@ -55,7 +55,8 @@ const pickContractFields = (body) => {
     if (field in body) data[field] = num(body[field]);
   });
   if ("unlimitedKm" in body) data.unlimitedKm = Boolean(body.unlimitedKm);
-  if ("hgsStatus" in body) data.hgsStatus = body.hgsStatus || null;
+  // hgsStatus is not accepted from the form — it is derived from the HGS check
+  // log (see contract-records.syncHgsStatus).
   // Date fields — "" / null clears them.
   ["kbsNotifiedAt", "kbsReleasedAt"].forEach((field) => {
     if (field in body) {
@@ -100,6 +101,37 @@ const computeAllowedKm = (r, pickUp, dropOff) => {
   return Number.isFinite(effective) ? effective : null;
 };
 
+// --- HGS check coverage -----------------------------------------------------
+// The HGS/OGS check result is never entered by hand: it is "done" once the
+// logged query ranges together span the whole rental window. These helpers do
+// that union test at day precision. The frontend mirrors this in
+// contract-helpers.hgsRangesCoverPeriod.
+const isoDay = (value) => {
+  const d = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
+};
+const isoDayAfter = (day) => {
+  const d = new Date(`${day}T00:00:00.000Z`);
+  d.setUTCDate(d.getUTCDate() + 1);
+  return d.toISOString().slice(0, 10);
+};
+const hgsRangesCoverPeriod = (rows, pickUp, dropOff) => {
+  const start = isoDay(pickUp);
+  const end = isoDay(dropOff);
+  if (!start || !end || end < start || !Array.isArray(rows) || rows.length === 0) return false;
+  const intervals = rows
+    .map((r) => ({ from: isoDay(r.rangeFrom), to: isoDay(r.rangeTo) }))
+    .filter((r) => r.from && r.to && r.from <= r.to)
+    .sort((a, b) => (a.from < b.from ? -1 : a.from > b.from ? 1 : 0));
+  if (intervals.length === 0 || intervals[0].from > start) return false;
+  let reach = intervals[0].to;
+  for (let i = 1; i < intervals.length; i += 1) {
+    if (intervals[i].from > isoDayAfter(reach)) break; // gap in coverage
+    if (intervals[i].to > reach) reach = intervals[i].to;
+  }
+  return reach >= end;
+};
+
 module.exports = {
   CONTRACT_NOTE_FIELDS,
   CONTRACT_NUMBER_FIELDS,
@@ -109,4 +141,5 @@ module.exports = {
   computeTotal,
   computeAllowedKm,
   rentalDays,
+  hgsRangesCoverPeriod,
 };

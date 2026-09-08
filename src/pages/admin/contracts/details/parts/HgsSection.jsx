@@ -1,26 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
 import moment from "moment/moment";
 import { BsClockHistory, BsPatchCheck, BsBoxArrowUpRight, BsPlusLg } from "react-icons/bs";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
+import { hgsRangesCoverPeriod } from "../contract-helpers";
 
-const STATUSES = ["PENDING", "CLEAN", "DEBT"];
 const HGS_PORTAL = "https://hgs.ptt.gov.tr/";
 
-// Left card: HGS / OGS operational check — pure audit. The result dropdown
-// (Bekliyor / Tam Kontrol Edildi / Geçiş Var) is a contract field; below it a
-// log of every date range queried on the HGS portal (each row records who ran
-// it and when, stamped server-side). Toll amounts go on the Dönüş Ekstra tab.
+// Left card: HGS / OGS operational check — pure audit, no manual result. Under
+// the rental period sits a log of every date range queried on the PTT HGS
+// portal (who ran it + when, stamped server-side). The status flips to
+// "Tamamlandı" on its own once the logged ranges together span the whole rental
+// period. Toll amounts are itemised on the Dönüş Ekstra tab, not here.
 const HgsSection = ({ formik, contractId, billableDays }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.hgs.${key}`, opts);
   const rc = (key) => t(`reservations.contract.records.${key}`);
   const v = formik.values;
-
-  const status = v.hgsStatus || "PENDING";
-  const done = status !== "PENDING";
 
   const rentalStart = v.pickUpDate;
   const rentalEnd = v.returnedAt ? moment(v.returnedAt).format("YYYY-MM-DD") : v.dropOffDate;
@@ -34,6 +32,15 @@ const HgsSection = ({ formik, contractId, billableDays }) => {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ rangeFrom: "", rangeTo: "", note: "" });
+
+  // Derived, never chosen: "done" once the logged ranges cover the whole period.
+  const covered = useMemo(
+    () => hgsRangesCoverPeriod(rows, rentalStart, rentalEnd),
+    [rows, rentalStart, rentalEnd]
+  );
+  const partial = !covered && rows.length > 0;
+  const hintState = covered ? "done" : partial ? "partial" : "idle";
+  const hint = covered ? c("autoDone") : partial ? c("autoPartial") : c("autoIdle");
 
   const load = () => {
     if (!contractId) return;
@@ -92,12 +99,12 @@ const HgsSection = ({ formik, contractId, billableDays }) => {
   };
 
   return (
-    <section className={`contract-card contract-page__hgs is-${done ? "done" : "pending"}`}>
+    <section className={`contract-card contract-page__hgs is-${covered ? "done" : "pending"}`}>
       <h3>
         <span>{c("title")}</span>
-        <span className={`contract-page__hgs-badge is-${done ? "done" : "pending"}`}>
-          {done ? <BsPatchCheck /> : <BsClockHistory />}
-          {done ? c("badgeDone") : c("badgePending")}
+        <span className={`contract-page__hgs-badge is-${covered ? "done" : "pending"}`}>
+          {covered ? <BsPatchCheck /> : <BsClockHistory />}
+          {covered ? c("badgeDone") : c("badgePending")}
         </span>
       </h3>
 
@@ -109,19 +116,7 @@ const HgsSection = ({ formik, contractId, billableDays }) => {
         </strong>
       </div>
 
-      <label className="contract-page__hgs-field">
-        <span>{c("result")}</span>
-        <Form.Select
-          value={status}
-          onChange={(e) =>
-            formik.setFieldValue("hgsStatus", e.target.value === "PENDING" ? "" : e.target.value)
-          }
-        >
-          {STATUSES.map((s) => (
-            <option key={s} value={s}>{c(`status.${s}`)}</option>
-          ))}
-        </Form.Select>
-      </label>
+      <p className={`contract-page__hgs-auto is-${hintState}`}>{hint}</p>
 
       <div className="contract-page__hgs-log">
         <div className="contract-page__hgs-log-head">

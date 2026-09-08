@@ -564,12 +564,9 @@
         "badgeDone": "Tamamlandı",
         "period": "Kiralama Dönemi",
         "days": "{{count}} gün",
-        "result": "Kontrol Sonucu",
-        "status": {
-          "PENDING": "Bekliyor",
-          "CLEAN": "Tam Kontrol Edildi (Temiz)",
-          "DEBT": "Geçiş Var (Dönüş Ekstra'ya İşlendi)"
-        },
+        "autoIdle": "Kontrol sonucu elle atanmaz: kontrol edilen tarih aralıkları tüm kiralama dönemini kapsayınca durum otomatik \"Tamamlandı\" olur.",
+        "autoPartial": "Kiralama döneminin tamamı henüz kontrol edilmedi. Kalan günler için sorgu yapıp aralığı ekleyin.",
+        "autoDone": "Kiralama döneminin tamamı kontrol edildi.",
         "logTitle": "Kontrol Kayıtları",
         "addLog": "Kontrol Kaydı Ekle",
         "logEmpty": "Henüz kontrol kaydı yok. Her sorgulama için sorgulanan tarih aralığını kaydedin.",

@@ -564,12 +564,9 @@
         "badgeDone": "Done",
         "period": "Rental Period",
         "days": "{{count}} days",
-        "result": "Check Result",
-        "status": {
-          "PENDING": "Pending",
-          "CLEAN": "Fully Checked (Clear)",
-          "DEBT": "Toll Found (Logged on Return Extras)"
-        },
+        "autoIdle": "The result is never set by hand: the status turns to \"Done\" automatically once the checked date ranges cover the whole rental period.",
+        "autoPartial": "The full rental period has not been checked yet. Query the remaining days and add the range.",
+        "autoDone": "The whole rental period has been checked.",
         "logTitle": "Check Log",
         "addLog": "Add Check Record",
         "logEmpty": "No check records yet. Record the queried date range for each query.",

@@ -113,6 +113,30 @@ export const computeReturnOverage = (values, readings) => {
   return { allowedKm, usedKm, excessKm, kmCharge, missingEighths, fuelCharge };
 };
 
+// True once the union of the logged HGS query ranges spans the whole rental
+// period (day precision). The HGS check status is derived from this, never set
+// by hand. Mirrors backend contract-fields.hgsRangesCoverPeriod.
+export const hgsRangesCoverPeriod = (rows, startStr, endStr) => {
+  if (!startStr || !endStr || !Array.isArray(rows) || !rows.length) return false;
+  const start = moment(startStr, "YYYY-MM-DD").startOf("day");
+  const end = moment(endStr, "YYYY-MM-DD").startOf("day");
+  if (!start.isValid() || !end.isValid() || end.isBefore(start)) return false;
+  const intervals = rows
+    .map((r) => ({
+      from: moment(r.rangeFrom).startOf("day"),
+      to: moment(r.rangeTo).startOf("day"),
+    }))
+    .filter((r) => r.from.isValid() && r.to.isValid() && !r.to.isBefore(r.from))
+    .sort((a, b) => a.from.valueOf() - b.from.valueOf());
+  if (!intervals.length || intervals[0].from.isAfter(start)) return false;
+  let reach = intervals[0].to;
+  for (let i = 1; i < intervals.length; i += 1) {
+    if (intervals[i].from.isAfter(reach.clone().add(1, "day"))) break; // gap
+    if (intervals[i].to.isAfter(reach)) reach = intervals[i].to;
+  }
+  return !reach.isBefore(end);
+};
+
 // Contract patch payload sent to updateContract (create + edit both use it).
 export const buildContractDto = (values) => ({
   pickUpTime: utils.functions.combineDateAndTime(values.pickUpDate, values.pickUpTime),
@@ -136,7 +160,7 @@ export const buildContractDto = (values) => ({
   referenceUserId: values.referenceUserId || null,
   kbsNotifiedAt: values.kbsNotifiedAt || null,
   kbsReleasedAt: values.kbsReleasedAt || null,
-  hgsStatus: values.hgsStatus || null,
+  // hgsStatus is derived from the HGS check log server-side — not sent from here.
 });
 
 // Merge a loaded reservation onto EMPTY_CONTRACT for formik.

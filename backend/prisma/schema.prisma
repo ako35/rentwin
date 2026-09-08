@@ -318,7 +318,7 @@ model Contract {
   kbsNotifiedBy     String? // display name of the admin who filed it, stamped on the null -> set transition
   kbsReleasedAt     DateTime? // when the KABİS record was released (çıkış); requires kbsNotifiedAt to be set
   kbsReleasedBy     String? // display name of the admin who released it, stamped on the null -> set transition
-  hgsStatus         String? // null/PENDING = Bekliyor, CLEAN = tam kontrol edildi (temiz), DEBT = geçiş var (Dönüş Ekstra'ya işlendi)
+  hgsStatus         String? // DERIVED, never set by hand: "CHECKED" once hgsChecks ranges span the whole rental, else null (see contract-records.syncHgsStatus)
   hgsChecks         ContractHgsCheck[] // one row per queried date range (the audit log)
   hgsCheckedAt      DateTime? // DEPRECATED — superseded by ContractHgsCheck rows
   hgsCheckedBy      String? // DEPRECATED
