@@ -356,6 +356,10 @@
         "addBtn": "Add Line",
         "newLine": "New line",
         "editingLine": "Editing line",
+        "periodLabel": "Reflected Period",
+        "periodFrom": "Start",
+        "periodTo": "End",
+        "periodHint": "Specify which travel days this HGS / OGS toll charge is for.",
         "total": "Return Extras Total",
         "totalHint": "Automatically added to the grand total and balance",
         "cat": {

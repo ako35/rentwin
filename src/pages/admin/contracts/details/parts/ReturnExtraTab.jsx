@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner, Table } from "react-bootstrap";
-import { BsBoxSeam, BsPlusLg } from "react-icons/bs";
+import moment from "moment/moment";
+import { BsBoxSeam, BsPlusLg, BsCalendarRange } from "react-icons/bs";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import SaveFirstHint from "./SaveFirstHint";
@@ -21,9 +22,19 @@ const CATEGORIES = [
   "FUEL",
   "OTHER",
 ];
-const EMPTY = { category: "", description: "", amount: "" };
+// Only an HGS/OGS toll line carries a travel-date range (which days the
+// reflected toll is for).
+const PERIOD_CATEGORY = "HGS_OGS";
+const EMPTY = { category: "", description: "", amount: "", periodFrom: "", periodTo: "" };
 
-const ReturnExtraTab = ({ isCreate, contractId, onChange, money }) => {
+const fmtRange = (from, to) => {
+  if (!from && !to) return "";
+  const f = from ? moment(from).format("DD.MM.YYYY") : "…";
+  const tt = to ? moment(to).format("DD.MM.YYYY") : "…";
+  return `${f} – ${tt}`;
+};
+
+const ReturnExtraTab = ({ isCreate, contractId, onChange, money, rentalStart, rentalEnd }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.returnCharges.${key}`, opts);
   const rc = (key) => t(`reservations.contract.records.${key}`);
@@ -88,10 +99,28 @@ const ReturnExtraTab = ({ isCreate, contractId, onChange, money }) => {
 
   const submit = () => {
     if (saving || !form.category || form.amount === "") return;
+    const hasPeriod = form.category === PERIOD_CATEGORY;
     persist({
       category: form.category,
       description: form.description.trim(),
       amount: form.amount,
+      periodFrom: hasPeriod ? form.periodFrom || "" : "",
+      periodTo: hasPeriod ? form.periodTo || "" : "",
+    });
+  };
+
+  // Picking HGS/OGS pre-fills the range from the rental window; any other
+  // category drops the range entirely.
+  const pickCategory = (category) => {
+    if (category !== PERIOD_CATEGORY) {
+      setForm({ ...form, category, periodFrom: "", periodTo: "" });
+      return;
+    }
+    setForm({
+      ...form,
+      category,
+      periodFrom: form.periodFrom || rentalStart || "",
+      periodTo: form.periodTo || rentalEnd || "",
     });
   };
 
@@ -103,7 +132,13 @@ const ReturnExtraTab = ({ isCreate, contractId, onChange, money }) => {
 
   const startEdit = (row) => {
     setEditing(row);
-    setForm({ category: row.category, description: row.description || "", amount: row.amount ?? "" });
+    setForm({
+      category: row.category,
+      description: row.description || "",
+      amount: row.amount ?? "",
+      periodFrom: row.periodFrom ? moment(row.periodFrom).format("YYYY-MM-DD") : "",
+      periodTo: row.periodTo ? moment(row.periodTo).format("YYYY-MM-DD") : "",
+    });
     setOpen(true);
   };
 
@@ -150,7 +185,7 @@ const ReturnExtraTab = ({ isCreate, contractId, onChange, money }) => {
               <Form.Select
                 autoFocus
                 value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                onChange={(e) => pickCategory(e.target.value)}
               >
                 <option value="">{c("categoryPlaceholder")}</option>
                 {CATEGORIES.map((cat) => (
@@ -180,6 +215,33 @@ const ReturnExtraTab = ({ isCreate, contractId, onChange, money }) => {
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
               />
             </Form.Group>
+
+            {form.category === PERIOD_CATEGORY && (
+              <div className="contract-page__rex-f-period">
+                <span className="contract-page__rex-period-label">{c("periodLabel")}</span>
+                <div className="contract-page__rex-period-grid">
+                  <Form.Group>
+                    <Form.Label>{c("periodFrom")}</Form.Label>
+                    <Form.Control
+                      type="date"
+                      value={form.periodFrom}
+                      max={form.periodTo || undefined}
+                      onChange={(e) => setForm({ ...form, periodFrom: e.target.value })}
+                    />
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>{c("periodTo")}</Form.Label>
+                    <Form.Control
+                      type="date"
+                      value={form.periodTo}
+                      min={form.periodFrom || undefined}
+                      onChange={(e) => setForm({ ...form, periodTo: e.target.value })}
+                    />
+                  </Form.Group>
+                </div>
+                <small className="contract-page__rex-period-hint">{c("periodHint")}</small>
+              </div>
+            )}
           </div>
 
           <div className="contract-page__rex-card-actions">
@@ -237,6 +299,12 @@ const ReturnExtraTab = ({ isCreate, contractId, onChange, money }) => {
                 <td>
                   {row.description || "—"}
                   {row.quantity > 1 ? ` ×${row.quantity}` : ""}
+                  {(row.periodFrom || row.periodTo) && (
+                    <span className="contract-page__rex-period-tag">
+                      <BsCalendarRange />
+                      {fmtRange(row.periodFrom, row.periodTo)}
+                    </span>
+                  )}
                 </td>
                 <td className="text-end">{money((row.amount || 0) * (row.quantity || 1))} TL</td>
                 <td className="contract-records__actions text-end">

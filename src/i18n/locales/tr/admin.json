@@ -356,6 +356,10 @@
         "addBtn": "Kalem Ekle",
         "newLine": "Yeni kalem",
         "editingLine": "Kalem düzenleniyor",
+        "periodLabel": "Yansıtılan Dönem",
+        "periodFrom": "Başlangıç",
+        "periodTo": "Bitiş",
+        "periodHint": "HGS / OGS geçiş bedelinin hangi seyahat günlerine ait olduğunu belirtin.",
         "total": "Dönüş Ekstra Toplamı",
         "totalHint": "Genel Toplam'a ve bakiyeye otomatik yansır",
         "cat": {

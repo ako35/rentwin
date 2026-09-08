@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Nav } from "react-bootstrap";
+import moment from "moment/moment";
 import CustomerPanel from "./CustomerPanel";
 import CustomerSummary from "./CustomerSummary";
 import InvoiceTab from "./InvoiceTab";
@@ -108,6 +109,10 @@ const ContractRightCard = ({
               contractId={contractId}
               onChange={loadData}
               money={money}
+              rentalStart={formik.values.pickUpDate}
+              rentalEnd={formik.values.returnedAt
+                ? moment(formik.values.returnedAt).format("YYYY-MM-DD")
+                : formik.values.dropOffDate}
             />
           )}
 
