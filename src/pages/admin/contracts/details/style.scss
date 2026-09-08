@@ -53,12 +53,15 @@
 
     hr { margin: 0.6rem 0; border-color: v.$color3; }
 
-    // Read-only inputs in the contract card: unmistakably not editable.
+    // Read-only inputs in the contract card: unmistakably not editable, but the
+    // value must still read clearly (slate-200 fill, solid slate-600 text).
     .form-control:disabled,
     .form-select:disabled {
-      background-color: #e8edf3;
+      background-color: #dde3ec;
       border-style: dashed;
-      color: v.$color5_4;
+      color: v.$color-muted;
+      -webkit-text-fill-color: v.$color-muted; // Safari keeps its own faded fill otherwise
+      opacity: 1;
     }
   }
 
@@ -69,8 +72,8 @@
     border-bottom: 1px dashed v.$color3;
     font-size: 0.82rem;
 
-    span { color: v.$color5_3; white-space: nowrap; }
-    strong { color: v.$color5; text-align: right; }
+    span { color: v.$color-muted; white-space: nowrap; }
+    strong { color: v.$color5; text-align: right; font-weight: 600; }
   }
 
   // Sticky footer bar (see contract-actions.scss) scrolls under the page;
