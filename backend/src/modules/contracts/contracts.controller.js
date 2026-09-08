@@ -123,8 +123,11 @@ const extendContract = asyncHandler(async (req, res) => {
   }
 
   const extraDays = Math.max(1, Math.ceil(hoursBetween(contract.dropOffTime, newDropOff) / 24));
-  const extraAmount =
-    num(req.body.extraAmount) ?? round2((num(contract.dailyPrice) || 0) * extraDays);
+  const unitPrice =
+    contract.rentalType === "MONTHLY"
+      ? round2((num(contract.monthlyPrice) || 0) / 30)
+      : num(contract.dailyPrice) || 0;
+  const extraAmount = num(req.body.extraAmount) ?? round2(unitPrice * extraDays);
 
   await prisma.contractExtension.create({
     data: {

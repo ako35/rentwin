@@ -468,7 +468,12 @@
         "limits": "Limitler",
         "taxTotal": "Genel Toplam"
       },
+      "rentalTypeLabel": "Kiralama Tipi",
+      "rentalType": { "daily": "Günlük", "monthly": "Aylık" },
       "dailyPrice": "Günlük Fiyat (TL)",
+      "monthlyPrice": "Aylık Fiyat (TL)",
+      "dailyUnitPrice": "Günlük birim",
+      "month": "Ay",
       "rentalAmount": "Kiralama Tutarı",
       "day": "Gün",
       "extrasTotal": "Ekstra Tutar (TL)",

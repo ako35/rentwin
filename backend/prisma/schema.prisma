@@ -299,7 +299,9 @@ model Contract {
   returnKm          Int? // odometer at return (set by the vehicle-return flow)
   returnFuelEighths Int? // fuel / charge gauge at return, 0-8
   returnedAt        DateTime? // when the vehicle-return was processed
-  dailyPrice        Float?
+  rentalType        String              @default("DAILY") // "DAILY" | "MONTHLY" — drives the rental-amount formula
+  dailyPrice        Float? // used when rentalType = DAILY
+  monthlyPrice      Float? // used when rentalType = MONTHLY (30-day fixed month + prorated days)
   extrasTotal       Float?
   oneWayFee         Float?
   discount          Float?

@@ -16,7 +16,7 @@ export const EMPTY_CONTRACT = {
   contractNo: "", customerNote: "", adminNote: "", flightNo: "",
   pickUpKm: "", pickUpFuelEighths: "",
   returnKm: "", returnFuelEighths: "", returnedAt: "",
-  dailyPrice: "", returnExtraAmount: "",
+  rentalType: "DAILY", dailyPrice: "", monthlyPrice: "", returnExtraAmount: "",
   deposit: "", kmLimit: "", unlimitedKm: false,
   dailyKmLimit: 300, monthlyKmLimit: "", kmOverageFee: "", fuelFeePerEighth: "",
   vatRate: 20,
@@ -69,28 +69,59 @@ export const computeBillableDays = ({ pickUpDate, pickUpTime, dropOffDate, dropO
   return Math.max(1, Math.ceil(end.diff(start, "hours") / 24));
 };
 
-// Live contract totals mirrored from the backend's computeTotal. Prices are
-// entered VAT-inclusive, so `total` === `subtotal` (no VAT added on top);
-// `vatIncluded` is the VAT already contained in the price, shown for reference.
-export const computePricing = (values, billableDays) => {
-  const n = (x) => Number(x) || 0;
-  const rental = n(values.dailyPrice) * billableDays;
-  const addOns = n(values.returnExtraAmount);
-  const subtotal = rental + addOns;
-  const vat = values.vatRate === "" ? 20 : n(values.vatRate);
-  const vatIncluded = vat > 0 ? subtotal - subtotal / (1 + vat / 100) : 0;
-  return { rental, addOns, subtotal, vatIncluded, total: subtotal };
-};
-
 const round2 = (n) => Math.round(n * 100) / 100;
 
-// Km allowance for the whole rental — the stricter of daily×days and
-// monthly×months. A blank limit is no cap on that axis; unlimitedKm or both
-// blank -> Infinity (no limit). Mirrors backend contract-fields.computeAllowedKm.
+// Split a rental window into whole calendar months + leftover ("kıst") days.
+// Mirrors backend contract-fields.rentalTerm (moment .add(n,"month") clamps to
+// the month end, same as dayjs on the backend).
+export const computeRentalTerm = ({ pickUpDate, pickUpTime, dropOffDate, dropOffTime }) => {
+  if (!pickUpDate || !dropOffDate) return { months: 0, days: 1 };
+  const start = moment(`${pickUpDate} ${pickUpTime || "00:00"}`);
+  const end = moment(`${dropOffDate} ${dropOffTime || "00:00"}`);
+  if (!start.isValid() || !end.isValid() || end.isSameOrBefore(start)) return { months: 0, days: 1 };
+  let months = 0;
+  while (start.clone().add(months + 1, "month").isSameOrBefore(end)) months += 1;
+  const cursor = start.clone().add(months, "month");
+  let days = Math.ceil(end.diff(cursor, "hours") / 24);
+  days = months === 0 ? Math.max(1, days) : Math.max(0, days);
+  return { months, days };
+};
+
+// Live contract totals mirrored from the backend's computeTotal. Prices are
+// entered VAT-inclusive, so `total` === `subtotal` (no VAT added on top).
+//   DAILY   : billableDays x dailyPrice
+//   MONTHLY : months x monthlyPrice + kıst days x (monthlyPrice / 30)
+export const computePricing = (values, billableDays) => {
+  const n = (x) => Number(x) || 0;
+  let rental;
+  if (values.rentalType === "MONTHLY") {
+    const { months, days } = computeRentalTerm(values);
+    const m = n(values.monthlyPrice);
+    rental = round2(months * m + days * round2(m / 30));
+  } else {
+    rental = n(values.dailyPrice) * billableDays;
+  }
+  const addOns = n(values.returnExtraAmount);
+  const subtotal = round2(rental + addOns);
+  return { rental, addOns, subtotal, total: subtotal };
+};
+
+// Km allowance for the whole rental — the stricter of the daily and monthly cap.
+// A blank limit is no cap on that axis; unlimitedKm or both blank -> Infinity.
+// In MONTHLY rental mode the monthly cap follows the same month + kıst-day
+// breakdown as the price. Mirrors backend contract-fields.computeAllowedKm.
 export const computeAllowedKm = (values, contractedDays) => {
   if (values.unlimitedKm) return Infinity;
   const daily = Number(values.dailyKmLimit) || 0;
   const monthly = Number(values.monthlyKmLimit) || 0;
+
+  if (values.rentalType === "MONTHLY") {
+    const { months, days } = computeRentalTerm(values);
+    const dailyCap = daily > 0 ? daily * (months * 30 + days) : Infinity;
+    const monthlyCap = monthly > 0 ? months * monthly + Math.ceil(days * (monthly / 30)) : Infinity;
+    return Math.min(dailyCap, monthlyCap);
+  }
+
   const dailyCap = daily > 0 ? daily * contractedDays : Infinity;
   const monthlyCap = monthly > 0 ? monthly * Math.ceil(contractedDays / 30) : Infinity;
   return Math.min(dailyCap, monthlyCap);
@@ -148,7 +179,9 @@ export const buildContractDto = (values) => ({
   customerNote: values.customerNote, adminNote: values.adminNote,
   flightNo: values.flightNo,
   pickUpKm: values.pickUpKm, pickUpFuelEighths: values.pickUpFuelEighths,
+  rentalType: values.rentalType === "MONTHLY" ? "MONTHLY" : "DAILY",
   dailyPrice: values.dailyPrice,
+  monthlyPrice: values.monthlyPrice,
   // extrasTotal / oneWayFee are no longer written from this form — one-off
   // charges are itemised on the "Dönüş Ekstra" tab and roll up into
   // returnExtraAmount, which the backend derives and caches.
@@ -179,7 +212,9 @@ export const contractToFormValues = (r) => ({
   returnKm: r.returnKm ?? "",
   returnFuelEighths: r.returnFuelEighths != null ? String(r.returnFuelEighths) : "",
   returnedAt: r.returnedAt || "",
+  rentalType: r.rentalType || "DAILY",
   dailyPrice: r.dailyPrice ?? "",
+  monthlyPrice: r.monthlyPrice ?? "",
   returnExtraAmount: r.returnExtraAmount ?? "",
   deposit: r.deposit ?? "", kmLimit: r.kmLimit ?? "",
   unlimitedKm: r.unlimitedKm ?? true,

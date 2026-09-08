@@ -1,3 +1,4 @@
+const dayjs = require("dayjs");
 const prisma = require("../../lib/prisma");
 const { hoursBetween, round2 } = require("../../lib/dates");
 
@@ -34,6 +35,7 @@ const CONTRACT_NUMBER_FIELDS = [
   "monthlyKmLimit",
   "kmOverageFee",
   "fuelFeePerEighth",
+  "monthlyPrice",
   "vatRate",
 ];
 
@@ -55,6 +57,7 @@ const pickContractFields = (body) => {
     if (field in body) data[field] = num(body[field]);
   });
   if ("unlimitedKm" in body) data.unlimitedKm = Boolean(body.unlimitedKm);
+  if ("rentalType" in body) data.rentalType = body.rentalType === "MONTHLY" ? "MONTHLY" : "DAILY";
   // hgsStatus is not accepted from the form — it is derived from the HGS check
   // log (see contract-records.syncHgsStatus).
   // Date fields — "" / null clears them.
@@ -72,33 +75,68 @@ const pickContractFields = (body) => {
   return data;
 };
 
-// Contract grand total: daily price x rental days + extras + one-way + return
-// extras. Prices are entered VAT-inclusive, so nothing is added on top; vatRate
-// only drives the net/tax split on the invoice. The frontend mirrors this in
-// contract-helpers.computePricing.
-const computeTotal = (r, pickUp, dropOff) => {
-  const days = Math.max(1, Math.ceil(hoursBetween(pickUp, dropOff) / 24));
-  const rental = (num(r.dailyPrice) || 0) * days;
-  const addOns = (num(r.extrasTotal) || 0) + (num(r.oneWayFee) || 0) + (num(r.returnExtraAmount) || 0);
-  return round2(rental + addOns);
-};
-
 // Whole rental days from the contracted pick-up -> drop-off window, min 1.
 const rentalDays = (pickUp, dropOff) => Math.max(1, Math.ceil(hoursBetween(pickUp, dropOff) / 24));
 
-// Km allowance for the whole rental: the stricter of (daily x days) and
-// (monthly x months). A missing limit is treated as no cap on that axis; if
-// both are missing (or km is unlimited) there is no limit -> null. The frontend
-// mirrors this in contract-helpers.computeAllowedKm.
+// Split a rental window into whole calendar months + leftover ("kıst") days.
+// "15 Jan 10:00 -> 15 Feb 10:00" = { months: 1, days: 0 }; "-> 20 Feb" = { 1, 5 }.
+// dayjs .add(n,"month") clamps to the month end (31 Jan +1m -> 28 Feb), matching
+// moment on the frontend. The frontend mirrors this in
+// contract-helpers.computeRentalTerm.
+const rentalTerm = (pickUp, dropOff) => {
+  let months = 0;
+  while (dayjs(pickUp).add(months + 1, "month").toDate() <= dropOff) months += 1;
+  const cursor = dayjs(pickUp).add(months, "month").toDate();
+  let days = Math.ceil((dropOff.getTime() - cursor.getTime()) / 86400000);
+  days = months === 0 ? Math.max(1, days) : Math.max(0, days);
+  return { months, days };
+};
+
+// Rental (car-hire) amount, before add-ons.
+//   DAILY   : days x dailyPrice
+//   MONTHLY : full months x monthlyPrice + kıst days x (monthlyPrice / 30),
+//             so the month length (28/30/31) never shifts the price.
+// The frontend mirrors this in contract-helpers.computePricing.
+const computeRentalAmount = (r, pickUp, dropOff) => {
+  if (r.rentalType === "MONTHLY") {
+    const monthly = num(r.monthlyPrice) || 0;
+    const { months, days } = rentalTerm(pickUp, dropOff);
+    return round2(months * monthly + days * round2(monthly / 30));
+  }
+  return round2((num(r.dailyPrice) || 0) * rentalDays(pickUp, dropOff));
+};
+
+// Contract grand total: rental + extras + one-way + return extras. Prices are
+// entered VAT-inclusive, so nothing is added on top; vatRate only drives the
+// net/tax split on the invoice.
+const computeTotal = (r, pickUp, dropOff) => {
+  const addOns = (num(r.extrasTotal) || 0) + (num(r.oneWayFee) || 0) + (num(r.returnExtraAmount) || 0);
+  return round2(computeRentalAmount(r, pickUp, dropOff) + addOns);
+};
+
+// Km allowance for the whole rental: the stricter of the daily and the monthly
+// cap. A missing limit is no cap on that axis; both missing (or unlimited) ->
+// null. In MONTHLY rental mode the monthly cap follows the same month + kıst-day
+// breakdown as the price. The frontend mirrors this in
+// contract-helpers.computeAllowedKm.
 const computeAllowedKm = (r, pickUp, dropOff) => {
   if (r.unlimitedKm) return null;
+  const dk = num(r.dailyKmLimit);
+  const mk = num(r.monthlyKmLimit);
+
+  if (r.rentalType === "MONTHLY") {
+    const { months, days } = rentalTerm(pickUp, dropOff);
+    const daily = dk ? dk * (months * 30 + days) : Infinity;
+    const monthly = mk ? months * mk + Math.ceil(days * (mk / 30)) : Infinity;
+    const eff = Math.min(daily, monthly);
+    return Number.isFinite(eff) ? eff : null;
+  }
+
   const days = rentalDays(pickUp, dropOff);
-  const daily = num(r.dailyKmLimit) ? num(r.dailyKmLimit) * days : Infinity;
-  const monthly = num(r.monthlyKmLimit)
-    ? num(r.monthlyKmLimit) * Math.ceil(days / 30)
-    : Infinity;
-  const effective = Math.min(daily, monthly);
-  return Number.isFinite(effective) ? effective : null;
+  const daily = dk ? dk * days : Infinity;
+  const monthly = mk ? mk * Math.ceil(days / 30) : Infinity;
+  const eff = Math.min(daily, monthly);
+  return Number.isFinite(eff) ? eff : null;
 };
 
 // --- HGS check coverage -----------------------------------------------------
@@ -139,7 +177,9 @@ module.exports = {
   nextContractNo,
   pickContractFields,
   computeTotal,
+  computeRentalAmount,
   computeAllowedKm,
   rentalDays,
+  rentalTerm,
   hgsRangesCoverPeriod,
 };

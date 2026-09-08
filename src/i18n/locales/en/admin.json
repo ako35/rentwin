@@ -468,7 +468,12 @@
         "limits": "Limits",
         "taxTotal": "Grand Total"
       },
+      "rentalTypeLabel": "Rental Type",
+      "rentalType": { "daily": "Daily", "monthly": "Monthly" },
       "dailyPrice": "Daily Price (TL)",
+      "monthlyPrice": "Monthly Price (TL)",
+      "dailyUnitPrice": "Daily unit",
+      "month": "mo",
       "rentalAmount": "Rental Amount",
       "day": "days",
       "extrasTotal": "Extras Amount (TL)",

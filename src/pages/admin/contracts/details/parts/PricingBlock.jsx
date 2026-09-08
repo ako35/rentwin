@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Form } from "react-bootstrap";
-import { computeAllowedKm } from "../contract-helpers";
+import { computeAllowedKm, computeRentalTerm } from "../contract-helpers";
 
 // Defined at module scope (not inside PricingBlock) so their component identity
 // stays stable across the parent's re-renders — otherwise every keystroke would
@@ -28,7 +28,7 @@ const InputRow = ({ formik, name, label, suffix = "TL", disabled = false }) => (
 );
 
 // The right card's pricing block, laid out as an invoice summary: service items,
-// limits, tax & total — each an editable input or a read-only amount. Totals are
+// limits, total — each an editable input or a read-only amount. Totals are
 // reactive (computed in the parent's useMemo), so there is no manual
 // "recalculate" step — the action bar's "Kaydet" persists the figures.
 const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionTotal, collected, money }) => {
@@ -39,25 +39,57 @@ const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionT
   const balance = num(collected) - pricing.total;
   const allowedKm = computeAllowedKm(formik.values, billableDays);
 
+  const isMonthly = formik.values.rentalType === "MONTHLY";
+  const term = computeRentalTerm(formik.values);
+  const monthlyUnit = num(formik.values.monthlyPrice) / 30;
+  const monthlyUnitText = `TL × ${term.months} ${c("month")}${
+    term.days ? ` (+${term.days} ${c("day")})` : ""
+  }`;
+
   return (
     <div className="pricing">
       <section className="pricing__group">
         <h4>{c("pricingGroups.service")}</h4>
+
+        <div className="pricing__mode">
+          {["DAILY", "MONTHLY"].map((mode) => (
+            <button
+              key={mode}
+              type="button"
+              className={formik.values.rentalType === mode ? "is-active" : ""}
+              onClick={() => formik.setFieldValue("rentalType", mode)}
+            >
+              {c(`rentalType.${mode === "DAILY" ? "daily" : "monthly"}`)}
+            </button>
+          ))}
+        </div>
+
         <div className="pricing__row">
-          <span className="pricing__label">{c("dailyPrice")}</span>
+          <span className="pricing__label">{isMonthly ? c("monthlyPrice") : c("dailyPrice")}</span>
           <span className="pricing__field">
-            <Form.Control type="number" value={formik.values.dailyPrice} onChange={setV("dailyPrice")} />
+            {isMonthly ? (
+              <Form.Control type="number" value={formik.values.monthlyPrice} onChange={setV("monthlyPrice")} />
+            ) : (
+              <Form.Control type="number" value={formik.values.dailyPrice} onChange={setV("dailyPrice")} />
+            )}
             <span className="pricing__unit">
-              TL × {billableDays}
-              {extensionDays ? ` (+${extensionDays})` : ""}
+              {isMonthly ? monthlyUnitText : `TL × ${billableDays}`}
+              {!isMonthly && extensionDays ? ` (+${extensionDays})` : ""}
             </span>
           </span>
         </div>
+        {isMonthly && (
+          <div className="pricing__row pricing__row--muted">
+            <span className="pricing__label">{c("dailyUnitPrice")}</span>
+            <span className="pricing__amount">{money(monthlyUnit)} TL</span>
+          </div>
+        )}
         <AmountRow label={c("rentalAmount")} value={money(pricing.rental)} />
         {/* Read-only — the sum of the itemised charges on the "Dönüş Ekstra" tab
             (km overage, missing fuel, one-way fee, HGS, damage …). Priced from
             the rates in the Limitler section and posted automatically on return. */}
         <AmountRow label={c("extrasTotal")} value={money(num(formik.values.returnExtraAmount))} />
+        {extensionTotal > 0 && <AmountRow label={c("uzatmaAmount")} value={money(extensionTotal)} />}
       </section>
 
       <section className="pricing__group">
@@ -90,16 +122,6 @@ const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionT
           </>
         )}
         <InputRow formik={formik} name="fuelFeePerEighth" label={c("fuelFeePerEighth")} suffix="₺ / (1/8)" />
-      </section>
-
-      <section className="pricing__group">
-        <h4>{c("pricingGroups.taxTotal")}</h4>
-        {extensionTotal > 0 && <AmountRow label={c("uzatmaAmount")} value={money(extensionTotal)} />}
-        <AmountRow label={c("contractAmount")} value={money(pricing.subtotal)} emph />
-        <AmountRow
-          label={c("vatLine", { rate: formik.values.vatRate === "" ? 20 : formik.values.vatRate })}
-          value={money(pricing.vatIncluded)}
-        />
       </section>
 
       <div className="pricing__summary">
