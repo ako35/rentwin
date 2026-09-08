@@ -20,6 +20,7 @@ import { addCorporate, deleteCorporate, getCorporate, getCorporates, updateCorpo
 import { addExtra, deleteExtra, getExtras, updateExtra } from "./extra/extra-service";
 
 import { addAnnouncement, deleteAnnouncement, getActiveAnnouncements, getAnnouncements, updateAnnouncement } from "./announcement/announcement-service";
+import { getSettings, updateSettings } from "./settings/settings-service";
 
 import { addLedgerEntry, deleteLedgerEntry, getUserLedger, updateLedgerEntry } from "./ledger/ledger-service";
 
@@ -151,6 +152,10 @@ export const services = {
         addLedgerEntry,
         updateLedgerEntry,
         deleteLedgerEntry,
+    },
+    settings: {
+        getSettings,
+        updateSettings,
     },
     encryptedLocalStorage,
     authHeader

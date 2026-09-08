@@ -33,6 +33,7 @@ const AdminContactMessagesPage = lazy(() => import("../pages/admin/contact-messa
 const AdminContactMessageDetailsPage = lazy(() => import("../pages/admin/contact-messages/details/page"));
 const AdminDashboard = lazy(() => import("../pages/admin/dashboard/page"));
 const AdminExtrasPage = lazy(() => import("../pages/admin/extras/page"));
+const AdminSettingsPage = lazy(() => import("../pages/admin/settings/page"));
 const AdminFinancePage = lazy(() => import("../pages/admin/finance/page"));
 const AdminCariLedgerPage = lazy(() => import("../pages/admin/finance/cari/page"));
 const AdminCariStatementPrintPage = lazy(() => import("../pages/admin/finance/cari/print"));
@@ -113,6 +114,7 @@ const router = createBrowserRouter([
       { path: "branches", element: lazyRoute(<AdminBranchesPage />) },
       { path: "rental-locations", element: lazyRoute(<AdminRentalLocationsPage />) },
       { path: "extras", element: lazyRoute(<AdminExtrasPage />) },
+      { path: "settings", element: lazyRoute(<AdminSettingsPage />) },
       {
         path: "finans",
         children: [

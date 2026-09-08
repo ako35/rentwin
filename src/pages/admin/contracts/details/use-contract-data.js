@@ -55,6 +55,10 @@ export const useContractData = ({ isCreate, contractId }) => {
     try {
       await loadRefData();
       setCustomers(await fetchCustomers().catch(() => []));
+      // Pre-fill the rental terms from the admin Settings page (blank -> keep the
+      // form default). The backend applies the same defaults on createContract.
+      const s = await services.settings.getSettings().catch(() => ({}));
+      const pick = (key, fallback) => (s?.[key] == null ? fallback : String(s[key]));
       setInitialValues({
         ...EMPTY_CONTRACT,
         status: "CREATED",
@@ -62,6 +66,10 @@ export const useContractData = ({ isCreate, contractId }) => {
         pickUpTime: "10:00",
         dropOffDate: moment().add(3, "days").format("YYYY-MM-DD"),
         dropOffTime: "10:00",
+        dailyKmLimit: pick("defaultDailyKmLimit", EMPTY_CONTRACT.dailyKmLimit),
+        monthlyKmLimit: pick("defaultMonthlyKmLimit", EMPTY_CONTRACT.monthlyKmLimit),
+        kmOverageFee: pick("defaultKmOverageFee", EMPTY_CONTRACT.kmOverageFee),
+        fuelFeePerEighth: pick("defaultFuelFeePerEighth", EMPTY_CONTRACT.fuelFeePerEighth),
       });
     } catch (error) {
       console.log(error);

@@ -831,6 +831,21 @@
     "RENTED": "Rented",
     "OUT_OF_SERVICE": "Out of Service"
   },
+  "settings": {
+    "pageTitle": "Settings",
+    "save": "Save",
+    "saveSuccess": "Settings saved.",
+    "saveError": "There was an error saving the settings.",
+    "empty": "—",
+    "contractDefaults": {
+      "title": "Contract Pricing Defaults",
+      "hint": "These values are pre-filled when a new contract is opened. They can still be changed per contract. A field left blank is carried over blank.",
+      "defaultDailyKmLimit": "Daily KM Limit",
+      "defaultMonthlyKmLimit": "Monthly KM Limit",
+      "defaultKmOverageFee": "KM Overage Fee",
+      "defaultFuelFeePerEighth": "Missing Fuel Fee"
+    }
+  },
   "topNav": {
     "home": "Home",
     "vehicle": "Vehicle",
@@ -858,6 +873,7 @@
     "finance": "Finance",
     "definitions": "Definitions",
     "system": "System",
+    "settings": "Settings",
     "announcements": "Announcements",
     "backToWebsite": "Back To Website",
     "logout": "Logout",

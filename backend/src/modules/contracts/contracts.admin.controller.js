@@ -11,6 +11,7 @@ const { round2 } = require("../../lib/dates");
 const { kbsStamp, kbsBlocksClose } = require("./kbs");
 const { syncContractDebit, voidContractLedger, restoreContractLedger } = require("../../lib/ledger");
 const { getBusyVehicleIds } = require("../../lib/availability");
+const { readSettings } = require("../settings/settings.controller");
 
 const RETURN_CHARGE_CATEGORIES = [
   "KM_EXCESS",
@@ -133,6 +134,11 @@ const createContract = asyncHandler(async (req, res) => {
   if (!car) throw new HttpError(404, "Vehicle not found.");
   if (!user) throw new HttpError(404, "Customer not found.");
 
+  // Default rental terms come from the admin Settings page (Setting singleton);
+  // the create form mirrors the same values, and the admin can still adjust or
+  // switch to unlimited on the detail page.
+  const s = await readSettings();
+
   const contract = await createContractWithNo({
     carId,
     userId,
@@ -142,10 +148,11 @@ const createContract = asyncHandler(async (req, res) => {
     dropOffTime: parsedDropOff,
     totalPrice: 0,
     status: "CREATED",
-    // Default rental terms: a 300 km/day allowance (the form mirrors this in
-    // EMPTY_CONTRACT); the admin adjusts or switches to unlimited on the detail page.
     unlimitedKm: false,
-    dailyKmLimit: 300,
+    dailyKmLimit: s.defaultDailyKmLimit ?? 300,
+    monthlyKmLimit: s.defaultMonthlyKmLimit ?? null,
+    kmOverageFee: s.defaultKmOverageFee ?? null,
+    fuelFeePerEighth: s.defaultFuelFeePerEighth ?? null,
     reservationId: reservationId || null,
   });
   res.status(201).json({ id: contract.id });

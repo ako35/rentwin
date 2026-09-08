@@ -507,3 +507,13 @@ model ContactMessage {
   body      String
   createdAt DateTime @default(now())
 }
+
+// App-wide settings. Single row, id fixed to "singleton" — always upserted.
+model Setting {
+  id                      String   @id @default("singleton")
+  defaultDailyKmLimit     Int?
+  defaultMonthlyKmLimit   Int?
+  defaultKmOverageFee     Float?
+  defaultFuelFeePerEighth Float?
+  updatedAt               DateTime @updatedAt
+}

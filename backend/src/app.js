@@ -20,6 +20,7 @@ const corporatesRoutes = require("./modules/corporates/corporates.routes");
 const extrasRoutes = require("./modules/extras/extras.routes");
 const announcementsRoutes = require("./modules/announcements/announcements.routes");
 const ledgerRoutes = require("./modules/ledger/ledger.routes");
+const settingsRoutes = require("./modules/settings/settings.routes");
 const { getSitemap } = require("./modules/sitemap/sitemap.controller");
 const notFound = require("./middleware/not-found");
 const errorHandler = require("./middleware/error-handler");
@@ -82,6 +83,7 @@ api.use(corporatesRoutes);
 api.use(extrasRoutes);
 api.use(announcementsRoutes);
 api.use(ledgerRoutes);
+api.use(settingsRoutes);
 
 app.use("/api", api);
 

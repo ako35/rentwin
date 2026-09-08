@@ -831,6 +831,21 @@
     "RENTED": "Kirada",
     "OUT_OF_SERVICE": "Servis Dışı"
   },
+  "settings": {
+    "pageTitle": "Ayarlar",
+    "save": "Kaydet",
+    "saveSuccess": "Ayarlar kaydedildi.",
+    "saveError": "Ayarlar kaydedilirken bir hata oluştu.",
+    "empty": "—",
+    "contractDefaults": {
+      "title": "Sözleşme Fiyat Varsayılanları",
+      "hint": "Yeni bir kontrat açıldığında bu değerler otomatik olarak gelir. Her kontrat içinde ayrıca değiştirilebilir. Boş bırakılan alan yeni kontrata boş yansır.",
+      "defaultDailyKmLimit": "Günlük KM Limiti",
+      "defaultMonthlyKmLimit": "Aylık KM Limiti",
+      "defaultKmOverageFee": "KM Aşım Bedeli",
+      "defaultFuelFeePerEighth": "Eksik Yakıt Bedeli"
+    }
+  },
   "topNav": {
     "home": "Ana Sayfa",
     "vehicle": "Araç",
@@ -858,6 +873,7 @@
     "finance": "Finans",
     "definitions": "Tanım",
     "system": "Sistem",
+    "settings": "Ayarlar",
     "announcements": "Duyurular",
     "backToWebsite": "Web Sitesine Dön",
     "logout": "Çıkış Yap",
