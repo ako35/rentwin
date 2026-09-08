@@ -7,9 +7,9 @@ import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import SaveFirstHint from "./SaveFirstHint";
 
-// Return-time charge list. A single add form — a category dropdown plus an
-// amount and an optional note (its placeholder adapts to the picked category) —
-// feeds the table below it. The summed lines are cached on
+// Return-time extras list. A single add form — an extra-type dropdown plus an
+// amount and an optional note (its placeholder adapts to the picked type) —
+// feeds the table below it. The summed rows are cached on
 // Contract.returnExtraAmount by the backend and flow straight into the grand
 // total, so every change reloads the contract.
 const CATEGORIES = [

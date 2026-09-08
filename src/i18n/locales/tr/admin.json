@@ -346,16 +346,16 @@
         "Other": "Diğer"
       },
       "returnCharges": {
-        "category": "Kalem",
-        "categoryPlaceholder": "Kalem seçin…",
+        "category": "Ekstra Türü",
+        "categoryPlaceholder": "Ekstra türü seçin…",
         "description": "Açıklama",
         "amount": "Tutar (TL)",
         "quantity": "Adet",
         "lineTotal": "Tutar",
-        "addLine": "Yeni Ekstra Kalemi Ekle",
-        "addBtn": "Kalem Ekle",
-        "newLine": "Yeni kalem",
-        "editingLine": "Kalem düzenleniyor",
+        "addLine": "Yeni Ekstra Ekle",
+        "addBtn": "Ekstra Ekle",
+        "newLine": "Yeni ekstra",
+        "editingLine": "Ekstra düzenleniyor",
         "periodLabel": "Yansıtılan Dönem",
         "periodFrom": "Başlangıç",
         "periodTo": "Bitiş",
@@ -579,7 +579,7 @@
         "note": "Not",
         "notePlaceholder": "Opsiyonel — plaka, geçiş noktası, sorgu referansı…",
         "openPortal": "PTT HGS Portalını Aç",
-        "amountHint": "Geçiş bedeli eklemek için Dönüş Ekstra sekmesindeki \"HGS / OGS\" kalemini kullanın."
+        "amountHint": "Geçiş bedeli eklemek için Dönüş Ekstra sekmesinden \"HGS / OGS\" ekstrası ekleyin."
       },
       "kbs": {
         "title": "KABİS Bildirimi",

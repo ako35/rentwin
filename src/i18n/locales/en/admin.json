@@ -346,16 +346,16 @@
         "Other": "Other"
       },
       "returnCharges": {
-        "category": "Item",
-        "categoryPlaceholder": "Select an item…",
+        "category": "Extra Type",
+        "categoryPlaceholder": "Select an extra type…",
         "description": "Description",
         "amount": "Amount (TL)",
         "quantity": "Qty",
         "lineTotal": "Amount",
-        "addLine": "Add Extra Line",
-        "addBtn": "Add Line",
-        "newLine": "New line",
-        "editingLine": "Editing line",
+        "addLine": "Add Extra",
+        "addBtn": "Add Extra",
+        "newLine": "New extra",
+        "editingLine": "Editing extra",
         "periodLabel": "Reflected Period",
         "periodFrom": "Start",
         "periodTo": "End",
@@ -579,7 +579,7 @@
         "note": "Note",
         "notePlaceholder": "Optional — plate, toll point, query reference…",
         "openPortal": "Open the PTT HGS Portal",
-        "amountHint": "To add a toll charge, use the \"HGS / OGS\" line on the Return Extras tab."
+        "amountHint": "To add a toll charge, add an \"HGS / OGS\" extra on the Return Extras tab."
       },
       "kbs": {
         "title": "KABİS Notification",
