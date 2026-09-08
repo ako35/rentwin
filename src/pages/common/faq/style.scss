@@ -1,0 +1,39 @@
+@use "../../../styles/variables" as v;
+
+.faq {
+  max-width: 820px;
+
+  &__intro {
+    font-size: 1.02rem;
+    line-height: 1.7;
+    color: v.$color-muted;
+    margin-bottom: 2rem;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  &__item {
+    padding: 1.15rem 1.3rem;
+    background-color: #fff;
+    border: 1px solid v.$color3;
+    border-radius: 14px;
+
+    h2 {
+      margin: 0 0 0.5rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: v.$color5;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: v.$color-muted;
+    }
+  }
+}

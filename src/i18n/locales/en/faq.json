@@ -1,0 +1,60 @@
+{
+  "pageTitle": "Frequently Asked Questions",
+  "seoTitle": "Frequently Asked Questions | Rentwin Car Rental",
+  "seoDescription": "Everything you need to know about renting with Rentwin: minimum age, required documents, deposit, mileage limit, fuel policy, toll charges and more.",
+  "intro": "We've gathered the answers to the questions we hear most about renting a car. If you can't find what you're looking for, reach us from the Contact page.",
+  "items": [
+    {
+      "q": "What is the minimum age to rent a car?",
+      "a": "You must be at least 25 years old and have held a driving licence for at least 3 years."
+    },
+    {
+      "q": "Which documents do I need to rent?",
+      "a": "A valid driving licence, a national ID card (passport for non-Turkish citizens) and a credit card in the renter's name."
+    },
+    {
+      "q": "Do you take a deposit?",
+      "a": "No. Rentwin does not require a deposit when you rent a car."
+    },
+    {
+      "q": "Is there a mileage limit?",
+      "a": "Daily rentals have a 300 km mileage limit. For longer trips you can request the unlimited-mileage option when booking. Every kilometre over the limit is charged at 6 TL."
+    },
+    {
+      "q": "What is your fuel policy?",
+      "a": "Return the car with the fuel at the same level it was handed over. Any shortfall is billed at the unit price stated in the rental agreement."
+    },
+    {
+      "q": "How are bridge and motorway (HGS / OGS) tolls charged?",
+      "a": "Tolls incurred during the rental are queried through the system after the car is returned, and the amount found is invoiced to you."
+    },
+    {
+      "q": "Can I drop the car off in another city?",
+      "a": "Yes, one-way rentals are possible. A one-way fee is added to the agreement for this; contact us for the details."
+    },
+    {
+      "q": "Do you deliver to the airport?",
+      "a": "Yes. We deliver cars to İzmir Adnan Menderes Airport with a meet-and-greet service — just note the request when booking. Contact us for delivery to an address you specify as well."
+    },
+    {
+      "q": "Can I add an extra driver to the agreement?",
+      "a": "Yes. Every driver who will use the car must be listed on the agreement and must each meet the minimum age and licence requirements."
+    },
+    {
+      "q": "How do I cancel or change my reservation?",
+      "a": "You can cancel your reservation, or request a date / vehicle change, by phone, e-mail or WhatsApp. Cancellations made more than 24 hours before pick-up are free of charge."
+    },
+    {
+      "q": "What should I do in an accident or breakdown?",
+      "a": "Make sure you are safe first, file an accident report if there is a collision, and call our 24/7 roadside assistance line. Our team will help you through the process."
+    },
+    {
+      "q": "Can I take the car outside Turkey?",
+      "a": "No. Rentwin vehicles may not be taken outside Turkey's borders."
+    },
+    {
+      "q": "Which payment methods do you accept?",
+      "a": "Cash, credit card and bank transfer."
+    }
+  ]
+}

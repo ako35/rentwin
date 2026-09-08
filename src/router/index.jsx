@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CommonLayout from "../layouts/common/layout";
 import AboutPage from "../pages/common/about/page";
 import ContactPage from "../pages/common/contact/page";
+import FaqPage from "../pages/common/faq/page";
 import LocationsPage from "../pages/common/locations/page";
 import LocationDetailPage from "../pages/common/locations/details/page";
 import ErrorPage from "../pages/common/error/page";
@@ -60,6 +61,7 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "about", element: <AboutPage /> },
       { path: "contact", element: <ContactPage /> },
+      { path: "sss", element: <FaqPage /> },
       {
         path: "lokasyonlar",
         children: [

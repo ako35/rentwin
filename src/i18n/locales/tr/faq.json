@@ -1,0 +1,60 @@
+{
+  "pageTitle": "Sıkça Sorulan Sorular",
+  "seoTitle": "Sıkça Sorulan Sorular | Rentwin Araç Kiralama",
+  "seoDescription": "Rentwin araç kiralama hakkında merak edilenler: kiralama yaşı, gerekli belgeler, depozito, kilometre limiti, yakıt politikası, HGS geçişleri ve daha fazlası.",
+  "intro": "Araç kiralama sürecine dair en çok sorulan soruların yanıtlarını burada topladık. Aradığınızı bulamazsanız İletişim sayfasından bize ulaşabilirsiniz.",
+  "items": [
+    {
+      "q": "Araç kiralamak için kaç yaşında olmalıyım?",
+      "a": "Araç kiralayabilmek için en az 25 yaşında olmanız ve en az 3 yıllık sürücü belgesine sahip olmanız gerekir."
+    },
+    {
+      "q": "Kiralama için hangi belgeler gerekli?",
+      "a": "Geçerli bir sürücü belgesi, T.C. kimlik kartı (yabancı uyruklular için pasaport) ve kiralayan kişi adına bir kredi kartı yeterlidir."
+    },
+    {
+      "q": "Depozito alıyor musunuz?",
+      "a": "Hayır. Rentwin'de araç kiralarken depozito talep etmiyoruz."
+    },
+    {
+      "q": "Kilometre sınırı var mı?",
+      "a": "Günlük kiralamalarda kilometre limiti 300 km'dir. Daha uzun yolculuklar için sınırsız kilometre seçeneğini rezervasyon sırasında talep edebilirsiniz. Limiti aşan her kilometre 6 TL üzerinden ücretlendirilir."
+    },
+    {
+      "q": "Yakıt politikanız nedir?",
+      "a": "Araçlar, deposu ne kadar dolu teslim edildiyse aynı seviyede iade edilmelidir. Eksik yakıt, sözleşmedeki birim fiyat üzerinden faturaya yansıtılır."
+    },
+    {
+      "q": "Köprü ve otoyol (HGS / OGS) geçişleri nasıl ücretlendirilir?",
+      "a": "Kiralama süresi boyunca yapılan HGS / OGS geçişleri, araç iadesinden sonra sistem üzerinden sorgulanır ve tespit edilen tutar tarafınıza fatura edilir."
+    },
+    {
+      "q": "Aracı başka bir şehirde teslim edebilir miyim?",
+      "a": "Evet, farklı lokasyonda teslim (tek yön kiralama) mümkündür. Bu hizmet için sözleşmeye tek yön ücreti eklenir; detaylar için bizimle iletişime geçin."
+    },
+    {
+      "q": "Havalimanına teslim yapıyor musunuz?",
+      "a": "Evet. İzmir Adnan Menderes Havalimanı'na araç teslimi ve karşılama hizmeti veriyoruz. Talebinizi rezervasyon sırasında belirtmeniz yeterli. Belirttiğiniz bir adrese teslim için de bizimle iletişime geçebilirsiniz."
+    },
+    {
+      "q": "Sözleşmeye ek sürücü ekleyebilir miyim?",
+      "a": "Evet. Aracı kullanacak tüm sürücüler sözleşmede yer almalıdır ve her biri asgari yaş ile ehliyet süresi şartlarını sağlamalıdır."
+    },
+    {
+      "q": "Rezervasyonumu nasıl iptal eder veya değiştiririm?",
+      "a": "Rezervasyonunuzu telefon, e-posta veya WhatsApp üzerinden iptal edebilir ya da tarih / araç değişikliği talep edebilirsiniz. Alış saatine 24 saatten fazla süre varken yapılan iptaller ücretsizdir."
+    },
+    {
+      "q": "Kaza veya arıza durumunda ne yapmalıyım?",
+      "a": "Önce güvenliğinizi sağlayın, kaza durumunda kaza tespit tutanağı düzenleyin ve 7/24 yol yardım hattımızı arayın. Ekibimiz süreç boyunca size yardımcı olur."
+    },
+    {
+      "q": "Araçları yurt dışına çıkarabilir miyim?",
+      "a": "Hayır. Rentwin araçları Türkiye sınırları dışına çıkarılamaz."
+    },
+    {
+      "q": "Hangi ödeme yöntemlerini kabul ediyorsunuz?",
+      "a": "Nakit, kredi kartı ve havale / EFT ile ödeme yapabilirsiniz."
+    }
+  ]
+}

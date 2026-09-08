@@ -58,6 +58,17 @@ export const webSiteLd = () => ({
   publisher: { "@id": `${SITE_URL}/#organization` },
 });
 
+// items: [{ q, a }] — plain-text question / answer pairs.
+export const faqLd = (items) => ({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: items.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+});
+
 // items: [{ name, path }] — the current page is the last item.
 export const breadcrumbLd = (items) => ({
   "@context": "https://schema.org",
