@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
-    "postinstall": "prisma generate && node scripts/migrate-on-deploy.js",
+    "postinstall": "prisma generate && node scripts/migrate-on-deploy.js && node scripts/backfill-vat-totals.js",
     "migrate": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
     "seed": "node prisma/seed.js",
