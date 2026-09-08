@@ -53,7 +53,7 @@
   "booking": {
     "sectionTitle1": "Book",
     "sectionTitle2": "Now",
-    "loginAlert": "Please login first to check if the car is available",
+    "loginAlert": "Please log in first to create a reservation",
     "pickUpLocation": "Pick Up Location",
     "dropOffLocation": "Drop Off Location",
     "selectLocation": "Select location",
@@ -66,13 +66,10 @@
     "expiryDate": "Expiry Date",
     "cvv": "CVV",
     "termsLabel": "I have read the <policy>Privacy & Personal Data Protection Policy</policy> and consent to the processing of my personal data as described.",
-    "checkAvailability": "Check If Available",
-    "totalPrice": "Total Price",
-    "edit": "Edit",
-    "bookNow": "Book Now",
-    "successToast": "Reservation created successfully!",
+    "submitReservation": "Create Reservation",
+    "successToast": "Your reservation has been received. We will contact you shortly to confirm it.",
     "genericError": "There is an error occurred during rent operation!",
     "dateOrderError": "Pick up date must be minimum 1 hour before drop off date!",
-    "notAvailableError": "Vehicle is not available for the selected dates!"
+    "notAvailableError": "This vehicle is no longer available for the selected dates. Please change the dates."
   }
 }

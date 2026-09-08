@@ -53,7 +53,7 @@
   "booking": {
     "sectionTitle1": "Şimdi",
     "sectionTitle2": "Rezervasyon Yap",
-    "loginAlert": "Aracın müsait olup olmadığını kontrol etmek için önce giriş yapın",
+    "loginAlert": "Rezervasyon oluşturmak için önce giriş yapın",
     "pickUpLocation": "Alış Konumu",
     "dropOffLocation": "Bırakış Konumu",
     "selectLocation": "Lokasyon seçin",
@@ -66,13 +66,10 @@
     "expiryDate": "Son Kullanma Tarihi",
     "cvv": "CVV",
     "termsLabel": "<policy>Gizlilik Politikası ve KVKK Aydınlatma Metni</policy>'ni okudum, kişisel verilerimin belirtilen kapsamda işlenmesini kabul ediyorum.",
-    "checkAvailability": "Müsaitliği Kontrol Et",
-    "totalPrice": "Toplam Fiyat",
-    "edit": "Düzenle",
-    "bookNow": "Şimdi Rezervasyon Yap",
-    "successToast": "Rezervasyon başarıyla oluşturuldu!",
+    "submitReservation": "Rezervasyon Oluştur",
+    "successToast": "Rezervasyonunuz başarıyla alındı! Onay için en kısa sürede sizinle iletişime geçeceğiz.",
     "genericError": "Rezervasyon işlemi sırasında bir hata oluştu!",
     "dateOrderError": "Alış tarihi, bırakış tarihinden en az 1 saat önce olmalıdır!",
-    "notAvailableError": "Araç seçilen tarihler için müsait değil!"
+    "notAvailableError": "Bu araç seçilen tarihler için artık müsait değil. Lütfen tarihleri değiştirin."
   }
 }
