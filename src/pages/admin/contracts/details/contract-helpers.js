@@ -70,40 +70,85 @@ export const computeBillableDays = ({ pickUpDate, pickUpTime, dropOffDate, dropO
 };
 
 const round2 = (n) => Math.round(n * 100) / 100;
+const numOr = (x) => Number(x) || 0;
 
-// Split a rental window into whole calendar months + leftover ("kıst") days.
-// Mirrors backend contract-fields.rentalTerm (moment .add(n,"month") clamps to
-// the month end, same as dayjs on the backend).
-export const computeRentalTerm = ({ pickUpDate, pickUpTime, dropOffDate, dropOffTime }) => {
-  if (!pickUpDate || !dropOffDate) return { months: 0, days: 1 };
-  const start = moment(`${pickUpDate} ${pickUpTime || "00:00"}`);
-  const end = moment(`${dropOffDate} ${dropOffTime || "00:00"}`);
-  if (!start.isValid() || !end.isValid() || end.isSameOrBefore(start)) return { months: 0, days: 1 };
+// Whole calendar months + leftover ("kıst") days between two YYYY-MM-DD dates,
+// compared by calendar date only. Mirrors backend contract-fields.rentalTerm
+// (an 8th->8th window is exactly N months, 0 kıst days). moment .add(n,"month")
+// clamps to the month end, like the backend.
+const termBetween = (startDate, endDate) => {
+  const s = moment(startDate, "YYYY-MM-DD");
+  const e = moment(endDate, "YYYY-MM-DD");
+  if (!s.isValid() || !e.isValid() || e.isSameOrBefore(s, "day")) return { months: 0, days: 1 };
   let months = 0;
-  while (start.clone().add(months + 1, "month").isSameOrBefore(end)) months += 1;
-  const cursor = start.clone().add(months, "month");
-  let days = Math.ceil(end.diff(cursor, "hours") / 24);
+  while (s.clone().add(months + 1, "month").isSameOrBefore(e, "day")) months += 1;
+  const cursor = s.clone().add(months, "month");
+  let days = e.diff(cursor, "days");
   days = months === 0 ? Math.max(1, days) : Math.max(0, days);
   return { months, days };
 };
 
-// Live contract totals mirrored from the backend's computeTotal. Prices are
-// entered VAT-inclusive, so `total` === `subtotal` (no VAT added on top).
-//   DAILY   : billableDays x dailyPrice
-//   MONTHLY : months x monthlyPrice + kıst days x (monthlyPrice / 30)
-export const computePricing = (values, billableDays) => {
-  const n = (x) => Number(x) || 0;
-  let rental;
-  if (values.rentalType === "MONTHLY") {
-    const { months, days } = computeRentalTerm(values);
+// UTC calendar date of an ISO datetime — matches the backend's UTC date parts.
+const utcDate = (iso) => moment.utc(iso).format("YYYY-MM-DD");
+
+export const computeRentalTerm = ({ pickUpDate, dropOffDate }) => {
+  if (!pickUpDate || !dropOffDate) return { months: 0, days: 1 };
+  return termBetween(pickUpDate, dropOffDate);
+};
+
+// Live pricing card figures, mirrored from the backend period model.
+//   DAILY   : net = gross = billableDays x dailyPrice          (VAT-inclusive)
+//   MONTHLY : net  = months x monthlyPrice + kıst x (monthlyPrice / 30)
+//             gross = net x (1 + vatRate/100)                  (VAT on top)
+// The ACTIVE period spans from the last period's start (or pick-up if none) to
+// the current drop-off; closed periods are frozen snapshots read from `periods`.
+export const computePricing = (values, billableDays, periods = []) => {
+  const n = numOr;
+  const isMonthly = values.rentalType === "MONTHLY";
+  const vatRate = n(values.vatRate) || 20;
+
+  const closed = periods.filter((p) => p.status === "CLOSED");
+  const lastPeriod = periods.length ? periods[periods.length - 1] : null;
+  const manualActive = !!(lastPeriod && lastPeriod.status === "ACTIVE" && lastPeriod.manualPrice);
+  const activeStart = lastPeriod ? utcDate(lastPeriod.startAt) : values.pickUpDate;
+  const term = isMonthly
+    ? termBetween(activeStart, values.dropOffDate)
+    : { months: 0, days: billableDays };
+
+  let rentalNet;
+  let rentalGross;
+  if (manualActive) {
+    rentalNet = n(lastPeriod.netAmount);
+    rentalGross = n(lastPeriod.grossAmount);
+  } else if (isMonthly) {
     const m = n(values.monthlyPrice);
-    rental = round2(months * m + days * round2(m / 30));
+    rentalNet = round2(term.months * m + term.days * round2(m / 30));
+    rentalGross = round2(rentalNet * (1 + vatRate / 100));
   } else {
-    rental = n(values.dailyPrice) * billableDays;
+    rentalNet = round2(n(values.dailyPrice) * billableDays);
+    rentalGross = rentalNet;
   }
-  const addOns = n(values.returnExtraAmount);
-  const subtotal = round2(rental + addOns);
-  return { rental, addOns, subtotal, total: subtotal };
+  const vat = round2(rentalGross - rentalNet);
+
+  const extras = n(values.returnExtraAmount);
+  const activeTotal = round2(rentalGross + extras);
+  const closedGross = round2(closed.reduce((s, p) => s + n(p.grossAmount), 0));
+  const contractTotal = round2(closedGross + rentalGross + extras);
+
+  return {
+    isMonthly,
+    months: term.months,
+    days: term.days,
+    vatRate,
+    rentalNet,
+    vat,
+    rentalGross,
+    extras,
+    activeTotal,
+    contractTotal,
+    hasClosedPeriods: closed.length > 0,
+    total: contractTotal,
+  };
 };
 
 // Km allowance for the whole rental — the stricter of the daily and monthly cap.
