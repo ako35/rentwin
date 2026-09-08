@@ -1,13 +1,13 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
-const { parseFrontendDateTime, hoursBetween, round2 } = require("../../lib/dates");
+const { parseFrontendDateTime, round2 } = require("../../lib/dates");
 const { checkAvailability } = require("../../lib/availability");
 const { serializeContract, serializeUser } = require("../../lib/serializers");
-const { syncContractDebit } = require("../../lib/ledger");
 const asyncHandler = require("../../middleware/async-handler");
 const { customerTotals } = require("../users/customer-fields");
 const { CAR_INCLUDE } = require("./contracts.shared");
-const { num, pickContractFields, computeTotal } = require("./contract-fields");
+const { num, pickContractFields, pricePeriod } = require("./contract-fields");
+const { recomputeContractFinancials, contractUnitPrice } = require("./contract-financials");
 const { kbsStamp } = require("./kbs");
 
 // The contract detail screen's write paths: patch the contract, read it back
@@ -59,9 +59,7 @@ const updateContract = asyncHandler(async (req, res) => {
     }
   }
 
-  const totalPrice = computeTotal({ ...existing, ...contractFields }, parsedPickUp, parsedDropOff);
-
-  const contract = await prisma.contract.update({
+  await prisma.contract.update({
     where: { id: existing.id },
     data: {
       carId: targetCarId,
@@ -69,13 +67,19 @@ const updateContract = asyncHandler(async (req, res) => {
       dropOffLocation,
       pickUpTime: parsedPickUp,
       dropOffTime: parsedDropOff,
-      totalPrice,
       ...contractFields,
     },
-    include: CAR_INCLUDE,
   });
 
-  await syncContractDebit(contract);
+  // recompute owns the period lifecycle, Contract.totalPrice and the ledger
+  // debit — it re-prices the active period from the rate/drop-off just saved.
+  // The client refetches the full contract via getContractByIdAdmin after save.
+  await recomputeContractFinancials(existing.id);
+
+  const contract = await prisma.contract.findUnique({
+    where: { id: existing.id },
+    include: { ...CAR_INCLUDE, periods: { orderBy: { sequence: "asc" } } },
+  });
   res.json(serializeContract(contract));
 });
 
@@ -90,6 +94,7 @@ const getContractByIdAdmin = asyncHandler(async (req, res) => {
       referenceUser: { select: { id: true, firstName: true, lastName: true, companyTitle: true, customerType: true } },
       corporate: true,
       extensions: { orderBy: { createdAt: "desc" } },
+      periods: { orderBy: { sequence: "asc" } },
       vehicleChanges: { orderBy: { changeDate: "desc" } },
       invoices: { orderBy: { issuedAt: "desc" } },
     },
@@ -113,8 +118,16 @@ const getContractByIdAdmin = asyncHandler(async (req, res) => {
   });
 });
 
+// "A Yöntemi": an extension closes the active period and opens the next one,
+// spanning [old drop-off, new drop-off]. The new period is priced from the
+// contract's current rate by the anniversary rule (8th->8th = one full month,
+// no phantom kıst day). A blank extraAmount auto-fills the full period price;
+// a manual extraAmount is taken as the period's GROSS.
 const extendContract = asyncHandler(async (req, res) => {
-  const contract = await prisma.contract.findUnique({ where: { id: req.params.id } });
+  const contract = await prisma.contract.findUnique({
+    where: { id: req.params.id },
+    include: { periods: { orderBy: { sequence: "asc" } } },
+  });
   if (!contract) throw new HttpError(404, "Contract not found.");
 
   const newDropOff = parseFrontendDateTime(req.body.newDropOff);
@@ -122,33 +135,57 @@ const extendContract = asyncHandler(async (req, res) => {
     throw new HttpError(400, "New drop-off must be after the current drop-off.");
   }
 
-  const extraDays = Math.max(1, Math.ceil(hoursBetween(contract.dropOffTime, newDropOff) / 24));
-  const unitPrice =
-    contract.rentalType === "MONTHLY"
-      ? round2((num(contract.monthlyPrice) || 0) / 30)
-      : num(contract.dailyPrice) || 0;
-  const extraAmount = num(req.body.extraAmount) ?? round2(unitPrice * extraDays);
-
-  await prisma.contractExtension.create({
-    data: {
-      contractId: contract.id,
-      previousDropOff: contract.dropOffTime,
-      newDropOff,
-      extraDays,
-      extraAmount,
-      note: req.body.note || null,
-    },
+  const vatRate = contract.vatRate ?? 20;
+  const unitPrice = contractUnitPrice(contract);
+  const startAt = contract.dropOffTime;
+  const priced = pricePeriod({
+    rentalType: contract.rentalType,
+    unitPrice,
+    start: startAt,
+    end: newDropOff,
+    vatRate,
   });
 
-  const updated = await prisma.contract.update({
+  const manualGross = num(req.body.extraAmount);
+  const manualPrice = manualGross != null;
+  if (manualPrice) {
+    priced.grossAmount = round2(manualGross);
+    priced.netAmount =
+      contract.rentalType === "MONTHLY"
+        ? round2(manualGross / (1 + vatRate / 100))
+        : round2(manualGross);
+  }
+
+  const nextSequence = contract.periods.reduce((max, p) => Math.max(max, p.sequence), 0) + 1;
+
+  await prisma.$transaction(async (tx) => {
+    await tx.contractPeriod.updateMany({
+      where: { contractId: contract.id, status: "ACTIVE" },
+      data: { status: "CLOSED" },
+    });
+    await tx.contractPeriod.create({
+      data: {
+        contractId: contract.id,
+        sequence: nextSequence,
+        startAt,
+        endAt: newDropOff,
+        rentalType: contract.rentalType,
+        unitPrice,
+        vatRate,
+        status: "ACTIVE",
+        manualPrice,
+        note: req.body.note || null,
+        ...priced,
+      },
+    });
+    await tx.contract.update({ where: { id: contract.id }, data: { dropOffTime: newDropOff } });
+    await recomputeContractFinancials(contract.id, tx);
+  });
+
+  const updated = await prisma.contract.findUnique({
     where: { id: contract.id },
-    data: {
-      dropOffTime: newDropOff,
-      totalPrice: computeTotal(contract, contract.pickUpTime, newDropOff),
-    },
-    include: CAR_INCLUDE,
+    include: { ...CAR_INCLUDE, periods: { orderBy: { sequence: "asc" } } },
   });
-  await syncContractDebit(updated);
   res.json(serializeContract(updated));
 });
 

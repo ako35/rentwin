@@ -1,4 +1,3 @@
-const dayjs = require("dayjs");
 const prisma = require("../../lib/prisma");
 const { hoursBetween, round2 } = require("../../lib/dates");
 
@@ -78,40 +77,48 @@ const pickContractFields = (body) => {
 // Whole rental days from the contracted pick-up -> drop-off window, min 1.
 const rentalDays = (pickUp, dropOff) => Math.max(1, Math.ceil(hoursBetween(pickUp, dropOff) / 24));
 
-// Split a rental window into whole calendar months + leftover ("kıst") days.
-// "15 Jan 10:00 -> 15 Feb 10:00" = { months: 1, days: 0 }; "-> 20 Feb" = { 1, 5 }.
-// dayjs .add(n,"month") clamps to the month end (31 Jan +1m -> 28 Feb), matching
-// moment on the frontend. The frontend mirrors this in
-// contract-helpers.computeRentalTerm.
-const rentalTerm = (pickUp, dropOff) => {
+// Split a rental window into whole calendar months + leftover ("kıst") days,
+// working purely in UTC calendar dates (time-of-day ignored). An 8th->8th window
+// is exactly N months with 0 kıst days regardless of the pick-up/drop-off clock
+// times: "8 Sep 22:00 -> 8 Oct 10:00" = { months: 1, days: 0 }; "-> 20 Oct" =
+// { 1, 12 }. Month steps clamp to the month end (31 Jan +1m -> 28 Feb), like
+// dayjs/moment. The frontend mirrors this in contract-helpers.computeRentalTerm.
+const utcYmdMs = (value) => {
+  const d = new Date(value);
+  return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+};
+const addUtcMonths = (value, n) => {
+  const d = new Date(value);
+  const anchor = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + n, 1));
+  const lastDay = new Date(Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth() + 1, 0)).getUTCDate();
+  return Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth(), Math.min(d.getUTCDate(), lastDay));
+};
+const rentalTerm = (start, end) => {
+  const endMs = utcYmdMs(end);
   let months = 0;
-  while (dayjs(pickUp).add(months + 1, "month").toDate() <= dropOff) months += 1;
-  const cursor = dayjs(pickUp).add(months, "month").toDate();
-  let days = Math.ceil((dropOff.getTime() - cursor.getTime()) / 86400000);
-  days = months === 0 ? Math.max(1, days) : Math.max(0, days);
+  while (addUtcMonths(start, months + 1) <= endMs) months += 1;
+  let days = Math.max(0, Math.round((endMs - addUtcMonths(start, months)) / 86400000));
+  if (months === 0 && days === 0) days = 1; // a same-day / sub-day window is one day
   return { months, days };
 };
 
-// Rental (car-hire) amount, before add-ons.
-//   DAILY   : days x dailyPrice
-//   MONTHLY : full months x monthlyPrice + kıst days x (monthlyPrice / 30),
-//             so the month length (28/30/31) never shifts the price.
-// The frontend mirrors this in contract-helpers.computePricing.
-const computeRentalAmount = (r, pickUp, dropOff) => {
-  if (r.rentalType === "MONTHLY") {
-    const monthly = num(r.monthlyPrice) || 0;
-    const { months, days } = rentalTerm(pickUp, dropOff);
-    return round2(months * monthly + days * round2(monthly / 30));
+// Price one billing period. The frontend mirrors this in
+// contract-helpers.computePricing.
+//   DAILY   : net = gross = days x unitPrice          (VAT-inclusive, unchanged)
+//   MONTHLY : net  = months x unitPrice + kıst days x (unitPrice / 30)
+//             gross = net x (1 + vatRate/100)          (VAT added on top)
+// so the month length (28/30/31) never shifts the price.
+const pricePeriod = ({ rentalType, unitPrice, start, end, vatRate = 20 }) => {
+  const unit = num(unitPrice) || 0;
+  if (rentalType === "MONTHLY") {
+    const { months, days } = rentalTerm(start, end);
+    const netAmount = round2(months * unit + days * round2(unit / 30));
+    const grossAmount = round2(netAmount * (1 + (num(vatRate) || 0) / 100));
+    return { months, kistDays: days, netAmount, grossAmount };
   }
-  return round2((num(r.dailyPrice) || 0) * rentalDays(pickUp, dropOff));
-};
-
-// Contract grand total: rental + extras + one-way + return extras. Prices are
-// entered VAT-inclusive, so nothing is added on top; vatRate only drives the
-// net/tax split on the invoice.
-const computeTotal = (r, pickUp, dropOff) => {
-  const addOns = (num(r.extrasTotal) || 0) + (num(r.oneWayFee) || 0) + (num(r.returnExtraAmount) || 0);
-  return round2(computeRentalAmount(r, pickUp, dropOff) + addOns);
+  const days = rentalDays(start, end);
+  const net = round2(unit * days);
+  return { months: 0, kistDays: days, netAmount: net, grossAmount: net };
 };
 
 // Km allowance for the whole rental: the stricter of the daily and the monthly
@@ -176,8 +183,7 @@ module.exports = {
   num,
   nextContractNo,
   pickContractFields,
-  computeTotal,
-  computeRentalAmount,
+  pricePeriod,
   computeAllowedKm,
   rentalDays,
   rentalTerm,
