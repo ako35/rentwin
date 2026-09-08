@@ -136,17 +136,30 @@
 
 .cprint-diagram {
   figure { margin: 0; text-align: center; }
-  svg { width: 100%; height: 34mm; }
-  figcaption { font-size: 7.5px; text-transform: uppercase; color: #555; margin-top: 0.05rem; }
-
-  &__grid {
-    display: grid;
-    grid-template-columns: 0.8fr 1.2fr 0.8fr 1.2fr;
-    gap: 0.4rem;
-    align-items: end;
+  figcaption {
+    font-size: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #555;
+    margin-top: 0.12rem;
   }
 
-  &__legend { font-size: 8px; color: #333; margin: 0.3rem 0 0; text-align: center; }
+  &__top {
+    svg { width: 62%; height: auto; display: block; margin: 0 auto; }
+  }
+
+  &__grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+
+    figure { flex: 0 1 auto; }
+    svg { height: 26mm; width: auto; max-width: 100%; }
+  }
+
+  &__legend { font-size: 7.5px; color: #333; margin: 0.35rem 0 0; text-align: center; }
 }
 
 .cprint-check {
@@ -285,24 +298,21 @@
   tbody td { height: 5mm; }
 }
 
-.tut-body {
-  display: grid;
-  grid-template-columns: 63% 1fr;
-  gap: 0.7rem;
-  margin-top: 0.55rem;
-}
+.tut-diagram { margin-top: 0.55rem; }
+
+.tut-equip { margin-top: 0.55rem; }
 
 .tut-check {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.18rem 0.4rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.22rem 0.7rem;
 
-  li { font-size: 7.5px; display: flex; align-items: center; gap: 0.28rem; }
+  li { font-size: 8px; display: flex; align-items: center; gap: 0.32rem; }
 
-  &__box { width: 8px; height: 8px; border: 1px solid #000; flex-shrink: 0; }
+  &__box { width: 9px; height: 9px; border: 1px solid #000; flex-shrink: 0; }
 }
 
 .tut-notes {
@@ -313,7 +323,7 @@
   &__kbs { font-size: 7.5px; font-weight: 600; color: v.$color2; }
 
   &__lines {
-    height: 14mm;
+    height: 24mm;
     border: 1px solid #999;
     border-radius: 4px;
     background-image: repeating-linear-gradient(#fff, #fff 6mm, #ddd 6mm, #ddd calc(6mm + 1px));
@@ -329,7 +339,7 @@
   div {
     border: 1px solid #999;
     border-radius: 4px;
-    height: 22mm;
+    height: 30mm;
     padding: 0.3rem 0.45rem;
   }
 

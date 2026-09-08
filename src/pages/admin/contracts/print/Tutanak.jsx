@@ -95,22 +95,21 @@ const Tutanak = ({ data, p }) => {
         </section>
       </div>
 
-      <div className="tut-body">
-        <section className="tut-body__diagram">
-          <h3>{k("damageTitle")}</h3>
-          <VehicleDiagram />
-        </section>
-        <section className="tut-body__equip">
-          <h3>{k("equipmentTitle")}</h3>
-          <ul className="tut-check">
-            {equipment.map((item) => (
-              <li key={item}>
-                <span className="tut-check__box" /> {item.trim()}
-              </li>
-            ))}
-          </ul>
-        </section>
-      </div>
+      <section className="tut-diagram">
+        <h3>{k("damageTitle")}</h3>
+        <VehicleDiagram />
+      </section>
+
+      <section className="tut-equip">
+        <h3>{k("equipmentTitle")}</h3>
+        <ul className="tut-check">
+          {equipment.map((item) => (
+            <li key={item}>
+              <span className="tut-check__box" /> {item.trim()}
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section className="tut-notes">
         <h3>
