@@ -998,11 +998,7 @@
       "contractNo": "Contract No",
       "customer": "Customer",
       "closedAt": "Closed On"
-    },
-    "exchangeRates": "Exchange Rates",
-    "settings": "Settings",
-    "autoRefresh": "Auto Refresh",
-    "comingSoonToast": "This feature is coming soon"
+    }
   },
   "footer": {
     "copyright": "© 2014 - {{year}} Rentwin Software. All Rights Reserved",

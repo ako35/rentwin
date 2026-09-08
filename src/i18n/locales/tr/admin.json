@@ -998,11 +998,7 @@
       "contractNo": "Kontrat No",
       "customer": "Müşteri",
       "closedAt": "Kapanış Tarihi"
-    },
-    "exchangeRates": "Döviz Kurları",
-    "settings": "Ayarlar",
-    "autoRefresh": "Otomatik Yenileme",
-    "comingSoonToast": "Bu özellik yakında eklenecek"
+    }
   },
   "footer": {
     "copyright": "© 2014 - {{year}} Rentwin Yazılım. Tüm Hakları Saklıdır",

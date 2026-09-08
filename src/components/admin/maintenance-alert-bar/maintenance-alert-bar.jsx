@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Form } from "react-bootstrap";
 import { GiCarWheel, GiMechanicGarage } from "react-icons/gi";
 import { BsShieldCheck, BsShield, BsReceipt, BsSignpost2 } from "react-icons/bs";
 import { utils } from "../../../utils";
@@ -21,13 +20,12 @@ const HGS_KEY = "hgsPending";
 const custName = (u) =>
   (u?.companyTitle || `${u?.firstName || ""} ${u?.lastName || ""}`.trim() || "—");
 
-const MaintenanceAlertBar = ({ alerts, hgsPending = [], autoRefresh, onAutoRefreshChange }) => {
+const MaintenanceAlertBar = ({ alerts, hgsPending = [] }) => {
   const { t } = useTranslation("admin");
   const navigate = useNavigate();
   const [open, setOpen] = useState(null);
 
   const categories = alerts?.categories || {};
-  const showComingSoon = () => utils.functions.swalToast(t("alertBar.comingSoonToast"), "info");
 
   const activeList = open && open !== HGS_KEY ? categories[open] || [] : [];
 
@@ -66,21 +64,6 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [], autoRefresh, onAutoRefre
           >
             <BsSignpost2 /> {t("alertBar.hgs")} ({hgsPending.length})
           </button>
-        </div>
-        <div className="maintenance-alert-bar__actions">
-          <button type="button" className="maintenance-alert-bar__link" onClick={showComingSoon}>
-            {t("alertBar.exchangeRates")}
-          </button>
-          <button type="button" className="maintenance-alert-bar__link" onClick={showComingSoon}>
-            {t("alertBar.settings")}
-          </button>
-          <Form.Check
-            type="switch"
-            id="admin-auto-refresh"
-            label={t("alertBar.autoRefresh")}
-            checked={autoRefresh}
-            onChange={(e) => onAutoRefreshChange?.(e.target.checked)}
-          />
         </div>
       </div>
 

@@ -9,7 +9,7 @@
     margin: 0.5rem 0;
 
     &__row {
-        @include m.flexbox(row, space-between, center, 0.75rem);
+        @include m.flexbox(row, flex-start, center, 0.75rem);
         flex-wrap: wrap;
         padding: 0.4rem 0.9rem;
     }
@@ -48,24 +48,6 @@
             background-color: v.$color1;
             border-color: v.$color1;
             color: v.$color4;
-        }
-    }
-
-    &__actions {
-        @include m.flexbox(row, flex-end, center, 1rem);
-        flex-wrap: wrap;
-    }
-
-    &__link {
-        background: none;
-        border: none;
-        color: v.$color1;
-        font-size: 0.83rem;
-        font-weight: 600;
-
-        &:hover {
-            color: v.$color2;
-            text-decoration: underline;
         }
     }
 

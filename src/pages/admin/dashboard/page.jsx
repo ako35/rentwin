@@ -12,8 +12,6 @@ import {
 } from "../../../components";
 import "./style.scss";
 
-const AUTO_REFRESH_INTERVAL_MS = 60000;
-
 const AdminDashboard = () => {
   const { t } = useTranslation("admin");
   const { branchId } = useOutletContext() || {};
@@ -21,7 +19,6 @@ const AdminDashboard = () => {
   const [fleetStats, setFleetStats] = useState(null);
   const [expiryAlerts, setExpiryAlerts] = useState(null);
   const [hgsPending, setHgsPending] = useState([]);
-  const [autoRefresh, setAutoRefresh] = useState(false);
 
   const loadData = async () => {
     try {
@@ -44,13 +41,6 @@ const AdminDashboard = () => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [branchId]);
-
-  useEffect(() => {
-    if (!autoRefresh) return undefined;
-    const interval = setInterval(loadData, AUTO_REFRESH_INTERVAL_MS);
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoRefresh, branchId]);
 
   return (
     <Container fluid className="admin-dashboard">
@@ -78,12 +68,7 @@ const AdminDashboard = () => {
             </Col>
           </Row>
 
-          <MaintenanceAlertBar
-            alerts={expiryAlerts}
-            hgsPending={hgsPending}
-            autoRefresh={autoRefresh}
-            onAutoRefreshChange={setAutoRefresh}
-          />
+          <MaintenanceAlertBar alerts={expiryAlerts} hgsPending={hgsPending} />
 
           <Row className="gy-2">
             <Col xl={6}>
