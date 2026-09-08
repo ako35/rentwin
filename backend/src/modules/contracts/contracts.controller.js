@@ -59,20 +59,6 @@ const updateContract = asyncHandler(async (req, res) => {
     }
   }
 
-  // HGS/OGS check: stamp who confirmed it whenever the confirmation timestamp
-  // moves; clearing the status back to "Bekliyor" wipes the audit trail.
-  if ("hgsStatus" in contractFields && !contractFields.hgsStatus) {
-    contractFields.hgsCheckedAt = null;
-    contractFields.hgsCheckedBy = null;
-    contractFields.hgsNote = null;
-  } else if (
-    "hgsCheckedAt" in contractFields &&
-    contractFields.hgsCheckedAt &&
-    +new Date(contractFields.hgsCheckedAt) !== +new Date(existing.hgsCheckedAt || 0)
-  ) {
-    contractFields.hgsCheckedBy = kbsStamp(req.user);
-  }
-
   const totalPrice = computeTotal({ ...existing, ...contractFields }, parsedPickUp, parsedDropOff);
 
   const contract = await prisma.contract.update({

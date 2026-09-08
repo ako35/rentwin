@@ -319,10 +319,11 @@ model Contract {
   kbsReleasedAt     DateTime? // when the KABİS record was released (çıkış); requires kbsNotifiedAt to be set
   kbsReleasedBy     String? // display name of the admin who released it, stamped on the null -> set transition
   hgsStatus         String? // null/PENDING = Bekliyor, CLEAN = tam kontrol edildi (temiz), DEBT = geçiş var (Dönüş Ekstra'ya işlendi)
-  hgsCheckedAt      DateTime? // when the HGS/OGS portal was last queried / the check confirmed
-  hgsCheckedBy      String? // display name of the staff who confirmed the check ("Ali K.")
-  hgsNote           String? // optional operator note on the HGS check
-  hgsCheckedFrom    DateTime? // DEPRECATED — the audit box no longer stores a queried range
+  hgsChecks         ContractHgsCheck[] // one row per queried date range (the audit log)
+  hgsCheckedAt      DateTime? // DEPRECATED — superseded by ContractHgsCheck rows
+  hgsCheckedBy      String? // DEPRECATED
+  hgsNote           String? // DEPRECATED
+  hgsCheckedFrom    DateTime? // DEPRECATED
   hgsCheckedTo      DateTime? // DEPRECATED
   hgsAmount         Float? // DEPRECATED — toll amounts live on the Dönüş Ekstra tab
   hgsReflected      Boolean             @default(false) // DEPRECATED
@@ -470,6 +471,21 @@ model ContractExtra {
 // A return-time charge itemised on the contract (HGS/OGS, km excess, damage,
 // roadside, cleaning, fuel difference, other). The summed line totals are cached
 // on Contract.returnExtraAmount, which feeds the grand total.
+// Audit log for the HGS/OGS toll check: one row per date range queried on the
+// HGS portal. `checkedBy` + `createdAt` = who ran that query and when.
+model ContractHgsCheck {
+  id         String   @id @default(uuid())
+  contractId String
+  contract   Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  rangeFrom  DateTime
+  rangeTo    DateTime
+  note       String?
+  checkedBy  String? // staff display name, stamped server-side on create
+  createdAt  DateTime @default(now())
+
+  @@index([contractId])
+}
+
 model ContractReturnCharge {
   id            String   @id @default(uuid())
   contractId    String

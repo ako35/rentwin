@@ -22,7 +22,7 @@ export const EMPTY_CONTRACT = {
   vatRate: 20,
   referenceUserId: "",
   kbsNotifiedAt: "", kbsNotifiedBy: "", kbsReleasedAt: "", kbsReleasedBy: "",
-  hgsStatus: "", hgsCheckedAt: "", hgsCheckedBy: "", hgsNote: "",
+  hgsStatus: "",
 };
 
 // Derived KABİS state from the contract form values.
@@ -137,8 +137,6 @@ export const buildContractDto = (values) => ({
   kbsNotifiedAt: values.kbsNotifiedAt || null,
   kbsReleasedAt: values.kbsReleasedAt || null,
   hgsStatus: values.hgsStatus || null,
-  hgsCheckedAt: values.hgsCheckedAt || null,
-  hgsNote: values.hgsNote,
 });
 
 // Merge a loaded reservation onto EMPTY_CONTRACT for formik.
@@ -168,9 +166,6 @@ export const contractToFormValues = (r) => ({
   kbsReleasedAt: r.kbsReleasedAt || "",
   kbsReleasedBy: r.kbsReleasedBy || "",
   hgsStatus: r.hgsStatus || "",
-  hgsCheckedAt: r.hgsCheckedAt || "",
-  hgsCheckedBy: r.hgsCheckedBy || "",
-  hgsNote: r.hgsNote || "",
 });
 
 // <select> options for the vehicle picker; create mode gets a leading blank row.

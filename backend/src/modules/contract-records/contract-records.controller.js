@@ -4,6 +4,7 @@ const asyncHandler = require("../../middleware/async-handler");
 const { hoursBetween, round2 } = require("../../lib/dates");
 const { mirrorPayment, unmirrorPayment } = require("../../lib/ledger");
 const { recomputeContractFinancials } = require("../contracts/contract-financials");
+const { kbsStamp } = require("../contracts/kbs");
 
 // Contract payments are mirrored into the current-account ledger as AUTO_PAYMENT
 // credits so the cari statement and customer balances stay complete.
@@ -57,6 +58,16 @@ const RESOURCES = {
     orderBy: [{ createdAt: "asc" }],
     // After any change, resync Contract.returnExtraAmount + totalPrice + ledger.
     recomputeFinancials: true,
+  },
+  hgsChecks: {
+    model: "contractHgsCheck",
+    fields: ["rangeFrom", "rangeTo", "note"],
+    required: ["rangeFrom", "rangeTo"],
+    dateFields: ["rangeFrom", "rangeTo"],
+    numberFields: [],
+    orderBy: [{ rangeFrom: "asc" }],
+    // The acting admin's name is stamped on the row, not taken from the body.
+    stampUserAs: "checkedBy",
   },
 };
 
@@ -151,9 +162,9 @@ const listRecords = asyncHandler(async (req, res) => {
 const createRecord = asyncHandler(async (req, res) => {
   const resource = getResource(req.params.resource);
   await ensureContract(req.params.contractId);
-  const record = await prisma[resource.model].create({
-    data: { ...buildData(resource, req.body), contractId: req.params.contractId },
-  });
+  const data = { ...buildData(resource, req.body), contractId: req.params.contractId };
+  if (resource.stampUserAs && req.user) data[resource.stampUserAs] = kbsStamp(req.user);
+  const record = await prisma[resource.model].create({ data });
   if (resource.recomputeExtrasTotal) await syncExtrasTotal(req.params.contractId);
   if (resource.recomputeExtrasTotal || resource.recomputeFinancials)
     await resyncFinancials(req.params.contractId);

@@ -570,14 +570,14 @@
           "CLEAN": "Tam Kontrol Edildi (Temiz)",
           "DEBT": "Geçiş Var (Dönüş Ekstra'ya İşlendi)"
         },
-        "note": "Kontrol Notu",
+        "logTitle": "Kontrol Kayıtları",
+        "addLog": "Kontrol Kaydı Ekle",
+        "logEmpty": "Henüz kontrol kaydı yok. Her sorgulama için sorgulanan tarih aralığını kaydedin.",
+        "from": "Başlangıç",
+        "to": "Bitiş",
+        "note": "Not",
         "notePlaceholder": "Opsiyonel — plaka, geçiş noktası, sorgu referansı…",
-        "lastChecked": "Son sorgulama",
         "openPortal": "PTT HGS Portalını Aç",
-        "confirm": "Kontrolü Onayla",
-        "reconfirm": "Yeniden Onayla",
-        "confirmTitle": "HGS/OGS kontrolü onaylansın mı?",
-        "confirmText": "Sorgulamayı yaptığınız an ve kullanıcı adınız kayıt altına alınır. Kaydet ile işlenir.",
         "amountHint": "Geçiş bedeli eklemek için Dönüş Ekstra sekmesindeki \"HGS / OGS\" kalemini kullanın."
       },
       "kbs": {

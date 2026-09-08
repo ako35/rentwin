@@ -570,14 +570,14 @@
           "CLEAN": "Fully Checked (Clear)",
           "DEBT": "Toll Found (Logged on Return Extras)"
         },
-        "note": "Check Note",
+        "logTitle": "Check Log",
+        "addLog": "Add Check Record",
+        "logEmpty": "No check records yet. Record the queried date range for each query.",
+        "from": "Start",
+        "to": "End",
+        "note": "Note",
         "notePlaceholder": "Optional — plate, toll point, query reference…",
-        "lastChecked": "Last query",
         "openPortal": "Open the PTT HGS Portal",
-        "confirm": "Confirm Check",
-        "reconfirm": "Re-confirm",
-        "confirmTitle": "Confirm the HGS/OGS check?",
-        "confirmText": "The moment you ran the query and your username are recorded. Applied on Save.",
         "amountHint": "To add a toll charge, use the \"HGS / OGS\" line on the Return Extras tab."
       },
       "kbs": {
