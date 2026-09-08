@@ -4,9 +4,9 @@ const { computeTotal } = require("./contract-fields");
 const { syncContractDebit } = require("../../lib/ledger");
 
 // Single definition of "a contract's cached financials are consistent":
-//   Σ return-charge lines  -> Contract.returnExtraAmount
-//   rental + add-ons + VAT  -> Contract.totalPrice   (via computeTotal)
-//   grand total             -> the AUTO_CONTRACT ledger debit
+//   Σ return-charge lines           -> Contract.returnExtraAmount
+//   rental + add-ons (VAT-inclusive) -> Contract.totalPrice   (via computeTotal)
+//   grand total                      -> the AUTO_CONTRACT ledger debit
 // Callable inside a transaction (pass the tx client). Errors propagate — the
 // caller decides how to handle them.
 const recomputeContractFinancials = async (contractId, client = prisma) => {

@@ -72,15 +72,15 @@ const pickContractFields = (body) => {
   return data;
 };
 
-// Contract grand total: (daily price x rental days + extras + one-way + return
-// extras) plus VAT. The frontend mirrors this in contract-helpers.computePricing.
+// Contract grand total: daily price x rental days + extras + one-way + return
+// extras. Prices are entered VAT-inclusive, so nothing is added on top; vatRate
+// only drives the net/tax split on the invoice. The frontend mirrors this in
+// contract-helpers.computePricing.
 const computeTotal = (r, pickUp, dropOff) => {
   const days = Math.max(1, Math.ceil(hoursBetween(pickUp, dropOff) / 24));
   const rental = (num(r.dailyPrice) || 0) * days;
   const addOns = (num(r.extrasTotal) || 0) + (num(r.oneWayFee) || 0) + (num(r.returnExtraAmount) || 0);
-  const subtotal = rental + addOns;
-  const rate = num(r.vatRate);
-  return round2(subtotal * (1 + (rate === null ? 20 : rate) / 100));
+  return round2(rental + addOns);
 };
 
 // Whole rental days from the contracted pick-up -> drop-off window, min 1.

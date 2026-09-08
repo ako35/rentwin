@@ -69,15 +69,17 @@ export const computeBillableDays = ({ pickUpDate, pickUpTime, dropOffDate, dropO
   return Math.max(1, Math.ceil(end.diff(start, "hours") / 24));
 };
 
-// Live contract totals mirrored from the backend's computeTotal.
+// Live contract totals mirrored from the backend's computeTotal. Prices are
+// entered VAT-inclusive, so `total` === `subtotal` (no VAT added on top);
+// `vatIncluded` is the VAT already contained in the price, shown for reference.
 export const computePricing = (values, billableDays) => {
   const n = (x) => Number(x) || 0;
   const rental = n(values.dailyPrice) * billableDays;
   const addOns = n(values.returnExtraAmount);
   const subtotal = rental + addOns;
   const vat = values.vatRate === "" ? 20 : n(values.vatRate);
-  const total = subtotal * (1 + vat / 100);
-  return { rental, addOns, subtotal, total };
+  const vatIncluded = vat > 0 ? subtotal - subtotal / (1 + vat / 100) : 0;
+  return { rental, addOns, subtotal, vatIncluded, total: subtotal };
 };
 
 const round2 = (n) => Math.round(n * 100) / 100;

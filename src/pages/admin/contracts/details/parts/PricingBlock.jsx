@@ -98,7 +98,7 @@ const PricingBlock = ({ formik, pricing, billableDays, extensionDays, extensionT
         <AmountRow label={c("contractAmount")} value={money(pricing.subtotal)} emph />
         <AmountRow
           label={c("vatLine", { rate: formik.values.vatRate === "" ? 20 : formik.values.vatRate })}
-          value={money(pricing.total - pricing.subtotal)}
+          value={money(pricing.vatIncluded)}
         />
       </section>
 
