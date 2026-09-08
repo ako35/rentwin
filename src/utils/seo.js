@@ -34,11 +34,16 @@ export const autoRentalLd = () => ({
   email: website.email,
   telephone: website.phoneE164,
   address: postalAddress,
+  ...(website.geo
+    ? { geo: { "@type": "GeoCoordinates", latitude: website.geo.latitude, longitude: website.geo.longitude } }
+    : {}),
+  hasMap: website.mapUrl,
   areaServed: [
     { "@type": "State", name: "İzmir" },
     { "@type": "Country", name: "Türkiye" },
   ],
   priceRange: "₺₺",
+  currenciesAccepted: "TRY",
   openingHoursSpecification,
   sameAs: website.sameAs,
 });
@@ -65,7 +70,17 @@ export const breadcrumbLd = (items) => ({
   })),
 });
 
-export const vehicleLd = ({ name, brand, model, image, transmission, fuelType, path }) => ({
+export const vehicleLd = ({
+  name,
+  brand,
+  model,
+  image,
+  transmission,
+  fuelType,
+  modelYear,
+  color,
+  path,
+}) => ({
   "@context": "https://schema.org",
   "@type": "Car",
   name,
@@ -74,11 +89,15 @@ export const vehicleLd = ({ name, brand, model, image, transmission, fuelType, p
   ...(image ? { image } : {}),
   ...(transmission ? { vehicleTransmission: transmission } : {}),
   ...(fuelType ? { fuelType } : {}),
+  ...(modelYear ? { vehicleModelDate: String(modelYear) } : {}),
+  ...(color ? { color } : {}),
+  itemCondition: "https://schema.org/UsedCondition",
   url: `${SITE_URL}${path}`,
   offers: {
     "@type": "Offer",
     availability: "https://schema.org/InStock",
     priceCurrency: "TRY",
+    businessFunction: "https://schema.org/LeaseOut",
     seller: { "@id": `${SITE_URL}/#organization` },
   },
 });

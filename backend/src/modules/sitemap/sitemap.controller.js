@@ -24,13 +24,17 @@ const STATIC_ROUTES = [
   { path: "/privacy-policy", changefreq: "yearly", priority: "0.3" },
 ];
 
-const urlEntry = ({ path, lastmod, changefreq, priority }) =>
+const xmlEscape = (s = "") =>
+  s.replace(/[<>&'"]/g, (ch) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" }[ch]));
+
+const urlEntry = ({ path, lastmod, changefreq, priority, image }) =>
   [
     "  <url>",
     `    <loc>${SITE_URL}${path}</loc>`,
     lastmod ? `    <lastmod>${new Date(lastmod).toISOString().slice(0, 10)}</lastmod>` : null,
     changefreq ? `    <changefreq>${changefreq}</changefreq>` : null,
     priority ? `    <priority>${priority}</priority>` : null,
+    image ? `    <image:image><image:loc>${xmlEscape(image)}</image:loc></image:image>` : null,
     "  </url>",
   ]
     .filter(Boolean)
@@ -41,18 +45,32 @@ const getSitemap = asyncHandler(async (req, res) => {
   const [vehicles, locations] = await Promise.all([
     prisma.vehicle.findMany({
       where: { outOfService: false },
-      select: { id: true, updatedAt: true },
+      select: {
+        id: true,
+        updatedAt: true,
+        images: { select: { blobUrl: true }, orderBy: { createdAt: "asc" }, take: 1 },
+      },
     }),
     prisma.location.findMany({ select: { name: true, createdAt: true } }),
   ]);
 
+  // The listing pages are as fresh as the most recently touched vehicle.
+  const fleetLastmod = vehicles.reduce(
+    (max, v) => (v.updatedAt > max ? v.updatedAt : max),
+    new Date(0)
+  );
+  const staticLastmod = fleetLastmod.getTime() ? fleetLastmod : new Date();
+
   const entries = [
-    ...STATIC_ROUTES,
+    ...STATIC_ROUTES.map((r) =>
+      r.path === "/" || r.path === "/vehicles" ? { ...r, lastmod: staticLastmod } : r
+    ),
     ...vehicles.map((v) => ({
       path: `/vehicles/${v.id}`,
       lastmod: v.updatedAt,
       changefreq: "weekly",
       priority: "0.8",
+      image: v.images[0]?.blobUrl,
     })),
     ...locations.map((l) => ({
       path: `/lokasyonlar/${slugify(l.name)}`,
@@ -64,7 +82,8 @@ const getSitemap = asyncHandler(async (req, res) => {
 
   const xml =
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' +
+    ' xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n' +
     entries.map(urlEntry).join("\n") +
     "\n</urlset>\n";
 

@@ -88,23 +88,29 @@ export const usePageMeta = (titleOrOptions, description) => {
     const resolvedTitle = title || DEFAULT_TITLE;
     const resolvedDesc = desc || DEFAULT_DESCRIPTION;
     const resolvedImage = absolute(image, DEFAULT_IMAGE);
-    const locale = i18n.resolvedLanguage === "en" ? "en_US" : "tr_TR";
+    const lang = i18n.resolvedLanguage === "en" ? "en" : "tr";
+    const locale = lang === "en" ? "en_US" : "tr_TR";
 
     document.title = resolvedTitle;
+    document.documentElement.lang = lang;
     setNamed("description", resolvedDesc);
     setNamed("robots", noindex ? "noindex, nofollow" : "index, follow");
     // A non-indexable URL should not point a canonical at itself.
     setCanonical(noindex ? null : url);
 
+    setProperty("og:site_name", "Rentwin");
     setProperty("og:title", resolvedTitle);
     setProperty("og:description", resolvedDesc);
     setProperty("og:url", url);
     setProperty("og:type", type);
     setProperty("og:image", resolvedImage);
+    setProperty("og:image:alt", resolvedTitle);
     setProperty("og:locale", locale);
+    setNamed("twitter:card", "summary_large_image");
     setNamed("twitter:title", resolvedTitle);
     setNamed("twitter:description", resolvedDesc);
     setNamed("twitter:image", resolvedImage);
+    setNamed("twitter:image:alt", resolvedTitle);
 
     // react-snap reads this to write the right file (200.html vs 404.html).
     if (statusCode) setNamed("render:status_code", String(statusCode));

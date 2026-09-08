@@ -28,11 +28,13 @@ const VehicleDetailsPage = () => {
   const { t: tCommon } = useTranslation("common");
 
   const vehicleName = vehicle ? `${vehicle.brand} ${vehicle.model}`.trim() : "";
+  const imageId = Array.isArray(vehicle?.image) ? vehicle.image[0] : vehicle?.image;
+  const imageUrl = imageId ? `${API_URL}/files/display/${imageId}` : undefined;
 
   usePageMeta({
     title: vehicleName ? t("seoDetailsTitle", { name: vehicleName }) : t("detailsPageTitle"),
     description: vehicleName ? t("seoDetailsDescription", { name: vehicleName }) : undefined,
-    image: vehicle?.image ? `${API_URL}/files/display/${vehicle.image}` : undefined,
+    image: imageUrl,
     type: "product",
     noindex: notFound,
     statusCode: notFound ? 404 : undefined,
@@ -90,9 +92,11 @@ const VehicleDetailsPage = () => {
               name: vehicleName,
               brand: vehicle.brand,
               model: vehicle.model,
-              image: vehicle.image ? `${API_URL}/files/display/${vehicle.image}` : undefined,
+              image: imageUrl,
               transmission: vehicle.transmission,
               fuelType: vehicle.fuelType,
+              modelYear: vehicle.modelYear,
+              color: vehicle.color,
               path: `/vehicles/${vehicleId}`,
             })}
           />

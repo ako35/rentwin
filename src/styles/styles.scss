@@ -1,5 +1,6 @@
 @import "./variables";
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&display=swap");
+// Plus Jakarta Sans is loaded from index.html (<link> + preconnect) — a CSS
+// @import here would block stylesheet parsing and skips the preconnect.
 @import "bootstrap/scss/bootstrap";
 @import "sweetalert2/src/variables";
 @import "sweetalert2/src/sweetalert2";
