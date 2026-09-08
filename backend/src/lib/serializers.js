@@ -49,4 +49,20 @@ const serializeScheduleRow = (contract) => ({
     : undefined,
 });
 
-module.exports = { serializeUser, serializeVehicle, serializeContract, serializeReservation, serializeScheduleRow };
+// Admin dashboard "HGS check pending" bar: same lightweight shape plus the two
+// fields that panel needs — when the contract was closed and its derived check
+// status.
+const serializeHgsPendingRow = (contract) => ({
+  ...serializeScheduleRow(contract),
+  returnedAt: contract.returnedAt || null,
+  hgsStatus: contract.hgsStatus || null,
+});
+
+module.exports = {
+  serializeUser,
+  serializeVehicle,
+  serializeContract,
+  serializeReservation,
+  serializeScheduleRow,
+  serializeHgsPendingRow,
+};

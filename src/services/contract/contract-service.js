@@ -143,6 +143,15 @@ export const getAdminSchedule = async ({ type, window = 7, excludeCompleted = tr
   return response.data;
 };
 
+// Admin dashboard alert bar: closed contracts whose HGS/OGS check isn't done.
+export const getHgsPendingContracts = async ({ branchId } = {}) => {
+  const response = await axios.get(
+    `${API_URL}/contracts/admin/hgs-pending/auth${branchId ? `?branchId=${branchId}` : ""}`,
+    services.authHeader()
+  );
+  return response.data;
+};
+
 export const downloadContractReports = async () => {
   const token = services.encryptedLocalStorage.getItem("rentwintoken");
   const response = await axios.get(`${API_URL}/excel/download/contracts`, {

@@ -130,6 +130,34 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
+        // HGS panel: Kontrat No | Plaka | Müşteri | Kapanış — customer column
+        // takes the slack and ellipsizes instead of the vehicle column.
+        &--hgs {
+            th:nth-child(1),
+            td:nth-child(1) { width: 20%; }
+            th:nth-child(2),
+            td:nth-child(2) { width: 20%; overflow: visible; text-overflow: clip; white-space: nowrap; }
+            th:nth-child(3),
+            td:nth-child(3) { width: 40%; }
+            th:nth-child(4),
+            td:nth-child(4) { width: 20%; }
+
+            td:nth-child(3) {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+    }
+
+    &__rowlink {
+        cursor: pointer;
+        transition: background-color 0.12s ease;
+
+        &:hover {
+            background-color: v.$color3;
+        }
     }
 
     &__plate {

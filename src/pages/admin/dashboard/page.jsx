@@ -20,16 +20,19 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [fleetStats, setFleetStats] = useState(null);
   const [expiryAlerts, setExpiryAlerts] = useState(null);
+  const [hgsPending, setHgsPending] = useState([]);
   const [autoRefresh, setAutoRefresh] = useState(false);
 
   const loadData = async () => {
     try {
-      const [stats, alerts] = await Promise.all([
+      const [stats, alerts, hgs] = await Promise.all([
         services.vehicle.getFleetStats(branchId),
         services.vehicle.getExpiryAlerts(branchId),
+        services.contract.getHgsPendingContracts({ branchId }).catch(() => []),
       ]);
       setFleetStats(stats);
       setExpiryAlerts(alerts);
+      setHgsPending(Array.isArray(hgs) ? hgs : []);
     } catch (error) {
       console.log(error);
     } finally {
@@ -77,6 +80,7 @@ const AdminDashboard = () => {
 
           <MaintenanceAlertBar
             alerts={expiryAlerts}
+            hgsPending={hgsPending}
             autoRefresh={autoRefresh}
             onAutoRefreshChange={setAutoRefresh}
           />

@@ -902,6 +902,9 @@
     "insurance": "Sigorta",
     "kasko": "Kasko",
     "tax": "MTV",
+    "hgs": "HGS Kontrolü",
+    "hgsHead": "HGS kontrolü tamamlanmamış kapalı kontratlar",
+    "hgsNone": "HGS kontrolü bekleyen kapalı kontrat yok",
     "dueWithin": "{{days}} gün içinde / süresi geçmiş",
     "daysLeft": "{{days}} gün kaldı",
     "daysOverdue": "{{days}} gün geçti",
@@ -910,7 +913,10 @@
       "plate": "Plaka",
       "vehicle": "Araç",
       "date": "Bitiş Tarihi",
-      "remaining": "Kalan Süre"
+      "remaining": "Kalan Süre",
+      "contractNo": "Kontrat No",
+      "customer": "Müşteri",
+      "closedAt": "Kapanış Tarihi"
     },
     "exchangeRates": "Döviz Kurları",
     "settings": "Ayarlar",

@@ -902,6 +902,9 @@
     "insurance": "Insurance",
     "kasko": "Comprehensive",
     "tax": "Road Tax",
+    "hgs": "HGS Check",
+    "hgsHead": "Closed contracts with an incomplete HGS check",
+    "hgsNone": "No closed contract is waiting for an HGS check",
     "dueWithin": "within {{days}} days / overdue",
     "daysLeft": "{{days}} days left",
     "daysOverdue": "{{days}} days overdue",
@@ -910,7 +913,10 @@
       "plate": "Plate",
       "vehicle": "Vehicle",
       "date": "Expiry Date",
-      "remaining": "Remaining"
+      "remaining": "Remaining",
+      "contractNo": "Contract No",
+      "customer": "Customer",
+      "closedAt": "Closed On"
     },
     "exchangeRates": "Exchange Rates",
     "settings": "Settings",

@@ -1,7 +1,7 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const { parseFrontendDateTime, resolveWindow } = require("../../lib/dates");
-const { serializeScheduleRow, serializeVehicle } = require("../../lib/serializers");
+const { serializeScheduleRow, serializeVehicle, serializeHgsPendingRow } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 const { ALLOWED_SORT_FIELDS } = require("./contracts.shared");
@@ -344,12 +344,32 @@ const getAdminSchedule = asyncHandler(async (req, res) => {
   res.json(contracts.map(serializeScheduleRow));
 });
 
+// Admin dashboard alert bar: contracts that have been closed (DONE) but whose
+// HGS/OGS toll check is not complete — hgsStatus is derived from the check log
+// and only reads "CHECKED" once the queried ranges span the whole rental.
+// Oldest-closed first so the longest-outstanding ones sit at the top.
+const getHgsPendingContracts = asyncHandler(async (req, res) => {
+  const { branchId } = req.query;
+  const contracts = await prisma.contract.findMany({
+    where: {
+      status: "DONE",
+      OR: [{ hgsStatus: null }, { hgsStatus: { not: "CHECKED" } }],
+      ...(branchId ? { car: { branchId } } : {}),
+    },
+    orderBy: [{ returnedAt: "asc" }, { dropOffTime: "asc" }],
+    include: { car: { include: { branch: true } }, user: true },
+  });
+
+  res.json(contracts.map(serializeHgsPendingRow));
+});
+
 module.exports = {
   getContractsByPage,
   createContract,
   getAvailableCarsAdmin,
   deleteContract,
   getAdminSchedule,
+  getHgsPendingContracts,
   returnContract,
   cancelContract,
   reopenContract,

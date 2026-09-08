@@ -7,6 +7,7 @@ const {
   getAvailableCarsAdmin,
   deleteContract,
   getAdminSchedule,
+  getHgsPendingContracts,
   returnContract,
   cancelContract,
   reopenContract,
@@ -25,6 +26,7 @@ const {
 const router = Router();
 
 router.get("/contracts/admin/schedule/auth", authenticate, requireAdmin, getAdminSchedule);
+router.get("/contracts/admin/hgs-pending/auth", authenticate, requireAdmin, getHgsPendingContracts);
 router.get("/contracts/admin/all/auth", authenticate, requireAdmin, getContractsByPage);
 router.get("/contracts/admin/available-cars/auth", authenticate, requireAdmin, getAvailableCarsAdmin);
 router.get("/contracts/:id/admin", authenticate, requireAdmin, getContractByIdAdmin);

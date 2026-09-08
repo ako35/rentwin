@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Form } from "react-bootstrap";
 import { GiCarWheel, GiMechanicGarage } from "react-icons/gi";
-import { BsShieldCheck, BsShield, BsReceipt } from "react-icons/bs";
+import { BsShieldCheck, BsShield, BsReceipt, BsSignpost2 } from "react-icons/bs";
 import { utils } from "../../../utils";
+import { constants } from "../../../constants";
 import "./maintenance-alert-bar.scss";
 
 const CATEGORIES = [
@@ -14,14 +16,20 @@ const CATEGORIES = [
   { key: "tax", icon: <BsReceipt /> },
 ];
 
-const MaintenanceAlertBar = ({ alerts, autoRefresh, onAutoRefreshChange }) => {
+const HGS_KEY = "hgsPending";
+
+const custName = (u) =>
+  (u?.companyTitle || `${u?.firstName || ""} ${u?.lastName || ""}`.trim() || "—");
+
+const MaintenanceAlertBar = ({ alerts, hgsPending = [], autoRefresh, onAutoRefreshChange }) => {
   const { t } = useTranslation("admin");
+  const navigate = useNavigate();
   const [open, setOpen] = useState(null);
 
   const categories = alerts?.categories || {};
   const showComingSoon = () => utils.functions.swalToast(t("alertBar.comingSoonToast"), "info");
 
-  const activeList = open ? categories[open] || [] : [];
+  const activeList = open && open !== HGS_KEY ? categories[open] || [] : [];
 
   return (
     <div className="maintenance-alert-bar">
@@ -46,6 +54,18 @@ const MaintenanceAlertBar = ({ alerts, autoRefresh, onAutoRefreshChange }) => {
               </button>
             );
           })}
+
+          <button
+            type="button"
+            className={
+              "maintenance-alert-bar__tab" +
+              (hgsPending.length ? " maintenance-alert-bar__tab--due maintenance-alert-bar__tab--overdue" : "") +
+              (open === HGS_KEY ? " maintenance-alert-bar__tab--active" : "")
+            }
+            onClick={() => setOpen(open === HGS_KEY ? null : HGS_KEY)}
+          >
+            <BsSignpost2 /> {t("alertBar.hgs")} ({hgsPending.length})
+          </button>
         </div>
         <div className="maintenance-alert-bar__actions">
           <button type="button" className="maintenance-alert-bar__link" onClick={showComingSoon}>
@@ -64,7 +84,7 @@ const MaintenanceAlertBar = ({ alerts, autoRefresh, onAutoRefreshChange }) => {
         </div>
       </div>
 
-      {open && (
+      {open && open !== HGS_KEY && (
         <div className="maintenance-alert-bar__panel">
           <div className="maintenance-alert-bar__panel-head">
             {t(`alertBar.${open}`)} — {t("alertBar.dueWithin", { days: alerts?.windowDays ?? 30 })}
@@ -97,6 +117,40 @@ const MaintenanceAlertBar = ({ alerts, autoRefresh, onAutoRefreshChange }) => {
                         ? t("alertBar.daysOverdue", { days: Math.abs(item.daysLeft) })
                         : t("alertBar.daysLeft", { days: item.daysLeft })}
                     </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+
+      {open === HGS_KEY && (
+        <div className="maintenance-alert-bar__panel">
+          <div className="maintenance-alert-bar__panel-head">{t("alertBar.hgsHead")}</div>
+          {hgsPending.length === 0 ? (
+            <div className="maintenance-alert-bar__empty">{t("alertBar.hgsNone")}</div>
+          ) : (
+            <table className="maintenance-alert-bar__table maintenance-alert-bar__table--hgs">
+              <thead>
+                <tr>
+                  <th>{t("alertBar.col.contractNo")}</th>
+                  <th>{t("alertBar.col.plate")}</th>
+                  <th>{t("alertBar.col.customer")}</th>
+                  <th>{t("alertBar.col.closedAt")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {hgsPending.map((row) => (
+                  <tr
+                    key={row.id}
+                    className="maintenance-alert-bar__rowlink"
+                    onClick={() => navigate(`${constants.routes.adminContracts}/${row.id}`)}
+                  >
+                    <td>{row.contractNo || "—"}</td>
+                    <td className="maintenance-alert-bar__plate">{row.car?.licensePlate || "—"}</td>
+                    <td title={custName(row.user)}>{custName(row.user)}</td>
+                    <td>{utils.functions.getDate(row.returnedAt || row.dropOffTime)}</td>
                   </tr>
                 ))}
               </tbody>
