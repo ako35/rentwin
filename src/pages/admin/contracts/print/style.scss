@@ -135,31 +135,37 @@
 }
 
 .cprint-diagram {
-  figure { margin: 0; text-align: center; }
+  figure { margin: 0; text-align: center; width: 100%; }
   figcaption {
-    font-size: 7px;
+    font-size: 6.5px;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
-    color: #555;
-    margin-top: 0.12rem;
+    letter-spacing: 0.04em;
+    color: #666;
+    margin-top: 0.05rem;
+  }
+  svg { width: 100%; height: auto; display: block; }
+
+  /* orthographic cross: side / front·plan·rear / side */
+  &__cross {
+    display: grid;
+    grid-template-columns: minmax(0, 0.52fr) minmax(0, 1fr) minmax(0, 0.52fr);
+    align-items: center;
+    justify-items: center;
+    column-gap: 0.5rem;
+    row-gap: 0.1rem;
   }
 
-  &__top {
-    svg { width: 62%; height: auto; display: block; margin: 0 auto; }
+  &__side {
+    grid-column: 2;
+    width: 88%;
   }
+  &__side--top { grid-row: 1; }
+  &__side--bottom { grid-row: 3; }
+  &__front { grid-column: 1; grid-row: 2; }
+  &__plan { grid-column: 2; grid-row: 2; width: 88%; }
+  &__rear { grid-column: 3; grid-row: 2; }
 
-  &__grid {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 0.6rem;
-    margin-top: 0.5rem;
-
-    figure { flex: 0 1 auto; }
-    svg { height: 26mm; width: auto; max-width: 100%; }
-  }
-
-  &__legend { font-size: 7.5px; color: #333; margin: 0.35rem 0 0; text-align: center; }
+  &__legend { font-size: 7.5px; color: #333; margin: 0.4rem 0 0; text-align: center; }
 }
 
 .cprint-check {

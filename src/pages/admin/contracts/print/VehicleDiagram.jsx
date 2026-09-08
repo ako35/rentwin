@@ -1,117 +1,110 @@
 import { useTranslation } from "react-i18next";
 
-// Clean line-art vehicle views for the handover report, printed blank so staff
-// circle existing damage by hand and note the code (Ç / G / K / E). One large
-// plan view on top, then front, both flanks and rear beneath it.
+// Blueprint-style vehicle views for the handover report, printed blank so staff
+// circle existing damage by hand and note the code (Ç / G / K / E). Laid out as
+// an orthographic cross: left flank on top, front · plan · rear across the
+// middle, right flank on the bottom. `non-scaling-stroke` keeps every line the
+// same hairline weight regardless of how big each view is drawn.
 
-const LINE = {
+const S = {
   fill: "none",
   stroke: "#111",
-  strokeWidth: 2,
+  strokeWidth: 1.6,
   strokeLinejoin: "round",
   strokeLinecap: "round",
+  vectorEffect: "non-scaling-stroke",
 };
-const BODY = { ...LINE, fill: "#fff" };
+const F = { ...S, fill: "#fff" };
+const T = { ...S, strokeWidth: 1.1 };
 
-const TopView = () => (
-  <svg viewBox="0 0 268 116" role="img">
+/* ---- plan / top-down, nose to the left ---- */
+const PlanView = () => (
+  <svg viewBox="-40 -28 552 256" role="img">
     <path
-      d="M20 58 C20 42 27 33 43 29 C74 21 112 20 150 20 C196 20 222 24 238 32 C248 37 252 47 252 58 C252 69 248 79 238 84 C222 92 196 96 150 96 C112 96 74 95 43 87 C27 83 20 74 20 58 Z"
-      {...BODY}
+      d="M92 15 C165 12 262 12 330 15
+         C388 17 424 34 440 66 C449 82 449 118 440 134 C424 166 388 183 330 185
+         C262 188 165 188 92 185 C54 184 27 167 16 137 C9 121 9 79 16 63
+         C27 33 54 16 92 15 Z"
+      {...F}
+      strokeWidth="1.9"
     />
-    {/* nose marker */}
-    <path d="M15 58 L3 49 L3 67 Z" fill="#111" stroke="none" />
-    {/* greenhouse: windshield / roof / backlight */}
+    <path d="M13 100 L-5 84 L-5 116 Z" fill="#111" stroke="none" />
+    {/* bumper wrap hints */}
+    <path d="M19 74 Q12 100 19 126 M433 72 Q441 100 433 128" {...T} />
+    {/* door seams — masked by the white greenhouse */}
+    <path d="M246 15 L246 185 M302 15 L302 185" {...T} />
+    {/* greenhouse: one pod → windscreen | roof | backlight */}
+    <rect x="170" y="44" width="182" height="112" rx="22" {...F} strokeWidth="1.7" />
+    <path d="M204 45 Q199 100 204 155 M318 45 Q323 100 318 155" {...T} />
+    {/* wheels */}
+    <rect x="52" y="2" width="56" height="20" rx="6" {...F} />
+    <rect x="338" y="2" width="56" height="20" rx="6" {...F} />
+    <rect x="52" y="178" width="56" height="20" rx="6" {...F} />
+    <rect x="338" y="178" width="56" height="20" rx="6" {...F} />
+  </svg>
+);
+
+/* ---- flank, nose to the right (car's LEFT side); flip for the right side ---- */
+const SideView = ({ flip }) => (
+  <svg viewBox="-28 -24 508 212" role="img" style={flip ? { transform: "scaleX(-1)" } : undefined}>
+    {/* body with wheel-arch cut-outs */}
     <path
-      d="M112 31 L190 31 Q200 33 200 46 L200 70 Q200 83 190 85 L112 85 Q106 78 106 58 Q106 38 112 31 Z"
-      {...LINE}
-      strokeWidth="1.7"
-    />
-    <path d="M128 31 L128 85 M180 31 L180 85" {...LINE} strokeWidth="1.4" />
-    {/* door cuts on both flanks */}
-    <path
-      d="M114 20 L114 31 M146 19 L146 30 M178 20 L178 31 M114 96 L114 85 M146 97 L146 86 M178 96 L178 85"
-      {...LINE}
-      strokeWidth="1.4"
+      d="M8 126 L8 92 Q10 80 26 76 L92 66 Q118 24 190 22 L292 22
+         Q366 24 392 66 L430 74 Q448 78 450 96 L450 118 Q450 128 438 128
+         L398 128 A36 36 0 0 0 326 128 L138 128 A36 36 0 0 0 66 128 L8 126 Z"
+      {...F}
+      strokeWidth="1.9"
     />
     {/* wheels */}
-    <rect x="41" y="12" width="27" height="12" rx="3" {...LINE} strokeWidth="1.6" />
-    <rect x="196" y="12" width="27" height="12" rx="3" {...LINE} strokeWidth="1.6" />
-    <rect x="41" y="92" width="27" height="12" rx="3" {...LINE} strokeWidth="1.6" />
-    <rect x="196" y="92" width="27" height="12" rx="3" {...LINE} strokeWidth="1.6" />
+    <circle cx="102" cy="126" r="34" {...F} />
+    <circle cx="362" cy="126" r="34" {...F} />
+    <circle cx="102" cy="126" r="13" {...S} />
+    <circle cx="362" cy="126" r="13" {...S} />
+    {/* greenhouse */}
+    <path d="M100 66 L110 30 Q113 24 124 24 L288 24 Q350 26 380 66 Z" {...F} strokeWidth="1.7" />
+    <path d="M178 24 L178 66 M258 24 L258 66" {...T} />
+    {/* doors + handles */}
+    <path d="M150 66 L150 120" {...T} />
+    <rect x="158" y="80" width="26" height="7" rx="3.5" {...S} />
+    <rect x="206" y="80" width="26" height="7" rx="3.5" {...S} />
+    {/* rocker · lamps · mirror */}
+    <path d="M70 122 L392 122" {...T} />
+    <path d="M420 78 L450 84 L450 104 L422 104 Z" {...S} />
+    <rect x="8" y="86" width="12" height="24" rx="2" {...S} />
+    <path d="M356 62 Q378 58 380 70 Q378 82 356 74 Z" {...F} />
   </svg>
 );
 
 const FrontView = () => (
-  <svg viewBox="0 0 132 96" role="img">
-    <path
-      d="M16 82 L16 60 C16 40 24 30 40 27 L92 27 C108 30 116 40 116 60 L116 82 Z"
-      {...BODY}
-    />
-    <path d="M42 30 L90 30 L98 52 L34 52 Z" {...LINE} />
-    <path d="M20 58 L112 58" {...LINE} strokeWidth="1.3" />
-    <path d="M22 60 L46 60 L44 69 L22 69 Z" {...LINE} strokeWidth="1.4" />
-    <path d="M110 60 L86 60 L88 69 L110 69 Z" {...LINE} strokeWidth="1.4" />
-    <rect x="52" y="60" width="28" height="8" rx="1.5" {...LINE} strokeWidth="1.3" />
-    <circle cx="66" cy="64" r="2.2" {...LINE} strokeWidth="1.3" />
-    <path d="M18 73 L114 73" {...LINE} strokeWidth="1.3" />
-    <rect x="52" y="74" width="28" height="7" {...LINE} strokeWidth="1.3" />
-    <path d="M40 50 L52 36 M58 50 L70 36" {...LINE} strokeWidth="1.1" />
-    <path d="M17 43 L5 39 L5 51 L17 53 Z M115 43 L127 39 L127 51 L115 53 Z" {...LINE} strokeWidth="1.3" />
-    <rect x="18" y="80" width="22" height="8" rx="2" {...LINE} strokeWidth="1.6" />
-    <rect x="92" y="80" width="22" height="8" rx="2" {...LINE} strokeWidth="1.6" />
+  <svg viewBox="-24 -20 250 210" role="img">
+    <path d="M16 152 L16 84 C16 44 30 30 54 27 L148 27 C172 30 186 44 186 84 L186 152 Z" {...F} strokeWidth="1.9" />
+    <path d="M54 32 L148 32 L158 78 L44 78 Z" {...S} strokeWidth="1.7" />
+    <path d="M22 92 L180 92" {...T} />
+    <rect x="24" y="96" width="42" height="16" rx="4" {...S} />
+    <rect x="136" y="96" width="42" height="16" rx="4" {...S} />
+    <rect x="70" y="97" width="62" height="15" rx="3" {...S} />
+    <path d="M20 122 L182 122" {...T} />
+    <rect x="80" y="124" width="42" height="16" rx="2" {...S} />
+    <path d="M16 62 L3 56 L3 80 L16 82 Z" {...F} />
+    <path d="M186 62 L199 56 L199 80 L186 82 Z" {...F} />
+    <rect x="22" y="142" width="34" height="16" rx="4" {...F} />
+    <rect x="146" y="142" width="34" height="16" rx="4" {...F} />
   </svg>
 );
 
 const RearView = () => (
-  <svg viewBox="0 0 132 96" role="img">
-    <path
-      d="M16 82 L16 60 C16 40 24 30 40 27 L92 27 C108 30 116 40 116 60 L116 82 Z"
-      {...BODY}
-    />
-    <path d="M42 30 L90 30 L98 52 L34 52 Z" {...LINE} />
-    <rect x="58" y="27" width="16" height="3.5" {...LINE} strokeWidth="1.1" />
-    <path d="M18 52 L46 52 L46 64 L18 64 Z" {...LINE} strokeWidth="1.4" />
-    <path d="M114 52 L86 52 L86 64 L114 64 Z" {...LINE} strokeWidth="1.4" />
-    <path d="M34 52 L98 52 M24 66 L108 66" {...LINE} strokeWidth="1.3" />
-    <rect x="50" y="55" width="32" height="9" {...LINE} strokeWidth="1.3" />
-    <path d="M18 73 L114 73" {...LINE} strokeWidth="1.3" />
-    <circle cx="98" cy="79" r="2.6" {...LINE} strokeWidth="1.3" />
-    <path d="M60 50 L52 38" {...LINE} strokeWidth="1.1" />
-    <rect x="18" y="80" width="22" height="8" rx="2" {...LINE} strokeWidth="1.6" />
-    <rect x="92" y="80" width="22" height="8" rx="2" {...LINE} strokeWidth="1.6" />
-  </svg>
-);
-
-const SideView = ({ flip }) => (
-  <svg
-    viewBox="0 0 232 96"
-    role="img"
-    style={flip ? { transform: "scaleX(-1)" } : undefined}
-  >
-    {/* wheels sit behind the body so the arches read as cut-outs */}
-    <circle cx="52" cy="70" r="15" {...LINE} strokeWidth="1.7" />
-    <circle cx="182" cy="70" r="15" {...LINE} strokeWidth="1.7" />
-    <path
-      d="M12 68 L12 52 Q12 44 28 42 L58 38 Q76 17 116 17 L160 17 Q198 19 210 42 L216 44 Q222 46 222 55 L222 64 Q222 68 214 68 Z"
-      {...BODY}
-    />
-    <circle cx="52" cy="70" r="6" {...LINE} strokeWidth="1.5" />
-    <circle cx="182" cy="70" r="6" {...LINE} strokeWidth="1.5" />
-    {/* greenhouse */}
-    <path d="M62 40 L66 26 Q68 22 76 22 L150 22 Q178 24 196 40 Z" {...LINE} strokeWidth="1.5" />
-    <path d="M104 22 L104 40 M150 22 L150 40" {...LINE} strokeWidth="1.3" />
-    {/* doors */}
-    <path d="M88 40 L88 62 M126 40 L126 62" {...LINE} strokeWidth="1.3" />
-    <rect x="94" y="45" width="11" height="3" rx="1.5" {...LINE} strokeWidth="1.2" />
-    <rect x="112" y="45" width="11" height="3" rx="1.5" {...LINE} strokeWidth="1.2" />
-    {/* wing mirror at the A-pillar */}
-    <path d="M182 39 Q190 37 191 42 Q190 47 182 45 Z" {...LINE} strokeWidth="1.3" />
-    {/* lamps + trim */}
-    <path d="M210 45 L221 47 L221 55 L211 56 Z" {...LINE} strokeWidth="1.3" />
-    <rect x="12" y="46" width="6" height="12" rx="1" {...LINE} strokeWidth="1.3" />
-    <path d="M40 64 L196 64" {...LINE} strokeWidth="1.2" />
-    <circle cx="30" cy="52" r="3.4" {...LINE} strokeWidth="1.2" />
+  <svg viewBox="-24 -20 250 210" role="img">
+    <path d="M16 152 L16 84 C16 44 30 30 54 27 L148 27 C172 30 186 44 186 84 L186 152 Z" {...F} strokeWidth="1.9" />
+    <path d="M54 32 L148 32 L158 78 L44 78 Z" {...S} strokeWidth="1.7" />
+    <path d="M44 78 L158 78 M26 102 L176 102" {...T} />
+    <rect x="22" y="88" width="48" height="20" rx="3" {...S} />
+    <rect x="132" y="88" width="48" height="20" rx="3" {...S} />
+    <path d="M20 122 L182 122" {...T} />
+    <rect x="80" y="124" width="42" height="16" rx="2" {...S} />
+    <path d="M16 62 L3 56 L3 80 L16 82 Z" {...F} />
+    <path d="M186 62 L199 56 L199 80 L186 82 Z" {...F} />
+    <rect x="22" y="142" width="34" height="16" rx="4" {...F} />
+    <rect x="146" y="142" width="34" height="16" rx="4" {...F} />
   </svg>
 );
 
@@ -121,26 +114,25 @@ const VehicleDiagram = () => {
 
   return (
     <div className="cprint-diagram">
-      <figure className="cprint-diagram__top">
-        <TopView />
-        <figcaption>{d("diagramTop")}</figcaption>
-      </figure>
-      <div className="cprint-diagram__grid">
-        <figure>
-          <FrontView />
-          <figcaption>{d("diagramFront")}</figcaption>
-        </figure>
-        <figure>
+      <div className="cprint-diagram__cross">
+        <figure className="cprint-diagram__side cprint-diagram__side--top">
           <SideView />
           <figcaption>{d("diagramLeft")}</figcaption>
         </figure>
-        <figure>
-          <SideView flip />
-          <figcaption>{d("diagramRight")}</figcaption>
+        <figure className="cprint-diagram__front">
+          <FrontView />
+          <figcaption>{d("diagramFront")}</figcaption>
         </figure>
-        <figure>
+        <figure className="cprint-diagram__plan">
+          <PlanView />
+        </figure>
+        <figure className="cprint-diagram__rear">
           <RearView />
           <figcaption>{d("diagramRear")}</figcaption>
+        </figure>
+        <figure className="cprint-diagram__side cprint-diagram__side--bottom">
+          <SideView flip />
+          <figcaption>{d("diagramRight")}</figcaption>
         </figure>
       </div>
       <p className="cprint-diagram__legend">{d("diagramLegend")}</p>
