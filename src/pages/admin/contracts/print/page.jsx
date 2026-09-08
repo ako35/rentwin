@@ -45,6 +45,30 @@ const ContractPrintPage = () => {
     const c = contract;
     const cust = c.customer || {};
     const car = c.car || {};
+    const isMonthly = c.rentalType === "MONTHLY";
+    const periods = c.periods || [];
+    const activePeriod =
+      [...periods].reverse().find((pp) => pp.status === "ACTIVE") || periods[periods.length - 1] || null;
+    const rentalDays = Math.max(
+      1,
+      Math.ceil(moment(c.dropOffTime).diff(moment(c.pickUpTime), "hours") / 24)
+    );
+    const termLabel = (months, days, fallbackDays) =>
+      isMonthly && (months || days)
+        ? `${months} ${p("ek1.termMo")}${days ? ` ${days} ${p("ek1.termDay")}` : ""}`
+        : `${fallbackDays} ${p("ek1.termDay")}`;
+    // Ek-1 = the active period's term; Genel Sözleşme = the whole rental span.
+    const rentTerm = activePeriod
+      ? termLabel(activePeriod.months, activePeriod.kistDays, rentalDays)
+      : termLabel(0, 0, rentalDays);
+    const fullTerm = (() => {
+      if (!isMonthly) return `${rentalDays} ${p("ek1.termDay")}`;
+      const totalMonths = periods.length
+        ? periods.reduce((sum, pp) => sum + (pp.months || 0), 0)
+        : activePeriod?.months || 0;
+      const lastKist = activePeriod?.kistDays || 0;
+      return termLabel(totalMonths, lastKist, rentalDays);
+    })();
     const isCorp = cust.customerType === "Kurumsal";
     const customerName = isCorp
       ? cust.companyTitle || `${cust.firstName || ""} ${cust.lastName || ""}`.trim()
@@ -78,10 +102,15 @@ const ContractPrintPage = () => {
       contractDate: fmtDate(c.pickUpTime),
       pickUpDate: fmtDate(c.pickUpTime),
       dropOffDate: fmtDate(c.dropOffTime),
-      rentalDays: Math.max(
-        1,
-        Math.ceil(moment(c.dropOffTime).diff(moment(c.pickUpTime), "hours") / 24)
-      ),
+      rentalDays,
+      rentTerm,
+      fullTerm,
+      rentalType: c.rentalType || "DAILY",
+      vatRate: c.vatRate ?? 20,
+      // Active-period figures for the Ek-1 rent line (monthly = net + VAT + gross).
+      rentNet: activePeriod ? money(activePeriod.netAmount) : null,
+      rentVat: activePeriod ? money((activePeriod.grossAmount || 0) - (activePeriod.netAmount || 0)) : null,
+      rentGross: activePeriod ? money(activePeriod.grossAmount) : null,
       kmUnlimited: !!c.unlimitedKm,
       dailyKmLimit: c.dailyKmLimit ?? null,
       monthlyKmLimit: c.monthlyKmLimit ?? null,
@@ -89,7 +118,6 @@ const ContractPrintPage = () => {
       fuelFeePerEighth: money(c.fuelFeePerEighth),
       deposit: money(c.deposit),
       dailyPrice: money(c.dailyPrice),
-      monthlyRent: c.dailyPrice ? money(Number(c.dailyPrice) * 30) : null,
     };
   }, [contract, p, tc]);
 

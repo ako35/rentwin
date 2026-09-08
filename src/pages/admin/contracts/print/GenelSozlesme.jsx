@@ -98,7 +98,7 @@ const GenelSozlesme = ({ data, p }) => {
             <tr>
               <th>{s("sumPeriod")}</th>
               <td>
-                {data.pickUp} — {data.dropOff}
+                {data.pickUp} — {data.dropOff} · {data.fullTerm}
               </td>
               <th>{s("sumKmLimit")}</th>
               <td>{kmLimitText}</td>

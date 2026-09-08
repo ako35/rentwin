@@ -35,11 +35,17 @@ const Ek1Form = ({ data, p }) => {
   const fuelFee = data.fuelFeePerEighth
     ? sz("feePerEighth", { v: data.fuelFeePerEighth })
     : e("manualFill");
-  const rent = data.monthlyRent
-    ? `${e("rentMonthly", { v: data.monthlyRent })}${
-        data.dailyPrice ? ` ${e("rentDailyNote", { v: data.dailyPrice })}` : ""
-      }`
-    : e("manualFill");
+  const rent =
+    data.rentalType === "MONTHLY" && data.rentGross
+      ? e("rentMonthlyNet", {
+          net: data.rentNet,
+          rate: data.vatRate,
+          vat: data.rentVat,
+          gross: data.rentGross,
+        })
+      : data.dailyPrice
+        ? e("rentDaily", { v: data.dailyPrice })
+        : e("manualFill");
 
   return (
     <div className="cprint-legal">
@@ -54,7 +60,7 @@ const Ek1Form = ({ data, p }) => {
         <h2>{e("s1title")}</h2>
         <div className="cprint-legal__infogrid">
           <Row label={e("f_start")} value={data.pickUpDate} />
-          <Row label={e("f_end")} value={`${data.dropOffDate} · ${e("durationDays", { days: data.rentalDays })}`} />
+          <Row label={e("f_end")} value={`${data.dropOffDate} · ${data.rentTerm}`} />
           <Row label={e("f_deposit")} value={data.deposit ? `${data.deposit} ₺` : e("depositless")} />
           <Row label={e("f_payment")} value={e("manualFill")} />
           <Row label={e("f_kmLimit")} value={kmLimit} />
@@ -71,7 +77,7 @@ const Ek1Form = ({ data, p }) => {
               <th>{e("col_vehicle")}</th>
               <th>{e("col_plate")}</th>
               <th>{e("col_year")}</th>
-              <th>{e("col_rent")}</th>
+              <th>{data.rentalType === "MONTHLY" ? e("col_rentMonthly") : e("col_rentDaily")}</th>
             </tr>
           </thead>
           <tbody>
