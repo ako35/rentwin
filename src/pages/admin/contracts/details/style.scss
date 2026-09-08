@@ -88,7 +88,9 @@
   &__ribbon {
     @include m.flexbox(row, space-between, center, 1rem);
     flex-wrap: wrap;
-    background: linear-gradient(90deg, #e8a13c, #e0922b);
+    // Dark navy "anchor" strip — corporate, high-contrast, pairs with the brand
+    // green used for the create state and the light status pills.
+    background: linear-gradient(90deg, v.$anchor-navy, v.$anchor-navy-deep);
     color: #fff;
     border-radius: 6px;
     padding: 0.55rem 1rem;
