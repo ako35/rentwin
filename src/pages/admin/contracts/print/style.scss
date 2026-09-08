@@ -336,6 +336,109 @@
   span { font-size: 7.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: #333; }
 }
 
+/* ---- Genel Sözleşme: full legal body ---- */
+.cprint-legal {
+  &__party {
+    margin-top: 0.4rem;
+
+    p { margin: 0 0 0.15rem; }
+  }
+
+  &__party-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  &__muted { color: #555; font-size: 9.5px; }
+
+  &__summary {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      border: 1px solid #999;
+      padding: 0.25rem 0.4rem;
+      font-size: 9.5px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      width: 20%;
+      background: #f4f6f4;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 8px;
+      letter-spacing: 0.02em;
+      color: #444;
+    }
+  }
+
+  &__article {
+    margin-top: 0.55rem;
+    break-inside: avoid;
+
+    h3 {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin: 0 0 0.2rem;
+    }
+
+    p { margin: 0 0 0.2rem; text-align: justify; }
+  }
+
+  &__bullet { padding-left: 0.7rem; }
+
+  &__article-p { margin: 0 0 0.25rem; text-align: justify; }
+
+  /* Ek-1 financial detail rows */
+  &__infogrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.15rem 1rem;
+  }
+
+  &__inforow {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.2rem 0;
+    border-bottom: 1px dotted #999;
+
+    span { font-size: 9px; text-transform: uppercase; letter-spacing: 0.02em; color: #555; }
+    strong { font-size: 10px; font-weight: 700; text-align: right; }
+  }
+
+  &__vehtable {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      border: 1px solid #999;
+      padding: 0.3rem 0.45rem;
+      font-size: 9.5px;
+      text-align: left;
+    }
+
+    thead th { background: #f4f6f4; font-weight: 700; text-transform: uppercase; font-size: 8px; }
+  }
+
+  &__closing {
+    margin-top: 0.8rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid #000;
+    font-weight: 600;
+    text-align: justify;
+  }
+
+  &__sign-name { display: block; font-size: 8.5px; font-weight: 700; margin-top: 0.15rem; }
+  &__sign-foot { display: block; font-size: 8px; color: #555; margin-top: 0.2rem; }
+}
+
 @media print {
   body { visibility: hidden; }
   .cprint, .cprint * { visibility: visible; }

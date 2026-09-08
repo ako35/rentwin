@@ -5,7 +5,8 @@ import moment from "moment/moment";
 import { services } from "../../../../services";
 import { constants } from "../../../../constants";
 import { Loading } from "../../../../components";
-import ContractTextDoc from "./ContractTextDoc";
+import GenelSozlesme from "./GenelSozlesme";
+import Ek1Form from "./Ek1Form";
 import Tutanak from "./Tutanak";
 import "./style.scss";
 
@@ -15,6 +16,10 @@ const fmtDate = (v) => (v ? moment(v).format("DD.MM.YYYY") : "—");
 const fmtDateTime = (v) => (v ? moment(v).format("DD.MM.YYYY HH:mm") : "—");
 const fuelLabel = (eighths) =>
   eighths === null || eighths === undefined || eighths === "" ? "—" : `${eighths}/8`;
+const money = (v) =>
+  v === null || v === undefined || v === ""
+    ? null
+    : Number(v).toLocaleString("tr-TR", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 
 const ContractPrintPage = () => {
   const { contractId, docType } = useParams();
@@ -68,6 +73,23 @@ const ContractPrintPage = () => {
       outKm: c.pickUpKm ?? "—",
       outFuel: fuelLabel(c.pickUpFuelEighths),
       kbs: c.kbsNotifiedAt ? fmtDate(c.kbsNotifiedAt) : p("tutanak.kbsNotYet"),
+      // Genel Sözleşme / Ek-1 — values pulled straight from the contract so the
+      // legal clauses and the financial form always match what was agreed.
+      contractDate: fmtDate(c.pickUpTime),
+      pickUpDate: fmtDate(c.pickUpTime),
+      dropOffDate: fmtDate(c.dropOffTime),
+      rentalDays: Math.max(
+        1,
+        Math.ceil(moment(c.dropOffTime).diff(moment(c.pickUpTime), "hours") / 24)
+      ),
+      kmUnlimited: !!c.unlimitedKm,
+      dailyKmLimit: c.dailyKmLimit ?? null,
+      monthlyKmLimit: c.monthlyKmLimit ?? null,
+      kmOverageFee: money(c.kmOverageFee),
+      fuelFeePerEighth: money(c.fuelFeePerEighth),
+      deposit: money(c.deposit),
+      dailyPrice: money(c.dailyPrice),
+      monthlyRent: c.dailyPrice ? money(Number(c.dailyPrice) * 30) : null,
     };
   }, [contract, p, tc]);
 
@@ -103,11 +125,9 @@ const ContractPrintPage = () => {
       </div>
 
       <article className="cprint-sheet">
-        {docType === "tutanak" ? (
-          <Tutanak data={data} p={p} />
-        ) : (
-          <ContractTextDoc titleKey={docType} data={data} p={p} />
-        )}
+        {docType === "tutanak" && <Tutanak data={data} p={p} />}
+        {docType === "sozlesme" && <GenelSozlesme data={data} p={p} />}
+        {docType === "ek1" && <Ek1Form data={data} p={p} />}
       </article>
     </div>
   );

@@ -172,6 +172,13 @@ website.sameAs = [
   website.youtube,
 ];
 
+// Full legal identity of the lessor for printed contracts — the two companies
+// that operate under the RENTWİN umbrella brand.
+website.legalName =
+  "MOVİLO ULAŞIM TEKNOLOJİ ANONİM ŞİRKETİ ve ŞAİR TURİZM OTO KİRALAMA NAKLİYAT İLETİŞİM İNŞAAT TAAHHÜT SANAYİ VE TİCARET LİMİTED ŞİRKETİ";
+website.legalNameShort = "MOVİLO ULAŞIM TEKNOLOJİ A.Ş. & ŞAİR TURİZM OTO KİRALAMA LTD. ŞTİ.";
+website.legalAddress = "Kültür Mah. 260 Sk. No: 3 E Aliağa / İzmir";
+
 const transmissionTypes = [
   {
     id: 1,
