@@ -334,6 +334,7 @@ model Contract {
   extras            ContractExtra[]
   returnCharges     ContractReturnCharge[]
   extensions        ContractExtension[]
+  periods           ContractPeriod[]
   vehicleChanges    ContractVehicleChange[]
   invoices          Invoice[]
   ledgerEntries     LedgerEntry[]
@@ -342,6 +343,7 @@ model Contract {
 }
 
 // A contract extension: pushes the drop-off out and adds an amount.
+// DEPRECATED — superseded by ContractPeriod; table kept, no longer written.
 model ContractExtension {
   id              String   @id @default(uuid())
   contractId      String
@@ -352,6 +354,35 @@ model ContractExtension {
   extraAmount     Float    @default(0)
   note            String?
   createdAt       DateTime @default(now())
+}
+
+// A billing period on a contract ("A Yöntemi" — dönemsel bağımsız
+// faturalandırma). Period #1 is the base rental; each extension closes the
+// active period and opens the next. Closed periods are frozen snapshots; only
+// the single ACTIVE period (highest sequence) re-prices when the contract's
+// rate or drop-off changes. See contract-financials.recomputeContractFinancials.
+model ContractPeriod {
+  id          String   @id @default(uuid())
+  contractId  String
+  contract    Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  sequence    Int // 1, 2, 3… order the periods were opened
+  startAt     DateTime
+  endAt       DateTime
+  rentalType  String   @default("MONTHLY") // DAILY | MONTHLY — snapshot at creation
+  unitPrice   Float    @default(0) // monthlyPrice / dailyPrice at creation
+  months      Int      @default(0)
+  kistDays    Int      @default(0)
+  netAmount   Float    @default(0)
+  vatRate     Float    @default(20)
+  grossAmount Float    @default(0) // MONTHLY: net * (1 + vatRate/100) · DAILY: net (VAT-inclusive)
+  manualPrice Boolean  @default(false) // true = amount typed by the operator; recompute won't re-price it
+  status      String   @default("ACTIVE") // ACTIVE (fatura bekliyor) | CLOSED (kapandı)
+  note        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([contractId, sequence])
+  @@index([contractId])
 }
 
 // A mid-contract vehicle swap. Car labels are a point-in-time snapshot
