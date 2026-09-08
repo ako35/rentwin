@@ -2,7 +2,7 @@ const prisma = require("../../lib/prisma");
 const { hoursBetween, round2 } = require("../../lib/dates");
 
 // Free-text contract fields (empty string -> null).
-const CONTRACT_NOTE_FIELDS = ["customerNote", "adminNote", "referenceNo", "flightNo"];
+const CONTRACT_NOTE_FIELDS = ["customerNote", "adminNote", "referenceNo", "flightNo", "hgsNote"];
 
 const CONTRACT_NO_PREFIX = "K";
 
@@ -35,7 +35,6 @@ const CONTRACT_NUMBER_FIELDS = [
   "kmOverageFee",
   "fuelFeePerEighth",
   "vatRate",
-  "hgsAmount",
 ];
 
 // Parse a form value to a finite number, or null.
@@ -56,11 +55,10 @@ const pickContractFields = (body) => {
     if (field in body) data[field] = num(body[field]);
   });
   if ("unlimitedKm" in body) data.unlimitedKm = Boolean(body.unlimitedKm);
-  if ("hgsReflected" in body) data.hgsReflected = Boolean(body.hgsReflected);
   if ("hgsStatus" in body) data.hgsStatus = body.hgsStatus || null;
   // Date fields — "" / null clears them.
-  // KABİS filing / release + the HGS/OGS toll-check query range.
-  ["kbsNotifiedAt", "kbsReleasedAt", "hgsCheckedFrom", "hgsCheckedTo"].forEach((field) => {
+  // KABİS filing / release + the HGS/OGS check-confirmed timestamp.
+  ["kbsNotifiedAt", "kbsReleasedAt", "hgsCheckedAt"].forEach((field) => {
     if (field in body) {
       const raw = body[field];
       const parsed = raw ? new Date(raw) : null;

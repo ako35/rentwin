@@ -560,21 +560,25 @@
       "ekstralarTitle": "Ekstralar",
       "hgs": {
         "title": "HGS / OGS Kontrolü",
+        "badgePending": "Bekliyor",
+        "badgeDone": "Tamamlandı",
+        "period": "Kiralama Dönemi",
+        "days": "{{count}} gün",
+        "result": "Kontrol Sonucu",
         "status": {
           "PENDING": "Bekliyor",
-          "CLEAN": "Kontrol Edildi - Temiz",
-          "DEBT": "Geçiş / Borç Var",
-          "INCOMPLETE": "Devam Ediyor"
+          "CLEAN": "Tam Kontrol Edildi (Temiz)",
+          "DEBT": "Geçiş Var (Dönüş Ekstra'ya İşlendi)"
         },
-        "from": "Sorgulanan Aralık - Başlangıç",
-        "toPlanned": "Sorgulanan Aralık - Bitiş (planlanan iade)",
-        "toReturned": "Sorgulanan Aralık - Bitiş (iade tarihi)",
-        "amount": "Geçiş / Yansıtılan Tutar (TL)",
-        "reflected": "Tutarı Genel Toplam'a yansıt",
-        "hint": "Kiralama süresi için HGS/OGS kaçak geçiş sorgusu henüz yapılmadı.",
-        "debtHint": "Yansıtıldığında Genel Toplam'a eklenir ve Dönüş Ekstra sekmesinde \"HGS / OGS\" kalemi olarak görünür.",
-        "incompleteWarn": "Kontrol {{date}} (iade) tarihine kadar tamamlanmadı. Bu tarihe kadar HGS/OGS sorgusu tekrarlanmalı.",
-        "setToReturn": "Bitişi {{date}} yap"
+        "note": "Kontrol Notu",
+        "notePlaceholder": "Opsiyonel — plaka, geçiş noktası, sorgu referansı…",
+        "lastChecked": "Son sorgulama",
+        "openPortal": "PTT HGS Portalını Aç",
+        "confirm": "Kontrolü Onayla",
+        "reconfirm": "Yeniden Onayla",
+        "confirmTitle": "HGS/OGS kontrolü onaylansın mı?",
+        "confirmText": "Sorgulamayı yaptığınız an ve kullanıcı adınız kayıt altına alınır. Kaydet ile işlenir.",
+        "amountHint": "Geçiş bedeli eklemek için Dönüş Ekstra sekmesindeki \"HGS / OGS\" kalemini kullanın."
       },
       "kbs": {
         "title": "KABİS Bildirimi",

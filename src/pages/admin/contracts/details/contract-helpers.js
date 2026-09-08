@@ -22,7 +22,7 @@ export const EMPTY_CONTRACT = {
   vatRate: 20,
   referenceUserId: "",
   kbsNotifiedAt: "", kbsNotifiedBy: "", kbsReleasedAt: "", kbsReleasedBy: "",
-  hgsStatus: "", hgsCheckedFrom: "", hgsCheckedTo: "", hgsAmount: "", hgsReflected: false,
+  hgsStatus: "", hgsCheckedAt: "", hgsCheckedBy: "", hgsNote: "",
 };
 
 // Derived KABİS state from the contract form values.
@@ -137,10 +137,8 @@ export const buildContractDto = (values) => ({
   kbsNotifiedAt: values.kbsNotifiedAt || null,
   kbsReleasedAt: values.kbsReleasedAt || null,
   hgsStatus: values.hgsStatus || null,
-  hgsCheckedFrom: values.hgsCheckedFrom || null,
-  hgsCheckedTo: values.hgsCheckedTo || null,
-  hgsAmount: values.hgsAmount,
-  hgsReflected: values.hgsReflected,
+  hgsCheckedAt: values.hgsCheckedAt || null,
+  hgsNote: values.hgsNote,
 });
 
 // Merge a loaded reservation onto EMPTY_CONTRACT for formik.
@@ -170,10 +168,9 @@ export const contractToFormValues = (r) => ({
   kbsReleasedAt: r.kbsReleasedAt || "",
   kbsReleasedBy: r.kbsReleasedBy || "",
   hgsStatus: r.hgsStatus || "",
-  hgsCheckedFrom: r.hgsCheckedFrom ? utils.functions.getDate(r.hgsCheckedFrom) : "",
-  hgsCheckedTo: r.hgsCheckedTo ? utils.functions.getDate(r.hgsCheckedTo) : "",
-  hgsAmount: r.hgsAmount ?? "",
-  hgsReflected: r.hgsReflected ?? false,
+  hgsCheckedAt: r.hgsCheckedAt || "",
+  hgsCheckedBy: r.hgsCheckedBy || "",
+  hgsNote: r.hgsNote || "",
 });
 
 // <select> options for the vehicle picker; create mode gets a leading blank row.

@@ -318,11 +318,14 @@ model Contract {
   kbsNotifiedBy     String? // display name of the admin who filed it, stamped on the null -> set transition
   kbsReleasedAt     DateTime? // when the KABİS record was released (çıkış); requires kbsNotifiedAt to be set
   kbsReleasedBy     String? // display name of the admin who released it, stamped on the null -> set transition
-  hgsStatus         String? // null/PENDING = Bekliyor, CLEAN = kontrol edildi temiz, DEBT = kaçak geçiş / borç var
-  hgsCheckedFrom    DateTime? // start of the date range queried on the HGS/OGS system
-  hgsCheckedTo      DateTime? // end of the date range queried on the HGS/OGS system
-  hgsAmount         Float? // toll amount found / to be reflected to the customer
-  hgsReflected      Boolean             @default(false) // whether hgsAmount was pushed to an invoice / collection
+  hgsStatus         String? // null/PENDING = Bekliyor, CLEAN = tam kontrol edildi (temiz), DEBT = geçiş var (Dönüş Ekstra'ya işlendi)
+  hgsCheckedAt      DateTime? // when the HGS/OGS portal was last queried / the check confirmed
+  hgsCheckedBy      String? // display name of the staff who confirmed the check ("Ali K.")
+  hgsNote           String? // optional operator note on the HGS check
+  hgsCheckedFrom    DateTime? // DEPRECATED — the audit box no longer stores a queried range
+  hgsCheckedTo      DateTime? // DEPRECATED
+  hgsAmount         Float? // DEPRECATED — toll amounts live on the Dönüş Ekstra tab
+  hgsReflected      Boolean             @default(false) // DEPRECATED
   drivers           ContractDriver[]
   payments          ContractPayment[]
   extras            ContractExtra[]

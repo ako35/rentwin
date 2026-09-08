@@ -284,7 +284,7 @@ const ContractDetail = () => {
               showNoAvailable={!availableCars.length}
             />
             {!isCreate && <KbsSection formik={formik} />}
-            {!isCreate && <HgsSection formik={formik} />}
+            {!isCreate && <HgsSection formik={formik} billableDays={billableDays} />}
           </div>
 
           {/* ---------- RIGHT ---------- */}

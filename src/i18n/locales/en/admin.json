@@ -560,21 +560,25 @@
       "ekstralarTitle": "Extras",
       "hgs": {
         "title": "HGS / OGS Check",
+        "badgePending": "Pending",
+        "badgeDone": "Done",
+        "period": "Rental Period",
+        "days": "{{count}} days",
+        "result": "Check Result",
         "status": {
           "PENDING": "Pending",
-          "CLEAN": "Checked - Clear",
-          "DEBT": "Toll / Debt Found",
-          "INCOMPLETE": "In Progress"
+          "CLEAN": "Fully Checked (Clear)",
+          "DEBT": "Toll Found (Logged on Return Extras)"
         },
-        "from": "Queried Range - Start",
-        "toPlanned": "Queried Range - End (planned return)",
-        "toReturned": "Queried Range - End (return date)",
-        "amount": "Toll / Reflected Amount (TL)",
-        "reflected": "Reflect amount to the grand total",
-        "hint": "The HGS/OGS toll query for the rental period has not been done yet.",
-        "debtHint": "When reflected, it is added to the grand total and appears as an \"HGS / OGS\" line on the Return Extras tab.",
-        "incompleteWarn": "The check does not reach {{date}} (return date). Re-run the HGS/OGS query up to that date.",
-        "setToReturn": "Set end to {{date}}"
+        "note": "Check Note",
+        "notePlaceholder": "Optional — plate, toll point, query reference…",
+        "lastChecked": "Last query",
+        "openPortal": "Open the PTT HGS Portal",
+        "confirm": "Confirm Check",
+        "reconfirm": "Re-confirm",
+        "confirmTitle": "Confirm the HGS/OGS check?",
+        "confirmText": "The moment you ran the query and your username are recorded. Applied on Save.",
+        "amountHint": "To add a toll charge, use the \"HGS / OGS\" line on the Return Extras tab."
       },
       "kbs": {
         "title": "KABİS Notification",
