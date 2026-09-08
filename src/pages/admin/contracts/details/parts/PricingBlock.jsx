@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Form } from "react-bootstrap";
 import { computeAllowedKm, computeRentalTerm } from "../contract-helpers";
+import "./pricing-block.scss";
 
 // Defined at module scope (not inside PricingBlock) so their component identity
 // stays stable across the parent's re-renders — otherwise every keystroke would

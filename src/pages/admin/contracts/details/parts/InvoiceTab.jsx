@@ -6,6 +6,7 @@ import { BsReceipt } from "react-icons/bs";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import SaveFirstHint from "./SaveFirstHint";
+import "./invoice-tab.scss";
 
 // Top tab: the invoices raised against this contract. A contract can carry
 // several (partial billing, corrections). Summary + list on top, an

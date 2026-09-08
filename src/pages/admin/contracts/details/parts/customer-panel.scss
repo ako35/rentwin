@@ -1,0 +1,111 @@
+@use '../../../../../styles/variables' as v;
+@use '../../../../../styles/mixins' as m;
+
+// Edit-mode customer tab: typeahead picker + compact label/value summary grid
+// + a balance status badge. Shared by CustomerPanel / CustomerSummary /
+// CustomerTypeahead (all rendered together).
+.contract-page {
+  &__cust-head {
+    @include m.flexbox(row, space-between, center, 0.5rem);
+    flex-wrap: wrap;
+    margin-bottom: 0.6rem;
+  }
+
+  &__cust-type {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: v.$color1;
+  }
+
+  &__bal-badge {
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    background-color: v.$color3;
+    color: v.$color5;
+
+    &.is-negative { background-color: #f7d9d9; color: #a52626; }
+    &.is-positive { background-color: #d6f2df; color: #1c7a3e; }
+  }
+
+  &__cust-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem 1rem;
+    margin: 0;
+
+    > div { min-width: 0; }
+
+    dt {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: v.$color5_3;
+      margin-bottom: 0.05rem;
+    }
+
+    dd {
+      margin: 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: v.$color5;
+      word-break: break-word;
+    }
+  }
+
+  &__cust-grid-wide { grid-column: 1 / -1; }
+
+  &__link {
+    display: inline-block;
+    margin: 0.15rem 0 0.5rem;
+    padding: 0;
+    background: none;
+    border: none;
+    color: v.$color1;
+    font-size: 0.82rem;
+    font-weight: 600;
+
+    &:hover { color: v.$color2; text-decoration: underline; }
+  }
+
+  &__radios { @include m.flexbox(row, flex-start, center, 1rem); }
+
+  &__corp-head {
+    @include m.flexbox(row, space-between, center, 0.5rem);
+    margin-bottom: 0.25rem;
+  }
+
+  &__typeahead {
+    position: relative;
+  }
+
+  &__typeahead-list {
+    @include m.reset-list;
+    position: absolute;
+    z-index: 20;
+    left: 0;
+    right: 0;
+    top: calc(100% + 2px);
+    max-height: 240px;
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid v.$color3;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px v.$color1-5;
+
+    li {
+      padding: 0.35rem 0.6rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+
+      &:hover { background-color: v.$color4; }
+    }
+
+    .contract-page__typeahead-add {
+      color: v.$color1;
+      font-weight: 600;
+    }
+  }
+}

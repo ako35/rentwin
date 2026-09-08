@@ -5,6 +5,7 @@ import { BsBuilding } from "react-icons/bs";
 import { CustomForm } from "../../../../../components";
 import { buildFuelEighthsOptions } from "../../../../../utils/fuel-eighths";
 import { computeBillableDays } from "../contract-helpers";
+import "./vehicle-section.scss";
 
 // Left card: pick-up / drop-off grouped side by side, an auto rental-day badge,
 // the vehicle picker + a one-line summary card, then the hand-over km / fuel.

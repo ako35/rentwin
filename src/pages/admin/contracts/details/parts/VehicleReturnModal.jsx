@@ -6,6 +6,7 @@ import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import { buildFuelEighthsOptions } from "../../../../../utils/fuel-eighths";
 import { computeReturnOverage, kbsStatus } from "../contract-helpers";
+import "./vehicle-return-modal.scss";
 
 // "Araç Teslim Al" opens this. Operator enters the hand-back odometer + fuel;
 // km overage and missing fuel are auto-priced from the contract's km package /

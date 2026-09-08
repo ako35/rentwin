@@ -6,6 +6,7 @@ import { BsBoxSeam, BsPlusLg, BsCalendarRange } from "react-icons/bs";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import SaveFirstHint from "./SaveFirstHint";
+import "./return-extra-tab.scss";
 
 // Return-time extras list. A single add form — an extra-type dropdown plus an
 // amount and an optional note (its placeholder adapts to the picked type) —

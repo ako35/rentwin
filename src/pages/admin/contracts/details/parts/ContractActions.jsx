@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button, Dropdown, Spinner } from "react-bootstrap";
 import { constants } from "../../../../../constants";
+import "./contract-actions.scss";
 
 const PRINT_DOCS = ["sozlesme", "ek1", "tutanak"];
 

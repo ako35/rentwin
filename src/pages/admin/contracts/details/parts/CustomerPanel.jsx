@@ -5,6 +5,7 @@ import { custLabel, matchCustomers } from "../contract-helpers";
 import CustomerTypeahead from "./CustomerTypeahead";
 import CustomerSummary from "./CustomerSummary";
 import ReferenceCariField from "./ReferenceCariField";
+import "./customer-panel.scss";
 
 // Create-mode customer picker: a typeahead to choose the driver, then the same
 // read-only detail grid the edit screen shows (empty until someone is picked),

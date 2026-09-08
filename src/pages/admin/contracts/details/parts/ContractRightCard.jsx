@@ -11,6 +11,7 @@ import ReturnExtraTab from "./ReturnExtraTab";
 import ExtensionTab from "./ExtensionTab";
 import VehicleChangeTab from "./VehicleChangeTab";
 import PricingBlock from "./PricingBlock";
+import "./right-card.scss";
 
 const SUB_TABS = ["summary", "payments", "returnExtra", "extension", "vehicleChange"];
 

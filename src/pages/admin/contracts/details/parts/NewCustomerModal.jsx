@@ -7,6 +7,7 @@ import { utils } from "../../../../../utils";
 import { CustomForm } from "../../../../../components";
 import { TR_PROVINCES, TR_DISTRICTS } from "../../../../../constants/tr-geo";
 import { EMPTY_NEW_CUST } from "../contract-helpers";
+import "./new-customer-modal.scss";
 
 // Quick "Yeni Müşteri" add, opened from the contract customer picker.
 // Creates the customer and hands it back via onCreated; the parent refreshes

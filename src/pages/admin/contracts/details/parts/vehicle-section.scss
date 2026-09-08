@@ -1,0 +1,97 @@
+@use '../../../../../styles/variables' as v;
+@use '../../../../../styles/mixins' as m;
+
+// "Alış / Bırakış ve Araç Bilgileri" card — grouped pick-up/drop-off panels,
+// rental-day badge and the one-line vehicle summary under the picker.
+.contract-page {
+  &__pair {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 0.5rem;
+
+    &--even { grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+  }
+
+  &__rentgroups {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.1rem;
+
+    @media (max-width: 1200px) { grid-template-columns: 1fr; }
+  }
+
+  &__rentgroup {
+    padding: 0.7rem 0.75rem 0;
+    background-color: v.$color4;
+    border: 1px solid v.$color3;
+    border-radius: 10px;
+
+    .form-label { font-size: 0.72rem; }
+    .form-control,
+    .form-select {
+      &:not(:disabled) { background-color: #fff; }
+    }
+  }
+
+  &__rentgroup-cap {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: v.$color1;
+  }
+
+  &__days-badge {
+    padding: 0.16rem 0.65rem;
+    border-radius: 999px;
+    background-color: rgba(v.$color1, 0.12);
+    color: v.$color2;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  // Compound with .contract-card so this wins the tie with the base
+  // `.contract-card h3` rule (style.scss) regardless of import order.
+  .contract-card.contract-card--vehicle h3 {
+    @include m.flexbox(row, space-between, center, 0.5rem);
+  }
+
+  // One-line vehicle summary card under the picker (replaces loose chips).
+  &__car-summary {
+    @include m.flexbox(row, flex-start, center, 0.65rem);
+    flex-wrap: wrap;
+    margin: -0.35rem 0 0.9rem;
+    padding: 0.5rem 0.65rem;
+    background-color: v.$color4;
+    border: 1px solid v.$color3;
+    border-radius: 10px;
+  }
+
+  &__plate {
+    padding: 0.22rem 0.6rem;
+    border-radius: 6px;
+    background-color: #1e293b;
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  &__car-specs {
+    @include m.flexbox(row, flex-start, center, 0.9rem);
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: v.$color5_2;
+
+    > span { @include m.flexbox(row, flex-start, center, 0.3rem); }
+    svg { flex-shrink: 0; color: v.$color1; font-size: 0.95rem; }
+  }
+}

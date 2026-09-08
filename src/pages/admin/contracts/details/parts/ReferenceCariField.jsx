@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { custLabel, matchCustomers } from "../contract-helpers";
 import CustomerTypeahead from "./CustomerTypeahead";
+import "./reference-cari-field.scss";
 
 // Per-contract "Referans Cari" row: pick another customer whose account this
 // contract's total is billed to. Sits inside the customer edit panel.

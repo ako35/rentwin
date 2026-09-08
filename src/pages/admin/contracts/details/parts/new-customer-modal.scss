@@ -1,0 +1,7 @@
+@use '../../../../../styles/customer-form';
+
+// Yeni kontrat içindeki "Yeni Müşteri" modalı, /admin/users/new ile aynı kart
+// yapısını kullanır — modal gövdesine biraz nefes payı bırakıyoruz.
+.contract-page__newcust-modal {
+  .modal-body { padding: 1.25rem 1.4rem 1.4rem; }
+}

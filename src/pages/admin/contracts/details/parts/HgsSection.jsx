@@ -6,6 +6,7 @@ import { BsClockHistory, BsPatchCheck, BsBoxArrowUpRight, BsPlusLg } from "react
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import { hgsRangesCoverPeriod } from "../contract-helpers";
+import "./hgs-section.scss";
 
 const HGS_PORTAL = "https://hgs.ptt.gov.tr/";
 

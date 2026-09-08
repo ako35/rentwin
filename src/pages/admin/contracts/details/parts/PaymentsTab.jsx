@@ -3,6 +3,7 @@ import moment from "moment/moment";
 import { BsWallet2 } from "react-icons/bs";
 import { ContractRecords } from "../../../../../components";
 import SaveFirstHint from "./SaveFirstHint";
+import "./payments-tab.scss";
 
 // Sub tab: grand total / collected / remaining balance as three financial
 // badge cards (a negative balance is called out in rose), then the payments

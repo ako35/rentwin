@@ -1,0 +1,203 @@
+@use '../../../../../styles/variables' as v;
+@use '../../../../../styles/mixins' as m;
+
+// HGS / OGS operational check (audit only) — left column.
+.contract-page {
+  // Extra .contract-page qualifier so the accent border wins the base card rule
+  // (style.scss) regardless of stylesheet import order.
+  & &__hgs.contract-card {
+    border-left: 3px solid #9ca3af;
+    transition: border-color 0.15s ease;
+
+    &.is-done { border-left-color: v.$color2; }
+
+    h3 { @include m.flexbox(row, space-between, center, 0.5rem); flex-wrap: wrap; }
+  }
+
+  &__hgs-badge {
+    @include m.flexbox(row, center, center, 0.3rem);
+    padding: 0.16rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+
+    svg { font-size: 0.8rem; }
+
+    &.is-pending { background-color: #e9edf2; color: v.$color5_3; }
+    &.is-done { background-color: v.$color2; color: #fff; }
+  }
+
+  &__hgs-period {
+    @include m.flexbox(row, space-between, baseline, 0.75rem);
+    flex-wrap: wrap;
+    margin-top: 0.2rem;
+    padding: 0.5rem 0.7rem;
+    background-color: v.$color4;
+    border: 1px solid v.$color3;
+    border-radius: 8px;
+
+    span { font-size: 0.72rem; font-weight: 600; color: v.$color5_3; }
+    strong { font-size: 0.85rem; color: v.$color5; }
+  }
+
+  // adaptive status hint — replaces the old manual result dropdown
+  &__hgs-auto {
+    margin: 0.55rem 0 0;
+    padding: 0.45rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    background-color: v.$color4;
+    color: v.$color5_3;
+
+    &.is-partial {
+      background-color: rgba(v.$accent-amber, 0.12);
+      color: #92400e;
+    }
+
+    &.is-done {
+      background-color: rgba(v.$color1, 0.1);
+      color: v.$color2;
+    }
+  }
+
+  &__hgs-field {
+    display: block;
+    margin-top: 0.75rem;
+
+    span {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: v.$color5_3;
+    }
+
+    .form-select, .form-control { font-size: 0.85rem; }
+  }
+
+  &__hgs-log {
+    margin-top: 0.9rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed v.$color3;
+  }
+
+  &__hgs-log-head {
+    @include m.flexbox(row, space-between, center, 0.5rem);
+    margin-bottom: 0.5rem;
+
+    span {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: v.$color5_4;
+    }
+  }
+
+  &__hgs-add {
+    @include m.flexbox(row, center, center, 0.3rem);
+    padding: 0.22rem 0.6rem;
+    border: 1px dashed rgba(v.$color2, 0.6);
+    border-radius: 8px;
+    background: none;
+    color: v.$color2;
+    font-size: 0.76rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover { background-color: rgba(v.$color1, 0.08); }
+  }
+
+  &__hgs-empty {
+    margin: 0;
+    font-size: 0.78rem;
+    color: v.$color5_4;
+  }
+
+  &__hgs-rows {
+    @include m.reset-list;
+    @include m.flexbox(column, flex-start, stretch, 0.35rem);
+
+    li {
+      @include m.flexbox(row, space-between, center, 0.5rem);
+      flex-wrap: wrap;
+      padding: 0.4rem 0.6rem;
+      background-color: v.$color4;
+      border: 1px solid v.$color3;
+      border-radius: 8px;
+
+      button {
+        margin-left: auto;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: v.$color5_4;
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-decoration: underline;
+        cursor: pointer;
+
+        &:hover { color: v.$accent-rose; }
+      }
+    }
+  }
+
+  &__hgs-range { font-size: 0.82rem; font-weight: 700; color: v.$color5; }
+  &__hgs-meta { flex: 1 1 100%; font-size: 0.72rem; color: v.$color5_3; }
+
+  &__hgs-form {
+    margin-top: 0.6rem;
+    padding: 0.6rem 0.65rem 0.7rem;
+    background-color: v.$surface-sunken;
+    border: 1px solid v.$color3;
+    border-radius: 10px;
+  }
+
+  &__hgs-form-range {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem 0.6rem;
+
+    label { display: block; }
+    span {
+      display: block;
+      margin-bottom: 0.2rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: v.$color5_3;
+    }
+  }
+
+  &__hgs-form-actions {
+    @include m.flexbox(row, flex-end, center, 0.5rem);
+    margin-top: 0.6rem;
+  }
+
+  &__hgs-actions {
+    @include m.flexbox(row, flex-start, center, 0.6rem);
+    margin-top: 0.9rem;
+  }
+
+  &__hgs-portal {
+    @include m.flexbox(row, center, center, 0.35rem);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: v.$color5_3;
+    text-decoration: none;
+
+    svg { font-size: 0.8rem; }
+    &:hover { color: v.$color2; }
+  }
+
+  &__hgs-hint {
+    margin: 0.8rem 0 0;
+    padding-top: 0.7rem;
+    border-top: 1px dashed v.$color3;
+    font-size: 0.76rem;
+    color: v.$color5_3;
+  }
+}

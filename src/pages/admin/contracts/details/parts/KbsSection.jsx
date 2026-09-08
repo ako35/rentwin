@@ -4,6 +4,7 @@ import { BsShieldCheck, BsShieldExclamation, BsShieldFillCheck, BsBoxArrowRight 
 import moment from "moment/moment";
 import { utils } from "../../../../../utils";
 import { kbsStatus } from "../contract-helpers";
+import "./kbs-section.scss";
 
 // Left card: KABİS (Kimlik Bildirme Sistemi) lifecycle for this rental —
 // filing (giriş) then release (çıkış). Both are saved with the contract on

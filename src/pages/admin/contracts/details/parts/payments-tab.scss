@@ -1,0 +1,47 @@
+@use '../../../../../styles/variables' as v;
+
+// Tahsilat sekmesi: genel toplam / tahsil edilen / kalan bakiye finansal kartları.
+.contract-page {
+  &__fin-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+
+    @media (max-width: 480px) { grid-template-columns: 1fr; }
+  }
+
+  &__fin-card {
+    padding: 0.5rem 0.6rem;
+    background-color: v.$color4;
+    border: 1px solid v.$color3;
+    border-radius: 8px;
+    text-align: center;
+
+    &.is-due {
+      background-color: rgba(v.$accent-rose, 0.06);
+      border-color: rgba(v.$accent-rose, 0.35);
+
+      .contract-page__fin-value { color: v.$accent-rose; }
+    }
+  }
+
+  &__fin-label {
+    display: block;
+    margin-bottom: 0.18rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: v.$color5_4;
+  }
+
+  &__fin-value {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: v.$color5;
+
+    &.is-paid { color: v.$color2; }
+  }
+}

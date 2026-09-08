@@ -1,0 +1,55 @@
+@use '../../../../../styles/variables' as v;
+@use '../../../../../styles/mixins' as m;
+
+// Top ribbon: sequential contract no / "Yeni Kontrat", status badge, last-updated.
+.contract-page {
+  &__ribbon {
+    @include m.flexbox(row, space-between, center, 1rem);
+    flex-wrap: wrap;
+    // Dark navy "anchor" strip — corporate, high-contrast, pairs with the brand
+    // green used for the create state and the light status pills.
+    background: linear-gradient(90deg, v.$anchor-navy, v.$anchor-navy-deep);
+    color: #fff;
+    border-radius: 6px;
+    padding: 0.55rem 1rem;
+    margin-bottom: 1rem;
+
+    &--create { background: linear-gradient(90deg, v.$color2, v.$color1); }
+  }
+
+  &__ribbon-main {
+    @include m.flexbox(row, flex-start, baseline, 0.6rem);
+    flex-wrap: wrap;
+  }
+
+  &__ribbon-id { font-weight: 800; font-size: 1.05rem; }
+  &__ribbon-ref { font-size: 0.85rem; opacity: 0.95; }
+
+  &__ribbon-title {
+    font-style: italic;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  &__ribbon-meta {
+    font-size: 0.75rem;
+    text-align: right;
+    opacity: 0.95;
+  }
+
+  &__badge {
+    display: inline-block;
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.9);
+    color: v.$color5;
+
+    &--created { background: #d6e6fb; color: #1b5aa8; }
+    &--done { background: #d6f2df; color: #1c7a3e; }
+    &--cancelled { background: #f7d9d9; color: #a52626; }
+  }
+}

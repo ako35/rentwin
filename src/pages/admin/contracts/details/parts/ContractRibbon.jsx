@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { utils } from "../../../../../utils";
+import "./contract-ribbon.scss";
 
 // Top ribbon: sequential contract no / "Yeni Kontrat", status badge, last-updated.
 const ContractRibbon = ({ isCreate, contractId, contractNo, status, updatedAt }) => {
