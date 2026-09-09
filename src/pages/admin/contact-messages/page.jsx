@@ -76,6 +76,7 @@ const AdminContactMessagesPage = () => {
           paginationTotalRows={totalRows}
           paginationPerPage={perPage}
           onRowClicked={handleRowClicked}
+          customStyles={utils.tables.dataTableStyles}
           highlightOnHover
         />
       </div>

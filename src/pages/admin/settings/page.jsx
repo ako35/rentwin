@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
+import { BsCircleHalf, BsSun, BsMoonStars } from "react-icons/bs";
 import { Loading } from "../../../components";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
+import { useAdminTheme } from "../../../hooks/use-admin-theme";
 import "./style.scss";
+
+const THEME_OPTIONS = [
+  { value: "system", icon: BsCircleHalf },
+  { value: "light", icon: BsSun },
+  { value: "dark", icon: BsMoonStars },
+];
 
 const FIELDS = [
   { name: "defaultDailyKmLimit", suffix: "km/gün", type: "int" },
@@ -19,6 +27,7 @@ const toForm = (data) =>
 const AdminSettingsPage = () => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`settings.${key}`);
+  const { choice, setChoice } = useAdminTheme();
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -54,6 +63,28 @@ const AdminSettingsPage = () => {
       <header className="admin-settings__head">
         <h2>{c("pageTitle")}</h2>
       </header>
+
+      <section className="admin-settings__card">
+        <div className="admin-settings__card-head">
+          <h3>{c("appearance.title")}</h3>
+          <p>{c("appearance.hint")}</p>
+        </div>
+
+        <div className="admin-settings__theme" role="group" aria-label={c("appearance.title")}>
+          {THEME_OPTIONS.map(({ value, icon: Icon }) => (
+            <button
+              key={value}
+              type="button"
+              className={`admin-settings__theme-option${choice === value ? " is-active" : ""}`}
+              aria-pressed={choice === value}
+              onClick={() => setChoice(value)}
+            >
+              <Icon />
+              {c(`appearance.${value}`)}
+            </button>
+          ))}
+        </div>
+      </section>
 
       <section className="admin-settings__card">
         <div className="admin-settings__card-head">

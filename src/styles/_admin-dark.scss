@@ -1,0 +1,316 @@
+@use "variables" as v;
+
+// Dark theme for the admin panel. Everything here is additive: light mode is
+// byte-for-byte unchanged, and any selector we miss just keeps its light look
+// (it doesn't break). Wrapped in `@media screen` so printed output — and the
+// print preview screens, which re-scope themselves to light — stay on paper white.
+
+@media screen {
+  :root[data-theme="dark"] {
+
+    /* ---- shell ------------------------------------------------------------ */
+    .admin-layout {
+      background-color: var(--rw-bg);
+      color: var(--rw-ink);
+    }
+
+    .admin-layout :is(h1, h2, h3, h4, h5, h6) {
+      color: var(--rw-ink-strong);
+    }
+
+    .admin-layout a:not(.btn):not(.nav-link):not([class*="__doc"]):not([class*="__back"]) {
+      color: #6ea8fe;
+    }
+
+    /* ---- filter bar + footer -------------------------------------------- */
+    .admin-filter-bar {
+      background-color: var(--rw-panel-2);
+      border-bottom-color: var(--rw-line);
+
+      .admin-filter-bar__branch span,
+      .admin-filter-bar__announcements > span:first-child { color: var(--rw-ink); }
+
+      .admin-filter-bar__ticker {
+        background-color: var(--rw-inset);
+        border-color: var(--rw-line);
+        span { color: var(--rw-ink-muted); }
+      }
+    }
+
+    .admin-footer {
+      background-color: var(--rw-panel-2);
+      border-top-color: var(--rw-line);
+      color: var(--rw-ink-muted);
+    }
+
+    /* ---- Bootstrap gap-fills ------------------------------------------- */
+    /* data-bs-theme handles most of it; these are places the app leans on
+       hard-coded values or Bootstrap leaves a light residue. */
+    .admin-layout {
+      .form-control:disabled,
+      .form-select:disabled {
+        background-color: #0d1622;
+        color: var(--rw-ink-subtle);
+        -webkit-text-fill-color: var(--rw-ink-subtle);
+      }
+
+      .table { --bs-table-hover-color: var(--rw-ink); }
+
+      .text-muted { color: var(--rw-ink-muted) !important; }
+
+      hr { border-top-color: var(--rw-line); opacity: 1; }
+
+      .badge.bg-light {
+        background-color: var(--rw-inset) !important;
+        color: var(--rw-ink) !important;
+      }
+    }
+
+    /* portalled overlays render at <body>, outside .admin-layout */
+    .modal-content,
+    .offcanvas { background-color: var(--rw-panel); color: var(--rw-ink); }
+    .modal-header,
+    .modal-footer { border-color: var(--rw-line); }
+
+    /* contract detail: sticky action bar + top ribbon */
+    .admin-layout .contract-page__actionbar {
+      background-color: var(--rw-panel);
+      border-top-color: var(--rw-line);
+      box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.4);
+    }
+    .admin-layout .contract-page__ribbon--create {
+      background: linear-gradient(90deg, #1f6f31, #2f9e3f);
+    }
+    .admin-layout .contract-page__badge {
+      background: rgba(255, 255, 255, 0.14);
+      color: var(--rw-ink);
+      &--created { background: rgba(59, 130, 246, 0.22); color: #bfdbfe; }
+      &--done { background: rgba(34, 197, 94, 0.2); color: #bbf7d0; }
+      &--cancelled { background: rgba(225, 29, 72, 0.2); color: #fecdd3; }
+    }
+    .admin-layout .contract-page__delete-link { color: var(--rw-ink-muted); }
+
+    /* ---- app card / panel surfaces ----------------------------------- */
+    .admin-layout :is(
+      .schedule-table,
+      .vehicle-stats-panel,
+      .maintenance-alert-bar,
+      .admin-dashboard__gauges,
+      .finance-page__panel,
+      .admin-branches-page__panel,
+      .admin-rental-locations-page__panel,
+      .stat-card,
+      .model-image-card,
+      .admin-settings__card,
+      .contract-page .contract-card,
+      .contract-page__panel,
+      .contract-records__form,
+      .vehicle-form,
+      .forms-container,
+      .admin-new-vehicle-form,
+      .admin-vehicle-details-form
+    ) {
+      background-color: var(--rw-panel);
+      border-color: var(--rw-line);
+      color: var(--rw-ink);
+      box-shadow: var(--rw-shadow);
+    }
+
+    /* section wells inside the vehicle / contract forms */
+    .admin-layout :is(
+      .vehicle-form__section,
+      .contract-page .contract-card .form-control:disabled,
+      .contract-page .contract-card .form-select:disabled
+    ) {
+      background-color: var(--rw-inset);
+      border-color: var(--rw-line);
+    }
+
+    /* nested raised strips: card heads, table heads, sub-tabs, insets */
+    .admin-layout :is(
+      .contract-page .contract-card h3,
+      .contract-page__panel-head,
+      .contract-page__subtabs .nav-link:not(.active),
+      .vehicle-stats-panel__item,
+      .contract-records__catalog button,
+      .ledger-table thead th,
+      .ledger-table tfoot td,
+      .branch-table thead th,
+      .contract-list__filters,
+      .customer-list__filters,
+      .maintenance-alert-bar__tab
+    ) {
+      background-color: var(--rw-panel-2);
+      border-color: var(--rw-line);
+      color: var(--rw-ink);
+    }
+
+    /* list pages: filter strip + wrapper borders */
+    .admin-layout :is(.contract-list__table-wrap, .customer-list__table-wrap) {
+      border-color: var(--rw-line);
+    }
+    .admin-layout :is(.contract-list__filters .form-control, .customer-list__filters .form-control) {
+      background-color: var(--rw-inset);
+    }
+
+    /* pills / code chips / wells */
+    .admin-layout :is(
+      .finance-page__code,
+      .ledger-code,
+      .branch-table__code,
+      .branch-table__count,
+      .ledger-table__opening td,
+      .model-image-card__thumb
+    ) {
+      background-color: var(--rw-inset);
+      color: var(--rw-ink-muted);
+    }
+
+    /* ---- borders ----------------------------------------------------- */
+    .admin-layout :is(
+      .schedule-table__table-container,
+      .schedule-table__table-container table th,
+      .schedule-table__table-container table td,
+      .vehicle-stats-panel__title,
+      .maintenance-alert-bar__table th,
+      .maintenance-alert-bar__table td,
+      .maintenance-alert-bar__panel,
+      .customer-list__table-wrap,
+      .ledger-table tbody td,
+      .branch-table thead th,
+      .branch-table tbody td,
+      .contract-page__ro,
+      .contract-page .contract-card hr,
+      .admin-settings__actions,
+      .contract-records__form,
+      .contract-records .table thead th
+    ) {
+      border-color: var(--rw-line) !important;
+    }
+
+    /* ---- text ------------------------------------------------------- */
+    .admin-layout :is(
+      .finance-page__toolbar h2,
+      .finance-page__head h2,
+      .branch-table tbody td,
+      .ledger-table tbody td,
+      .ledger-table tfoot td,
+      .stat-card strong,
+      .vehicle-stats-panel__value,
+      .contract-page__ro strong,
+      .model-image-card__title strong,
+      .maintenance-alert-bar__days,
+      .maintenance-alert-bar__tab
+    ) { color: var(--rw-ink); }
+
+    .admin-layout :is(
+      .finance-page__filters label,
+      .finance-page__code,
+      .ledger-table__note,
+      .ledger-table__empty,
+      .ledger-table__opening td,
+      .branch-table__empty,
+      .stat-card span,
+      .customer-list__count,
+      .model-images-page__head p,
+      .model-images-page__empty,
+      .admin-settings__card-head p,
+      .admin-settings__field .form-label,
+      .admin-settings__input span,
+      .contract-page__ro span,
+      .contract-page__ro-sub,
+      .schedule-table__empty td,
+      .contract-records__empty
+    ) { color: var(--rw-ink-muted); }
+
+    /* ---- tables: rows, stripes, hover ------------------------------ */
+    .admin-layout {
+      .schedule-table__table-container table tbody tr:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.04);
+      }
+      .schedule-table__table-container table tbody tr:hover,
+      .branch-table tbody tr:hover,
+      .ledger-table tbody tr:hover td,
+      .maintenance-alert-bar__rowlink:hover {
+        background-color: var(--rw-hover);
+      }
+      .ledger-table thead th,
+      .branch-table thead th { color: var(--rw-ink-soft); }
+    }
+
+    /* the brand-green header bands read as neon on a dark ground — knock them
+       back to a deep green, keep the white text */
+    .admin-layout :is(
+      .schedule-table__table-container thead th,
+      .customer-list__table thead th,
+      .contract-list__table thead th,
+      .admin-vehicle-table-container > div:first-child,
+      .admin-contact-messages-table-container > div:first-child
+    ) {
+      background-color: #1f6f31 !important;
+      border-color: #1f6f31 !important;
+      color: #eafff0 !important;
+    }
+
+    /* ---- status badges: darker-ground variants -------------------- */
+    .admin-layout {
+      .finance-page__balance.is-negative,
+      .ledger-badge--debit,
+      .customer-list__bal-badge.is-debtor {
+        background-color: rgba(225, 29, 72, 0.18);
+        color: #fda4af;
+      }
+      .finance-page__balance.is-positive,
+      .ledger-badge--credit,
+      .customer-list__bal-badge.is-creditor {
+        background-color: rgba(34, 197, 94, 0.18);
+        color: #86efac;
+      }
+      .ledger-badge--debit { background-color: rgba(245, 158, 11, 0.18); color: #fcd34d; }
+      .customer-list__bal-badge.is-settled { background-color: var(--rw-inset); color: var(--rw-ink-muted); }
+      .finance-page__balance { background-color: var(--rw-inset); color: var(--rw-ink); }
+      .ledger-table__bal.is-negative,
+      .maintenance-alert-bar__days--overdue,
+      .contract-list__neg,
+      .contract-list__plate,
+      .customer-list__off,
+      .schedule-table__plate { color: #fda4af; }
+
+      .customer-list__on { color: #86efac; }
+
+      .contract-list__no { color: #7dd3a8; }
+
+      .contract-list__badge {
+        background: var(--rw-inset);
+        color: var(--rw-ink);
+        &--created { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+        &--done { background: rgba(34, 197, 94, 0.18); color: #86efac; }
+        &--cancelled { background: rgba(225, 29, 72, 0.18); color: #fda4af; }
+      }
+    }
+
+    /* ghost icon buttons on the finance / branch tables */
+    .admin-layout .ghost-btn {
+      color: var(--rw-ink-soft);
+      &:hover { background-color: var(--rw-inset); color: var(--rw-ink); }
+    }
+
+    /* ---- SweetAlert2 (own colours, not Bootstrap) ----------------- */
+    .swal2-popup {
+      background: var(--rw-panel);
+      color: var(--rw-ink);
+    }
+    .swal2-title { color: var(--rw-ink-strong); }
+    .swal2-html-container { color: var(--rw-ink-muted); }
+    .swal2-styled.swal2-cancel {
+      background-color: var(--rw-inset) !important;
+      color: var(--rw-ink) !important;
+    }
+
+    /* ---- print screens stay light -------------------------------- */
+    :is(.cprint, .sprint) {
+      background: v.$color3-5;
+      color: v.$color5;
+    }
+  }
+}

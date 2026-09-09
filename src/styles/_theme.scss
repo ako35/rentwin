@@ -1,0 +1,42 @@
+// Admin-panel colour tokens. Only the admin panel is themed — AdminLayout puts
+// `data-theme` / `data-bs-theme` on <html> on mount and strips them on unmount,
+// so the public site never sees the dark values.
+//
+// Bootstrap 5.3 components (tables, forms, modals, dropdowns, cards, nav, …)
+// re-colour themselves from `data-bs-theme="dark"`. These tokens + _admin-dark
+// cover everything Bootstrap can't reach: the layout shell and the app's own
+// hand-built cards / panels / tables.
+//
+// Brand green and the status pastels are deliberately NOT tokenised — green is
+// an accent that reads fine on either ground, and the rose / amber / green
+// badges get their own dark tweaks in _admin-dark.
+
+:root {
+  --rw-bg: #f1f5f9;          // page ground behind the cards
+  --rw-panel: #ffffff;       // raised card / panel / table surface
+  --rw-panel-2: #f8fafc;     // nested raised strip (table head, card head)
+  --rw-inset: #f1f5f9;       // pills, wells, code chips
+  --rw-hover: #f8fafc;       // table row hover
+  --rw-line: #e6ebf1;        // hairline borders / dividers
+  --rw-ink: #0f172a;         // primary text
+  --rw-ink-strong: #0f172a;  // headings
+  --rw-ink-muted: #475569;   // secondary text
+  --rw-ink-soft: #64748b;    // captions, table sub-notes
+  --rw-ink-subtle: #94a3b8;  // faint / placeholder
+  --rw-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+:root[data-theme="dark"] {
+  --rw-bg: #0b1220;
+  --rw-panel: #15212f;
+  --rw-panel-2: #1c2a3b;
+  --rw-inset: #101b29;
+  --rw-hover: #1c2a3b;
+  --rw-line: #2b3b4f;
+  --rw-ink: #e6edf5;
+  --rw-ink-strong: #f3f7fc;
+  --rw-ink-muted: #a6b4c6;
+  --rw-ink-soft: #93a2b5;
+  --rw-ink-subtle: #6f7f95;
+  --rw-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}

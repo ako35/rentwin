@@ -3,11 +3,12 @@ import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Container, Form, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { AiOutlineHome } from "react-icons/ai";
-import { BsListUl, BsPlusLg, BsTag, BsMegaphone, BsGlobe2, BsBoxArrowRight, BsImages } from "react-icons/bs";
+import { BsListUl, BsPlusLg, BsTag, BsMegaphone, BsGlobe2, BsBoxArrowRight, BsImages, BsSun, BsMoonStars } from "react-icons/bs";
 import { utils } from "../../../utils";
 import { logout } from "../../../store";
 import { services } from "../../../services";
 import { constants } from "../../../constants";
+import { useAdminTheme } from "../../../hooks/use-admin-theme";
 import { LanguageSwitcher } from "../../";
 import "./top-nav.scss";
 
@@ -27,6 +28,7 @@ const AdminTopNav = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation("admin");
+  const { effective, toggle } = useAdminTheme();
 
   const handleLogout = () => {
     utils.functions
@@ -166,6 +168,15 @@ const AdminTopNav = () => {
                 </option>
               ))}
             </Form.Select>
+            <button
+              type="button"
+              className="admin-top-nav__theme"
+              onClick={toggle}
+              title={t(effective === "dark" ? "topNav.themeLight" : "topNav.themeDark")}
+              aria-label={t(effective === "dark" ? "topNav.themeLight" : "topNav.themeDark")}
+            >
+              {effective === "dark" ? <BsSun /> : <BsMoonStars />}
+            </button>
             <LanguageSwitcher />
           </div>
         </Navbar.Collapse>

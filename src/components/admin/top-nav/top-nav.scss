@@ -89,6 +89,25 @@
         }
     }
 
+    &__theme {
+        @include m.flexbox(row, center, center);
+        flex: 0 0 auto;
+        width: 2rem;
+        height: 2rem;
+        border: 1px solid v.$color4-3;
+        border-radius: 6px;
+        background-color: transparent;
+        color: v.$color4;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: background-color 0.15s ease, border-color 0.15s ease;
+
+        &:hover {
+            background-color: v.$color1-4;
+            border-color: v.$color1;
+        }
+    }
+
     &__search.form-control {
         width: 170px;
         flex: 0 0 auto;

@@ -35,6 +35,7 @@ import {
   getAdminContactMessagesColumns,
   getAdminVehiclesColumns,
 } from "./tables/tables";
+import { dataTableStyles } from "./tables/data-table-styles";
 
 // VALIDATIONS
 import {
@@ -87,6 +88,7 @@ export const utils = {
     getAdminReservationsColumns,
     getAdminContactMessagesColumns,
     getAdminVehiclesColumns,
+    dataTableStyles,
   },
   validations: {
     loginFormValidationSchema,

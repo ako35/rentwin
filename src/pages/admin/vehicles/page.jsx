@@ -109,6 +109,7 @@ const AdminVehiclesPage = () => {
           onChangeRowsPerPage={handlePerPageRowsChange}
           onChangePage={handlePageChange}
           onRowClicked={handleRowClicked}
+          customStyles={utils.tables.dataTableStyles}
           pagination
           paginationServer
           highlightOnHover

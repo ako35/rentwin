@@ -947,6 +947,13 @@
     "saveSuccess": "Ayarlar kaydedildi.",
     "saveError": "Ayarlar kaydedilirken bir hata oluştu.",
     "empty": "—",
+    "appearance": {
+      "title": "Görünüm",
+      "hint": "Yönetim panelinin renk temasını seçin. Seçim bu tarayıcıda hatırlanır. \"Sistem\", işletim sisteminizin açık/koyu ayarını izler.",
+      "system": "Sistem",
+      "light": "Açık",
+      "dark": "Koyu"
+    },
     "contractDefaults": {
       "title": "Sözleşme Fiyat Varsayılanları",
       "hint": "Yeni bir kontrat açıldığında bu değerler otomatik olarak gelir. Her kontrat içinde ayrıca değiştirilebilir. Boş bırakılan alan yeni kontrata boş yansır.",
@@ -991,6 +998,8 @@
     "logoutConfirmTitle": "Çıkış Yap",
     "logoutConfirmText": "Çıkış yapmak istediğinizden emin misiniz?",
     "report": "Rapor",
+    "themeLight": "Açık temaya geç",
+    "themeDark": "Koyu temaya geç",
     "quickAccessPlaceholder": "Hızlı Erişim",
     "moduleSwitcherLabel": "Modül"
   },

@@ -947,6 +947,13 @@
     "saveSuccess": "Settings saved.",
     "saveError": "There was an error saving the settings.",
     "empty": "—",
+    "appearance": {
+      "title": "Appearance",
+      "hint": "Choose the admin panel colour theme. Your choice is remembered in this browser. \"System\" follows your operating system's light/dark setting.",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
     "contractDefaults": {
       "title": "Contract Pricing Defaults",
       "hint": "These values are pre-filled when a new contract is opened. They can still be changed per contract. A field left blank is carried over blank.",
@@ -991,6 +998,8 @@
     "logoutConfirmTitle": "Logout",
     "logoutConfirmText": "Are you sure you want to logout?",
     "report": "Report",
+    "themeLight": "Switch to light theme",
+    "themeDark": "Switch to dark theme",
     "quickAccessPlaceholder": "Quick Access",
     "moduleSwitcherLabel": "Module"
   },

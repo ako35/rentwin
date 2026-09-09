@@ -37,7 +37,7 @@ const AdminCariStatementPrintPage = () => {
   if (!data) return <div className="sprint">{f("loadError")}</div>;
 
   return (
-    <div className="sprint">
+    <div className="sprint" data-bs-theme="light">
       <div className="sprint__toolbar no-print">
         <button type="button" onClick={() => navigate(-1)}>
           {f("close")}

@@ -17,6 +17,39 @@
     background-color: #fff;
     border: 1px solid v.$color3;
     border-radius: 12px;
+
+    & + & { margin-top: 1.15rem; }
+  }
+
+  &__theme {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  &__theme-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid v.$color3;
+    border-radius: 9px;
+    background-color: transparent;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: v.$color-muted;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+
+    svg { font-size: 0.95rem; }
+
+    &:hover { border-color: v.$color1-4; }
+
+    &.is-active {
+      border-color: v.$color1;
+      color: v.$color1;
+      background-color: v.$color1-5;
+    }
   }
 
   &__card-head {

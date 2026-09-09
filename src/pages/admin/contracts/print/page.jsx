@@ -146,7 +146,7 @@ const ContractPrintPage = () => {
   if (error || !data) return <div className="cprint">{p("loadError")}</div>;
 
   return (
-    <div className="cprint">
+    <div className="cprint" data-bs-theme="light">
       <div className="cprint__toolbar no-print">
         <button type="button" onClick={() => navigate(-1)}>
           {p("close")}
