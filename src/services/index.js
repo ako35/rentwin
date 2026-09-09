@@ -11,6 +11,7 @@ import { createUserAdmin, deleteUser, downloadUserReports, getUser, getUserAdmin
 import { addVehicle, deleteVehicle, deleteVehicleImage, downloadVehicleReports, extractRegistration, generateVehicleImage, getExpiryAlerts, getFleetStats, getVehicleById, getVehicles, getVehiclesByPage, getVehiclesByPageAdmin, updateVehicle, uploadVehicleImage } from "./vehicle/vehicle-service";
 
 import { addVehicleRecord, deleteVehicleRecord, getVehicleRecords, updateVehicleRecord } from "./vehicle/vehicle-records-service";
+import { deleteModelImage, generateModelImage, listModelImages, uploadModelImage } from "./vehicle/vehicle-model-image-service";
 
 import { addBranch, deleteBranch, getBranches, getPublicBranches, updateBranch } from "./branch/branch-service";
 import { addLocation, deleteLocation, getLocations, updateLocation, uploadLocationImage } from "./location/location-service";
@@ -109,6 +110,11 @@ export const services = {
         uploadVehicleImage,
         extractRegistration,
         generateVehicleImage,
+        // MODEL IMAGE LIBRARY (marka+model başına tek görsel)
+        listModelImages,
+        uploadModelImage,
+        generateModelImage,
+        deleteModelImage,
         // VEHICLE SUB-RECORDS (insurance / tax / maintenance / inspection)
         getVehicleRecords,
         addVehicleRecord,
