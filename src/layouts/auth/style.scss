@@ -8,22 +8,35 @@ $breakpointsm: 576px;
 
     .banner{
         @include m.bg-image('/img/login_bg.jpg');
-        background-attachment: fixed;
-        background-position: left center;
+        background-position: center;
         background-repeat: no-repeat;
-        background-size: 50% 100%;
-        min-height: 100vh;
+        background-size: cover;
+        height: 100vh;
         @include m.flexbox(row, center, center);
-        position: relative;
+        // Stays in view while the (taller) form column scrolls — without the
+        // old position:fixed hack that overlapped a long register form.
+        position: sticky;
+        top: 0;
+        align-self: flex-start;
 
+        // Neutral dark scrim — a light even dim plus a stronger foot — so the
+        // white logo stays legible over any photo, without the old green wash.
         &::after{
-            @include m.watermark(v.$color2, 0.2);
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to top,
+                rgba(15, 23, 42, 0.7) 0%,
+                rgba(15, 23, 42, 0.25) 55%,
+                rgba(15, 23, 42, 0.2) 100%
+            );
         }
 
         img{
-            position: fixed;
+            position: absolute;
             top: 50%;
-            left: 25%;
+            left: 50%;
             transform: translate(-50%, -50%);
             width: min(340px, 26vw);
             height: auto;
@@ -31,19 +44,13 @@ $breakpointsm: 576px;
         }
 
         .toolbar{
-            position: fixed;
+            position: absolute;
             top: 1rem;
             left: 1rem;
-            color: v.$color2;
+            color: #fff;
             z-index: 1;
 
             @include m.flexbox($gap: 1rem);
-
-            @media (max-width: $breakpoint) {
-                top: 50px;
-                right: 1rem;                                
-                transform: translateY(-50%);
-            }
 
             svg{
                 font-size: 3rem;

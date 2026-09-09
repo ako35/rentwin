@@ -44,7 +44,10 @@ const LoginPage = () => {
             );
         } catch (error) {
             dispatch(loginFailure());
-            utils.functions.swalToast(error.response.data.message, "error");
+            utils.functions.swalToast(
+                error?.response?.data?.message || t("errors.generic"),
+                "error"
+            );
         } finally {
             setLoading(false);
         }
@@ -78,6 +81,7 @@ const LoginPage = () => {
             </Button>
             <p>{t("login.or")}</p>
             <Button
+                variant="outline-primary"
                 onClick={() => navigate(routes.register)}
                 disabled={loading}>
                 {t("login.registerButton")}

@@ -73,7 +73,10 @@ const RegisterPage = () => {
       await utils.functions.swalToast(t("register.successToast"), "success");
       navigate(routes.login);
     } catch (error) {
-      utils.functions.swalToast(error.response.data.message, "error");
+      utils.functions.swalToast(
+        error?.response?.data?.message || t("errors.generic"),
+        "error"
+      );
     } finally {
       setLoading(false);
     }
@@ -86,9 +89,11 @@ const RegisterPage = () => {
   });
   return (
     <Form onSubmit={formik.handleSubmit} className="register-form">
-      {formItems.map((item, index) => (
-        <CustomForm key={index} formik={formik} {...item} />
-      ))}
+      <div className="register-form__grid">
+        {formItems.map((item, index) => (
+          <CustomForm key={index} formik={formik} {...item} />
+        ))}
+      </div>
       {passwordItems.map((item, index) => (
         <PasswordInput key={index} formik={formik} {...item} />
       ))}
@@ -101,7 +106,11 @@ const RegisterPage = () => {
         {t("register.registerButton")}
       </Button>
       <p>{t("register.alreadyHaveAccount")}</p>
-      <Button onClick={() => navigate(routes.login)} disabled={loading}>
+      <Button
+        variant="outline-primary"
+        onClick={() => navigate(routes.login)}
+        disabled={loading}
+      >
         {t("register.loginButton")}
       </Button>
     </Form>

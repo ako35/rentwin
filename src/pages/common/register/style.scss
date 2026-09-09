@@ -1,5 +1,17 @@
 .register-form{
-    width: 80%;
+    width: 100%;
+    max-width: 520px;
+
+    &__grid{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 1rem;
+
+        @media (max-width: 576px) {
+            grid-template-columns: 1fr;
+            column-gap: 0;
+        }
+    }
 
     input{
         height: 50px;
