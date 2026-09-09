@@ -13,8 +13,13 @@ import "./style.scss";
 
 const DOC_TYPES = ["sozlesme", "ek1", "tutanak"];
 
-const fmtDate = (v) => (v ? moment(v).format("DD.MM.YYYY") : "—");
-const fmtDateTime = (v) => (v ? moment(v).format("DD.MM.YYYY HH:mm") : "—");
+// Contract pick-up / drop-off are stored as wall-clock instants (the operator's
+// "09.09 21:00" is persisted as 2026-09-09T21:00:00Z), and the rental-term maths
+// below reads them back with moment.utc. Render every printed date the same way
+// so the sözleşme shows the date that was actually entered — not a copy shifted
+// into the viewer's timezone.
+const fmtDate = (v) => (v ? moment.utc(v).format("DD.MM.YYYY") : "—");
+const fmtDateTime = (v) => (v ? moment.utc(v).format("DD.MM.YYYY HH:mm") : "—");
 const fuelLabel = (eighths) =>
   eighths === null || eighths === undefined || eighths === "" ? "—" : `${eighths}/8`;
 const money = (v) =>
