@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Container, Form, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { AiOutlineHome } from "react-icons/ai";
-import { BsListUl, BsPlusLg, BsTag, BsMegaphone, BsGlobe2, BsBoxArrowRight } from "react-icons/bs";
+import { BsListUl, BsPlusLg, BsTag, BsMegaphone, BsGlobe2, BsBoxArrowRight, BsImages } from "react-icons/bs";
 import { utils } from "../../../utils";
 import { logout } from "../../../store";
 import { services } from "../../../services";
@@ -63,6 +63,9 @@ const AdminTopNav = () => {
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to={`${routes.adminVehicles}/new`}>
                 <BsPlusLg className="admin-top-nav__item-icon" /> {t("topNav.addVehicle")}
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminVehicleModelImages}>
+                <BsImages className="admin-top-nav__item-icon" /> {t("topNav.vehicleModelImages")}
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown

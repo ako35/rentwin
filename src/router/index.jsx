@@ -49,6 +49,7 @@ const AdminUserDetailsPage = lazy(() => import("../pages/admin/users/details/pag
 const AdminVehiclesPage = lazy(() => import("../pages/admin/vehicles/page"));
 const AdminVehicleDetailsPage = lazy(() => import("../pages/admin/vehicles/details/page"));
 const AdminNewVehiclePage = lazy(() => import("../pages/admin/vehicles/new/page"));
+const AdminVehicleModelImagesPage = lazy(() => import("../pages/admin/vehicles/model-images/page"));
 const AdminNewCustomerPage = lazy(() => import("../pages/admin/users/new/page"));
 
 const lazyRoute = (element) => <Suspense fallback={<LoadingPage />}>{element}</Suspense>;
@@ -161,6 +162,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: lazyRoute(<AdminVehiclesPage />) },
           { path: "new", element: lazyRoute(<AdminNewVehiclePage />) },
+          { path: "model-images", element: lazyRoute(<AdminVehicleModelImagesPage />) },
           { path: ":vehicleId", element: lazyRoute(<AdminVehicleDetailsPage />) },
         ],
       },

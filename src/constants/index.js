@@ -118,6 +118,7 @@ const routes = {
   adminReservations: "/admin/reservations",
   adminUsers: "/admin/users",
   adminVehicles: "/admin/vehicles",
+  adminVehicleModelImages: "/admin/vehicles/model-images",
   adminSettings: "/admin/settings",
 
   // COMMON ROUTES
