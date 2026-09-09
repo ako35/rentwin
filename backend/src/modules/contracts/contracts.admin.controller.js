@@ -197,7 +197,13 @@ const deleteContract = asyncHandler(async (req, res) => {
   const contract = await prisma.contract.findUnique({ where: { id: req.params.id } });
   if (!contract) throw new HttpError(404, "Contract not found.");
 
-  await prisma.contract.delete({ where: { id: contract.id } });
+  // LedgerEntry.contract is SetNull, so a bare delete would leave the contract's
+  // auto RENTAL debit and PAYMENT credits behind as orphan rows that still weigh
+  // on the customer's cari balance. Clear them together with the contract.
+  await prisma.$transaction([
+    prisma.ledgerEntry.deleteMany({ where: { contractId: contract.id } }),
+    prisma.contract.delete({ where: { id: contract.id } }),
+  ]);
   res.json({ message: "Contract deleted." });
 });
 
@@ -209,14 +215,17 @@ const setContractStatus = (status) =>
     const existing = await prisma.contract.findUnique({ where: { id: req.params.id } });
     if (!existing) throw new HttpError(404, "Contract not found.");
 
-    const contract = await prisma.contract.update({
-      where: { id: existing.id },
-      data: { status },
+    // Status change + its ledger effect move together — a cancel must never
+    // leave the RENTAL debit behind, a reopen-to-CREATED must never miss it.
+    const contract = await prisma.$transaction(async (tx) => {
+      const updated = await tx.contract.update({
+        where: { id: existing.id },
+        data: { status },
+      });
+      if (status === "CANCELLED") await voidContractLedger(updated.id, tx);
+      else await syncContractDebit(updated, tx);
+      return updated;
     });
-
-    // Keep the current-account ledger in step with the lifecycle change.
-    if (status === "CANCELLED") await voidContractLedger(contract.id);
-    else await syncContractDebit(contract);
 
     res.json({ id: contract.id, status: contract.status });
   });
