@@ -14,6 +14,7 @@ const extractDocument = asyncHandler(async (req, res) => {
   try {
     fields = await extractCustomerDocument(req.file.buffer, req.file.mimetype, kind);
   } catch (error) {
+    if (error.code === "AI_QUOTA") throw new HttpError(429, error.message, "AI_QUOTA");
     throw new HttpError(502, error.message);
   }
 

@@ -33,7 +33,15 @@ const DocumentScan = ({ customerType, onExtracted }) => {
       utils.functions.swalToast(tr("success"), "success");
     } catch (error) {
       const status = error?.response?.status;
-      const key = status === 502 || status === 503 ? "busy" : status === 413 ? "tooLarge" : "error";
+      const code = error?.response?.data?.code;
+      const key =
+        code === "AI_QUOTA"
+          ? "quota"
+          : status === 502 || status === 503
+            ? "busy"
+            : status === 413
+              ? "tooLarge"
+              : "error";
       utils.functions.swalToast(tr(key), "error");
     } finally {
       setScanning(false);

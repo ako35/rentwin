@@ -91,6 +91,16 @@ const geminiVisionJson = async (buffer, mimeType, prompt, schema) => {
 
   if (!response.ok) {
     const text = await response.text().catch(() => "");
+    // The free tier allows only ~20 vision requests per day per model. When that
+    // runs out every call 429s until the daily reset — flag it so the operator
+    // gets a "come back tomorrow / enable billing" message, not "try again".
+    if (response.status === 429) {
+      const err = new Error(
+        "Yapay zeka görsel okuma kotası (günlük ücretsiz sınır) doldu. Yarın tekrar deneyin ya da API anahtarının projesinde faturalandırmayı açın."
+      );
+      err.code = "AI_QUOTA";
+      throw err;
+    }
     throw new Error(`Gemini API hatası (${response.status}): ${text.slice(0, 300)}`);
   }
 

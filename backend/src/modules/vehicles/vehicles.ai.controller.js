@@ -12,6 +12,7 @@ const extractRegistration = asyncHandler(async (req, res) => {
   try {
     fields = await extractVehicleRegistration(req.file.buffer, req.file.mimetype);
   } catch (error) {
+    if (error.code === "AI_QUOTA") throw new HttpError(429, error.message, "AI_QUOTA");
     throw new HttpError(502, error.message);
   }
 

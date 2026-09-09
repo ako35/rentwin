@@ -56,7 +56,8 @@
       "success": "Registration read successfully — please review the fields.",
       "error": "Could not read the registration document, please fill in manually.",
       "tooLarge": "File is too large. Please upload a smaller image (about 4 MB max) or a PDF.",
-      "busy": "The AI service is busy right now. Please try again in a few seconds."
+      "busy": "The AI service is busy right now. Please try again in a few seconds.",
+      "quota": "The AI document-reading quota (free daily limit) is used up. Try again tomorrow or enable billing."
     },
     "modelImages": {
       "title": "Model Images",
@@ -813,7 +814,8 @@
       "success": "Document read — please review the fields.",
       "error": "Could not read the document, please fill in manually.",
       "tooLarge": "File is too large. Please upload a smaller image (about 4 MB max) or a PDF.",
-      "busy": "The AI service is busy right now. Please try again in a few seconds."
+      "busy": "The AI service is busy right now. Please try again in a few seconds.",
+      "quota": "The AI document-reading quota (free daily limit) is used up. Try again tomorrow or enable billing."
     },
     "form": {
       "firstName": "First Name",
