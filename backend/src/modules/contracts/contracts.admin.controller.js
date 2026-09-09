@@ -11,6 +11,7 @@ const { round2 } = require("../../lib/dates");
 const { kbsStamp, kbsBlocksClose } = require("./kbs");
 const { syncContractDebit, voidContractLedger, restoreContractLedger } = require("../../lib/ledger");
 const { getBusyVehicleIds } = require("../../lib/availability");
+const { loadModelImageMap } = require("../vehicles/vehicles.shared");
 const { readSettings } = require("../settings/settings.controller");
 
 const RETURN_CHARGE_CATEGORIES = [
@@ -178,13 +179,18 @@ const getAvailableCarsAdmin = asyncHandler(async (req, res) => {
     excludeReservationId,
   });
 
-  const cars = await prisma.vehicle.findMany({
-    where: { outOfService: false },
-    orderBy: [{ brand: "asc" }, { model: "asc" }],
-    include: { images: { orderBy: { createdAt: "asc" } }, branch: true },
-  });
+  const [cars, modelImages] = await Promise.all([
+    prisma.vehicle.findMany({
+      where: { outOfService: false },
+      orderBy: [{ brand: "asc" }, { model: "asc" }],
+      include: { images: { orderBy: { createdAt: "asc" } }, branch: true },
+    }),
+    loadModelImageMap(),
+  ]);
 
-  res.json(cars.filter((car) => !busy.has(car.id)).map(serializeVehicle));
+  res.json(
+    cars.filter((car) => !busy.has(car.id)).map((car) => serializeVehicle(car, modelImages))
+  );
 });
 
 const deleteContract = asyncHandler(async (req, res) => {
