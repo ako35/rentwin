@@ -8,77 +8,47 @@ const { syncContractDebit } = require("../../lib/ledger");
 const contractUnitPrice = (contract) =>
   (contract.rentalType === "MONTHLY" ? contract.monthlyPrice : contract.dailyPrice) || 0;
 
-// Single definition of "a contract's cached financials are consistent" and the
-// sole owner of the ContractPeriod lifecycle:
-//   - a contract with a rate but no periods gets period #1 [pickUp, dropOff]
-//   - the one ACTIVE period (highest sequence) is re-priced from the contract's
-//     current rate + drop-off; CLOSED periods are frozen snapshots
-//   - Σ return-charge lines            -> Contract.returnExtraAmount
-//   - Σ period gross + add-ons         -> Contract.totalPrice
-//   - grand total                      -> the AUTO_CONTRACT ledger debit
-// Callable inside a transaction (pass the tx client). Errors propagate.
+// Single definition of "a contract's cached financials are consistent":
+//   base rental  = price of [pickUp, <drop-off before the first extension>]
+//                  at the contract's current rate
+//   + Σ extension.extraAmount     (flat, operator-priced add-on lines)
+//   + Σ return-charge lines       -> Contract.returnExtraAmount
+//   + one-way fee + extras
+//   = Contract.totalPrice         -> the AUTO_CONTRACT ledger debit
+// Extensions never re-price anything. Callable inside a transaction (pass tx).
 const recomputeContractFinancials = async (contractId, client = prisma) => {
   const contract = await client.contract.findUnique({ where: { id: contractId } });
   if (!contract) return null;
 
   const vatRate = contract.vatRate ?? 20;
   const unitPrice = contractUnitPrice(contract);
-  let periods = await client.contractPeriod.findMany({
+
+  const extensions = await client.contractExtension.findMany({
     where: { contractId },
-    orderBy: { sequence: "asc" },
+    orderBy: { createdAt: "asc" },
   });
 
-  if (periods.length === 0) {
-    // First real save with a rate set — open period #1 for the base window.
-    if (unitPrice > 0) {
-      const priced = pricePeriod({
-        rentalType: contract.rentalType,
-        unitPrice,
-        start: contract.pickUpTime,
-        end: contract.dropOffTime,
-        vatRate,
-      });
-      await client.contractPeriod.create({
-        data: {
-          contractId,
-          sequence: 1,
-          startAt: contract.pickUpTime,
-          endAt: contract.dropOffTime,
-          rentalType: contract.rentalType,
-          unitPrice,
-          vatRate,
-          status: "ACTIVE",
-          ...priced,
-        },
-      });
-    }
-  } else {
-    // Re-price the single ACTIVE period from the contract's current rate and
-    // drop-off. Closed periods and operator-priced periods are never touched.
-    const active = [...periods].reverse().find((p) => p.status === "ACTIVE");
-    if (active && !active.manualPrice) {
-      const priced = pricePeriod({
-        rentalType: contract.rentalType,
-        unitPrice,
-        start: active.startAt,
-        end: contract.dropOffTime,
-        vatRate,
-      });
-      await client.contractPeriod.update({
-        where: { id: active.id },
-        data: {
-          endAt: contract.dropOffTime,
-          rentalType: contract.rentalType,
-          unitPrice,
-          vatRate,
-          ...priced,
-        },
-      });
-    }
-  }
+  // The base rental window ends where the drop-off was before the first
+  // extension — extensions push Contract.dropOffTime but not the base price.
+  const baseEnd = extensions.length
+    ? extensions.reduce(
+        (min, e) => (e.previousDropOff < min ? e.previousDropOff : min),
+        extensions[0].previousDropOff
+      )
+    : contract.dropOffTime;
 
-  periods = await client.contractPeriod.findMany({ where: { contractId } });
-  const rentalGross = round2(periods.reduce((sum, p) => sum + (p.grossAmount || 0), 0));
+  const base =
+    unitPrice > 0
+      ? pricePeriod({
+          rentalType: contract.rentalType,
+          unitPrice,
+          start: contract.pickUpTime,
+          end: baseEnd,
+          vatRate,
+        })
+      : { netAmount: 0, grossAmount: 0 };
+
+  const extensionsGross = round2(extensions.reduce((sum, e) => sum + (e.extraAmount || 0), 0));
 
   const rows = await client.contractReturnCharge.findMany({ where: { contractId } });
   const returnExtraAmount = round2(
@@ -86,7 +56,7 @@ const recomputeContractFinancials = async (contractId, client = prisma) => {
   );
 
   const addOns = (contract.oneWayFee || 0) + (contract.extrasTotal || 0);
-  const totalPrice = round2(rentalGross + returnExtraAmount + addOns);
+  const totalPrice = round2(base.grossAmount + extensionsGross + returnExtraAmount + addOns);
 
   const updated = await client.contract.update({
     where: { id: contractId },

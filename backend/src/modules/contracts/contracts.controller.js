@@ -6,7 +6,7 @@ const { serializeContract, serializeUser } = require("../../lib/serializers");
 const asyncHandler = require("../../middleware/async-handler");
 const { customerTotals } = require("../users/customer-fields");
 const { CAR_INCLUDE } = require("./contracts.shared");
-const { num, pickContractFields, pricePeriod } = require("./contract-fields");
+const { num, pickContractFields, rentalTerm } = require("./contract-fields");
 const { recomputeContractFinancials, contractUnitPrice } = require("./contract-financials");
 const { kbsStamp } = require("./kbs");
 
@@ -71,14 +71,14 @@ const updateContract = asyncHandler(async (req, res) => {
     },
   });
 
-  // recompute owns the period lifecycle, Contract.totalPrice and the ledger
-  // debit — it re-prices the active period from the rate/drop-off just saved.
-  // The client refetches the full contract via getContractByIdAdmin after save.
+  // recompute owns Contract.totalPrice and the ledger debit — base rental at the
+  // current rate + Σ extension amounts. The client refetches the full contract
+  // via getContractByIdAdmin after save.
   await recomputeContractFinancials(existing.id);
 
   const contract = await prisma.contract.findUnique({
     where: { id: existing.id },
-    include: { ...CAR_INCLUDE, periods: { orderBy: { sequence: "asc" } } },
+    include: { ...CAR_INCLUDE, extensions: { orderBy: { createdAt: "desc" } } },
   });
   res.json(serializeContract(contract));
 });
@@ -94,7 +94,6 @@ const getContractByIdAdmin = asyncHandler(async (req, res) => {
       referenceUser: { select: { id: true, firstName: true, lastName: true, companyTitle: true, customerType: true } },
       corporate: true,
       extensions: { orderBy: { createdAt: "desc" } },
-      periods: { orderBy: { sequence: "asc" } },
       vehicleChanges: { orderBy: { changeDate: "desc" } },
       invoices: { orderBy: { issuedAt: "desc" } },
     },
@@ -118,16 +117,12 @@ const getContractByIdAdmin = asyncHandler(async (req, res) => {
   });
 });
 
-// "A Yöntemi": an extension closes the active period and opens the next one,
-// spanning [old drop-off, new drop-off]. The new period is priced from the
-// contract's current rate by the anniversary rule (8th->8th = one full month,
-// no phantom kıst day). A blank extraAmount auto-fills the full period price;
-// a manual extraAmount is taken as the period's GROSS.
+// An extension pushes the drop-off out and adds one flat, operator-priced line
+// to the contract total — nothing is re-priced. The amount is entered NET (the
+// system adds VAT for MONTHLY); a blank amount auto-fills monthlyPrice × months
+// (min 1 month regardless of days) for MONTHLY, dailyPrice × days for DAILY.
 const extendContract = asyncHandler(async (req, res) => {
-  const contract = await prisma.contract.findUnique({
-    where: { id: req.params.id },
-    include: { periods: { orderBy: { sequence: "asc" } } },
-  });
+  const contract = await prisma.contract.findUnique({ where: { id: req.params.id } });
   if (!contract) throw new HttpError(404, "Contract not found.");
 
   const newDropOff = parseFrontendDateTime(req.body.newDropOff);
@@ -136,46 +131,28 @@ const extendContract = asyncHandler(async (req, res) => {
   }
 
   const vatRate = contract.vatRate ?? 20;
-  const unitPrice = contractUnitPrice(contract);
-  const startAt = contract.dropOffTime;
-  const priced = pricePeriod({
-    rentalType: contract.rentalType,
-    unitPrice,
-    start: startAt,
-    end: newDropOff,
-    vatRate,
-  });
+  const isMonthly = contract.rentalType === "MONTHLY";
+  const { months, days } = rentalTerm(contract.dropOffTime, newDropOff);
+  const chargeMonths = isMonthly ? Math.max(1, months) : 0;
 
-  const manualGross = num(req.body.extraAmount);
-  const manualPrice = manualGross != null;
-  if (manualPrice) {
-    priced.grossAmount = round2(manualGross);
-    priced.netAmount =
-      contract.rentalType === "MONTHLY"
-        ? round2(manualGross / (1 + vatRate / 100))
-        : round2(manualGross);
-  }
-
-  const nextSequence = contract.periods.reduce((max, p) => Math.max(max, p.sequence), 0) + 1;
+  const typedNet = num(req.body.extraAmount);
+  const autoNet = isMonthly
+    ? round2((contract.monthlyPrice || 0) * chargeMonths)
+    : round2((contract.dailyPrice || 0) * days);
+  const extraNet = typedNet != null ? typedNet : autoNet;
+  const extraGross = isMonthly ? round2(extraNet * (1 + vatRate / 100)) : round2(extraNet);
 
   await prisma.$transaction(async (tx) => {
-    await tx.contractPeriod.updateMany({
-      where: { contractId: contract.id, status: "ACTIVE" },
-      data: { status: "CLOSED" },
-    });
-    await tx.contractPeriod.create({
+    await tx.contractExtension.create({
       data: {
         contractId: contract.id,
-        sequence: nextSequence,
-        startAt,
-        endAt: newDropOff,
-        rentalType: contract.rentalType,
-        unitPrice,
-        vatRate,
-        status: "ACTIVE",
-        manualPrice,
+        previousDropOff: contract.dropOffTime,
+        newDropOff,
+        extraDays: days,
+        months: chargeMonths,
+        extraAmount: extraGross,
+        extraAmountNet: extraNet,
         note: req.body.note || null,
-        ...priced,
       },
     });
     await tx.contract.update({ where: { id: contract.id }, data: { dropOffTime: newDropOff } });
@@ -184,7 +161,38 @@ const extendContract = asyncHandler(async (req, res) => {
 
   const updated = await prisma.contract.findUnique({
     where: { id: contract.id },
-    include: { ...CAR_INCLUDE, periods: { orderBy: { sequence: "asc" } } },
+    include: { ...CAR_INCLUDE, extensions: { orderBy: { createdAt: "desc" } } },
+  });
+  res.json(serializeContract(updated));
+});
+
+// Undo an extension: drop the row, roll the drop-off back to the latest
+// remaining extension (or the deleted one's previousDropOff if it was the last),
+// and re-total. Any extension can be removed.
+const deleteExtension = asyncHandler(async (req, res) => {
+  const { id, extensionId } = req.params;
+  const contract = await prisma.contract.findUnique({
+    where: { id },
+    include: { extensions: true },
+  });
+  if (!contract) throw new HttpError(404, "Contract not found.");
+  const target = contract.extensions.find((e) => e.id === extensionId);
+  if (!target) throw new HttpError(404, "Extension not found.");
+
+  const remaining = contract.extensions.filter((e) => e.id !== extensionId);
+  const newDropOff = remaining.length
+    ? remaining.reduce((max, e) => (e.newDropOff > max ? e.newDropOff : max), remaining[0].newDropOff)
+    : target.previousDropOff;
+
+  await prisma.$transaction(async (tx) => {
+    await tx.contractExtension.delete({ where: { id: extensionId } });
+    await tx.contract.update({ where: { id }, data: { dropOffTime: newDropOff } });
+    await recomputeContractFinancials(id, tx);
+  });
+
+  const updated = await prisma.contract.findUnique({
+    where: { id },
+    include: { ...CAR_INCLUDE, extensions: { orderBy: { createdAt: "desc" } } },
   });
   res.json(serializeContract(updated));
 });
@@ -387,6 +395,7 @@ module.exports = {
   updateContract,
   getContractByIdAdmin,
   extendContract,
+  deleteExtension,
   changeVehicle,
   listInvoices,
   createInvoice,

@@ -77,7 +77,7 @@ const getContractsByPage = asyncHandler(async (req, res) => {
         user: { select: { firstName: true, lastName: true, companyTitle: true } },
         corporate: { select: { title: true } },
         payments: { select: { amount: true } },
-        periods: { select: { sequence: true, endAt: true } },
+        extensions: { select: { extraDays: true } },
       },
     }),
     prisma.contract.count({ where }),
@@ -86,12 +86,8 @@ const getContractsByPage = asyncHandler(async (req, res) => {
   const dayCount = (r) =>
     Math.max(1, Math.ceil((r.dropOffTime.getTime() - r.pickUpTime.getTime()) / 86400000));
 
-  // Extra calendar days added by extensions = current drop-off minus where the
-  // base period (sequence 1) originally ended.
-  const extensionDays = (r) => {
-    const base = r.periods.find((p) => p.sequence === 1);
-    return base ? Math.max(0, Math.round((r.dropOffTime.getTime() - base.endAt.getTime()) / 86400000)) : 0;
-  };
+  // Extra calendar days added by extensions.
+  const extensionDays = (r) => r.extensions.reduce((sum, e) => sum + (e.extraDays || 0), 0);
 
   res.json(
     buildPageResponse({

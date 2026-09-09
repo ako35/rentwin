@@ -16,6 +16,7 @@ const {
   updateContract,
   getContractByIdAdmin,
   extendContract,
+  deleteExtension,
   changeVehicle,
   listInvoices,
   createInvoice,
@@ -35,6 +36,12 @@ router.post("/contracts/admin/auth", authenticate, requireAdmin, createContract)
 router.put("/contracts/admin/auth", authenticate, requireAdmin, updateContract);
 router.delete("/contracts/admin/:id/auth", authenticate, requireAdmin, deleteContract);
 router.post("/contracts/admin/:id/extend/auth", authenticate, requireAdmin, extendContract);
+router.delete(
+  "/contracts/admin/:id/extension/:extensionId/auth",
+  authenticate,
+  requireAdmin,
+  deleteExtension
+);
 router.post("/contracts/admin/:id/change-vehicle/auth", authenticate, requireAdmin, changeVehicle);
 router.get("/contracts/admin/:id/invoices/auth", authenticate, requireAdmin, listInvoices);
 router.post("/contracts/admin/:id/invoice/auth", authenticate, requireAdmin, createInvoice);
