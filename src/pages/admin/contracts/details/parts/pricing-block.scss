@@ -43,43 +43,6 @@
 
     &__label { color: v.$color5_3; white-space: nowrap; }
 
-    // "A Yöntemi" billing-period list
-    &__periods {
-      @include m.reset-list;
-      @include m.flexbox(column, flex-start, stretch, 0.3rem);
-      margin-top: 0.1rem;
-    }
-
-    &__period {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 0.1rem 0.5rem;
-      padding: 0.35rem 0.5rem;
-      border: 1px solid v.$color3;
-      border-radius: 8px;
-      background-color: v.$color4;
-      font-size: 0.76rem;
-
-      &.is-active {
-        border-color: rgba(v.$color1, 0.5);
-        background-color: rgba(v.$color1, 0.06);
-      }
-    }
-
-    &__period-range { color: v.$color5; font-weight: 600; }
-    &__period-amount {
-      text-align: right;
-      font-weight: 700;
-      color: v.$color5;
-      font-variant-numeric: tabular-nums;
-    }
-    &__period-status {
-      grid-column: 1 / -1;
-      font-size: 0.68rem;
-      font-weight: 600;
-      color: v.$color-muted;
-    }
-
     // Günlük / Aylık rental-type toggle
     &__mode {
       display: flex;

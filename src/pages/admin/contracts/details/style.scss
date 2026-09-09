@@ -76,6 +76,26 @@
     strong { color: v.$color5; text-align: right; font-weight: 600; }
   }
 
+  // Extension list row: label may wrap to a sub-line; value carries a delete btn.
+  &__ro--ext {
+    align-items: flex-start;
+
+    > span:first-child { white-space: normal; }
+  }
+
+  &__ro-sub {
+    display: block;
+    font-size: 0.74rem;
+    color: v.$color5_3;
+  }
+
+  &__ro-end {
+    @include m.flexbox(row, flex-end, center, 0.5rem);
+    white-space: nowrap;
+
+    .btn { font-size: 0.72rem; padding: 0.1rem 0.4rem; }
+  }
+
   // Sticky footer bar (see contract-actions.scss) scrolls under the page;
   // content clears it with bottom padding.
   &--detail { padding-bottom: 4.5rem; }

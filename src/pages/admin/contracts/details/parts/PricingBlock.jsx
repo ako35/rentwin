@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { Form } from "react-bootstrap";
-import moment from "moment/moment";
 import { computeAllowedKm } from "../contract-helpers";
 import "./pricing-block.scss";
 
@@ -29,17 +28,16 @@ const InputRow = ({ formik, name, label, suffix = "TL", disabled = false }) => (
   </div>
 );
 
-// The right card's pricing block, laid out as an invoice summary. "A Yöntemi":
-// each contract is a chain of billing periods; the card edits the rate of the
-// single ACTIVE period, lists the closed ones, and headlines the active-period
-// amount. Monthly prices are entered NET — VAT is added on top; daily prices
-// stay VAT-inclusive. Totals are reactive (parent useMemo → computePricing).
-const PricingBlock = ({ formik, pricing, billableDays, periods = [], collected, money }) => {
+// The right card's pricing block, laid out as an invoice summary. Base rental
+// (the window before any extension) + Σ extension lines + return extras.
+// Monthly prices are entered NET — VAT is added on top; daily prices stay
+// VAT-inclusive. Totals are reactive (parent useMemo → computePricing).
+const PricingBlock = ({ formik, pricing, billableDays, collected, money }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.${key}`, opts);
   const setV = (name) => (e) => formik.setFieldValue(name, e.target.value);
   const num = (v) => Number(v) || 0;
-  const balance = num(collected) - pricing.contractTotal;
+  const balance = num(collected) - pricing.total;
   const allowedKm = computeAllowedKm(formik.values, billableDays);
 
   const isMonthly = pricing.isMonthly;
@@ -47,7 +45,6 @@ const PricingBlock = ({ formik, pricing, billableDays, periods = [], collected, 
   const termText = `${pricing.months} ${c("month")}${
     pricing.days ? ` (+${pricing.days} ${c("day")})` : ""
   }`;
-  const day = (d) => (d ? moment.utc(d).format("DD.MM.YY") : "—");
 
   return (
     <div className="pricing">
@@ -92,29 +89,18 @@ const PricingBlock = ({ formik, pricing, billableDays, periods = [], collected, 
           <AmountRow label={c("rentalAmount")} value={money(pricing.rentalGross)} />
         )}
 
+        {pricing.extCount > 0 && (
+          <AmountRow
+            label={c("extensionsLine", { n: pricing.extCount })}
+            value={money(pricing.extTotal)}
+            emph
+          />
+        )}
+
         {/* Read-only — the sum of the itemised charges on the "Dönüş Ekstra" tab
             (km overage, missing fuel, one-way fee, HGS, damage …). */}
         <AmountRow label={c("extrasTotal")} value={money(pricing.extras)} />
       </section>
-
-      {periods.length > 1 && (
-        <section className="pricing__group">
-          <h4>{c("periodsTitle")}</h4>
-          <ul className="pricing__periods">
-            {periods.map((p) => (
-              <li key={p.id} className={`pricing__period${p.status === "ACTIVE" ? " is-active" : ""}`}>
-                <span className="pricing__period-range">
-                  {c("periodLabel", { n: p.sequence })} · {day(p.startAt)}–{day(p.endAt)}
-                </span>
-                <span className="pricing__period-amount">{money(p.grossAmount)} TL</span>
-                <span className="pricing__period-status">
-                  {c(`periodStatus.${p.status === "ACTIVE" ? "active" : "closed"}`)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
 
       <section className="pricing__group">
         <h4>{c("pricingGroups.limits")}</h4>
@@ -150,15 +136,9 @@ const PricingBlock = ({ formik, pricing, billableDays, periods = [], collected, 
 
       <div className="pricing__summary">
         <div className="pricing__summary-total">
-          <span>{pricing.hasClosedPeriods ? c("activePeriodTotal") : c("totalAmount")}</span>
-          <strong>{money(pricing.activeTotal)} TL</strong>
+          <span>{c("totalAmount")}</span>
+          <strong>{money(pricing.total)} TL</strong>
         </div>
-        {pricing.hasClosedPeriods && (
-          <div className="pricing__summary-balance">
-            <span>{c("contractTotal")}</span>
-            <strong>{money(pricing.contractTotal)} TL</strong>
-          </div>
-        )}
         <div className={`pricing__summary-balance${balance < 0 ? " is-negative" : ""}`}>
           <span>{c("balance")}</span>
           <strong>{money(balance)} TL</strong>

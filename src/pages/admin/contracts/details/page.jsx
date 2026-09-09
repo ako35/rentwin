@@ -46,7 +46,7 @@ const ContractDetail = () => {
   const {
     loading,
     vehicles, locations, customers, customer, meta,
-    initialValues, availableCars, payments, periods, vehicleChanges, invoices,
+    initialValues, availableCars, payments, extensions, vehicleChanges, invoices,
     setCustomers, setAvailableCars,
     loadData, loadPayments, loadInvoices, refreshCustomer, refreshCustomers,
   } = useContractData({ isCreate, contractId });
@@ -240,8 +240,8 @@ const ContractDetail = () => {
   const collected = payments.reduce((s, p) => s + (Number(p.amount) || 0), 0);
 
   const pricing = useMemo(
-    () => computePricing(formik.values, billableDays, periods),
-    [formik.values, billableDays, periods]
+    () => computePricing(formik.values, billableDays, extensions),
+    [formik.values, billableDays, extensions]
   );
 
   const locationNames = locations.map((l) => l.name);
@@ -297,7 +297,7 @@ const ContractDetail = () => {
               customers={customers}
               customer={customer}
               invoices={invoices}
-              periods={periods}
+              extensions={extensions}
               vehicleChanges={vehicleChanges}
               refreshCustomers={refreshCustomers}
               onRequestNewCustomer={openNewCust}

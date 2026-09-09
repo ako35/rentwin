@@ -2,7 +2,7 @@ import { deleteMessage, getMessage, getMessagesByPage, sendMessage } from "./con
 
 import { cancelReservation, confirmReservation, convertReservationToContract, createReservation, createReservationAdmin, getReservationById, getReservationByIdAdmin, getReservationSchedule, getReservationsByPage, getReservationsByPageAdmin, isVehicleAvailable, updateReservationAdmin } from "./reservation/reservation-service";
 
-import { cancelContract, changeVehicle, createContract, createInvoice, deleteContract, deleteInvoice, downloadContractReports, extendContract, getAdminSchedule, getAvailableCars, getContractByIdAdmin, getContractsByPage, getHgsPendingContracts, getInvoices, reopenContract, returnContract, updateContract, updateInvoice } from "./contract/contract-service";
+import { cancelContract, changeVehicle, createContract, createInvoice, deleteContract, deleteExtension, deleteInvoice, downloadContractReports, extendContract, getAdminSchedule, getAvailableCars, getContractByIdAdmin, getContractsByPage, getHgsPendingContracts, getInvoices, reopenContract, returnContract, updateContract, updateInvoice } from "./contract/contract-service";
 
 import { addContractRecord, deleteContractRecord, getContractRecords, updateContractRecord } from "./contract/contract-record-service";
 
@@ -63,6 +63,7 @@ export const services = {
         cancelContract,
         reopenContract,
         extendContract,
+        deleteExtension,
         changeVehicle,
         getInvoices,
         createInvoice,

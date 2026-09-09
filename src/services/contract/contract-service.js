@@ -77,6 +77,14 @@ export const extendContract = async (id, payload) => {
   return response.data;
 };
 
+export const deleteExtension = async (id, extensionId) => {
+  const response = await axios.delete(
+    `${API_URL}/contracts/admin/${id}/extension/${extensionId}/auth`,
+    services.authHeader()
+  );
+  return response.data;
+};
+
 // Mid-contract vehicle swap: { newCarId, changeDate, note }. Repoints carId
 // after checking the new car is actually free, and logs a history row.
 export const changeVehicle = async (id, payload) => {

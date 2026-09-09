@@ -96,31 +96,30 @@ export const computeRentalTerm = ({ pickUpDate, dropOffDate }) => {
   return termBetween(pickUpDate, dropOffDate);
 };
 
-// Live pricing card figures, mirrored from the backend period model.
-//   DAILY   : net = gross = billableDays x dailyPrice          (VAT-inclusive)
-//   MONTHLY : net  = months x monthlyPrice + kıst x (monthlyPrice / 30)
-//             gross = net x (1 + vatRate/100)                  (VAT on top)
-// The ACTIVE period spans from the last period's start (or pick-up if none) to
-// the current drop-off; closed periods are frozen snapshots read from `periods`.
-export const computePricing = (values, billableDays, periods = []) => {
+// Live pricing card figures.
+//   base rental — the window [pick-up, <drop-off before the first extension>]:
+//     DAILY   : net = gross = billableDays x dailyPrice        (VAT-inclusive)
+//     MONTHLY : net  = months x monthlyPrice + kıst x (monthlyPrice / 30)
+//               gross = net x (1 + vatRate/100)                (VAT on top)
+//   + Σ extension.extraAmount (flat operator-priced lines) + returnExtraAmount
+// Mirrors backend contract-financials.recomputeContractFinancials.
+export const computePricing = (values, billableDays, extensions = []) => {
   const n = numOr;
   const isMonthly = values.rentalType === "MONTHLY";
   const vatRate = n(values.vatRate) || 20;
 
-  const closed = periods.filter((p) => p.status === "CLOSED");
-  const lastPeriod = periods.length ? periods[periods.length - 1] : null;
-  const manualActive = !!(lastPeriod && lastPeriod.status === "ACTIVE" && lastPeriod.manualPrice);
-  const activeStart = lastPeriod ? utcDate(lastPeriod.startAt) : values.pickUpDate;
-  const term = isMonthly
-    ? termBetween(activeStart, values.dropOffDate)
-    : { months: 0, days: billableDays };
+  // The base window ends where the drop-off was before the first extension.
+  const baseEndDate = extensions.length
+    ? extensions
+        .map((e) => utcDate(e.previousDropOff))
+        .reduce((min, d) => (d < min ? d : min))
+    : values.dropOffDate;
 
   let rentalNet;
   let rentalGross;
-  if (manualActive) {
-    rentalNet = n(lastPeriod.netAmount);
-    rentalGross = n(lastPeriod.grossAmount);
-  } else if (isMonthly) {
+  let term = { months: 0, days: billableDays };
+  if (isMonthly) {
+    term = termBetween(values.pickUpDate, baseEndDate);
     const m = n(values.monthlyPrice);
     rentalNet = round2(term.months * m + term.days * round2(m / 30));
     rentalGross = round2(rentalNet * (1 + vatRate / 100));
@@ -130,10 +129,9 @@ export const computePricing = (values, billableDays, periods = []) => {
   }
   const vat = round2(rentalGross - rentalNet);
 
+  const extTotal = round2(extensions.reduce((s, e) => s + n(e.extraAmount), 0));
   const extras = n(values.returnExtraAmount);
-  const activeTotal = round2(rentalGross + extras);
-  const closedGross = round2(closed.reduce((s, p) => s + n(p.grossAmount), 0));
-  const contractTotal = round2(closedGross + rentalGross + extras);
+  const total = round2(rentalGross + extTotal + extras);
 
   return {
     isMonthly,
@@ -143,11 +141,10 @@ export const computePricing = (values, billableDays, periods = []) => {
     rentalNet,
     vat,
     rentalGross,
+    extTotal,
+    extCount: extensions.length,
     extras,
-    activeTotal,
-    contractTotal,
-    hasClosedPeriods: closed.length > 0,
-    total: contractTotal,
+    total,
   };
 };
 

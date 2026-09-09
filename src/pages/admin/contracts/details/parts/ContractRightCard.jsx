@@ -29,7 +29,7 @@ const Panel = ({ title, children, className = "" }) => (
 // payments / return-extra / extension / vehicle-change), and the price summary.
 const ContractRightCard = ({
   isCreate, contractId, formik, navKey,
-  customers, customer, invoices, periods, vehicleChanges,
+  customers, customer, invoices, extensions, vehicleChanges,
   refreshCustomers, onRequestNewCustomer, onInvoicesChange, loadData, loadPayments,
   selectedCar, billableDays, pricing, collected,
   recordLabels, money,
@@ -122,7 +122,7 @@ const ContractRightCard = ({
               isCreate={isCreate}
               contractId={contractId}
               minDate={formik.values.dropOffDate}
-              periods={periods}
+              extensions={extensions}
               isMonthly={formik.values.rentalType === "MONTHLY"}
               onExtended={loadData}
               money={money}
@@ -150,7 +150,6 @@ const ContractRightCard = ({
           formik={formik}
           pricing={pricing}
           billableDays={billableDays}
-          periods={periods}
           collected={collected}
           money={money}
         />
