@@ -54,7 +54,9 @@
       "button": "Fill from Registration",
       "hint": "Upload a photo or PDF of the registration certificate to auto-fill the fields.",
       "success": "Registration read successfully — please review the fields.",
-      "error": "Could not read the registration document, please fill in manually."
+      "error": "Could not read the registration document, please fill in manually.",
+      "tooLarge": "File is too large. Please upload a smaller image (about 4 MB max) or a PDF.",
+      "busy": "The AI service is busy right now. Please try again in a few seconds."
     },
     "modelImages": {
       "title": "Model Images",

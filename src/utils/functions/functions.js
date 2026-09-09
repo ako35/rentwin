@@ -54,6 +54,46 @@ export const combineDateAndTime = (date, time) => {
     return moment(`${date} ${time}`).format("MM/DD/YYYY HH:mm:ss");
 }
 
+// Shrink a photo before upload so it clears the serverless request-body cap
+// (Vercel ~4.5 MB) and the multer limit — a phone snap of a belge is 3-8 MB but
+// stays perfectly readable at ~2000 px / JPEG. PDFs and non-images pass through
+// untouched; if anything fails, or the result isn't smaller, the original is
+// returned so the upload still goes ahead.
+export const downscaleImage = (file, { maxEdge = 2000, quality = 0.82 } = {}) =>
+    new Promise((resolve) => {
+        if (!file || !file.type?.startsWith("image/")) return resolve(file);
+
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+            URL.revokeObjectURL(url);
+            const scale = Math.min(1, maxEdge / Math.max(img.width, img.height));
+            if (scale === 1 && file.size <= 3 * 1024 * 1024) return resolve(file);
+
+            const canvas = document.createElement("canvas");
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            const ctx = canvas.getContext("2d");
+            if (!ctx) return resolve(file);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(
+                (blob) => {
+                    if (!blob || blob.size >= file.size) return resolve(file);
+                    const name = file.name.replace(/\.(png|webp|heic|heif|bmp|tiff?)$/i, ".jpg");
+                    resolve(new File([blob], name, { type: "image/jpeg", lastModified: Date.now() }));
+                },
+                "image/jpeg",
+                quality
+            );
+        };
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            resolve(file);
+        };
+        img.src = url;
+    });
+
 // URL slug from a display name — Turkish letters folded to ASCII so the
 // location SEO routes stay clean (Aliağa -> aliaga, İzmir -> izmir).
 export const slugify = (value = "") => {

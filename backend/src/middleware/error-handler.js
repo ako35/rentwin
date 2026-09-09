@@ -18,7 +18,11 @@ const errorHandler = (err, req, res, next) => {
   }
 
   if (err.name === "MulterError") {
-    return res.status(400).json({ message: err.message });
+    const message =
+      err.code === "LIMIT_FILE_SIZE"
+        ? "Dosya çok büyük — lütfen daha küçük bir görsel yükleyin."
+        : err.message;
+    return res.status(400).json({ message });
   }
 
   console.error(err);

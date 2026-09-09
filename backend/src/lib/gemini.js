@@ -52,25 +52,37 @@ Kurallar:
 - registrationDate: YYYY-MM-DD formatında.
 - modelYear: yalnızca 4 haneli yıl sayısı.`;
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 const extractVehicleRegistration = async (buffer, mimeType) => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY tanımlı değil.");
 
-  const response = await fetch(ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [
-            { text: PROMPT },
-            { inline_data: { mime_type: mimeType, data: buffer.toString("base64") } },
-          ],
-        },
-      ],
-      generationConfig: { responseMimeType: "application/json", responseSchema: REGISTRATION_SCHEMA },
-    }),
+  const body = JSON.stringify({
+    contents: [
+      {
+        parts: [
+          { text: PROMPT },
+          { inline_data: { mime_type: mimeType, data: buffer.toString("base64") } },
+        ],
+      },
+    ],
+    generationConfig: { responseMimeType: "application/json", responseSchema: REGISTRATION_SCHEMA },
   });
+
+  // gemini-flash routinely answers 503 ("high demand — usually temporary") or
+  // 429 under load; one quick retry turns most of those into a success before
+  // the operator sees an error, while staying well inside the 10s function cap.
+  let response;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    response = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+      body,
+    });
+    if (response.ok || (response.status !== 503 && response.status !== 429)) break;
+    if (attempt === 0) await sleep(900);
+  }
 
   if (!response.ok) {
     const text = await response.text().catch(() => "");

@@ -54,7 +54,9 @@
       "button": "Ruhsattan Doldur",
       "hint": "Ruhsat fotoğrafı veya PDF'i yükleyin, bilgiler otomatik doldurulsun.",
       "success": "Ruhsat okundu, alanlar dolduruldu. Lütfen kontrol edin.",
-      "error": "Ruhsat okunamadı, lütfen alanları elle doldurun."
+      "error": "Ruhsat okunamadı, lütfen alanları elle doldurun.",
+      "tooLarge": "Dosya çok büyük. Lütfen daha küçük bir görsel (en fazla ~4 MB) veya PDF yükleyin.",
+      "busy": "Yapay zeka servisi şu an yoğun. Lütfen birkaç saniye sonra tekrar deneyin."
     },
     "modelImages": {
       "title": "Model Görselleri",

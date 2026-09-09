@@ -12,19 +12,27 @@ const RegistrationScan = ({ onExtracted }) => {
   const inputRef = useRef();
   const [scanning, setScanning] = useState(false);
 
+  const tr = (key) => t(`vehicles.registrationScan.${key}`);
+
   const handleChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setScanning(true);
     try {
-      const fields = await services.vehicle.extractRegistration(file);
+      // Shrink phone photos client-side — a raw 3-8 MB snap trips the serverless
+      // request-body limit; ~2000 px stays sharp enough to read a ruhsat.
+      const prepared = await utils.functions.downscaleImage(file);
+      if (prepared.size > 4 * 1024 * 1024) {
+        utils.functions.swalToast(tr("tooLarge"), "error");
+        return;
+      }
+      const fields = await services.vehicle.extractRegistration(prepared);
       onExtracted(fields);
-      utils.functions.swalToast(t("vehicles.registrationScan.success"), "success");
+      utils.functions.swalToast(tr("success"), "success");
     } catch (error) {
-      utils.functions.swalToast(
-        error?.response?.data?.message || t("vehicles.registrationScan.error"),
-        "error"
-      );
+      const status = error?.response?.status;
+      const key = status === 502 || status === 503 ? "busy" : status === 413 ? "tooLarge" : "error";
+      utils.functions.swalToast(tr(key), "error");
     } finally {
       setScanning(false);
       e.target.value = "";
