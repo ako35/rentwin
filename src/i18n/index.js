@@ -99,8 +99,12 @@ i18n
       "validation",
     ],
     defaultNS: "common",
+    // Rentwin is a Turkish-market site: default to TR and only switch when the
+    // visitor explicitly picks EN (which caches to localStorage). Following the
+    // browser's `navigator.language` made Googlebot — which crawls with an
+    // en-US locale — index the English <title>/description for every page.
     detection: {
-      order: ["localStorage", "navigator"],
+      order: ["localStorage"],
       caches: ["localStorage"],
       lookupLocalStorage: "rentwinLanguage",
     },
