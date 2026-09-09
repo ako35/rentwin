@@ -805,6 +805,16 @@
     "customer": "Müşteri",
     "admin": "Yönetici",
     "builtInWarning": "Yerleşik hesaplar silinemez veya güncellenemez.",
+    "documentScan": {
+      "buttonIndividual": "Ehliyet / Kimlikten Doldur",
+      "buttonCorporate": "Kaşe / Vergi Levhasından Doldur",
+      "hintIndividual": "Ehliyet veya kimlik fotoğrafı/PDF'i yükleyin, ad-soyad ve T.C. No otomatik dolsun.",
+      "hintCorporate": "Kaşe veya vergi levhası fotoğrafı/PDF'i yükleyin, unvan, vergi no ve adres otomatik dolsun.",
+      "success": "Belge okundu, alanlar dolduruldu. Lütfen kontrol edin.",
+      "error": "Belge okunamadı, lütfen alanları elle doldurun.",
+      "tooLarge": "Dosya çok büyük. Lütfen daha küçük bir görsel (en fazla ~4 MB) veya PDF yükleyin.",
+      "busy": "Yapay zeka servisi şu an yoğun. Lütfen birkaç saniye sonra tekrar deneyin."
+    },
     "form": {
       "firstName": "Ad",
       "lastName": "Soyad",

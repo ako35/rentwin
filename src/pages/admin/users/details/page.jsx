@@ -6,6 +6,8 @@ import { Alert, Button, Form, Spinner } from "react-bootstrap";
 import { constants } from "../../../../constants";
 import { utils } from "../../../../utils";
 import { CustomForm, Loading } from "../../../../components";
+import DocumentScan from "../../../../components/admin/customer-form/document-scan";
+import { applyExtractedCustomerFields } from "../../../../components/admin/customer-form/apply-extracted";
 import { services } from "../../../../services";
 import { TR_PROVINCES, TR_DISTRICTS } from "../../../../constants/tr-geo";
 import "./style.scss";
@@ -182,6 +184,10 @@ const AdminUserDetailsPage = () => {
 
         <section className="customer-form__card">
           <h3>{isCorporate ? t("users.form.groups.company") : t("users.form.groups.identity")}</h3>
+          <DocumentScan
+            customerType={formik.values.customerType}
+            onExtracted={(fields) => applyExtractedCustomerFields(formik, fields)}
+          />
           <div className="customer-form__grid">
             {identityFields.map((item) => (
               <CustomForm key={item.name} formik={formik} {...item} />

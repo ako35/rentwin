@@ -5,6 +5,8 @@ import { Button, Form, Modal, Spinner } from "react-bootstrap";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import { CustomForm } from "../../../../../components";
+import DocumentScan from "../../../../../components/admin/customer-form/document-scan";
+import { applyExtractedCustomerFields } from "../../../../../components/admin/customer-form/apply-extracted";
 import { TR_PROVINCES, TR_DISTRICTS } from "../../../../../constants/tr-geo";
 import { EMPTY_NEW_CUST } from "../contract-helpers";
 import "./new-customer-modal.scss";
@@ -132,6 +134,10 @@ const NewCustomerModal = ({ show, onHide, onCreated }) => {
 
           <section className="customer-form__card">
             <h3>{isCorporate ? t("users.form.groups.company") : t("users.form.groups.identity")}</h3>
+            <DocumentScan
+              customerType={formik.values.customerType}
+              onExtracted={(fields) => applyExtractedCustomerFields(formik, fields)}
+            />
             <div className="customer-form__grid">
               {identityFields.map((item) => (
                 <CustomForm key={item.name} formik={formik} {...item} />

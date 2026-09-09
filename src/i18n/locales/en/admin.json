@@ -805,6 +805,16 @@
     "customer": "Customer",
     "admin": "Admin",
     "builtInWarning": "Built-in accounts cannot ve deleted or updated.",
+    "documentScan": {
+      "buttonIndividual": "Fill from Licence / ID",
+      "buttonCorporate": "Fill from Stamp / Tax Registration",
+      "hintIndividual": "Upload a photo or PDF of a driving licence or ID to auto-fill name and national ID.",
+      "hintCorporate": "Upload a photo or PDF of a company stamp or tax registration to auto-fill title, tax no and address.",
+      "success": "Document read — please review the fields.",
+      "error": "Could not read the document, please fill in manually.",
+      "tooLarge": "File is too large. Please upload a smaller image (about 4 MB max) or a PDF.",
+      "busy": "The AI service is busy right now. Please try again in a few seconds."
+    },
     "form": {
       "firstName": "First Name",
       "lastName": "Last Name",

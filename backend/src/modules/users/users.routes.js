@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const authenticate = require("../../middleware/authenticate");
 const requireAdmin = require("../../middleware/require-admin");
+const upload = require("../../middleware/upload");
 const {
   getCurrentUser,
   updateCurrentUser,
@@ -11,6 +12,7 @@ const {
   updateUserAdmin,
   deleteUserAdmin,
 } = require("./users.controller");
+const { extractDocument } = require("./users.ai.controller");
 
 const router = Router();
 
@@ -19,6 +21,13 @@ router.put("/user", authenticate, updateCurrentUser);
 router.patch("/user/auth", authenticate, changePassword);
 
 router.get("/user/auth/pages", authenticate, requireAdmin, getUsersByPageAdmin);
+router.post(
+  "/user/auth/extract-document",
+  authenticate,
+  requireAdmin,
+  upload.single("file"),
+  extractDocument
+);
 router.post("/user/auth", authenticate, requireAdmin, createUserAdmin);
 router.get("/user/:id/auth", authenticate, requireAdmin, getUserAdmin);
 router.put("/user/:id/auth", authenticate, requireAdmin, updateUserAdmin);

@@ -1,7 +1,7 @@
 // Google Gemini calls over the plain REST API (no SDK — each is a single JSON
-// POST): (1) vision — read a Turkish vehicle registration certificate (ruhsat)
-// photo into structured fields; (2) image generation — produce a studio catalog
-// photo of a vehicle from its make/model/colour.
+// POST): (1) vision — read a Turkish document (vehicle registration / driving
+// licence / company stamp) photo into structured fields; (2) image generation —
+// produce a studio catalog photo of a vehicle from its make/model/colour.
 const API_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 const MODEL = "gemini-3.6-flash";
 const ENDPOINT = `${API_BASE}/${MODEL}:generateContent`;
@@ -54,7 +54,11 @@ Kurallar:
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const extractVehicleRegistration = async (buffer, mimeType) => {
+// One vision call: a document photo + a prompt + a response schema -> the parsed
+// JSON object. gemini-flash routinely answers 503 ("high demand — usually
+// temporary") or 429 under load, so one quick retry turns most of those into a
+// success while staying inside the 10s function cap.
+const geminiVisionJson = async (buffer, mimeType, prompt, schema) => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY tanımlı değil.");
 
@@ -62,17 +66,14 @@ const extractVehicleRegistration = async (buffer, mimeType) => {
     contents: [
       {
         parts: [
-          { text: PROMPT },
+          { text: prompt },
           { inline_data: { mime_type: mimeType, data: buffer.toString("base64") } },
         ],
       },
     ],
-    generationConfig: { responseMimeType: "application/json", responseSchema: REGISTRATION_SCHEMA },
+    generationConfig: { responseMimeType: "application/json", responseSchema: schema },
   });
 
-  // gemini-flash routinely answers 503 ("high demand — usually temporary") or
-  // 429 under load; one quick retry turns most of those into a success before
-  // the operator sees an error, while staying well inside the 10s function cap.
   let response;
   for (let attempt = 0; attempt < 2; attempt += 1) {
     response = await fetch(ENDPOINT, {
@@ -94,6 +95,67 @@ const extractVehicleRegistration = async (buffer, mimeType) => {
   if (!text) throw new Error("Gemini API'den beklenmeyen yanıt.");
   return JSON.parse(text);
 };
+
+const extractVehicleRegistration = (buffer, mimeType) =>
+  geminiVisionJson(buffer, mimeType, PROMPT, REGISTRATION_SCHEMA);
+
+// --- Customer documents: driving licence (individual) / company stamp or tax
+// registration (corporate) -> the customer-form prefill payload. -----------------
+
+const INDIVIDUAL_DOC_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    documentDetected: {
+      type: "BOOLEAN",
+      description:
+        "Görselde gerçekten bir Türkiye sürücü belgesi (ehliyet) veya T.C. kimlik kartı / nüfus cüzdanı görülüyor mu?",
+    },
+    firstName: { type: "STRING", nullable: true, description: "Adı (verilen ad)" },
+    lastName: { type: "STRING", nullable: true, description: "Soyadı" },
+    nationalId: { type: "STRING", nullable: true, description: "T.C. Kimlik No — tam 11 rakam" },
+  },
+  required: ["documentDetected"],
+};
+
+const INDIVIDUAL_DOC_PROMPT = `Bu görüntü bir Türkiye sürücü belgesi (ehliyet) ya da T.C. kimlik kartı / nüfus cüzdanı mı incele.
+Kurallar:
+- Böyle bir belge değilse ya da hiçbir alan güvenle okunamıyorsa documentDetected=false yap ve tüm alanları null bırak. Asla tahmin etme.
+- Belgeyse documentDetected=true yap; yalnızca NET okuduğun alanları doldur, okuyamadığını null bırak.
+- Sürücü belgesinde alanlar numaralıdır: 1=Soyadı, 2=Adı, 4d=T.C. Kimlik No. Kimlik kartında "Soyadı/Surname", "Adı/Given Name(s)", "T.C. Kimlik No / TR Identity No".
+- firstName/lastName: Türkçe, belgede yazıldığı gibi (BÜYÜK HARF olabilir, olduğu gibi bırak).
+- nationalId: yalnızca 11 rakam, boşluksuz.`;
+
+const CORPORATE_DOC_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    documentDetected: {
+      type: "BOOLEAN",
+      description: "Görselde bir şirket kaşesi, vergi levhası veya antetli/imza sirküleri belgesi görülüyor mu?",
+    },
+    companyTitle: { type: "STRING", nullable: true, description: "Şirketin tam ticari unvanı (örn. ... LTD. ŞTİ. / A.Ş.)" },
+    nationalId: { type: "STRING", nullable: true, description: "Vergi Kimlik No (VKN) — 10 rakam; yoksa 11 haneli T.C. No" },
+    taxOffice: { type: "STRING", nullable: true, description: "Vergi Dairesi adı" },
+    address: { type: "STRING", nullable: true, description: "Açık adres — il ve ilçe HARİÇ sokak/mahalle/no kısmı" },
+    city: { type: "STRING", nullable: true, description: "İl, Türkçe ve düzgün büyük/küçük harf (örn. İzmir)" },
+    district: { type: "STRING", nullable: true, description: "İlçe, Türkçe ve düzgün büyük/küçük harf (örn. Konak)" },
+    phoneNumber: { type: "STRING", nullable: true, description: "Telefon numarası, yalnızca rakamlar" },
+  },
+  required: ["documentDetected"],
+};
+
+const CORPORATE_DOC_PROMPT = `Bu görüntü bir şirket kaşesi, vergi levhası veya antetli kağıt / imza sirküleri mi incele.
+Kurallar:
+- Böyle bir belge değilse ya da hiçbir alan güvenle okunamıyorsa documentDetected=false yap ve tüm alanları null bırak. Asla tahmin etme.
+- Belgeyse documentDetected=true yap; yalnızca NET okuduğun alanları doldur, okuyamadığını null bırak.
+- companyTitle: unvanın tamamı, "LTD. ŞTİ." / "A.Ş." gibi ekler dahil.
+- nationalId: Vergi No / VKN varsa onu yaz (10 rakam), yoksa T.C. Kimlik No (11 rakam). Yalnızca rakamlar.
+- address: yalnızca sokak / mahalle / bina no kısmı; il ve ilçeyi ayrı alanlara yaz.
+- city / district: Türkçe, düzgün yazımla (İzmir, Konak). İlçe belli değilse null bırak.`;
+
+const extractCustomerDocument = (buffer, mimeType, kind) =>
+  kind === "corporate"
+    ? geminiVisionJson(buffer, mimeType, CORPORATE_DOC_PROMPT, CORPORATE_DOC_SCHEMA)
+    : geminiVisionJson(buffer, mimeType, INDIVIDUAL_DOC_PROMPT, INDIVIDUAL_DOC_SCHEMA);
 
 const IMAGE_PROMPT = ({ brand, model, modelYear, color }) => {
   const subject = [modelYear, color, brand, model].filter(Boolean).join(" ").trim();
@@ -144,4 +206,4 @@ const generateVehicleImage = async ({ brand, model, modelYear, color }) => {
   return { base64: inline.data, mimeType: inline.mimeType || inline.mime_type || "image/png" };
 };
 
-module.exports = { extractVehicleRegistration, generateVehicleImage };
+module.exports = { extractVehicleRegistration, extractCustomerDocument, generateVehicleImage };

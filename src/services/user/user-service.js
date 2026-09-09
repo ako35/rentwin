@@ -67,3 +67,19 @@ export const updateUserAdmin = async (id, payload) => {
     const response = await axios.put(`${API_URL}/user/${id}/auth`, payload, services.authHeader());
     return response.data;
 };
+
+// "Belgeden Doldur": send a photo/PDF of a customer document (driving licence or
+// ID for kind "individual", company stamp / tax registration for "corporate")
+// and get the parsed fields back to prefill the form. No explicit Content-Type —
+// axios adds the multipart boundary itself.
+export const extractCustomerDocument = async (file, kind) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("kind", kind);
+    const response = await axios.post(
+        `${API_URL}/user/auth/extract-document`,
+        formData,
+        services.authHeader()
+    );
+    return response.data;
+};
