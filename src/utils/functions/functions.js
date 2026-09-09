@@ -62,13 +62,16 @@ export const combineDateAndTime = (date, time) => {
 export const downscaleImage = (file, { maxEdge = 2000, quality = 0.82 } = {}) =>
     new Promise((resolve) => {
         if (!file || !file.type?.startsWith("image/")) return resolve(file);
+        // Already small enough to send as-is — skip decoding it (and creating an
+        // object URL) entirely.
+        if (file.size <= 1.5 * 1024 * 1024) return resolve(file);
 
         const url = URL.createObjectURL(file);
         const img = new Image();
         img.onload = () => {
             URL.revokeObjectURL(url);
             const scale = Math.min(1, maxEdge / Math.max(img.width, img.height));
-            if (scale === 1 && file.size <= 3 * 1024 * 1024) return resolve(file);
+            if (scale === 1) return resolve(file);
 
             const canvas = document.createElement("canvas");
             canvas.width = Math.round(img.width * scale);

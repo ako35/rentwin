@@ -3,7 +3,11 @@
 // licence / company stamp) photo into structured fields; (2) image generation —
 // produce a studio catalog photo of a vehicle from its make/model/colour.
 const API_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
-const MODEL = "gemini-3.6-flash";
+// gemini-3.6-flash has a tiny free-tier daily cap (20 requests) that a busy
+// office blows through; gemini-3.7-flash has the normal free quota and answers
+// reliably (occasional 503s under load are retried below). Override with
+// GEMINI_VISION_MODEL without a redeploy if a better model appears.
+const MODEL = process.env.GEMINI_VISION_MODEL || "gemini-3.7-flash";
 const ENDPOINT = `${API_BASE}/${MODEL}:generateContent`;
 
 // Image generation ("Nano Banana") has NO free-tier quota — the project behind
@@ -75,14 +79,14 @@ const geminiVisionJson = async (buffer, mimeType, prompt, schema) => {
   });
 
   let response;
-  for (let attempt = 0; attempt < 2; attempt += 1) {
+  for (let attempt = 0; attempt < 3; attempt += 1) {
     response = await fetch(ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
       body,
     });
     if (response.ok || (response.status !== 503 && response.status !== 429)) break;
-    if (attempt === 0) await sleep(900);
+    if (attempt < 2) await sleep(700 * (attempt + 1));
   }
 
   if (!response.ok) {
