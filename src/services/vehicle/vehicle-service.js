@@ -30,9 +30,9 @@ export const getVehiclesByPage = async (
 };
 
 // ADMIN ENDPOINTS
-export const addVehicle = async(imageId, payload) => {
+export const addVehicle = async(payload) => {
   const response = await axios.post(
-    `${API_URL}/car/admin/${imageId}/add`,
+    `${API_URL}/car/admin/add`,
     payload,
     services.authHeader()
   );
@@ -40,10 +40,6 @@ export const addVehicle = async(imageId, payload) => {
 };
 export const deleteVehicle = async(id) => {
   const response = await axios.delete(`${API_URL}/car/admin/${id}/auth`, services.authHeader());
-  return response.data;
-};
-export const deleteVehicleImage = async(id) => {
-  const response = await axios.delete(`${API_URL}/files/${id}`, services.authHeader());
   return response.data;
 };
 export const downloadVehicleReports = async() => {
@@ -56,9 +52,9 @@ export const downloadVehicleReports = async() => {
   });
   return response.data;
 };
-export const updateVehicle = async(vehicleId, imageId, payload) => {
+export const updateVehicle = async(vehicleId, payload) => {
   const response = await axios.put(
-    `${API_URL}/car/admin/auth?id=${vehicleId}&imageId=${imageId}`,
+    `${API_URL}/car/admin/auth?id=${vehicleId}`,
     payload,
     services.authHeader()
   );
@@ -90,15 +86,6 @@ export const getExpiryAlerts = async (branchId) => {
   );
   return response.data;
 };
-export const uploadVehicleImage = async(file) => {
-  const response = await axios.post(`${API_URL}/files/upload`, file, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      "Authorization": `Bearer ${services.encryptedLocalStorage.getItem("rentwintoken")}`
-    }
-  })
-  return response.data
-};
 export const extractRegistration = async (file) => {
   const formData = new FormData();
   formData.append("file", file);
@@ -108,13 +95,5 @@ export const extractRegistration = async (file) => {
       Authorization: `Bearer ${services.encryptedLocalStorage.getItem("rentwintoken")}`,
     },
   });
-  return response.data;
-};
-export const generateVehicleImage = async (payload) => {
-  const response = await axios.post(
-    `${API_URL}/car/admin/generate-image/auth`,
-    payload,
-    services.authHeader()
-  );
   return response.data;
 };

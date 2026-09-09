@@ -16,11 +16,6 @@ const VehicleForm = ({
   formik,
   vehicleId,
   vehicle,
-  imageSrc,
-  imageError,
-  fileImageRef,
-  onImageChange,
-  onAiImage,
   disabled = false,
   builtInWarning = false,
   children,
@@ -83,11 +78,6 @@ const VehicleForm = ({
             formik={formik}
             disabled={disabled}
             sections={sections}
-            imageSrc={imageSrc}
-            imageError={imageError}
-            fileImageRef={fileImageRef}
-            onImageChange={onImageChange}
-            onAiImage={onAiImage}
             handleModelPicked={handleModelPicked}
             plateTaken={plateTaken}
           />

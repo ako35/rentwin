@@ -98,14 +98,44 @@ $breakpointxl: 1200px;
     }
   }
 
-  &__ai-image-btn {
-    width: 100%;
+  &__model-image {
     margin-bottom: 1rem;
-    font-size: 0.8rem;
+  }
+
+  &__model-image-frame {
+    background-color: v.$color4;
+    border: 1px solid v.$color3;
+    border-radius: 6px;
+    aspect-ratio: 4 / 3;
+    @include m.flexbox(row, center, center);
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  &__model-image-empty {
+    @include m.flexbox(column, center, center, 0.35rem);
+    color: v.$color5_4;
+    font-size: 0.78rem;
+
+    svg {
+      font-size: 1.6rem;
+    }
+  }
+
+  &__model-image-hint {
+    margin: 0.5rem 0 0.25rem;
+    font-size: 0.75rem;
+    color: v.$color-muted;
+  }
+
+  &__model-image-link {
+    font-size: 0.78rem;
     font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
   }
 
   &__registration-scan-bar {
@@ -143,52 +173,6 @@ $breakpointxl: 1200px;
     padding: 1rem 1.5rem;
     border-top: 1px solid v.$color3;
     background-color: v.$color4;
-  }
-
-  .image-area {
-    background-color: v.$color4;
-    box-shadow: 0 0 5px v.$color1_5;
-    border-radius: 5px;
-    position: relative;
-    z-index: 1;
-    min-height: 170px;
-    margin-bottom: 1rem;
-    @include m.flexbox(row, center, center);
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 5px;
-    }
-
-    .cover {
-      @include m.flexbox(row, center, center);
-      position: absolute;
-      inset: 0;
-      background-color: rgba(51, 64, 58, 0.45);
-      opacity: 0;
-      z-index: 100;
-      transition: opacity 0.3s ease-in-out;
-
-      label.form-label {
-        @include m.button(v.$color1, v.$color4, v.$color2, v.$color4);
-        border: 1px solid v.$color1;
-        margin: 0;
-        cursor: pointer;
-      }
-    }
-
-    &:hover .cover {
-      opacity: 1;
-    }
-
-    .image-error {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translate(-50%, 50%);
-    }
   }
 
 }

@@ -13,7 +13,6 @@ const {
   getVehicleStatus,
 } = require("./vehicles.shared");
 const { pickVehicleFields } = require("./vehicle-fields");
-const { deleteImage } = require("../../lib/blob");
 
 // Prisma unique-constraint violation on Vehicle.licensePlate -> a clean 409.
 const isPlateClash = (err) =>
@@ -116,26 +115,14 @@ const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
 });
 
 const addVehicle = asyncHandler(async (req, res) => {
-  const image = await prisma.vehicleImage.findUnique({ where: { id: req.params.imageId } });
-  if (!image) throw new HttpError(404, "Image not found.");
-
   let vehicle;
   try {
     vehicle = await prisma.vehicle.create({
-      data: {
-        ...pickVehicleFields(req.body),
-        builtIn: false,
-        images: { connect: { id: image.id } },
-      },
+      data: { ...pickVehicleFields(req.body), builtIn: false },
       include: IMAGES_AND_BRANCH_INCLUDE,
     });
   } catch (err) {
-    if (isPlateClash(err)) {
-      // The image was uploaded before this failed — don't leave it orphaned.
-      await deleteImage(image.pathname).catch(() => {});
-      await prisma.vehicleImage.delete({ where: { id: image.id } }).catch(() => {});
-      throw plateTakenError();
-    }
+    if (isPlateClash(err)) throw plateTakenError();
     throw err;
   }
 
@@ -143,18 +130,12 @@ const addVehicle = asyncHandler(async (req, res) => {
 });
 
 const updateVehicle = asyncHandler(async (req, res) => {
-  const { id, imageId } = req.query;
+  const { id } = req.query;
   if (!id) throw new HttpError(400, "Missing vehicle id.");
 
   const target = await prisma.vehicle.findUnique({ where: { id } });
   if (!target) throw new HttpError(404, "Vehicle not found.");
   if (target.builtIn) throw new HttpError(403, "This vehicle cannot be modified.");
-
-  if (imageId) {
-    const image = await prisma.vehicleImage.findUnique({ where: { id: imageId } });
-    if (!image) throw new HttpError(404, "Image not found.");
-    await prisma.vehicleImage.update({ where: { id: imageId }, data: { vehicleId: id } });
-  }
 
   let vehicle;
   try {

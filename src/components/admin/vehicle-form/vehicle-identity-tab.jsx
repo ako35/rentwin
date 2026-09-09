@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { Alert, Badge, Button, Col, Form, Row } from "react-bootstrap";
+import { Alert, Col, Form, Row } from "react-bootstrap";
 import CustomForm from "../../common/custom-form/custom-form";
 import EditableSelectField from "./editable-select-field";
 import RegistrationScan from "./registration-scan";
-import AiImageButton from "./ai-image-button";
+import ModelImagePreview from "./model-image-preview";
 
 // Ruhsattan okunan alanları formik'e aktarır — boş/okunamayan alanlar dokunulmadan kalır.
 const REGISTRATION_FIELDS = [
@@ -11,12 +11,9 @@ const REGISTRATION_FIELDS = [
   "engineNo", "color", "fuelType", "registrationSerialNo", "registrationDate",
 ];
 
-// The "Araç" tab: image upload column + the grouped identity/registration
+// The "Araç" tab: model-image preview column + the grouped identity/registration
 // fields + notes + the out-of-service switch.
-const VehicleIdentityTab = ({
-  formik, disabled, sections, imageSrc, imageError, fileImageRef, onImageChange,
-  onAiImage, handleModelPicked, plateTaken,
-}) => {
+const VehicleIdentityTab = ({ formik, disabled, sections, handleModelPicked, plateTaken }) => {
   const { t } = useTranslation("admin");
 
   const handleRegistrationExtracted = (fields) => {
@@ -32,27 +29,7 @@ const VehicleIdentityTab = ({
     <fieldset disabled={disabled}>
       <Row>
         <Col xl={3} className="vehicle-form__image">
-          <div className="image-area">
-            {imageSrc && <img src={imageSrc} alt={formik.values.model} title={formik.values.model} />}
-            <Form.Group>
-              <Form.Control
-                type="file"
-                name="image"
-                accept=".jpg,.jpeg,.png"
-                ref={fileImageRef}
-                onChange={onImageChange}
-                id="selectImage"
-                className="d-none"
-              />
-              <div className="cover">
-                <Button as={Form.Label} htmlFor="selectImage">{t("vehicles.selectImage")}</Button>
-              </div>
-            </Form.Group>
-            {imageError && <Badge bg="danger" className="image-error">{imageError}</Badge>}
-          </div>
-          {onAiImage && (
-            <AiImageButton formik={formik} onImage={onAiImage} disabled={disabled} />
-          )}
+          <ModelImagePreview brand={formik.values.brand} model={formik.values.model} />
         </Col>
         <Col xl={9}>
           <div className="vehicle-form__registration-scan-bar">

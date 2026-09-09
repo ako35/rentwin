@@ -50,21 +50,11 @@
     "newVehicle": "New Vehicle",
     "downloadReports": "Download Vehicle Reports",
     "tableTitle": "Vehicles",
-    "selectImage": "Select Image",
     "registrationScan": {
       "button": "Fill from Registration",
       "hint": "Upload a photo or PDF of the registration certificate to auto-fill the fields.",
       "success": "Registration read successfully — please review the fields.",
       "error": "Could not read the registration document, please fill in manually."
-    },
-    "aiImage": {
-      "button": "Generate Image with AI",
-      "generating": "Generating image…",
-      "hint": "Enter the make, model, year and colour — AI renders a studio photo of the vehicle.",
-      "needBrandModel": "Enter the make and model first.",
-      "success": "Image generated and added to the form. It uploads when you save.",
-      "error": "Could not generate the image, please try again or upload one manually.",
-      "quota": "AI image quota exhausted — billing must be enabled on the API key's project."
     },
     "modelImages": {
       "title": "Model Images",

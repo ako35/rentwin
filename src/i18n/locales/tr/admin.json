@@ -50,21 +50,11 @@
     "newVehicle": "Yeni Araç",
     "downloadReports": "Araç Raporlarını İndir",
     "tableTitle": "Araçlar",
-    "selectImage": "Görsel Seç",
     "registrationScan": {
       "button": "Ruhsattan Doldur",
       "hint": "Ruhsat fotoğrafı veya PDF'i yükleyin, bilgiler otomatik doldurulsun.",
       "success": "Ruhsat okundu, alanlar dolduruldu. Lütfen kontrol edin.",
       "error": "Ruhsat okunamadı, lütfen alanları elle doldurun."
-    },
-    "aiImage": {
-      "button": "Yapay Zeka ile Görsel Oluştur",
-      "generating": "Görsel oluşturuluyor…",
-      "hint": "Marka, model, yıl ve rengi girin — yapay zeka aracın stüdyo görselini üretsin.",
-      "needBrandModel": "Önce marka ve model girin.",
-      "success": "Görsel oluşturuldu ve forma eklendi. Kaydettiğinizde yüklenecek.",
-      "error": "Görsel oluşturulamadı, lütfen tekrar deneyin veya elle yükleyin.",
-      "quota": "Yapay zeka görsel kotası dolu — API anahtarının bağlı olduğu projede faturalandırma açık olmalı."
     },
     "modelImages": {
       "title": "Model Görselleri",

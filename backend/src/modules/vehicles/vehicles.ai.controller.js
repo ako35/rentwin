@@ -1,6 +1,6 @@
 const HttpError = require("../../lib/http-error");
 const asyncHandler = require("../../middleware/async-handler");
-const { extractVehicleRegistration, generateVehicleImage } = require("../../lib/gemini");
+const { extractVehicleRegistration } = require("../../lib/gemini");
 
 // "Ruhsattan Doldur": admin uploads a photo of the registration certificate,
 // Gemini reads it and returns the fields as a prefill payload — nothing is
@@ -23,23 +23,4 @@ const extractRegistration = asyncHandler(async (req, res) => {
   res.json(fields);
 });
 
-// "Yapay Zeka ile Görsel Oluştur": admin fills the identity fields, Gemini
-// renders a studio catalog photo of that vehicle. Nothing is persisted — the
-// image comes back as a data URL and the frontend feeds it into the normal
-// upload path when the form is saved.
-const generateImage = asyncHandler(async (req, res) => {
-  const { brand, model, modelYear, color } = req.body || {};
-  if (!brand || !model) throw new HttpError(400, "Marka ve model gerekli.");
-
-  let image;
-  try {
-    image = await generateVehicleImage({ brand, model, modelYear, color });
-  } catch (error) {
-    if (error.code === "AI_IMAGE_QUOTA") throw new HttpError(429, error.message, "AI_IMAGE_QUOTA");
-    throw new HttpError(502, error.message);
-  }
-
-  res.json({ dataUrl: `data:${image.mimeType};base64,${image.base64}` });
-});
-
-module.exports = { extractRegistration, generateImage };
+module.exports = { extractRegistration };

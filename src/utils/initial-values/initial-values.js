@@ -81,7 +81,6 @@ export const adminNewVehicleFormInitialValues = {
     registrationDate: "",
     color: "",
     notes: "",
-    image: "",
 };
 
 // VEHICLE SUB-RECORD FORMS (insurance / tax / maintenance / inspection)

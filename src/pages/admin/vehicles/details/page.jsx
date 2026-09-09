@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, ButtonGroup, Form, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
@@ -11,8 +11,6 @@ import "./style.scss";
 
 const { routes } = constants;
 
-const API_URL = import.meta.env.VITE_APP_API_URL;
-
 const toDateInput = (value) => (value ? utils.functions.getDate(value) : "");
 const toText = (value) => value ?? "";
 
@@ -20,49 +18,21 @@ const AdminVehicleDetailsPage = () => {
   const { t } = useTranslation("admin");
 
   const [loading, setLoading] = useState(true);
-  const [imageChanged, setImageChanged] = useState(false);
-  const [imageSrc, setImageSrc] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [vehicle, setVehicle] = useState(null);
 
-  const fileImageRef = useRef();
   const { vehicleId } = useParams();
   const navigate = useNavigate();
 
   const [initialValues, setInitialValues] = useState({
     ...utils.initialValues.adminNewVehicleFormInitialValues,
-    image: [],
   });
 
   const onSubmit = async (values) => {
     setUpdating(true);
-
     try {
-      let imageId = values.image[0];
-      if (imageChanged) {
-        if (values.image.length > 1) {
-          values.image.array.forEach(async (image) => {
-            await services.vehicle.deleteVehicleImage(image);
-          });
-        } else if (imageId) {
-          await services.vehicle.deleteVehicleImage(imageId);
-        }
-
-        const newImageFile = fileImageRef.current.files[0];
-        const formData = new FormData();
-        formData.append("file", newImageFile);
-
-        const response = await services.vehicle.uploadVehicleImage(formData);
-
-        imageId = response.imageId;
-        setImageChanged(false);
-      }
-
-      const payload = { ...values };
-      delete payload.image;
-
-      await services.vehicle.updateVehicle(vehicleId, imageId, payload);
+      await services.vehicle.updateVehicle(vehicleId, values);
       utils.functions.swalToast(t("vehicles.toasts.updateSuccess"), "success");
     } catch (error) {
       const key =
@@ -81,28 +51,6 @@ const AdminVehicleDetailsPage = () => {
     onSubmit,
     enableReinitialize: true,
   });
-
-  const handleImageChange = () => {
-    const file = fileImageRef.current.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setImageSrc(reader.result);
-      setImageChanged(true);
-    };
-  };
-
-  // AI-generated image: push the File into the real <input type=file> so the
-  // save flow (which reads fileImageRef.current.files[0]) picks it up.
-  const handleAiImage = (file, previewUrl) => {
-    const transfer = new DataTransfer();
-    transfer.items.add(file);
-    fileImageRef.current.files = transfer.files;
-    setImageSrc(previewUrl);
-    setImageChanged(true);
-  };
 
   const loadData = async () => {
     try {
@@ -123,9 +71,7 @@ const AdminVehicleDetailsPage = () => {
         registrationDate: toDateInput(response.registrationDate),
         nextMaintenanceDate: toDateInput(response.nextMaintenanceDate),
         nextInspectionDate: toDateInput(response.nextInspectionDate),
-        image: response.image,
       });
-      setImageSrc(`${API_URL}/files/display/${response.image[0]}`);
     } catch (error) {
       console.log(error);
     } finally {
@@ -172,10 +118,6 @@ const AdminVehicleDetailsPage = () => {
         formik={formik}
         vehicleId={vehicleId}
         vehicle={vehicle}
-        imageSrc={imageSrc}
-        fileImageRef={fileImageRef}
-        onImageChange={handleImageChange}
-        onAiImage={handleAiImage}
         disabled={formik.values.builtIn}
         builtInWarning={formik.values.builtIn}
       >
@@ -185,10 +127,7 @@ const AdminVehicleDetailsPage = () => {
           </Button>
           {!formik.values.builtIn && (
             <>
-              <Button
-                type="submit"
-                disabled={(!imageChanged && !(formik.dirty && formik.isValid)) || updating}
-              >
+              <Button type="submit" disabled={!(formik.dirty && formik.isValid) || updating}>
                 {updating && <Spinner animation="border" size="sm" />} {t("vehicles.update")}
               </Button>
               <Button variant="danger" disabled={deleting} onClick={handleDelete}>

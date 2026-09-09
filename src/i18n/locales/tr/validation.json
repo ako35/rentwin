@@ -148,8 +148,7 @@
     "airConditioningRequired": "Lütfen aracın klimalı olup olmadığını seçin",
     "fuelTypeRequired": "Bir yakıt tipi seçin",
     "ageRequired": "Aracın yaşını girin",
-    "pricePerHourRequired": "Saatlik fiyatı girin",
-    "imageRequired": "Lütfen bir görsel yükleyin"
+    "pricePerHourRequired": "Saatlik fiyatı girin"
   },
   "vehicleRecords": {
     "required": "Bu alan zorunlu",

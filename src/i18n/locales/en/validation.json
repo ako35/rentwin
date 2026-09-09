@@ -148,8 +148,7 @@
     "airConditioningRequired": "Please select whether the vehicle has air conditioning or not",
     "fuelTypeRequired": "Select a fuel type",
     "ageRequired": "Enter the vehicle age",
-    "pricePerHourRequired": "Enter the price per hour",
-    "imageRequired": "Please upload an image"
+    "pricePerHourRequired": "Enter the price per hour"
   },
   "vehicleRecords": {
     "required": "This field is required",
