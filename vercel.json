@@ -6,6 +6,17 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "backend/api/index.js" },
     { "src": "/sitemap.xml", "dest": "backend/api/index.js" },
+    {
+      "src": "/(vehicles/[^/]+|lokasyonlar/[^/]+|vehicles|lokasyonlar|about|contact|sss|privacy-policy)/?",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*([Bb]ot|[Cc]rawl|[Ss]pider|facebookexternalhit|WhatsApp|Twitterbot|Slackbot|LinkedInBot|TelegramBot|Discordbot|Applebot|Pinterest|Embedly|Googlebot|Google-InspectionTool|bingbot|BingPreview|YandexBot|Baiduspider|DuckDuckBot|Lighthouse|GPTBot|ChatGPT|OAI-SearchBot|ClaudeBot|Claude-Web|PerplexityBot|Amazonbot|redditbot|vkShare|SkypeUriPreview).*"
+        }
+      ],
+      "dest": "backend/api/index.js"
+    },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]

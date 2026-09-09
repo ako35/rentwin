@@ -23,6 +23,7 @@ const announcementsRoutes = require("./modules/announcements/announcements.route
 const ledgerRoutes = require("./modules/ledger/ledger.routes");
 const settingsRoutes = require("./modules/settings/settings.routes");
 const { getSitemap } = require("./modules/sitemap/sitemap.controller");
+const { renderPage } = require("./modules/prerender/prerender.controller");
 const notFound = require("./middleware/not-found");
 const errorHandler = require("./middleware/error-handler");
 
@@ -92,6 +93,22 @@ app.use("/api", api);
 // Served at the site root (see vercel.json rewrite) so search engines find it
 // at https://rentwin.com.tr/sitemap.xml.
 app.get("/sitemap.xml", getSitemap);
+
+// Bot prerender. vercel.json routes only crawler/social user-agents on these
+// paths here; human browsers keep getting the static SPA shell untouched.
+app.get(
+  [
+    "/vehicles",
+    "/vehicles/:id",
+    "/lokasyonlar",
+    "/lokasyonlar/:slug",
+    "/about",
+    "/contact",
+    "/sss",
+    "/privacy-policy",
+  ],
+  renderPage
+);
 
 app.use(notFound);
 app.use(errorHandler);

@@ -2,20 +2,7 @@ const prisma = require("../../lib/prisma");
 const asyncHandler = require("../../middleware/async-handler");
 const { modelImageKey } = require("../../lib/serializers");
 const { loadModelImageMap } = require("../vehicles/vehicles.shared");
-
-const SITE_URL = (process.env.PUBLIC_SITE_URL || "https://rentwin.com.tr").replace(/\/+$/, "");
-
-// Mirrors src/utils/functions/functions.js slugify so location URLs match the SPA.
-const slugify = (value = "") => {
-  const map = { ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u", İ: "i", I: "i" };
-  return value
-    .toString()
-    .trim()
-    .replace(/[çğıöşüİI]/g, (c) => map[c] ?? c)
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-};
+const { SITE_URL, slugify } = require("../../lib/site");
 
 const STATIC_ROUTES = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
