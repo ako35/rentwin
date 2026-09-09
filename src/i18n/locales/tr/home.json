@@ -30,7 +30,7 @@
     "popularCars": {
       "title1": "Popüler",
       "title2": "Araçlar",
-      "desc": "Olağanüstü sürdürülebilirlik hedeflerimize katkıda bulunmak ve olumlu değişime öncülük etmek için buradayız"
+      "desc": "En çok tercih edilen modeller: ekonomik hatchback'lerden ferah SUV'lara, Aliağa ve İzmir'de hemen kiralayabileceğiniz bakımlı araçlar."
     },
     "bestOffers": {
       "title1": "En İyi",
@@ -109,7 +109,7 @@
       { "id": 2, "title": "Kurumsal Filo Çözümleri" },
       { "id": 3, "title": "Uzun Dönem Kiralama Programları" },
       { "id": 4, "title": "Premium Otomobil Kiralama" },
-      { "id": 5, "title": "Sürdürülebilir Ulaşım Çözümleri" },
+      { "id": 5, "title": "Havalimanı Teslim & Karşılama" },
       { "id": 6, "title": "Arazi Aracı Kiralama" }
     ]
   }

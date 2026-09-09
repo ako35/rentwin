@@ -61,6 +61,7 @@ const LocationDetailPage = () => {
 
   const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(`${name} İzmir`)}&output=embed`;
   const bullets = t("detail.why", { name, returnObjects: true });
+  const steps = t("detail.how", { name, returnObjects: true });
 
   return (
     <>
@@ -108,6 +109,18 @@ const LocationDetailPage = () => {
             </li>
           ))}
         </ul>
+
+        <Spacer />
+        <h2 className="location-detail__subtitle">{t("detail.howTitle", { name })}</h2>
+        <ol className="location-detail__steps">
+          {(Array.isArray(steps) ? steps : []).map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ol>
+        <p className="location-detail__faq">
+          {t("detail.faqLead")}{" "}
+          <Link to={routes.faq}>{t("detail.faqLink")}</Link>
+        </p>
 
         <Spacer />
         <h2 className="location-detail__subtitle">

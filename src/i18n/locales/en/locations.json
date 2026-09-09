@@ -17,6 +17,14 @@
       "Fast pick-up and drop-off at {{name}}",
       "Online booking with flexible cancellation"
     ],
+    "howTitle": "How does renting from {{name}} work?",
+    "how": [
+      "Choose your pick-up and drop-off dates and times to list the cars available at {{name}}.",
+      "Select your car and any extras (airport meet-and-greet, one-way rental, additional driver) and place the booking.",
+      "Pick up your car at {{name}} with your ID, licence, and card — no deposit required."
+    ],
+    "faqLead": "For questions about required documents, mileage limits, and the fuel policy, see:",
+    "faqLink": "Frequently Asked Questions",
     "mapTitle": "{{name}} Location",
     "vehiclesCta": "View Vehicles",
     "reserveCta": "Book Now",

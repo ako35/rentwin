@@ -5,6 +5,15 @@
   "seoDescription": "Browse our full rental fleet: reliable economy, family, and luxury vehicles. Pick the right car and book online in minutes.",
   "seoDetailsTitle": "Rent a {{name}} | Rentwin",
   "seoDetailsDescription": "Rent the {{name}} with Rentwin. Great rates, smooth handover, and dependable service — book your reservation now.",
+  "seoIntro": "Daily and long-term car rental in Aliağa and İzmir — a well-maintained, fully insured fleet with transparent pricing.",
+  "seoBody": {
+    "title": "Renting a Car with Rentwin",
+    "paragraphs": [
+      "Our fleet covers everything from hatchbacks and sedans to roomy SUVs and vans. Filter by brand, transmission, and fuel type to quickly find the right car for city driving, a business trip, or a holiday.",
+      "Pick your car up at our Aliağa office or at İzmir Adnan Menderes Airport, and drop it off at a different location if you need to. Just request the airport meet-and-greet when you book.",
+      "We ask for no deposit; the mileage limit, fuel policy, and toll (HGS) charges are all stated clearly in the contract. Book online in minutes and cancel free of charge up to 24 hours before pick-up."
+    ]
+  },
   "loadError": "Vehicle information cannot be loaded",
   "emptyList": "There are no vehicles to display right now.",
   "searchSummary": {

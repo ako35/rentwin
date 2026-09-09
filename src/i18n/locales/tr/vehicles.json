@@ -5,6 +5,15 @@
   "seoDescription": "Geniş kiralık araç filomuzu inceleyin: ekonomik, aile ve lüks segmentte güvenilir araçlar. Hemen uygun aracı seçin, online rezervasyon yapın.",
   "seoDetailsTitle": "{{name}} Kiralama | Rentwin",
   "seoDetailsDescription": "{{name}} aracını Rentwin güvencesiyle kiralayın. Uygun fiyat, sorunsuz teslimat ve güvenilir hizmet için hemen rezervasyon yapın.",
+  "seoIntro": "Aliağa ve İzmir'de günlük ve uzun dönem araç kiralama — bakımlı, tam sigortalı filo ve şeffaf fiyatlandırma.",
+  "seoBody": {
+    "title": "Rentwin ile Araç Kiralama",
+    "paragraphs": [
+      "Filomuz hatchback ve sedanlardan ferah SUV ve ticari araçlara kadar farklı ihtiyaçlara yanıt verir. Aracınızı marka, vites ve yakıt tipine göre filtreleyerek şehir içi kullanım, iş seyahati veya tatil için en uygun seçeneği hızlıca bulabilirsiniz.",
+      "Araçları Aliağa ofisimizden veya İzmir Adnan Menderes Havalimanı'ndan teslim alabilir, dilerseniz farklı bir noktada bırakabilirsiniz. Havalimanı karşılama hizmetini rezervasyon sırasında belirtmeniz yeterli.",
+      "Depozito talep etmiyoruz; kilometre limiti, yakıt politikası ve HGS geçişleri sözleşmede açıkça yazılıdır. Rezervasyonunuzu dakikalar içinde online oluşturabilir, alış saatine 24 saatten fazla varken ücretsiz iptal edebilirsiniz."
+    ]
+  },
   "loadError": "Araç bilgileri yüklenemedi",
   "emptyList": "Şu anda listelenecek araç bulunmuyor.",
   "searchSummary": {

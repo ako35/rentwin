@@ -161,6 +161,30 @@
     }
   }
 
+  &__steps {
+    margin: 0 0 1rem;
+    padding-left: 1.25rem;
+    @include m.flexbox(column, flex-start, stretch, 0.55rem);
+
+    li {
+      color: v.$color5_2;
+      line-height: 1.6;
+      padding-left: 0.25rem;
+    }
+  }
+
+  &__faq {
+    font-size: 0.95rem;
+    color: v.$color5_2;
+
+    a {
+      font-weight: 600;
+      color: v.$color1;
+
+      &:hover { color: v.$color2; }
+    }
+  }
+
   &__map {
     border-radius: 16px;
     overflow: hidden;

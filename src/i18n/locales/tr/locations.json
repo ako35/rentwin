@@ -17,6 +17,14 @@
       "{{name}} noktasından hızlı teslim alma ve bırakma",
       "Online rezervasyon ve esnek iptal koşulları"
     ],
+    "howTitle": "{{name}} lokasyonundan kiralama nasıl işler?",
+    "how": [
+      "Alış–bırakış tarih ve saatlerinizi seçip {{name}} için müsait araçları listeleyin.",
+      "Aracınızı ve ek hizmetleri (havalimanı karşılama, tek yön kiralama, ek sürücü) belirleyip rezervasyonu oluşturun.",
+      "{{name}} noktasında kimlik, ehliyet ve kart ile aracınızı teslim alın; depozito talep edilmez."
+    ],
+    "faqLead": "Gerekli belgeler, kilometre limiti ve yakıt politikası gibi sorular için:",
+    "faqLink": "Sıkça Sorulan Sorular",
     "mapTitle": "{{name}} Konumu",
     "vehiclesCta": "Araçları Gör",
     "reserveCta": "Hemen Rezervasyon Yap",

@@ -1,6 +1,6 @@
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { GiCarKey, GiJeep, GiRecycle, GiTimeSynchronization } from "react-icons/gi";
+import { GiCarKey, GiJeep, GiAirplaneDeparture, GiTimeSynchronization } from "react-icons/gi";
 import { TbBuildingSkyscraper } from "react-icons/tb";
 import { RiVipDiamondLine } from "react-icons/ri";
 import "./what-we-do.scss";
@@ -10,7 +10,7 @@ const serviceIcons = [
   <TbBuildingSkyscraper key="1" />,
   <GiTimeSynchronization key="2" />,
   <RiVipDiamondLine key="3" />,
-  <GiRecycle key="4" />,
+  <GiAirplaneDeparture key="4" />,
   <GiJeep key="5" />,
 ];
 

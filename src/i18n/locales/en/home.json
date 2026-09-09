@@ -30,7 +30,7 @@
     "popularCars": {
       "title1": "Popular",
       "title2": "Cars",
-      "desc": "To contribute to positive change and achieve our sustainability goals with many extraordinary"
+      "desc": "Our most-booked models: from economical hatchbacks to roomy SUVs, well-maintained cars you can rent today in Aliağa and İzmir."
     },
     "bestOffers": {
       "title1": "Get Our",
@@ -109,7 +109,7 @@
       { "id": 2, "title": "Corporate Fleet Solutions" },
       { "id": 3, "title": "Extended Lease Programs" },
       { "id": 4, "title": "Premium Automobile Hire" },
-      { "id": 5, "title": "Sustainable Mobility Solutions" },
+      { "id": 5, "title": "Airport Delivery & Meet-and-Greet" },
       { "id": 6, "title": "Off-Road Vehicle Leasing" }
     ]
   }

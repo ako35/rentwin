@@ -1,0 +1,35 @@
+@use "../../../styles/variables" as v;
+
+.vehicles-page {
+  &__intro {
+    max-width: 900px;
+
+    p {
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.7;
+      color: v.$color-muted;
+    }
+  }
+
+  &__about {
+    max-width: 900px;
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: v.$color5;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: v.$color-muted;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
