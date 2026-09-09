@@ -154,19 +154,19 @@ export const computePricing = (values, billableDays, extensions = []) => {
 // breakdown as the price. Mirrors backend contract-fields.computeAllowedKm.
 export const computeAllowedKm = (values, contractedDays) => {
   if (values.unlimitedKm) return Infinity;
-  const daily = Number(values.dailyKmLimit) || 0;
-  const monthly = Number(values.monthlyKmLimit) || 0;
 
+  // The rental type picks which limit applies — a daily rental is capped by the
+  // daily km limit, a monthly rental by the monthly one (matches the single
+  // field shown on the pricing card and the printed contract).
   if (values.rentalType === "MONTHLY") {
+    const monthly = Number(values.monthlyKmLimit) || 0;
+    if (monthly <= 0) return Infinity;
     const { months, days } = computeRentalTerm(values);
-    const dailyCap = daily > 0 ? daily * (months * 30 + days) : Infinity;
-    const monthlyCap = monthly > 0 ? months * monthly + Math.ceil(days * (monthly / 30)) : Infinity;
-    return Math.min(dailyCap, monthlyCap);
+    return months * monthly + Math.ceil(days * (monthly / 30));
   }
 
-  const dailyCap = daily > 0 ? daily * contractedDays : Infinity;
-  const monthlyCap = monthly > 0 ? monthly * Math.ceil(contractedDays / 30) : Infinity;
-  return Math.min(dailyCap, monthlyCap);
+  const daily = Number(values.dailyKmLimit) || 0;
+  return daily > 0 ? daily * contractedDays : Infinity;
 };
 
 // Return-time overage: excess km × ₺/km and missing fuel eighths × ₺/(1/8).

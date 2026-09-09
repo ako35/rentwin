@@ -118,8 +118,11 @@ const PricingBlock = ({ formik, pricing, billableDays, collected, money }) => {
         </div>
         {!formik.values.unlimitedKm && (
           <>
-            <InputRow formik={formik} name="dailyKmLimit" label={c("dailyKmLimit")} suffix="km/gün" />
-            <InputRow formik={formik} name="monthlyKmLimit" label={c("monthlyKmLimit")} suffix="km/ay" />
+            {isMonthly ? (
+              <InputRow formik={formik} name="monthlyKmLimit" label={c("monthlyKmLimit")} suffix="km/ay" />
+            ) : (
+              <InputRow formik={formik} name="dailyKmLimit" label={c("dailyKmLimit")} suffix="km/gün" />
+            )}
             <InputRow formik={formik} name="kmOverageFee" label={c("kmOverageFee")} suffix="₺/km" />
             <div className="pricing__row">
               <span className="pricing__label">{c("allowedKmForRental")}</span>

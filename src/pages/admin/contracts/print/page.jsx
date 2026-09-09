@@ -127,8 +127,9 @@ const ContractPrintPage = () => {
       rentVat: isMonthly ? money(baseVat) : null,
       rentGross: money(baseGross),
       kmUnlimited: !!c.unlimitedKm,
-      dailyKmLimit: c.dailyKmLimit ?? null,
-      monthlyKmLimit: c.monthlyKmLimit ?? null,
+      // Only the limit that matches the rental type is printed.
+      dailyKmLimit: isMonthly ? null : c.dailyKmLimit ?? null,
+      monthlyKmLimit: isMonthly ? c.monthlyKmLimit ?? null : null,
       kmOverageFee: money(c.kmOverageFee),
       fuelFeePerEighth: money(c.fuelFeePerEighth),
       deposit: money(c.deposit),

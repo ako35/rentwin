@@ -128,22 +128,18 @@ const pricePeriod = ({ rentalType, unitPrice, start, end, vatRate = 20 }) => {
 // contract-helpers.computeAllowedKm.
 const computeAllowedKm = (r, pickUp, dropOff) => {
   if (r.unlimitedKm) return null;
-  const dk = num(r.dailyKmLimit);
-  const mk = num(r.monthlyKmLimit);
 
+  // Daily rental -> daily km limit; monthly rental -> monthly km limit. Only the
+  // limit that matches the rental type applies.
   if (r.rentalType === "MONTHLY") {
+    const mk = num(r.monthlyKmLimit);
+    if (!mk) return null;
     const { months, days } = rentalTerm(pickUp, dropOff);
-    const daily = dk ? dk * (months * 30 + days) : Infinity;
-    const monthly = mk ? months * mk + Math.ceil(days * (mk / 30)) : Infinity;
-    const eff = Math.min(daily, monthly);
-    return Number.isFinite(eff) ? eff : null;
+    return months * mk + Math.ceil(days * (mk / 30));
   }
 
-  const days = rentalDays(pickUp, dropOff);
-  const daily = dk ? dk * days : Infinity;
-  const monthly = mk ? mk * Math.ceil(days / 30) : Infinity;
-  const eff = Math.min(daily, monthly);
-  return Number.isFinite(eff) ? eff : null;
+  const dk = num(r.dailyKmLimit);
+  return dk ? dk * rentalDays(pickUp, dropOff) : null;
 };
 
 // --- HGS check coverage -----------------------------------------------------
