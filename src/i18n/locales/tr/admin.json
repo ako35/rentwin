@@ -57,13 +57,6 @@
       "success": "Ruhsat okundu, alanlar dolduruldu. Lütfen kontrol edin.",
       "error": "Ruhsat okunamadı, lütfen alanları elle doldurun."
     },
-    "carImage": {
-      "hint": "Marka, model ve rengi girin — araç görseli otomatik gelsin.",
-      "notFound": "Bu marka/model için görsel bulunamadı.",
-      "use": "Bu görseli kullan",
-      "used": "Araç görseli forma eklendi.",
-      "error": "Görsel alınamadı, lütfen elle yükleyin."
-    },
     "outOfService": "Servis Dışı",
     "cancel": "İptal",
     "create": "Oluştur",

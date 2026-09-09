@@ -3,7 +3,6 @@ import { Alert, Badge, Button, Col, Form, Row } from "react-bootstrap";
 import CustomForm from "../../common/custom-form/custom-form";
 import EditableSelectField from "./editable-select-field";
 import RegistrationScan from "./registration-scan";
-import CarImagePreview from "./car-image-preview";
 
 // Ruhsattan okunan alanları formik'e aktarır — boş/okunamayan alanlar dokunulmadan kalır.
 const REGISTRATION_FIELDS = [
@@ -14,7 +13,7 @@ const REGISTRATION_FIELDS = [
 // The "Araç" tab: image upload column + the grouped identity/registration
 // fields + notes + the out-of-service switch.
 const VehicleIdentityTab = ({
-  formik, disabled, sections, imageSrc, imageError, fileImageRef, onImageChange, onGeneratedImage,
+  formik, disabled, sections, imageSrc, imageError, fileImageRef, onImageChange,
   handleModelPicked, plateTaken,
 }) => {
   const { t } = useTranslation("admin");
@@ -50,7 +49,6 @@ const VehicleIdentityTab = ({
             </Form.Group>
             {imageError && <Badge bg="danger" className="image-error">{imageError}</Badge>}
           </div>
-          {onGeneratedImage && <CarImagePreview formik={formik} onUse={onGeneratedImage} />}
         </Col>
         <Col xl={9}>
           <div className="vehicle-form__registration-scan-bar">

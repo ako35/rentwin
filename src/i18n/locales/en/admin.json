@@ -57,13 +57,6 @@
       "success": "Registration read successfully — please review the fields.",
       "error": "Could not read the registration document, please fill in manually."
     },
-    "carImage": {
-      "hint": "Enter the make, model and colour — a vehicle image appears automatically.",
-      "notFound": "No image found for this make/model.",
-      "use": "Use this image",
-      "used": "Vehicle image added to the form.",
-      "error": "Could not fetch the image, please upload one manually."
-    },
     "outOfService": "Out of Service",
     "cancel": "Cancel",
     "create": "Create",
