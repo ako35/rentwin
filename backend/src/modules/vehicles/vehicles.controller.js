@@ -8,6 +8,7 @@ const asyncHandler = require("../../middleware/async-handler");
 const {
   ALLOWED_SORT_FIELDS,
   IMAGES_AND_BRANCH_INCLUDE,
+  loadModelImageMap,
   getRentedVehicleIds,
   getVehicleStatus,
 } = require("./vehicles.shared");
@@ -22,17 +23,23 @@ const plateTakenError = () =>
   new HttpError(409, "Bu plaka ile kayıtlı bir araç zaten var.", "LICENSE_PLATE_TAKEN");
 
 const getVehicleById = asyncHandler(async (req, res) => {
-  const vehicle = await prisma.vehicle.findUnique({
-    where: { id: req.params.id },
-    include: IMAGES_AND_BRANCH_INCLUDE,
-  });
+  const [vehicle, modelImages] = await Promise.all([
+    prisma.vehicle.findUnique({
+      where: { id: req.params.id },
+      include: IMAGES_AND_BRANCH_INCLUDE,
+    }),
+    loadModelImageMap(),
+  ]);
   if (!vehicle) throw new HttpError(404, "Vehicle not found.");
-  res.json(serializeVehicle(vehicle));
+  res.json(serializeVehicle(vehicle, modelImages));
 });
 
 const getAllVehicles = asyncHandler(async (req, res) => {
-  const vehicles = await prisma.vehicle.findMany({ include: IMAGES_AND_BRANCH_INCLUDE });
-  res.json(vehicles.map(serializeVehicle));
+  const [vehicles, modelImages] = await Promise.all([
+    prisma.vehicle.findMany({ include: IMAGES_AND_BRANCH_INCLUDE }),
+    loadModelImageMap(),
+  ]);
+  res.json(vehicles.map((vehicle) => serializeVehicle(vehicle, modelImages)));
 });
 
 // Public browse/search: always hides out-of-service vehicles; when a valid
@@ -52,7 +59,7 @@ const getVehiclesByPage = asyncHandler(async (req, res) => {
     if (busyIds.size) where.id = { notIn: [...busyIds] };
   }
 
-  const [content, totalElements] = await Promise.all([
+  const [content, totalElements, modelImages] = await Promise.all([
     prisma.vehicle.findMany({
       where,
       skip: page * size,
@@ -61,11 +68,12 @@ const getVehiclesByPage = asyncHandler(async (req, res) => {
       include: IMAGES_AND_BRANCH_INCLUDE,
     }),
     prisma.vehicle.count({ where }),
+    loadModelImageMap(),
   ]);
 
   res.json(
     buildPageResponse({
-      content: content.map(serializeVehicle),
+      content: content.map((vehicle) => serializeVehicle(vehicle, modelImages)),
       totalElements,
       page,
       size,
@@ -80,7 +88,7 @@ const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
     allowedSortFields: ALLOWED_SORT_FIELDS,
   });
 
-  const [content, totalElements] = await Promise.all([
+  const [content, totalElements, modelImages] = await Promise.all([
     prisma.vehicle.findMany({
       skip: page * size,
       take: size,
@@ -88,6 +96,7 @@ const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
       include: IMAGES_AND_BRANCH_INCLUDE,
     }),
     prisma.vehicle.count(),
+    loadModelImageMap(),
   ]);
 
   const rentedIds = await getRentedVehicleIds(content.map((v) => v.id));
@@ -95,7 +104,7 @@ const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
   res.json(
     buildPageResponse({
       content: content.map((vehicle) => ({
-        ...serializeVehicle(vehicle),
+        ...serializeVehicle(vehicle, modelImages),
         status: getVehicleStatus(vehicle, rentedIds),
       })),
       totalElements,
@@ -130,7 +139,7 @@ const addVehicle = asyncHandler(async (req, res) => {
     throw err;
   }
 
-  res.status(201).json(serializeVehicle(vehicle));
+  res.status(201).json(serializeVehicle(vehicle, await loadModelImageMap()));
 });
 
 const updateVehicle = asyncHandler(async (req, res) => {
@@ -159,7 +168,7 @@ const updateVehicle = asyncHandler(async (req, res) => {
     throw err;
   }
 
-  res.json(serializeVehicle(vehicle));
+  res.json(serializeVehicle(vehicle, await loadModelImageMap()));
 });
 
 const deleteVehicle = asyncHandler(async (req, res) => {

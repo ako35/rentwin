@@ -1,8 +1,16 @@
 const dayjs = require("dayjs");
 const prisma = require("../../lib/prisma");
+const { modelImageKey } = require("../../lib/serializers");
 
 const ALLOWED_SORT_FIELDS = ["id", "model"];
 const IMAGES_AND_BRANCH_INCLUDE = { images: { orderBy: { createdAt: "asc" } }, branch: true };
+
+// All VehicleModelImage rows keyed for serializeVehicle. The table holds one row
+// per make+model (a few dozen at most), so a full scan is cheap.
+const loadModelImageMap = async () => {
+  const rows = await prisma.vehicleModelImage.findMany();
+  return new Map(rows.map((row) => [modelImageKey(row.brand, row.model), row]));
+};
 
 // A vehicle is "RENTED" when it has an open contract (not cancelled, not yet
 // marked returned) whose rental window overlaps today — so a contract created
@@ -30,6 +38,7 @@ const getVehicleStatus = (vehicle, rentedIds) => {
 module.exports = {
   ALLOWED_SORT_FIELDS,
   IMAGES_AND_BRANCH_INCLUDE,
+  loadModelImageMap,
   getRentedVehicleIds,
   getVehicleStatus,
 };

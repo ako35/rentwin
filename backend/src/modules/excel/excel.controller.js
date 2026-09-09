@@ -1,6 +1,8 @@
 const prisma = require("../../lib/prisma");
 const { sendWorkbook } = require("./excel-builders");
 const asyncHandler = require("../../middleware/async-handler");
+const { modelImageKey } = require("../../lib/serializers");
+const { loadModelImageMap } = require("../vehicles/vehicles.shared");
 
 const downloadUsers = asyncHandler(async (req, res) => {
   const users = await prisma.user.findMany();
@@ -23,7 +25,10 @@ const downloadUsers = asyncHandler(async (req, res) => {
 });
 
 const downloadCars = asyncHandler(async (req, res) => {
-  const vehicles = await prisma.vehicle.findMany({ include: { images: true } });
+  const [vehicles, modelImages] = await Promise.all([
+    prisma.vehicle.findMany(),
+    loadModelImageMap(),
+  ]);
   await sendWorkbook(
     res,
     "cars.xlsx",
@@ -35,12 +40,12 @@ const downloadCars = asyncHandler(async (req, res) => {
       { header: "Transmission", key: "transmission", width: 14 },
       { header: "Fuel Type", key: "fuelType", width: 12 },
       { header: "Out Of Service", key: "outOfService", width: 14 },
-      { header: "Image Count", key: "imageCount", width: 12 },
+      { header: "Has Image", key: "hasImage", width: 12 },
     ],
     vehicles.map((vehicle) => ({
       ...vehicle,
       outOfService: vehicle.outOfService ? "Yes" : "No",
-      imageCount: vehicle.images.length,
+      hasImage: modelImages.has(modelImageKey(vehicle.brand, vehicle.model)) ? "Yes" : "No",
     }))
   );
 });

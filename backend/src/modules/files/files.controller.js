@@ -27,8 +27,12 @@ const remove = asyncHandler(async (req, res) => {
   res.json({ message: "Image deleted." });
 });
 
+// An id here can be a per-vehicle VehicleImage or a make+model VehicleModelImage
+// — serializeVehicle may return either. Both carry a public `blobUrl`.
 const display = asyncHandler(async (req, res) => {
-  const image = await prisma.vehicleImage.findUnique({ where: { id: req.params.id } });
+  const image =
+    (await prisma.vehicleImage.findUnique({ where: { id: req.params.id } })) ||
+    (await prisma.vehicleModelImage.findUnique({ where: { id: req.params.id } }));
   if (!image) throw new HttpError(404, "Image not found.");
 
   res.redirect(302, image.blobUrl);

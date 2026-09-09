@@ -3,11 +3,21 @@ const serializeUser = (user) => {
   return safeUser;
 };
 
+// Make+model key for VehicleModelImage lookups — normalized the same way the
+// model-image API stores brand/model (trim + TR-uppercase). Year is irrelevant.
+const modelImageKey = (brand, model) =>
+  `${(brand || "").trim().toLocaleUpperCase("tr")} ${(model || "").trim().toLocaleUpperCase("tr")}`;
+
 // Vehicle must expose `image` as an array of image ids (frontend reads
-// response.image[0], values.image.length, etc). Requires `images` relation
-// to have been included, ordered by createdAt asc (primary image first).
-const serializeVehicle = (vehicle) => {
+// response.image[0], values.image.length, etc). Resolution order:
+//   1. the make+model's VehicleModelImage (when `modelImageMap` is supplied)
+//   2. the vehicle's own VehicleImage rows (legacy per-vehicle fallback)
+// `modelImageMap` is Map(modelImageKey -> VehicleModelImage); omit it to keep
+// the legacy behaviour (used where a car image is never rendered).
+const serializeVehicle = (vehicle, modelImageMap) => {
   const { images, ...rest } = vehicle;
+  const modelImage = modelImageMap?.get(modelImageKey(vehicle.brand, vehicle.model));
+  if (modelImage) return { ...rest, image: [modelImage.id] };
   return { ...rest, image: (images || []).map((image) => image.id) };
 };
 
@@ -61,6 +71,7 @@ const serializeHgsPendingRow = (contract) => ({
 module.exports = {
   serializeUser,
   serializeVehicle,
+  modelImageKey,
   serializeContract,
   serializeReservation,
   serializeScheduleRow,

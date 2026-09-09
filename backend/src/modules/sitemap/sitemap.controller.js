@@ -1,5 +1,7 @@
 const prisma = require("../../lib/prisma");
 const asyncHandler = require("../../middleware/async-handler");
+const { modelImageKey } = require("../../lib/serializers");
+const { loadModelImageMap } = require("../vehicles/vehicles.shared");
 
 const SITE_URL = (process.env.PUBLIC_SITE_URL || "https://rentwin.com.tr").replace(/\/+$/, "");
 
@@ -43,17 +45,23 @@ const urlEntry = ({ path, lastmod, changefreq, priority, image }) =>
 
 // Dynamic sitemap: static pages + every in-service vehicle + every location.
 const getSitemap = asyncHandler(async (req, res) => {
-  const [vehicles, locations] = await Promise.all([
+  const [vehicles, locations, modelImages] = await Promise.all([
     prisma.vehicle.findMany({
       where: { outOfService: false },
       select: {
         id: true,
+        brand: true,
+        model: true,
         updatedAt: true,
         images: { select: { blobUrl: true }, orderBy: { createdAt: "asc" }, take: 1 },
       },
     }),
     prisma.location.findMany({ select: { name: true, createdAt: true } }),
+    loadModelImageMap(),
   ]);
+
+  const vehicleImage = (v) =>
+    modelImages.get(modelImageKey(v.brand, v.model))?.blobUrl || v.images[0]?.blobUrl;
 
   // The listing pages are as fresh as the most recently touched vehicle.
   const fleetLastmod = vehicles.reduce(
@@ -71,7 +79,7 @@ const getSitemap = asyncHandler(async (req, res) => {
       lastmod: v.updatedAt,
       changefreq: "weekly",
       priority: "0.8",
-      image: v.images[0]?.blobUrl,
+      image: vehicleImage(v),
     })),
     ...locations.map((l) => ({
       path: `/lokasyonlar/${slugify(l.name)}`,

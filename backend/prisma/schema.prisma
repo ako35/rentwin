@@ -126,6 +126,21 @@ model VehicleImage {
   createdAt DateTime @default(now())
 }
 
+// One catalog image per make+model — every vehicle of that make+model shows it.
+// brand/model are stored normalized (trim + TR-uppercase); year is irrelevant.
+model VehicleModelImage {
+  id        String   @id @default(uuid())
+  brand     String
+  model     String
+  blobUrl   String
+  pathname  String
+  source    String   @default("UPLOAD") // UPLOAD | AI
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([brand, model])
+}
+
 model Vehicle {
   id                   String               @id @default(uuid())
   brand                String

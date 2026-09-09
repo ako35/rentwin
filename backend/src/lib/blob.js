@@ -1,8 +1,8 @@
 const { put, del } = require("@vercel/blob");
 const { randomUUID } = require("crypto");
 
-const uploadImage = async (file) => {
-  const pathname = `vehicles/${randomUUID()}-${file.originalname}`;
+const uploadImage = async (file, prefix = "vehicles") => {
+  const pathname = `${prefix}/${randomUUID()}-${file.originalname}`;
   const blob = await put(pathname, file.buffer, {
     access: "public",
     contentType: file.mimetype,
