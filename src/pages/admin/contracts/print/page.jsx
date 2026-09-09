@@ -8,6 +8,7 @@ import { Loading } from "../../../../components";
 import GenelSozlesme from "./GenelSozlesme";
 import Ek1Form from "./Ek1Form";
 import Tutanak from "./Tutanak";
+import { computeRentalTerm } from "../details/contract-helpers";
 import "./style.scss";
 
 const DOC_TYPES = ["sozlesme", "ek1", "tutanak"];
@@ -46,29 +47,40 @@ const ContractPrintPage = () => {
     const cust = c.customer || {};
     const car = c.car || {};
     const isMonthly = c.rentalType === "MONTHLY";
-    const periods = c.periods || [];
-    const activePeriod =
-      [...periods].reverse().find((pp) => pp.status === "ACTIVE") || periods[periods.length - 1] || null;
+    const vatRate = c.vatRate ?? 20;
+    const extensions = c.extensions || [];
+    const utcDay = (v) => moment.utc(v).format("YYYY-MM-DD");
     const rentalDays = Math.max(
       1,
       Math.ceil(moment(c.dropOffTime).diff(moment(c.pickUpTime), "hours") / 24)
     );
+    // Base rental window = pick-up -> drop-off before the first extension.
+    const baseEnd = extensions.length
+      ? extensions.map((e) => utcDay(e.previousDropOff)).sort()[0]
+      : utcDay(c.dropOffTime);
+    const baseTerm = computeRentalTerm({ pickUpDate: utcDay(c.pickUpTime), dropOffDate: baseEnd });
+    const fullTermObj = computeRentalTerm({
+      pickUpDate: utcDay(c.pickUpTime),
+      dropOffDate: utcDay(c.dropOffTime),
+    });
     const termLabel = (months, days, fallbackDays) =>
       isMonthly && (months || days)
         ? `${months} ${p("ek1.termMo")}${days ? ` ${days} ${p("ek1.termDay")}` : ""}`
         : `${fallbackDays} ${p("ek1.termDay")}`;
-    // Ek-1 = the active period's term; Genel Sözleşme = the whole rental span.
-    const rentTerm = activePeriod
-      ? termLabel(activePeriod.months, activePeriod.kistDays, rentalDays)
-      : termLabel(0, 0, rentalDays);
-    const fullTerm = (() => {
-      if (!isMonthly) return `${rentalDays} ${p("ek1.termDay")}`;
-      const totalMonths = periods.length
-        ? periods.reduce((sum, pp) => sum + (pp.months || 0), 0)
-        : activePeriod?.months || 0;
-      const lastKist = activePeriod?.kistDays || 0;
-      return termLabel(totalMonths, lastKist, rentalDays);
-    })();
+    // Genel Sözleşme / Ek-1 show the whole rental span.
+    const fullTerm = isMonthly
+      ? termLabel(fullTermObj.months, fullTermObj.days, rentalDays)
+      : `${rentalDays} ${p("ek1.termDay")}`;
+    // Base rental figures for the Ek-1 rent line (monthly = net + VAT + gross).
+    const round2 = (n) => Math.round(n * 100) / 100;
+    const baseNet = isMonthly
+      ? round2(
+          baseTerm.months * (c.monthlyPrice || 0) +
+            baseTerm.days * round2((c.monthlyPrice || 0) / 30)
+        )
+      : round2((c.dailyPrice || 0) * rentalDays);
+    const baseVat = isMonthly ? round2(baseNet * (vatRate / 100)) : 0;
+    const baseGross = round2(baseNet + baseVat);
     const isCorp = cust.customerType === "Kurumsal";
     const customerName = isCorp
       ? cust.companyTitle || `${cust.firstName || ""} ${cust.lastName || ""}`.trim()
@@ -103,14 +115,12 @@ const ContractPrintPage = () => {
       pickUpDate: fmtDate(c.pickUpTime),
       dropOffDate: fmtDate(c.dropOffTime),
       rentalDays,
-      rentTerm,
       fullTerm,
       rentalType: c.rentalType || "DAILY",
-      vatRate: c.vatRate ?? 20,
-      // Active-period figures for the Ek-1 rent line (monthly = net + VAT + gross).
-      rentNet: activePeriod ? money(activePeriod.netAmount) : null,
-      rentVat: activePeriod ? money((activePeriod.grossAmount || 0) - (activePeriod.netAmount || 0)) : null,
-      rentGross: activePeriod ? money(activePeriod.grossAmount) : null,
+      vatRate,
+      rentNet: money(baseNet),
+      rentVat: isMonthly ? money(baseVat) : null,
+      rentGross: money(baseGross),
       kmUnlimited: !!c.unlimitedKm,
       dailyKmLimit: c.dailyKmLimit ?? null,
       monthlyKmLimit: c.monthlyKmLimit ?? null,
