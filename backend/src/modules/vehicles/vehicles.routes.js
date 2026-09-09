@@ -12,7 +12,7 @@ const {
   deleteVehicle,
 } = require("./vehicles.controller");
 const { getFleetStats, getExpiryAlerts } = require("./vehicles.dashboard.controller");
-const { extractRegistration } = require("./vehicles.ai.controller");
+const { extractRegistration, generateImage } = require("./vehicles.ai.controller");
 
 const router = Router();
 
@@ -32,6 +32,7 @@ router.post(
   upload.single("file"),
   extractRegistration
 );
+router.post("/car/admin/generate-image/auth", authenticate, requireAdmin, generateImage);
 router.post("/car/admin/:imageId/add", authenticate, requireAdmin, addVehicle);
 router.put("/car/admin/auth", authenticate, requireAdmin, updateVehicle);
 router.delete("/car/admin/:id/auth", authenticate, requireAdmin, deleteVehicle);

@@ -98,6 +98,16 @@ $breakpointxl: 1200px;
     }
   }
 
+  &__ai-image-btn {
+    width: 100%;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   &__registration-scan-bar {
     @include m.flexbox(row, flex-start, center, 0.75rem);
     flex-wrap: wrap;

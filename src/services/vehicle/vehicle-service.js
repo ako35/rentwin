@@ -110,3 +110,11 @@ export const extractRegistration = async (file) => {
   });
   return response.data;
 };
+export const generateVehicleImage = async (payload) => {
+  const response = await axios.post(
+    `${API_URL}/car/admin/generate-image/auth`,
+    payload,
+    services.authHeader()
+  );
+  return response.data;
+};

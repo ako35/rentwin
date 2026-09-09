@@ -94,6 +94,16 @@ const AdminVehicleDetailsPage = () => {
     };
   };
 
+  // AI-generated image: push the File into the real <input type=file> so the
+  // save flow (which reads fileImageRef.current.files[0]) picks it up.
+  const handleAiImage = (file, previewUrl) => {
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    fileImageRef.current.files = transfer.files;
+    setImageSrc(previewUrl);
+    setImageChanged(true);
+  };
+
   const loadData = async () => {
     try {
       const response = await services.vehicle.getVehicleById(vehicleId);
@@ -165,6 +175,7 @@ const AdminVehicleDetailsPage = () => {
         imageSrc={imageSrc}
         fileImageRef={fileImageRef}
         onImageChange={handleImageChange}
+        onAiImage={handleAiImage}
         disabled={formik.values.builtIn}
         builtInWarning={formik.values.builtIn}
       >

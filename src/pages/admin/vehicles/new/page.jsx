@@ -60,6 +60,12 @@ const AdminNewVehiclePage = () => {
     };
   };
 
+  // AI-generated image: drop it straight into the same slot a picked file uses.
+  const handleAiImage = (file, previewUrl) => {
+    setImageSrc(previewUrl);
+    formik.setFieldValue("image", file);
+  };
+
   return (
     <Form noValidate onSubmit={formik.handleSubmit}>
       <VehicleForm
@@ -69,6 +75,7 @@ const AdminNewVehiclePage = () => {
         imageError={formik.errors.image}
         fileImageRef={fileImageRef}
         onImageChange={handleImageChange}
+        onAiImage={handleAiImage}
       >
         <ButtonGroup>
           <Button

@@ -3,6 +3,7 @@ import { Alert, Badge, Button, Col, Form, Row } from "react-bootstrap";
 import CustomForm from "../../common/custom-form/custom-form";
 import EditableSelectField from "./editable-select-field";
 import RegistrationScan from "./registration-scan";
+import AiImageButton from "./ai-image-button";
 
 // Ruhsattan okunan alanları formik'e aktarır — boş/okunamayan alanlar dokunulmadan kalır.
 const REGISTRATION_FIELDS = [
@@ -14,7 +15,7 @@ const REGISTRATION_FIELDS = [
 // fields + notes + the out-of-service switch.
 const VehicleIdentityTab = ({
   formik, disabled, sections, imageSrc, imageError, fileImageRef, onImageChange,
-  handleModelPicked, plateTaken,
+  onAiImage, handleModelPicked, plateTaken,
 }) => {
   const { t } = useTranslation("admin");
 
@@ -49,6 +50,9 @@ const VehicleIdentityTab = ({
             </Form.Group>
             {imageError && <Badge bg="danger" className="image-error">{imageError}</Badge>}
           </div>
+          {onAiImage && (
+            <AiImageButton formik={formik} onImage={onAiImage} disabled={disabled} />
+          )}
         </Col>
         <Col xl={9}>
           <div className="vehicle-form__registration-scan-bar">

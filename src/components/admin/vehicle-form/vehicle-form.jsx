@@ -20,6 +20,7 @@ const VehicleForm = ({
   imageError,
   fileImageRef,
   onImageChange,
+  onAiImage,
   disabled = false,
   builtInWarning = false,
   children,
@@ -86,6 +87,7 @@ const VehicleForm = ({
             imageError={imageError}
             fileImageRef={fileImageRef}
             onImageChange={onImageChange}
+            onAiImage={onAiImage}
             handleModelPicked={handleModelPicked}
             plateTaken={plateTaken}
           />

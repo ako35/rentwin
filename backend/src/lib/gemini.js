@@ -1,9 +1,14 @@
-// Google Gemini vision call: reads a Turkish vehicle registration certificate
-// (ruhsat) photo and returns the fields as structured JSON, matching the
-// Vehicle model's own field names/enum so the caller can pass it straight
-// into a form. No SDK — Gemini's REST API is a single JSON POST.
+// Google Gemini calls over the plain REST API (no SDK — each is a single JSON
+// POST): (1) vision — read a Turkish vehicle registration certificate (ruhsat)
+// photo into structured fields; (2) image generation — produce a studio catalog
+// photo of a vehicle from its make/model/colour.
+const API_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 const MODEL = "gemini-3.6-flash";
-const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
+const ENDPOINT = `${API_BASE}/${MODEL}:generateContent`;
+
+// Image generation ("Nano Banana") has NO free-tier quota — the project behind
+// GEMINI_API_KEY must have billing enabled or the call returns HTTP 429.
+const IMAGE_MODEL = process.env.GEMINI_IMAGE_MODEL || "gemini-3.1-flash-image";
 
 const REGISTRATION_SCHEMA = {
   type: "OBJECT",
@@ -78,4 +83,53 @@ const extractVehicleRegistration = async (buffer, mimeType) => {
   return JSON.parse(text);
 };
 
-module.exports = { extractVehicleRegistration };
+const IMAGE_PROMPT = ({ brand, model, modelYear, color }) => {
+  const subject = [modelYear, color, brand, model].filter(Boolean).join(" ").trim();
+  return `Profesyonel bir araç kataloğu için stüdyo fotoğrafı üret: ${subject}.
+Kurallar:
+- Yatay (manzara) kadraj, aracın tamamı görünür, ön-yan üç çeyrek (3/4) açı.
+- Düz, dikişsiz beyaz stüdyo arka planı; yumuşak ve eşit aydınlatma; hafif zemin yansıması.
+- Fotogerçekçi, keskin odak, yüksek çözünürlük.
+- Görselde hiçbir yazı, logo damgası, filigran (watermark) veya plaka metni OLMASIN.
+- Verilen marka/modelin gerçek kasa tipine ve oranlarına sadık kal.`;
+};
+
+// Text→image: returns the raw image bytes (base64 + mime) for the given vehicle.
+// HTTP 429 → billing not enabled on the key's project; surfaced with a code so
+// the caller can show a specific message.
+const generateVehicleImage = async ({ brand, model, modelYear, color }) => {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error("GEMINI_API_KEY tanımlı değil.");
+
+  const response = await fetch(`${API_BASE}/${IMAGE_MODEL}:generateContent`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: IMAGE_PROMPT({ brand, model, modelYear, color }) }] }],
+      generationConfig: { responseModalities: ["TEXT", "IMAGE"] },
+    }),
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    if (response.status === 429) {
+      const err = new Error(
+        "Gemini görsel üretimi kotası aşıldı — API anahtarının bağlı olduğu projede faturalandırma açık olmalı."
+      );
+      err.code = "AI_IMAGE_QUOTA";
+      throw err;
+    }
+    throw new Error(`Gemini API hatası (${response.status}): ${text.slice(0, 300)}`);
+  }
+
+  const data = await response.json();
+  const parts = data.candidates?.[0]?.content?.parts || [];
+  const inline = parts.map((p) => p.inlineData || p.inline_data).find((d) => d && d.data);
+  if (!inline) {
+    const blocked = data.promptFeedback?.blockReason;
+    throw new Error(blocked ? `Gemini görsel üretmedi (${blocked}).` : "Gemini API görsel döndürmedi.");
+  }
+  return { base64: inline.data, mimeType: inline.mimeType || inline.mime_type || "image/png" };
+};
+
+module.exports = { extractVehicleRegistration, generateVehicleImage };
