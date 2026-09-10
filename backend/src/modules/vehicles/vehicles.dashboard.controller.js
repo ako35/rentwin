@@ -16,7 +16,7 @@ const isDueSoon = (date) => {
 const getFleetStats = asyncHandler(async (req, res) => {
   const { branchId } = req.query;
   const vehicles = await prisma.vehicle.findMany({
-    where: branchId ? { branchId } : undefined,
+    where: { soldAt: null, ...(branchId ? { branchId } : {}) },
     select: {
       id: true,
       outOfService: true,
@@ -54,7 +54,7 @@ const EXPIRY_WINDOW_DAYS = 30;
 
 const getExpiryAlerts = asyncHandler(async (req, res) => {
   const { branchId } = req.query;
-  const vehicleWhere = branchId ? { branchId } : {};
+  const vehicleWhere = { soldAt: null, ...(branchId ? { branchId } : {}) };
   const now = new Date();
   const threshold = new Date();
   threshold.setDate(threshold.getDate() + EXPIRY_WINDOW_DAYS);

@@ -3,6 +3,9 @@
     { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
     { "src": "backend/api/index.js", "use": "@vercel/node" }
   ],
+  "crons": [
+    { "path": "/api/cron/purge-sold-vehicles", "schedule": "0 3 * * *" }
+  ],
   "routes": [
     { "src": "/api/(.*)", "dest": "backend/api/index.js" },
     { "src": "/sitemap.xml", "dest": "backend/api/index.js" },

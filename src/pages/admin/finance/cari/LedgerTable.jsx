@@ -52,7 +52,7 @@ const LedgerTable = ({ data, filtered, money, onEdit, onRemove }) => {
                       {r.contractNo || "—"}
                     </Link>
                   ) : (
-                    r.invoiceNo || "—"
+                    r.contractNo || r.invoiceNo || "—"
                   )}
                 </td>
                 <td>

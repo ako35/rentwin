@@ -181,7 +181,7 @@ const getAvailableCarsAdmin = asyncHandler(async (req, res) => {
 
   const [cars, modelImages] = await Promise.all([
     prisma.vehicle.findMany({
-      where: { outOfService: false },
+      where: { outOfService: false, soldAt: null },
       orderBy: [{ brand: "asc" }, { model: "asc" }],
       include: { images: { orderBy: { createdAt: "asc" } }, branch: true },
     }),

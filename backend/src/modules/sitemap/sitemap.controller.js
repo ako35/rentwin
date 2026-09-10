@@ -34,7 +34,7 @@ const urlEntry = ({ path, lastmod, changefreq, priority, image }) =>
 const getSitemap = asyncHandler(async (req, res) => {
   const [vehicles, locations, modelImages] = await Promise.all([
     prisma.vehicle.findMany({
-      where: { outOfService: false },
+      where: { outOfService: false, soldAt: null },
       select: {
         id: true,
         brand: true,

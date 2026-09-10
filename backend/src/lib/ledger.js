@@ -26,7 +26,14 @@ const syncContractDebit = async (contract, client = prisma) => {
     return;
   }
 
-  const data = { amount, userId: contractOwnerId(contract), category: "RENTAL", direction: "DEBIT" };
+  const data = {
+    amount,
+    userId: contractOwnerId(contract),
+    category: "RENTAL",
+    direction: "DEBIT",
+    // snapshot: keeps the cari row readable if the contract is later purged
+    contractNo: contract.contractNo || null,
+  };
   if (existing) {
     await client.ledgerEntry.update({ where: { id: existing.id }, data });
   } else {
@@ -46,6 +53,7 @@ const mirrorPayment = async (payment, contract, client = prisma) => {
   const data = {
     userId: contractOwnerId(contract),
     contractId: contract.id,
+    contractNo: contract.contractNo || null,
     date: payment.paidAt || new Date(),
     direction: "CREDIT",
     category: "PAYMENT",
@@ -143,7 +151,9 @@ const ledgerStatement = async (userId, { from, to, category } = {}) => {
         method: entry.method,
         invoiceNo: entry.invoiceNo,
         contractId: entry.contractId,
-        contractNo: entry.contract?.contractNo || null,
+        // live link first, then the snapshot left behind when a sold vehicle's
+        // contract was purged
+        contractNo: entry.contract?.contractNo || entry.contractNo || null,
         source: entry.source,
         balance: running,
       });

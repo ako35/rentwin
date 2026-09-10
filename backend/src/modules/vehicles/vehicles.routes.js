@@ -9,6 +9,8 @@ const {
   getVehiclesByPageAdmin,
   addVehicle,
   updateVehicle,
+  markVehicleSold,
+  unmarkVehicleSold,
   deleteVehicle,
 } = require("./vehicles.controller");
 const { getFleetStats, getExpiryAlerts } = require("./vehicles.dashboard.controller");
@@ -34,6 +36,8 @@ router.post(
 );
 router.post("/car/admin/add", authenticate, requireAdmin, addVehicle);
 router.put("/car/admin/auth", authenticate, requireAdmin, updateVehicle);
+router.post("/car/admin/:id/sold/auth", authenticate, requireAdmin, markVehicleSold);
+router.delete("/car/admin/:id/sold/auth", authenticate, requireAdmin, unmarkVehicleSold);
 router.delete("/car/admin/:id/auth", authenticate, requireAdmin, deleteVehicle);
 
 module.exports = router;

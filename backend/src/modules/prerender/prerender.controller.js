@@ -95,9 +95,10 @@ const resolvePath = async (reqPath) => {
       }),
       loadModelImageMap(),
     ]);
-    // Mirror the SPA's getVehicleById (no outOfService filter) so a bot and a
-    // browser never see different pages for the same URL.
-    if (!vehicle) return { path: reqPath, vehicleMissing: true };
+    // Mirror the SPA's getVehicleById so a bot and a browser never see
+    // different pages for the same URL: out-of-service still renders, but a
+    // sold vehicle is retired from the fleet and 404s on both.
+    if (!vehicle || vehicle.soldAt) return { path: reqPath, vehicleMissing: true };
     const image =
       modelImages.get(modelImageKey(vehicle.brand, vehicle.model))?.blobUrl ||
       vehicle.images[0]?.blobUrl ||

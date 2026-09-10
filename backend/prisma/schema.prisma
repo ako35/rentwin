@@ -150,6 +150,8 @@ model Vehicle {
   fuelType             FuelType
   outOfService         Boolean              @default(false)
   builtIn              Boolean              @default(false)
+  soldAt               DateTime? // set = vehicle sold and retired from the fleet; auto-purged 5 years later
+  saleNote             String? // free-text note captured at sale time
   branchId             String?
   branch               Branch?              @relation(fields: [branchId], references: [id], onDelete: SetNull)
   nextMaintenanceDate  DateTime?
@@ -458,6 +460,7 @@ model LedgerEntry {
   method            String?
   contractId        String?
   contract          Contract?       @relation(fields: [contractId], references: [id], onDelete: SetNull)
+  contractNo        String? // snapshot of contract.contractNo — survives the contract being purged with a sold vehicle
   contractPaymentId String?         @unique
   invoiceNo         String?
   source            LedgerSource    @default(MANUAL)

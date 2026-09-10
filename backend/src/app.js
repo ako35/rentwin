@@ -24,6 +24,7 @@ const ledgerRoutes = require("./modules/ledger/ledger.routes");
 const settingsRoutes = require("./modules/settings/settings.routes");
 const { getSitemap } = require("./modules/sitemap/sitemap.controller");
 const { renderPage } = require("./modules/prerender/prerender.controller");
+const { purgeSoldVehicles } = require("./modules/maintenance/purge.controller");
 const notFound = require("./middleware/not-found");
 const errorHandler = require("./middleware/error-handler");
 
@@ -68,6 +69,10 @@ app.use(express.json());
 const api = express.Router();
 
 api.get("/health", (req, res) => res.json({ status: "ok" }));
+
+// Scheduled maintenance (Vercel Cron -> vercel.json "crons"). Secret-gated
+// inside the handler.
+api.get("/cron/purge-sold-vehicles", purgeSoldVehicles);
 
 api.use(authRoutes);
 api.use(usersRoutes);

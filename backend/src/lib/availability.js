@@ -25,6 +25,7 @@ const checkAvailability = async (
 
   const vehicle = await prisma.vehicle.findUnique({ where: { id: carId } });
   if (!vehicle) throw new HttpError(404, "Vehicle not found.");
+  if (vehicle.soldAt) throw new HttpError(409, "Bu araç satılmış, kiralanamaz.", "VEHICLE_SOLD");
 
   const window = { pickUpTime: { lt: dropOffTime }, dropOffTime: { gt: pickUpTime } };
 
