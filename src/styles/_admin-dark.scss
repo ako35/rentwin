@@ -73,6 +73,37 @@
     .modal-header,
     .modal-footer { border-color: var(--rw-line); }
 
+    /* ---- customer form (new / edit customer + contract quick-add modal) ---
+       scoped bare (not under .admin-layout) so the portalled modal variant
+       is covered too; data-theme is only ever "dark" on an admin route. */
+    .customer-form {
+      &__head h2 { color: var(--rw-ink-strong); }
+      &__card {
+        background-color: var(--rw-panel);
+        border-color: var(--rw-line);
+        box-shadow: var(--rw-shadow);
+        h3 { color: #7dd3a8; }
+      }
+      &--modal &__card { background-color: var(--rw-inset); }
+      &__segmented {
+        background-color: var(--rw-inset);
+        border-color: var(--rw-line);
+        button { color: var(--rw-ink-muted); }
+        button.is-active { color: #fff; }
+      }
+      &__actions {
+        background: linear-gradient(180deg, rgba(11, 18, 32, 0), var(--rw-bg) 45%);
+      }
+      &--modal &__actions { background: none; border-top-color: var(--rw-line); }
+      &__close {
+        color: var(--rw-ink-soft);
+        &:hover { background-color: var(--rw-inset); color: var(--rw-ink); }
+      }
+      &__doc-scan span,
+      &__topbar { color: var(--rw-ink-muted); }
+      &__ledger-link { color: #6ea8fe; }
+    }
+
     /* contract detail: sticky action bar + top ribbon */
     .admin-layout .contract-page__actionbar {
       background-color: var(--rw-panel);
