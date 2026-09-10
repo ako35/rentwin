@@ -5,6 +5,7 @@
   &__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    align-items: start; // each card keeps its own height (images vary in ratio)
     gap: 1.1rem;
 
     @media (max-width: 900px) {

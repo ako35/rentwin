@@ -1308,7 +1308,7 @@
     "imageEmpty": "Görsel seçilmedi",
     "imageSelect": "Görsel Seç",
     "imageRemove": "Kaldır",
-    "imageHint": "Yatay afiş, 16:9 oran — ideal 1200×675 px. Kart bu orana göre hizalanır; farklı orandaki görsel kırpılmaz, kenarlarda boşluk kalır. JPG/PNG, 1 MB altı.",
+    "imageHint": "Görsel kart genişliğinde, kendi oranında ve kırpılmadan gösterilir (yatay ya da dikey afiş fark etmez). Net görünüm için en az 1000 px genişlik; kampanyaları tek sırada düzgün göstermek için hepsinde aynı oranı kullanın. JPG/PNG, 1 MB altı.",
     "startsAtLabel": "Başlangıç Tarihi",
     "endsAtLabel": "Bitiş Tarihi",
     "ctaLabelLabel": "Buton Metni",

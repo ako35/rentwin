@@ -1308,7 +1308,7 @@
     "imageEmpty": "No image selected",
     "imageSelect": "Select Image",
     "imageRemove": "Remove",
-    "imageHint": "Landscape banner, 16:9 ratio — ideally 1200×675 px. The card is framed to this ratio; an off-ratio image is letterboxed, never cropped. JPG/PNG, under 1 MB.",
+    "imageHint": "Shown at the card's full width, in its own ratio, uncropped (landscape or portrait). Use at least 1000 px wide for a sharp result; keep every campaign's image the same ratio so the row lines up. JPG/PNG, under 1 MB.",
     "startsAtLabel": "Start Date",
     "endsAtLabel": "End Date",
     "ctaLabelLabel": "Button Text",

@@ -20,13 +20,10 @@
     }
   }
 
-  // Fixed 16:9 frame so every card lines up. Designed banners (text baked in)
-  // are shown whole with object-fit: contain — a correctly sized 1200x675
-  // image fills it edge to edge; an off-ratio upload is letterboxed on the
-  // light ground, never cropped.
+  // The card wraps the image at its own aspect ratio — the banner shows full
+  // card width, whole, uncropped, whatever shape it is (wide or portrait).
   &__media {
     @include m.flexbox(row, center, center);
-    aspect-ratio: 16 / 9;
     background-color: v.$color4;
     color: v.$color1;
     font-size: 2.25rem;
@@ -35,14 +32,12 @@
     img {
       display: block;
       width: 100%;
-      height: 100%;
-      object-fit: contain;
+      height: auto;
       transition: transform 0.25s ease;
     }
 
     // No image uploaded — a slim brand-tinted strip, not a big empty block.
     &--empty {
-      aspect-ratio: auto;
       padding: 0.55rem;
       background: linear-gradient(135deg, v.$surface-mint, v.$color1_5);
       font-size: 1.4rem;
