@@ -5,7 +5,10 @@
 // usual white, so nothing visually changes there.
 export const dataTableStyles = {
   table: { style: { backgroundColor: "var(--rw-panel)" } },
+  tableWrapper: { style: { backgroundColor: "var(--rw-panel)" } },
   responsiveWrapper: { style: { backgroundColor: "var(--rw-panel)" } },
+  header: { style: { backgroundColor: "var(--rw-panel)", color: "var(--rw-ink)" } },
+  subHeader: { style: { backgroundColor: "var(--rw-panel)" } },
   headRow: {
     style: { backgroundColor: "var(--rw-panel-2)", color: "var(--rw-ink)", borderBottomColor: "var(--rw-line)" },
   },
