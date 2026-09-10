@@ -19,6 +19,12 @@ const { extractRegistration } = require("./vehicles.ai.controller");
 
 const router = Router();
 
+// Vehicle ids are UUIDs. Constraining the ":id" param to that shape keeps these
+// routes from swallowing sibling literal paths under /car/admin/* that live in
+// other modules (e.g. /car/admin/model-images/auth in vehicle-model-images) —
+// registration order across api.use() can't be relied on for that.
+const ID = "([0-9a-fA-F-]{36})";
+
 // Order matters: literal segments ("all", "pages") must be registered
 // before the ":id" route, or they'd be swallowed as an id param.
 router.get("/car/visitors/all", getAllVehicles);
@@ -35,12 +41,11 @@ router.post(
   upload.single("file"),
   extractRegistration
 );
-// ":id" GET after every literal /car/admin/*/auth GET above, or it swallows them.
-router.get("/car/admin/:id/auth", authenticate, requireAdmin, getVehicleByIdAdmin);
+router.get(`/car/admin/:id${ID}/auth`, authenticate, requireAdmin, getVehicleByIdAdmin);
 router.post("/car/admin/add", authenticate, requireAdmin, addVehicle);
 router.put("/car/admin/auth", authenticate, requireAdmin, updateVehicle);
-router.post("/car/admin/:id/sold/auth", authenticate, requireAdmin, markVehicleSold);
-router.delete("/car/admin/:id/sold/auth", authenticate, requireAdmin, unmarkVehicleSold);
-router.delete("/car/admin/:id/auth", authenticate, requireAdmin, deleteVehicle);
+router.post(`/car/admin/:id${ID}/sold/auth`, authenticate, requireAdmin, markVehicleSold);
+router.delete(`/car/admin/:id${ID}/sold/auth`, authenticate, requireAdmin, unmarkVehicleSold);
+router.delete(`/car/admin/:id${ID}/auth`, authenticate, requireAdmin, deleteVehicle);
 
 module.exports = router;
