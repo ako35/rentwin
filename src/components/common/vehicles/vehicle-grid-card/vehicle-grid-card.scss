@@ -21,27 +21,24 @@
         color: inherit;
     }
 
-    // The fleet PNGs arrive on a tall 375x666 transparent canvas: the car sits
-    // in a narrow middle band with large empty margins above and below it. With
-    // "contain" the whole canvas is shrunk to fit the height, so the car renders
-    // tiny in the centre. "cover" fills the frame and crops those empty margins
-    // away — the car reads large and every card is framed identically. The car
-    // is dead-centre in the source, so object-position stays centred. The
-    // horizontal padding pulls the cover scale back a touch so the roof and
-    // wheels keep a little breathing room instead of touching the edges.
+    // The fleet catalogue images are now clean ~677x369 landscape shots with
+    // the car well framed edge to edge — "cover" on the portrait-ish box was
+    // zooming in and clipping roofs and wheels. "contain" shows the whole car;
+    // the box keeps a fixed height so every card lines up, with a little
+    // letterbox on the #f5f7fa ground.
     &__image {
         display: flex;
         align-items: center;
         justify-content: center;
         height: 215px;
-        padding: 0.5rem 2rem;
+        padding: 0.6rem 1rem;
         background-color: #f5f7fa;
         border-bottom: 1px solid v.$color3;
 
         img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             object-position: center;
             display: block;
         }

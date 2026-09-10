@@ -1,8 +1,7 @@
 // Same VehicleGridCard, same framing as the /vehicles catalogue grid. The
 // homepage container is wider (no filter sidebar), so the tracks are pinned to
-// roughly the catalogue column width and centred — otherwise the wider cards
-// make object-fit:cover zoom in further and the car reads as more cropped than
-// on /vehicles.
+// roughly the catalogue column width and centred — otherwise the cards stretch
+// wide and the rail reads unbalanced next to the other sections.
 .popular-vehicles {
     &__grid {
         display: grid;
