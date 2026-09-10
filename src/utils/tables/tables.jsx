@@ -37,11 +37,12 @@ export const getAdminContactMessagesColumns = (t) => [
     },
 ];
 
-export const getAdminVehiclesColumns = (t, tCommon) => {
+export const getAdminVehiclesColumns = (t, tCommon, showSold = false) => {
     const STATUS_BADGE = {
         AVAILABLE: { label: t("vehicleStatus.AVAILABLE"), background: "#1b7a43" },
         RENTED: { label: t("vehicleStatus.RENTED"), background: "#c98a1f" },
         OUT_OF_SERVICE: { label: t("vehicleStatus.OUT_OF_SERVICE"), background: "#b93a3a" },
+        SOLD: { label: t("vehicleStatus.SOLD"), background: "#6b7280" },
     };
 
     return [
@@ -108,5 +109,14 @@ export const getAdminVehiclesColumns = (t, tCommon) => {
                 );
             },
         },
+        ...(showSold
+            ? [
+                  {
+                      name: t("vehicles.saleDateColumn"),
+                      selector: (row) =>
+                          row?.soldAt ? new Date(row.soldAt).toLocaleDateString("tr-TR") : "-",
+                  },
+              ]
+            : []),
     ];
 };

@@ -14,7 +14,8 @@ const { routes } = constants;
 const AdminVehiclesPage = () => {
   const { t } = useTranslation("admin");
   const { t: tCommon } = useTranslation("common");
-  const columns = utils.tables.getAdminVehiclesColumns(t, tCommon);
+  const [showSold, setShowSold] = useState(false);
+  const columns = utils.tables.getAdminVehiclesColumns(t, tCommon, showSold);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
   const [vehicles, setVehicles] = useState([]);
@@ -22,11 +23,14 @@ const AdminVehiclesPage = () => {
   const [perPage, setPerPage] = useState(10);
   const navigate = useNavigate();
 
-  const loadData = async (page, size = perPage) => {
+  const loadData = async (page, size = perPage, sold = showSold) => {
     try {
       const vehicleData = await services.vehicle.getVehiclesByPageAdmin(
         page,
-        size
+        size,
+        "id",
+        "DESC",
+        sold
       );
       setVehicles(vehicleData.content);
       setTotalRows(vehicleData.totalElements);
@@ -35,6 +39,13 @@ const AdminVehiclesPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const switchView = (sold) => {
+    if (sold === showSold) return;
+    setShowSold(sold);
+    setLoading(true);
+    loadData(0, perPage, sold);
   };
 
   const handleDownload = async () => {
@@ -97,9 +108,25 @@ const AdminVehiclesPage = () => {
           {downloading && <Spinner animation="border" size="sm" />} {t("vehicles.downloadReports")}
         </Button>
       </ButtonGroup>
+      <div className="admin-vehicle-page__view-toggle">
+        <button
+          type="button"
+          className={showSold ? "" : "is-active"}
+          onClick={() => switchView(false)}
+        >
+          {t("vehicles.filterActive")}
+        </button>
+        <button
+          type="button"
+          className={showSold ? "is-active" : ""}
+          onClick={() => switchView(true)}
+        >
+          {t("vehicles.filterSold")}
+        </button>
+      </div>
       <div className="admin-vehicle-table-container">
         <DataTable
-          title={t("vehicles.tableTitle")}
+          title={showSold ? t("vehicles.soldTableTitle") : t("vehicles.tableTitle")}
           columns={columns}
           data={vehicles}
           progressPending={loading}

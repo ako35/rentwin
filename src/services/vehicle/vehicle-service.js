@@ -9,6 +9,11 @@ export const getVehicleById = async (id) => {
   const response = await axios.get(`${API_URL}/car/visitors/${id}`);
   return response.data;
 };
+// Admin detail fetch — still returns a sold vehicle (the public route 404s it).
+export const getVehicleByIdAdmin = async (id) => {
+  const response = await axios.get(`${API_URL}/car/admin/${id}/auth`, services.authHeader());
+  return response.data;
+};
 export const getVehicles = async () => {
   const response = await axios.get(`${API_URL}/car/visitors/all`);
   return response.data;
@@ -42,6 +47,21 @@ export const deleteVehicle = async(id) => {
   const response = await axios.delete(`${API_URL}/car/admin/${id}/auth`, services.authHeader());
   return response.data;
 };
+export const markVehicleSold = async (id, payload) => {
+  const response = await axios.post(
+    `${API_URL}/car/admin/${id}/sold/auth`,
+    payload,
+    services.authHeader()
+  );
+  return response.data;
+};
+export const unmarkVehicleSold = async (id) => {
+  const response = await axios.delete(
+    `${API_URL}/car/admin/${id}/sold/auth`,
+    services.authHeader()
+  );
+  return response.data;
+};
 export const downloadVehicleReports = async() => {
   const token = services.encryptedLocalStorage.getItem("rentwintoken");
   const response = await axios.get(`${API_URL}/excel/download/cars`, {
@@ -64,10 +84,11 @@ export const getVehiclesByPageAdmin = async (
   page = 0,
   size = 20,
   sort = "id",
-  direction = "DESC"
+  direction = "DESC",
+  sold = false
 ) => {
   const response = await axios.get(
-    `${API_URL}/car/admin/pages/auth?page=${page}&size=${size}&sort=${sort}&direction=${direction}`,
+    `${API_URL}/car/admin/pages/auth?page=${page}&size=${size}&sort=${sort}&direction=${direction}${sold ? "&sold=1" : ""}`,
     services.authHeader()
   );
   return response.data;

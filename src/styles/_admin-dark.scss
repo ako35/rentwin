@@ -254,6 +254,17 @@
       border-color: var(--rw-line);
     }
 
+    /* vehicle list: Active / Sold view toggle */
+    .admin-layout .admin-vehicle-page__view-toggle {
+      border-color: var(--rw-line);
+      button {
+        background: var(--rw-panel-2);
+        color: var(--rw-ink-muted);
+        &.is-active { background: #1f6f31; color: #eafff0; }
+        & + button { border-left-color: var(--rw-line); }
+      }
+    }
+
     /* ---- contract detail: nested wells, pricing panel, badges -------- */
     /* the contract screen has ~30 sub-wells that use $color4 / #fff as the
        raised surface; sweep them onto the navy inset. */

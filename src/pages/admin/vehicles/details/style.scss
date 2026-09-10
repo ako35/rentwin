@@ -3,6 +3,18 @@
 
 $breakpointxl: 1200px;
 
+.admin-vehicle-sold-alert {
+    @include m.flexbox(row, space-between, center, 1rem);
+    flex-wrap: wrap;
+
+    &__note {
+        margin-top: 0.25rem;
+        font-size: 0.85rem;
+        opacity: 0.85;
+        white-space: pre-wrap;
+    }
+}
+
 .admin-vehicle-details-form {
     box-shadow: 0 0 5px v.$color1;
     border-radius: 5px;

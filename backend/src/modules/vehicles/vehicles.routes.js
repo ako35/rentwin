@@ -4,6 +4,7 @@ const requireAdmin = require("../../middleware/require-admin");
 const upload = require("../../middleware/upload");
 const {
   getVehicleById,
+  getVehicleByIdAdmin,
   getAllVehicles,
   getVehiclesByPage,
   getVehiclesByPageAdmin,
@@ -34,6 +35,8 @@ router.post(
   upload.single("file"),
   extractRegistration
 );
+// ":id" GET after every literal /car/admin/*/auth GET above, or it swallows them.
+router.get("/car/admin/:id/auth", authenticate, requireAdmin, getVehicleByIdAdmin);
 router.post("/car/admin/add", authenticate, requireAdmin, addVehicle);
 router.put("/car/admin/auth", authenticate, requireAdmin, updateVehicle);
 router.post("/car/admin/:id/sold/auth", authenticate, requireAdmin, markVehicleSold);

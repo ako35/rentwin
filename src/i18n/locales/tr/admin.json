@@ -50,6 +50,22 @@
     "newVehicle": "Yeni Araç",
     "downloadReports": "Araç Raporlarını İndir",
     "tableTitle": "Araçlar",
+    "soldTableTitle": "Satılan Araçlar",
+    "filterActive": "Aktif Filo",
+    "filterSold": "Satılanlar",
+    "saleDateColumn": "Satış Tarihi",
+    "sold": {
+      "markButton": "Satıldı olarak işaretle",
+      "unmarkButton": "Satışı geri al",
+      "badge": "SATILDI",
+      "soldOn": "{{date}} tarihinde satıldı",
+      "modalTitle": "Aracı satıldı olarak işaretle",
+      "dateLabel": "Satış tarihi",
+      "noteLabel": "Not (opsiyonel)",
+      "confirm": "Satıldı olarak işaretle",
+      "unmarkConfirmTitle": "Satış geri alınsın mı?",
+      "unmarkConfirmText": "Araç yeniden aktif filoya döner."
+    },
     "registrationScan": {
       "button": "Ruhsattan Doldur",
       "hint": "Ruhsat fotoğrafı veya PDF'i yükleyin, bilgiler otomatik doldurulsun.",
@@ -209,11 +225,17 @@
       "plateTaken": "Bu plaka ile kayıtlı bir araç zaten var.",
       "deleteSuccess": "Araç başarıyla silindi.",
       "deleteError": "Araç silinirken bir hata oluştu.",
+      "deleteHasHistory": "Bu aracın kiralama geçmişi var. Önce 'Satıldı' olarak işaretleyin.",
       "downloadSuccess": "Araç verileri başarıyla indirildi!",
       "downloadError": "Araç verileri indirilirken bir hata oluştu!",
       "pageChangeError": "Sayfa değiştirilirken bir hata oluştu!",
       "deleteConfirmTitle": "Bu aracı silmek istediğinizden emin misiniz?",
-      "deleteConfirmText": "Bu işlemi geri alamazsınız!"
+      "deleteConfirmText": "Bu işlemi geri alamazsınız!",
+      "deleteSoldConfirmText": "Araç ve tüm kiralama kayıtları (sözleşmeler, faturalar) kalıcı olarak silinir. Cari hareketler etkilenmez.",
+      "soldSuccess": "Araç satıldı olarak işaretlendi.",
+      "soldError": "İşlem tamamlanamadı, lütfen tekrar deneyin.",
+      "hasActiveRentals": "Bu aracın açık veya gelecek tarihli kiralaması/rezervasyonu var. Önce onları kapatın.",
+      "unsoldSuccess": "Araç yeniden aktif filoya alındı."
     }
   },
   "reservations": {
@@ -939,7 +961,8 @@
   "vehicleStatus": {
     "AVAILABLE": "Müsait",
     "RENTED": "Kirada",
-    "OUT_OF_SERVICE": "Servis Dışı"
+    "OUT_OF_SERVICE": "Servis Dışı",
+    "SOLD": "Satıldı"
   },
   "settings": {
     "pageTitle": "Ayarlar",

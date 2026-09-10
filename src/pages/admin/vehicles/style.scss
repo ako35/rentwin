@@ -4,6 +4,32 @@
 .admin-vehicle-page {
     @include m.flexbox(column, flex-start, center, 3rem);
 
+    &__view-toggle {
+        align-self: flex-start;
+        display: inline-flex;
+        border: 1px solid v.$color3;
+        border-radius: 6px;
+        overflow: hidden;
+
+        button {
+            border: none;
+            background: v.$color4;
+            color: v.$color5-2;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.4rem 1rem;
+
+            & + button {
+                border-left: 1px solid v.$color3;
+            }
+
+            &.is-active {
+                background: v.$color1;
+                color: #fff;
+            }
+        }
+    }
+
     a[role="button"] {
         background-color: v.$color2;
         border: 1px solid v.$color2;

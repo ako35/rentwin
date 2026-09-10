@@ -8,7 +8,7 @@ import { addContractRecord, deleteContractRecord, getContractRecords, updateCont
 
 import { createUserAdmin, deleteUser, downloadUserReports, extractCustomerDocument, getUser, getUserAdmin, getUsersByPage, login, register, updatePassword, updateUser, updateUserAdmin } from "./user/user-service";
 
-import { addVehicle, deleteVehicle, downloadVehicleReports, extractRegistration, getExpiryAlerts, getFleetStats, getVehicleById, getVehicles, getVehiclesByPage, getVehiclesByPageAdmin, updateVehicle } from "./vehicle/vehicle-service";
+import { addVehicle, deleteVehicle, downloadVehicleReports, extractRegistration, getExpiryAlerts, getFleetStats, getVehicleById, getVehicleByIdAdmin, getVehicles, getVehiclesByPage, getVehiclesByPageAdmin, markVehicleSold, unmarkVehicleSold, updateVehicle } from "./vehicle/vehicle-service";
 
 import { addVehicleRecord, deleteVehicleRecord, getVehicleRecords, updateVehicleRecord } from "./vehicle/vehicle-records-service";
 import { deleteModelImage, generateModelImage, listModelImages, uploadModelImage } from "./vehicle/vehicle-model-image-service";
@@ -101,8 +101,11 @@ export const services = {
         getVehicles,
         getVehiclesByPage,
         // ADMIN ENDPOINTS
+        getVehicleByIdAdmin,
         addVehicle,
         deleteVehicle,
+        markVehicleSold,
+        unmarkVehicleSold,
         downloadVehicleReports,
         getFleetStats,
         getExpiryAlerts,

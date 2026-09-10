@@ -50,6 +50,22 @@
     "newVehicle": "New Vehicle",
     "downloadReports": "Download Vehicle Reports",
     "tableTitle": "Vehicles",
+    "soldTableTitle": "Sold Vehicles",
+    "filterActive": "Active Fleet",
+    "filterSold": "Sold",
+    "saleDateColumn": "Sale Date",
+    "sold": {
+      "markButton": "Mark as sold",
+      "unmarkButton": "Undo sale",
+      "badge": "SOLD",
+      "soldOn": "Sold on {{date}}",
+      "modalTitle": "Mark vehicle as sold",
+      "dateLabel": "Sale date",
+      "noteLabel": "Note (optional)",
+      "confirm": "Mark as sold",
+      "unmarkConfirmTitle": "Undo the sale?",
+      "unmarkConfirmText": "The vehicle returns to the active fleet."
+    },
     "registrationScan": {
       "button": "Fill from Registration",
       "hint": "Upload a photo or PDF of the registration certificate to auto-fill the fields.",
@@ -209,11 +225,17 @@
       "plateTaken": "A vehicle with this licence plate already exists.",
       "deleteSuccess": "Vehicle deleted successfully.",
       "deleteError": "There was an error while deleting the vehicle.",
+      "deleteHasHistory": "This vehicle has rental history. Mark it as sold first.",
       "downloadSuccess": "Vehicle data downloaded successfully!",
       "downloadError": "There was an error while downloading vehicle data!",
       "pageChangeError": "There was an error while changing the page!",
       "deleteConfirmTitle": "Are you sure you want to delete this vehicle?",
-      "deleteConfirmText": "You won't be able to revert this action!"
+      "deleteConfirmText": "You won't be able to revert this action!",
+      "deleteSoldConfirmText": "The vehicle and all of its rental records (contracts, invoices) are permanently deleted. Ledger movements are not affected.",
+      "soldSuccess": "Vehicle marked as sold.",
+      "soldError": "The action could not be completed, please try again.",
+      "hasActiveRentals": "This vehicle has an open or upcoming rental/reservation. Close those first.",
+      "unsoldSuccess": "Vehicle returned to the active fleet."
     }
   },
   "reservations": {
@@ -939,7 +961,8 @@
   "vehicleStatus": {
     "AVAILABLE": "Available",
     "RENTED": "Rented",
-    "OUT_OF_SERVICE": "Out of Service"
+    "OUT_OF_SERVICE": "Out of Service",
+    "SOLD": "Sold"
   },
   "settings": {
     "pageTitle": "Settings",

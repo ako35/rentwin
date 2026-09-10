@@ -36,6 +36,17 @@ const getVehicleById = asyncHandler(async (req, res) => {
   res.json(serializeVehicle(vehicle, modelImages));
 });
 
+// Admin single-vehicle fetch — unlike the public route this still returns a
+// sold vehicle so its detail page (and the "undo sale" action) keep working.
+const getVehicleByIdAdmin = asyncHandler(async (req, res) => {
+  const [vehicle, modelImages] = await Promise.all([
+    prisma.vehicle.findUnique({ where: { id: req.params.id }, include: IMAGES_AND_BRANCH_INCLUDE }),
+    loadModelImageMap(),
+  ]);
+  if (!vehicle) throw new HttpError(404, "Vehicle not found.");
+  res.json(serializeVehicle(vehicle, modelImages));
+});
+
 const getAllVehicles = asyncHandler(async (req, res) => {
   const [vehicles, modelImages] = await Promise.all([
     prisma.vehicle.findMany({ where: { soldAt: null }, include: IMAGES_AND_BRANCH_INCLUDE }),
@@ -242,6 +253,7 @@ const deleteVehicle = asyncHandler(async (req, res) => {
 
 module.exports = {
   getVehicleById,
+  getVehicleByIdAdmin,
   getAllVehicles,
   getVehiclesByPage,
   getVehiclesByPageAdmin,
