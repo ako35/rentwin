@@ -48,8 +48,9 @@
        hard-coded values or Bootstrap leaves a light residue. */
     .admin-layout {
       .form-control:disabled,
-      .form-select:disabled {
-        background-color: #0d1622;
+      .form-select:disabled,
+      .form-control[readonly] {
+        background-color: #0d1622 !important;
         color: var(--rw-ink-subtle);
         -webkit-text-fill-color: var(--rw-ink-subtle);
       }
@@ -153,6 +154,183 @@
       background-color: var(--rw-inset);
     }
 
+    /* ---- form-field surfaces -------------------------------------------- */
+    /* Bootstrap's dark form-control is a warm grey (#212529) that clashes with
+       the navy panels, and a number of admin form components hard-code #fff on
+       their inputs (often at a specificity that beats a plain selector). Pull
+       every field onto the navy-toned inset — bg is !important so component
+       overrides can't leak white; border/colour stay soft so .is-invalid etc.
+       still show. */
+    .admin-layout {
+      .form-control,
+      .form-select,
+      textarea.form-control {
+        background-color: var(--rw-inset) !important;
+        border-color: var(--rw-line);
+        color: var(--rw-ink);
+      }
+      .form-control::placeholder { color: var(--rw-ink-subtle); opacity: 1; }
+      .input-group-text {
+        background-color: var(--rw-panel-2);
+        border-color: var(--rw-line);
+        color: var(--rw-ink-muted);
+      }
+      /* form labels across admin hard-code $color5_2 (near-black) */
+      .form-label,
+      .col-form-label,
+      .form-check-label { color: var(--rw-ink-muted); }
+    }
+
+    /* ---- vehicle form chrome (new / edit vehicle) --------------------- */
+    .admin-layout .vehicle-form {
+      &__header,
+      &__tabs.nav-tabs,
+      &__footer {
+        background-color: var(--rw-panel-2);
+        border-color: var(--rw-line);
+      }
+      &__footer { box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.35); }
+      &__plate { background-color: var(--rw-inset); }
+      &__name { color: var(--rw-ink-strong); }
+      &__meta { color: var(--rw-ink-soft); }
+      &__tabs.nav-tabs .nav-link:not(.active) { color: var(--rw-ink-muted); }
+      &__section h4 { border-bottom-color: var(--rw-line); }
+      &__model-image-frame {
+        background-color: var(--rw-inset);
+        border-color: var(--rw-line);
+      }
+      &__model-image-empty { color: var(--rw-ink-soft); }
+    }
+    .admin-layout :is(.records-two-pane__form, .records-two-pane__total) {
+      background-color: var(--rw-inset);
+      border-color: var(--rw-line);
+    }
+
+    /* ---- contract detail: nested wells, pricing panel, badges -------- */
+    /* the contract screen has ~30 sub-wells that use $color4 / #fff as the
+       raised surface; sweep them onto the navy inset. */
+    .admin-layout :is(
+      .contract-page__rentgroup,
+      .contract-page__car-summary,
+      .contract-page__hgs-period,
+      .contract-page__hgs-auto,
+      .contract-page__hgs-form,
+      .contract-page__hgs-add,
+      .contract-page__fin-card,
+      .contract-page__rex,
+      .contract-page__typeahead-list,
+      .vct__card,
+      .vct-fuel__pill
+    ) {
+      background-color: var(--rw-inset);
+      border-color: var(--rw-line);
+    }
+    .admin-layout .contract-page__typeahead-list button:hover {
+      background-color: var(--rw-hover);
+    }
+
+    /* the invoice-style pricing panel: surface + all its hard-coded ink */
+    .admin-layout .contract-page .pricing {
+      background-color: var(--rw-panel);
+      border-color: var(--rw-line);
+
+      .pricing__group { border-bottom-color: var(--rw-line); }
+      .pricing__group h4,
+      .pricing__label,
+      .pricing__unit,
+      .pricing__row--muted .pricing__label,
+      .pricing__row--muted .pricing__amount,
+      .pricing__summary-balance span { color: var(--rw-ink-muted); }
+      .pricing__amount,
+      .pricing__row--emph .pricing__label,
+      .pricing__summary-total span,
+      .pricing__summary-balance strong { color: var(--rw-ink); }
+      .pricing__mode,
+      .pricing__segmented { border-color: var(--rw-line); }
+      .pricing__mode button,
+      .pricing__segmented button {
+        background: var(--rw-inset);
+        color: var(--rw-ink-muted);
+        border-color: var(--rw-line);
+      }
+      .pricing__mode button.is-active,
+      .pricing__segmented button.is-active { background-color: v.$color2; color: #fff; }
+      .pricing__summary {
+        background-color: rgba(62, 184, 70, 0.12);
+        border-color: rgba(62, 184, 70, 0.3);
+      }
+      .pricing__summary-balance { border-top-color: rgba(62, 184, 70, 0.25); }
+      .pricing__summary-balance.is-negative strong { color: #fda4af; }
+    }
+
+    /* $info compiles to the light $color4 → give btn-info a dark face */
+    .admin-layout .btn-info {
+      --bs-btn-bg: var(--rw-panel-2);
+      --bs-btn-border-color: var(--rw-line);
+      --bs-btn-color: var(--rw-ink);
+      --bs-btn-hover-bg: var(--rw-hover);
+      --bs-btn-hover-color: var(--rw-ink);
+      --bs-btn-hover-border-color: var(--rw-line);
+    }
+
+    /* KABİS + HGS cards carry a lot of hard-coded $color5 / $color5_3 ink that
+       Bootstrap's dark inheritance never reaches — re-tone it explicitly. */
+    .admin-layout :is(
+      .contract-page__kbs-row .form-check-label,
+      .contract-page__hgs-period strong,
+      .contract-page__hgs-range
+    ) { color: var(--rw-ink); }
+    .admin-layout :is(
+      .contract-page__kbs-row,
+      .contract-page__kbs-date span,
+      .contract-page__kbs-hint,
+      .contract-page__kbs-undo,
+      .contract-page__kbs-stamp,
+      .contract-page__hgs-period span,
+      .contract-page__hgs-auto,
+      .contract-page__hgs-meta,
+      .contract-page__hgs-empty,
+      .contract-page__hgs-hint,
+      .contract-page__hgs-log-head,
+      .contract-page__hgs-form-range,
+      .contract-page__hgs-actions,
+      .contract-page__cust-grid dt,
+      .contract-page__ro-sub
+    ) { color: var(--rw-ink-muted); }
+
+    /* value text on the contract screen that hard-codes near-black $color5 */
+    .admin-layout :is(
+      .contract-page__cust-grid dd,
+      .contract-page__car-specs,
+      .contract-page__fin-value,
+      .contract-page__hgs-range
+    ) { color: var(--rw-ink); }
+
+    /* contract badges: light-ground → dark-ground */
+    .admin-layout {
+      .contract-page__kbs-badge.is-pending,
+      .contract-page__hgs-auto.is-partial {
+        background-color: rgba(245, 158, 11, 0.16);
+        color: #fcd34d;
+      }
+      .contract-page__hgs-badge.is-pending {
+        background-color: var(--rw-inset);
+        color: var(--rw-ink-soft);
+      }
+      .contract-page__bal-badge {
+        background-color: var(--rw-inset);
+        color: var(--rw-ink);
+      }
+      .contract-page__bal-badge.is-negative {
+        background-color: rgba(225, 29, 72, 0.18);
+        color: #fda4af;
+      }
+      .contract-page__bal-badge.is-positive {
+        background-color: rgba(34, 197, 94, 0.18);
+        color: #86efac;
+      }
+    }
+
     /* pills / code chips / wells */
     .admin-layout :is(
       .finance-page__code,
@@ -160,9 +338,12 @@
       .branch-table__code,
       .branch-table__count,
       .ledger-table__opening td,
-      .model-image-card__thumb
+      .model-image-card__thumb,
+      .admin-rental-locations-page__thumb,
+      .admin-rental-locations-page__image
     ) {
       background-color: var(--rw-inset);
+      border-color: var(--rw-line);
       color: var(--rw-ink-muted);
     }
 
