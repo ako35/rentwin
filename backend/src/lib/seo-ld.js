@@ -9,7 +9,7 @@
 // seoDescription in a locale file, or a JSON-LD shape in src/utils/seo.js,
 // mirror it here.
 
-const { SITE_URL, business } = require("./site");
+const { SITE_URL, business, slugify } = require("./site");
 
 const ORG_ID = `${SITE_URL}/#organization`;
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -88,6 +88,17 @@ const faqLd = (items) => ({
     name: item.q,
     acceptedAnswer: { "@type": "Answer", text: item.a },
   })),
+});
+
+// A listing page's contents. `itemListElement` is a ready array of ListItem
+// objects (summary form: position + url to each item's own page; or plain
+// position + name when the items have no detail page).
+const itemListLd = ({ name, itemListElement }) => ({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name,
+  numberOfItems: itemListElement.length,
+  itemListElement,
 });
 
 const vehicleLd = ({ name, brand, model, image, transmission, fuelType, modelYear, color, path }) => ({
@@ -172,6 +183,70 @@ const FAQ_ITEMS = [
     a: "Nakit, kredi kartı ve havale / EFT ile ödeme yapabilirsiniz.",
   },
 ];
+
+/* --------------------------------------------- /kampanyalar crawler body  */
+// Mirrors src/i18n/locales/tr/campaigns.json and the markup of
+// src/pages/common/campaigns/page.jsx + campaign-card.jsx. The prerender drops
+// this inside #root so JS-less crawlers and social scrapers read the real
+// campaign text instead of an empty SPA shell. KEEP IN SYNC with the locale file.
+
+const CAMPAIGNS_COPY = {
+  pageTitle: "Kampanyalar",
+  intro:
+    "Rentwin'in güncel kiralama kampanyaları ve indirim fırsatları burada. Detayları inceleyin, avantajlı fiyatlarla aracınızı ayırtın.",
+  empty: "Şu anda yayında olan bir kampanya bulunmuyor. Yeni fırsatlar için takipte kalın.",
+  cta: "Detaylar",
+};
+
+const htmlEsc = (value) =>
+  String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
+const trDate = (value) => {
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString("tr-TR");
+};
+
+const campaignValidity = ({ startsAt, endsAt }) => {
+  if (startsAt && endsAt) return `${trDate(startsAt)} – ${trDate(endsAt)} arası geçerli`;
+  if (endsAt) return `${trDate(endsAt)} tarihine kadar geçerli`;
+  return "";
+};
+
+// campaigns: [{ title, description, image, ctaLabel, ctaUrl, startsAt, endsAt }]
+const renderCampaignsBody = (campaigns = []) => {
+  const cards = campaigns
+    .map((c) => {
+      const validity = campaignValidity(c);
+      let cta = "";
+      if (c.ctaUrl && /^https?:\/\//i.test(c.ctaUrl)) {
+        cta = `<a href="${htmlEsc(c.ctaUrl)}" rel="noopener nofollow">${htmlEsc(
+          c.ctaLabel || CAMPAIGNS_COPY.cta
+        )}</a>`;
+      } else if (c.ctaUrl && c.ctaUrl.startsWith("/")) {
+        cta = `<a href="${htmlEsc(SITE_URL + c.ctaUrl)}">${htmlEsc(c.ctaLabel || CAMPAIGNS_COPY.cta)}</a>`;
+      }
+      return (
+        "<li><article>" +
+        `<h2>${htmlEsc(c.title)}</h2>` +
+        (validity ? `<p>${htmlEsc(validity)}</p>` : "") +
+        `<p>${htmlEsc(c.description)}</p>` +
+        (c.image ? `<img src="${htmlEsc(c.image)}" alt="${htmlEsc(c.title)}" loading="lazy" />` : "") +
+        cta +
+        "</article></li>"
+      );
+    })
+    .join("");
+  return (
+    `<main><h1>${htmlEsc(CAMPAIGNS_COPY.pageTitle)}</h1>` +
+    `<p>${htmlEsc(CAMPAIGNS_COPY.intro)}</p>` +
+    (cards ? `<ul>${cards}</ul>` : `<p>${htmlEsc(CAMPAIGNS_COPY.empty)}</p>`) +
+    "</main>"
+  );
+};
 
 const STATIC_META = {
   "/": {
@@ -260,9 +335,21 @@ const noindex = (head) => ({ ...head, canonical: null, robots: "noindex, nofollo
  * @param {boolean} [args.vehicleMissing]  path was /vehicles/:id but no such vehicle
  * @param {string} [args.locationName]     resolved Location.name for /lokasyonlar/:slug
  * @param {boolean} [args.locationMissing] path was /lokasyonlar/:slug but no match
- * @returns {{title,description,canonical,ogImage,ogType,robots,jsonLd:object[]}}
+ * @param {object[]} [args.vehicles]        [{ id, brand, model }] for the /vehicles list
+ * @param {object[]} [args.locations]       [{ name }] for the /lokasyonlar list
+ * @param {object[]} [args.campaigns]       [{ title, description, image, ctaLabel, ctaUrl, startsAt, endsAt }]
+ * @returns {{title,description,canonical,ogImage,ogType,robots,jsonLd:object[],bodyHtml?:string}}
  */
-const buildHead = ({ path, vehicle, vehicleMissing, locationName, locationMissing }) => {
+const buildHead = ({
+  path,
+  vehicle,
+  vehicleMissing,
+  locationName,
+  locationMissing,
+  vehicles,
+  locations,
+  campaigns,
+}) => {
   // vehicle detail
   if (/^\/vehicles\/[^/]+$/.test(path)) {
     if (vehicleMissing || !vehicle) {
@@ -309,12 +396,59 @@ const buildHead = ({ path, vehicle, vehicleMissing, locationName, locationMissin
   // static routes
   const meta = STATIC_META[path];
   if (meta) {
-    return {
+    const head = {
       ...base(path),
       title: meta.title,
       description: meta.description,
       jsonLd: meta.jsonLd(),
     };
+
+    if (path === "/vehicles" && vehicles && vehicles.length) {
+      head.jsonLd.push(
+        itemListLd({
+          name: "Kiralık Araçlar",
+          itemListElement: vehicles.slice(0, 100).map((v, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            name: `${(v.brand || "").trim()} ${(v.model || "").trim()}`.trim(),
+            url: `${SITE_URL}/vehicles/${v.id}`,
+          })),
+        })
+      );
+    }
+
+    if (path === "/lokasyonlar" && locations && locations.length) {
+      head.jsonLd.push(
+        itemListLd({
+          name: "Araç Kiralama Lokasyonları",
+          itemListElement: locations.map((l, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            name: l.name,
+            url: `${SITE_URL}/lokasyonlar/${slugify(l.name)}`,
+          })),
+        })
+      );
+    }
+
+    if (path === "/kampanyalar") {
+      const list = campaigns || [];
+      if (list.length) {
+        head.jsonLd.push(
+          itemListLd({
+            name: "Kampanyalar",
+            itemListElement: list.map((c, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              name: c.title,
+            })),
+          })
+        );
+      }
+      head.bodyHtml = renderCampaignsBody(list);
+    }
+
+    return head;
   }
 
   // unknown path that still matched the prerender route list — safe generic
@@ -327,6 +461,7 @@ module.exports = {
   webSiteLd,
   breadcrumbLd,
   faqLd,
+  itemListLd,
   vehicleLd,
   FAQ_ITEMS,
 };

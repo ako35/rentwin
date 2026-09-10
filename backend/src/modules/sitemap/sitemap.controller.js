@@ -18,22 +18,28 @@ const STATIC_ROUTES = [
 const xmlEscape = (s = "") =>
   s.replace(/[<>&'"]/g, (ch) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" }[ch]));
 
-const urlEntry = ({ path, lastmod, changefreq, priority, image }) =>
+const urlEntry = ({ path, lastmod, changefreq, priority, image, images }) =>
   [
     "  <url>",
     `    <loc>${SITE_URL}${path}</loc>`,
     lastmod ? `    <lastmod>${new Date(lastmod).toISOString().slice(0, 10)}</lastmod>` : null,
     changefreq ? `    <changefreq>${changefreq}</changefreq>` : null,
     priority ? `    <priority>${priority}</priority>` : null,
-    image ? `    <image:image><image:loc>${xmlEscape(image)}</image:loc></image:image>` : null,
+    ...[]
+      .concat(image || [], images || [])
+      .filter(Boolean)
+      .map((loc) => `    <image:image><image:loc>${xmlEscape(loc)}</image:loc></image:image>`),
     "  </url>",
   ]
     .filter(Boolean)
     .join("\n");
 
+const latest = (rows, field) =>
+  rows.reduce((max, r) => (r[field] && r[field] > max ? r[field] : max), new Date(0));
+
 // Dynamic sitemap: static pages + every in-service vehicle + every location.
 const getSitemap = asyncHandler(async (req, res) => {
-  const [vehicles, locations, modelImages] = await Promise.all([
+  const [vehicles, locations, campaigns, modelImages] = await Promise.all([
     prisma.vehicle.findMany({
       where: { outOfService: false, soldAt: null },
       select: {
@@ -45,23 +51,42 @@ const getSitemap = asyncHandler(async (req, res) => {
       },
     }),
     prisma.location.findMany({ select: { name: true, createdAt: true } }),
+    prisma.campaign.findMany({ where: { active: true }, select: { imageId: true, updatedAt: true } }),
     loadModelImageMap(),
   ]);
 
   const vehicleImage = (v) =>
     modelImages.get(modelImageKey(v.brand, v.model))?.blobUrl || v.images[0]?.blobUrl;
 
-  // The listing pages are as fresh as the most recently touched vehicle.
-  const fleetLastmod = vehicles.reduce(
-    (max, v) => (v.updatedAt > max ? v.updatedAt : max),
-    new Date(0)
-  );
+  const campaignImageIds = campaigns.map((c) => c.imageId).filter(Boolean);
+  const campaignImages = campaignImageIds.length
+    ? await prisma.vehicleImage.findMany({
+        where: { id: { in: campaignImageIds } },
+        select: { id: true, blobUrl: true },
+      })
+    : [];
+  const blobById = new Map(campaignImages.map((i) => [i.id, i.blobUrl]));
+  const campaignImageUrls = campaignImageIds.map((id) => blobById.get(id)).filter(Boolean);
+
+  // The listing pages are as fresh as the most recently touched item they list.
+  const fleetLastmod = latest(vehicles, "updatedAt");
   const staticLastmod = fleetLastmod.getTime() ? fleetLastmod : new Date();
+  const locationsLastmod = latest(locations, "createdAt");
+  const campaignsLastmod = latest(campaigns, "updatedAt");
+
+  const staticLastmodByPath = {
+    "/": staticLastmod,
+    "/vehicles": staticLastmod,
+    "/lokasyonlar": locationsLastmod.getTime() ? locationsLastmod : undefined,
+    "/kampanyalar": campaignsLastmod.getTime() ? campaignsLastmod : undefined,
+  };
 
   const entries = [
-    ...STATIC_ROUTES.map((r) =>
-      r.path === "/" || r.path === "/vehicles" ? { ...r, lastmod: staticLastmod } : r
-    ),
+    ...STATIC_ROUTES.map((r) => ({
+      ...r,
+      ...(staticLastmodByPath[r.path] ? { lastmod: staticLastmodByPath[r.path] } : {}),
+      ...(r.path === "/kampanyalar" && campaignImageUrls.length ? { images: campaignImageUrls } : {}),
+    })),
     ...vehicles.map((v) => ({
       path: `/vehicles/${v.id}`,
       lastmod: v.updatedAt,

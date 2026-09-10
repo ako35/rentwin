@@ -81,6 +81,12 @@ const inject = (shell, head) => {
   if (head.jsonLd.length) {
     html = html.replace("<!--SEO:LD-->", `<!--SEO:LD-->\n  ${renderLd(head.jsonLd)}`);
   }
+  // Some routes (currently /kampanyalar) also carry a server-rendered body so a
+  // JS-less crawler reads real content, not the empty shell. A browser never
+  // reaches this path, and createRoot() clears #root before it renders anyway.
+  if (head.bodyHtml) {
+    html = html.replace(/<div id="root">\s*<\/div>/, `<div id="root">${head.bodyHtml}</div>`);
+  }
   return html;
 };
 
@@ -128,6 +134,53 @@ const resolvePath = async (reqPath) => {
     const match = locations.find((l) => slugify(l.name) === slug);
     if (!match) return { path: reqPath, locationMissing: true };
     return { path: reqPath, locationName: match.name };
+  }
+
+  // Listing pages: hand buildHead the data it needs for an ItemList (and, for
+  // /kampanyalar, the server-rendered card list).
+  if (reqPath === "/vehicles") {
+    const vehicles = await prisma.vehicle.findMany({
+      where: { outOfService: false, soldAt: null },
+      select: { id: true, brand: true, model: true },
+      orderBy: { model: "asc" },
+      take: 100,
+    });
+    return { path: reqPath, vehicles };
+  }
+
+  if (reqPath === "/lokasyonlar") {
+    const locations = await prisma.location.findMany({
+      select: { name: true },
+      orderBy: { name: "asc" },
+    });
+    return { path: reqPath, locations };
+  }
+
+  if (reqPath === "/kampanyalar") {
+    const rows = await prisma.campaign.findMany({
+      where: { active: true },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+    });
+    const imageIds = rows.map((c) => c.imageId).filter(Boolean);
+    const images = imageIds.length
+      ? await prisma.vehicleImage.findMany({
+          where: { id: { in: imageIds } },
+          select: { id: true, blobUrl: true },
+        })
+      : [];
+    const blobById = new Map(images.map((i) => [i.id, i.blobUrl]));
+    return {
+      path: reqPath,
+      campaigns: rows.map((c) => ({
+        title: c.title,
+        description: c.description,
+        image: c.imageId ? blobById.get(c.imageId) || null : null,
+        ctaLabel: c.ctaLabel,
+        ctaUrl: c.ctaUrl,
+        startsAt: c.startsAt,
+        endsAt: c.endsAt,
+      })),
+    };
   }
 
   return { path: reqPath };
