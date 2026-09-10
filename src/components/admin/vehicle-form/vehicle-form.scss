@@ -12,7 +12,7 @@ $breakpointxl: 1200px;
   &__header {
     @include m.flexbox(row, space-between, center, 1rem);
     flex-wrap: wrap;
-    padding: 1rem 1.9rem;
+    padding: 1rem 2.4rem;
     background-color: v.$color4;
     border-bottom: 1px solid v.$color3;
   }
@@ -46,7 +46,7 @@ $breakpointxl: 1200px;
   }
 
   &__tabs.nav-tabs {
-    padding: 0 1.5rem;
+    padding: 0 2rem;
     background-color: v.$color4;
     border-bottom: 1px solid v.$color3;
     flex-wrap: nowrap;
@@ -74,13 +74,14 @@ $breakpointxl: 1200px;
   &__body {
     // Generous inset so labels / inputs / section rules never run flush
     // against the card edge at any width.
-    padding: 1.35rem 1.9rem;
+    padding: 1.5rem 2.4rem;
 
-    // On xl the fields also sit beside the model-image column — add a little
-    // more left gutter there so they clear it.
+    // On xl the fields sit in a col-xl-9 beside the model-image column, so the
+    // body padding alone doesn't reach them — give the fields column its own
+    // healthy left inset (this replaces Bootstrap's 12px gutter padding).
     .vehicle-form__fields {
       @media (min-width: $breakpointxl) {
-        padding-left: 1.5rem;
+        padding-left: 2.5rem;
       }
     }
 
@@ -189,7 +190,7 @@ $breakpointxl: 1200px;
   &__footer {
     @include m.flexbox(row, flex-end, center, 0.5rem);
     flex-wrap: wrap;
-    padding: 1rem 1.9rem;
+    padding: 1rem 2.4rem;
     border-top: 1px solid v.$color3;
     background-color: v.$color4;
   }
