@@ -1,0 +1,10 @@
+{
+  "pageTitle": "Campaigns",
+  "seoTitle": "Campaigns & Deals | Rentwin Car Rental",
+  "seoDescription": "Rentwin's latest car rental campaigns and discount deals. Don't miss weekend, long-term and seasonal offers — rent at advantageous prices.",
+  "intro": "Rentwin's current rental campaigns and discount deals are here. Check the details and book your car at advantageous prices.",
+  "empty": "There are no active campaigns right now. Stay tuned for new deals.",
+  "cta": "Details",
+  "validUntil": "Valid until {{date}}",
+  "validBetween": "Valid {{start}} – {{end}}"
+}

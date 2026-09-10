@@ -13,6 +13,8 @@ import VehicleStatsPanel from './admin/vehicle-stats-panel/vehicle-stats-panel'
 // common components
 import OfferItem from './common/about/best-offers/offer-item/offer-item'
 import BestOffers from './common/about/best-offers/best-offers'
+import CampaignCard from './common/campaigns/campaign-card/campaign-card'
+import CampaignsSection from './common/campaigns/campaigns-section/campaigns-section'
 import TeamMember from './common/about/team/member/member'
 import Team from './common/about/team/team'
 import WhatWeDo from './common/about/what-we-do/what-we-do'
@@ -67,6 +69,8 @@ export{
     // common components
     OfferItem,
     BestOffers,
+    CampaignCard,
+    CampaignsSection,
     TeamMember,
     Team,
     WhatWeDo,

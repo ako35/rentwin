@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // is code-split so an anonymous visitor or crawler never downloads it.
 import CommonLayout from "../layouts/common/layout";
 import AboutPage from "../pages/common/about/page";
+import CampaignsPage from "../pages/common/campaigns/page";
 import ContactPage from "../pages/common/contact/page";
 import FaqPage from "../pages/common/faq/page";
 import LocationsPage from "../pages/common/locations/page";
@@ -28,6 +29,7 @@ const UserReservationsPage = lazy(() => import("../pages/common/user/reservation
 const UserReservationDetailsPage = lazy(() => import("../pages/common/user/reservations/details/page"));
 
 const AdminAnnouncementsPage = lazy(() => import("../pages/admin/announcements/page"));
+const AdminCampaignsPage = lazy(() => import("../pages/admin/campaigns/page"));
 const AdminComingSoonPage = lazy(() => import("../pages/admin/coming-soon/page"));
 const AdminContactMessagesPage = lazy(() => import("../pages/admin/contact-messages/page"));
 const AdminContactMessageDetailsPage = lazy(() => import("../pages/admin/contact-messages/details/page"));
@@ -62,6 +64,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "about", element: <AboutPage /> },
+      { path: "kampanyalar", element: <CampaignsPage /> },
       { path: "contact", element: <ContactPage /> },
       { path: "sss", element: <FaqPage /> },
       {
@@ -112,6 +115,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: lazyRoute(<AdminDashboard />) },
       { path: "announcements", element: lazyRoute(<AdminAnnouncementsPage />) },
+      { path: "campaigns", element: lazyRoute(<AdminCampaignsPage />) },
       { path: "branches", element: lazyRoute(<AdminBranchesPage />) },
       { path: "rental-locations", element: lazyRoute(<AdminRentalLocationsPage />) },
       { path: "extras", element: lazyRoute(<AdminExtrasPage />) },

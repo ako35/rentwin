@@ -21,6 +21,7 @@ import { addCorporate, deleteCorporate, getCorporate, getCorporates, updateCorpo
 import { addExtra, deleteExtra, getExtras, updateExtra } from "./extra/extra-service";
 
 import { addAnnouncement, deleteAnnouncement, getActiveAnnouncements, getAnnouncements, updateAnnouncement } from "./announcement/announcement-service";
+import { addCampaign, deleteCampaign, getCampaigns, getCampaignsAdmin, updateCampaign, uploadCampaignImage } from "./campaign/campaign-service";
 import { getSettings, updateSettings } from "./settings/settings-service";
 
 import { addLedgerEntry, deleteLedgerEntry, getUserLedger, updateLedgerEntry } from "./ledger/ledger-service";
@@ -156,6 +157,14 @@ export const services = {
         addAnnouncement,
         updateAnnouncement,
         deleteAnnouncement,
+    },
+    campaign: {
+        getCampaigns,
+        getCampaignsAdmin,
+        addCampaign,
+        updateCampaign,
+        deleteCampaign,
+        uploadCampaignImage,
     },
     ledger: {
         getUserLedger,

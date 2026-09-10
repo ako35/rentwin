@@ -1,0 +1,10 @@
+{
+  "pageTitle": "Kampanyalar",
+  "seoTitle": "Kampanyalar ve Fırsatlar | Rentwin Araç Kiralama",
+  "seoDescription": "Rentwin'in güncel araç kiralama kampanyaları ve indirim fırsatları. Hafta sonu, uzun dönem ve sezon fırsatlarını kaçırmayın, avantajlı fiyatlarla kiralayın.",
+  "intro": "Rentwin'in güncel kiralama kampanyaları ve indirim fırsatları burada. Detayları inceleyin, avantajlı fiyatlarla aracınızı ayırtın.",
+  "empty": "Şu anda yayında olan bir kampanya bulunmuyor. Yeni fırsatlar için takipte kalın.",
+  "cta": "Detaylar",
+  "validUntil": "{{date}} tarihine kadar geçerli",
+  "validBetween": "{{start}} – {{end}} arası geçerli"
+}

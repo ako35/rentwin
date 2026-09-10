@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Spacer, HomeHero, PopularVehicles, BestOffers, Team, WhatWeDo, JsonLd } from '../../../components'
+import { Spacer, HomeHero, PopularVehicles, CampaignsSection, BestOffers, Team, WhatWeDo, JsonLd } from '../../../components'
 import { usePageMeta } from '../../../hooks/use-page-meta'
 import { webSiteLd } from '../../../utils/seo'
 
@@ -18,6 +18,7 @@ const HomePage = () => {
       <Spacer />
       <PopularVehicles />
       <Spacer />
+      <CampaignsSection />
       <BestOffers />
       <Spacer />
       <Team />

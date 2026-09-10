@@ -36,6 +36,12 @@
       "title1": "Get Our",
       "title2": "Best Offers"
     },
+    "campaigns": {
+      "title1": "Current",
+      "title2": "Campaigns",
+      "desc": "Rentwin's latest rental campaigns and discount deals.",
+      "seeAll": "All campaigns"
+    },
     "team": {
       "title1": "Our",
       "title2": "Team",

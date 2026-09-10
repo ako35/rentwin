@@ -6,12 +6,13 @@ import { UserMenu, LanguageSwitcher } from '../../../'
 import './bottom-menu.scss'
 
 const {
-  routes: { home, vehicles, locations, about, faq, contact },
+  routes: { home, vehicles, campaigns, locations, about, faq, contact },
 } = constants;
 
 const navigationLinks = [
   { direct: home, key: "home" },
   { direct: vehicles, key: "vehicles" },
+  { direct: campaigns, key: "campaigns" },
   { direct: locations, key: "locations" },
   { direct: about, key: "about" },
   { direct: faq, key: "faq" },

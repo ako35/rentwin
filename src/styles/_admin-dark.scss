@@ -87,6 +87,18 @@
     .modal-header,
     .modal-footer { border-color: var(--rw-line); }
 
+    /* campaign modal: the image preview well + its hints — portalled at <body>,
+       so scoped bare like .modal-content above (data-theme is only ever "dark"
+       on an admin route). */
+    .admin-campaigns-page__modal {
+      .admin-campaigns-page__image {
+        background-color: var(--rw-inset);
+        border-color: var(--rw-line);
+      }
+      .admin-campaigns-page__image-empty,
+      .form-text { color: var(--rw-ink-muted); }
+    }
+
     /* ---- customer form (new / edit customer + contract quick-add modal) ---
        scoped bare (not under .admin-layout) so the portalled modal variant
        is covered too; data-theme is only ever "dark" on an admin route. */
@@ -145,6 +157,7 @@
       .finance-page__panel,
       .admin-branches-page__panel,
       .admin-rental-locations-page__panel,
+      .admin-campaigns-page__panel,
       .stat-card,
       .model-image-card,
       .admin-settings__card,
@@ -399,7 +412,8 @@
       .ledger-table__opening td,
       .model-image-card__thumb,
       .admin-rental-locations-page__thumb,
-      .admin-rental-locations-page__image
+      .admin-rental-locations-page__image,
+      .admin-campaigns-page__thumb
     ) {
       background-color: var(--rw-inset);
       border-color: var(--rw-line);
@@ -457,6 +471,7 @@
       .model-images-page__empty,
       .model-image-card__placeholder,
       .admin-rental-locations-page__hint,
+      .admin-campaigns-page__hint,
       .admin-settings__card-head p,
       .admin-settings__field .form-label,
       .admin-settings__input span,

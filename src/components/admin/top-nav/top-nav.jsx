@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Container, Form, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { AiOutlineHome } from "react-icons/ai";
-import { BsListUl, BsPlusLg, BsTag, BsMegaphone, BsGlobe2, BsBoxArrowRight, BsImages, BsSun, BsMoonStars } from "react-icons/bs";
+import { BsListUl, BsPlusLg, BsTag, BsMegaphone, BsGift, BsGlobe2, BsBoxArrowRight, BsImages, BsSun, BsMoonStars } from "react-icons/bs";
 import { utils } from "../../../utils";
 import { logout } from "../../../store";
 import { services } from "../../../services";
@@ -133,10 +133,16 @@ const AdminTopNav = () => {
             </Nav.Link>
             <NavDropdown
               title={t("topNav.system")}
-              active={pathname.startsWith(routes.adminAnnouncements)}
+              active={
+                pathname.startsWith(routes.adminAnnouncements) ||
+                pathname.startsWith(routes.adminCampaigns)
+              }
             >
               <NavDropdown.Item as={Link} to={routes.adminAnnouncements}>
                 <BsMegaphone className="admin-top-nav__item-icon" /> {t("topNav.announcements")}
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminCampaigns}>
+                <BsGift className="admin-top-nav__item-icon" /> {t("topNav.campaigns")}
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to={routes.home}>
                 <BsGlobe2 className="admin-top-nav__item-icon" /> {t("topNav.backToWebsite")}

@@ -36,6 +36,12 @@
       "title1": "En İyi",
       "title2": "Tekliflerimiz"
     },
+    "campaigns": {
+      "title1": "Güncel",
+      "title2": "Kampanyalar",
+      "desc": "Rentwin'in güncel kiralama kampanyaları ve indirim fırsatları.",
+      "seeAll": "Tüm kampanyalar"
+    },
     "team": {
       "title1": "Bizim",
       "title2": "Ekibimiz",

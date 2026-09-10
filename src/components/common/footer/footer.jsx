@@ -6,12 +6,13 @@ import { ContactInfo, QuickLink } from "../../";
 import "./footer.scss";
 
 const {
-  routes: { about, contact, faq, home, locations, privacyPolicy, vehicles },
+  routes: { about, campaigns, contact, faq, home, locations, privacyPolicy, vehicles },
 } = constants;
 
 const quickLinks = [
   { direct: home, key: "home" },
   { direct: vehicles, key: "vehicles" },
+  { direct: campaigns, key: "campaigns" },
   { direct: locations, key: "locations" },
   { direct: about, key: "about" },
   { direct: faq, key: "faq" },

@@ -1,0 +1,35 @@
+@use '../../../../styles/variables' as v;
+@use '../../../../styles/mixins' as m;
+
+.campaigns-section {
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.1rem;
+
+    @media (max-width: 900px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 560px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__all {
+    margin-top: 1.5rem;
+    text-align: center;
+
+    a {
+      @include m.flexbox(row, center, center, 0.4rem);
+      display: inline-flex;
+      font-weight: 600;
+      color: v.$color1;
+      text-decoration: none;
+
+      &:hover {
+        color: v.$color2;
+      }
+    }
+  }
+}
