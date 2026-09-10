@@ -1308,7 +1308,7 @@
     "imageEmpty": "Görsel seçilmedi",
     "imageSelect": "Görsel Seç",
     "imageRemove": "Kaldır",
-    "imageHint": "Önerilen boyut 1200×675 (16:9). JPG veya PNG.",
+    "imageHint": "Geniş afiş görseli (örn. 1200×675, 16:9). Görsel kırpılmadan gösterilir. JPG veya PNG.",
     "startsAtLabel": "Başlangıç Tarihi",
     "endsAtLabel": "Bitiş Tarihi",
     "ctaLabelLabel": "Buton Metni",

@@ -1308,7 +1308,7 @@
     "imageEmpty": "No image selected",
     "imageSelect": "Select Image",
     "imageRemove": "Remove",
-    "imageHint": "Recommended size 1200×675 (16:9). JPG or PNG.",
+    "imageHint": "Wide banner image (e.g. 1200×675, 16:9). Shown uncropped. JPG or PNG.",
     "startsAtLabel": "Start Date",
     "endsAtLabel": "End Date",
     "ctaLabelLabel": "Button Text",
