@@ -12,7 +12,7 @@ $breakpointxl: 1200px;
   &__header {
     @include m.flexbox(row, space-between, center, 1rem);
     flex-wrap: wrap;
-    padding: 1rem 1.5rem;
+    padding: 1rem 1.9rem;
     background-color: v.$color4;
     border-bottom: 1px solid v.$color3;
   }
@@ -46,7 +46,7 @@ $breakpointxl: 1200px;
   }
 
   &__tabs.nav-tabs {
-    padding: 0 1rem;
+    padding: 0 1.5rem;
     background-color: v.$color4;
     border-bottom: 1px solid v.$color3;
     flex-wrap: nowrap;
@@ -72,15 +72,15 @@ $breakpointxl: 1200px;
   }
 
   &__body {
-    padding: 1.15rem 1.35rem;
+    // Generous inset so labels / inputs / section rules never run flush
+    // against the card edge at any width.
+    padding: 1.35rem 1.9rem;
 
-    // On xl the fields sit next to the model-image column — give them a real
-    // gutter from it (and a touch of right breathing room) so the labels and
-    // section rules don't run flush against the edges.
+    // On xl the fields also sit beside the model-image column — add a little
+    // more left gutter there so they clear it.
     .vehicle-form__fields {
       @media (min-width: $breakpointxl) {
-        padding-left: 1.75rem;
-        padding-right: 1rem;
+        padding-left: 1.5rem;
       }
     }
 
@@ -110,6 +110,15 @@ $breakpointxl: 1200px;
 
   &__model-image {
     margin-bottom: 1rem;
+  }
+
+  // Below xl the image column is full width — cap it (beat Bootstrap's
+  // `.row > * { max-width: 100% }` with the compound selector) so the 4:3
+  // frame doesn't blow up to a giant empty box above the fields.
+  & &__image {
+    @media (max-width: ($breakpointxl - 0.02px)) {
+      max-width: 340px;
+    }
   }
 
   &__model-image-frame {
@@ -180,7 +189,7 @@ $breakpointxl: 1200px;
   &__footer {
     @include m.flexbox(row, flex-end, center, 0.5rem);
     flex-wrap: wrap;
-    padding: 1rem 1.5rem;
+    padding: 1rem 1.9rem;
     border-top: 1px solid v.$color3;
     background-color: v.$color4;
   }
