@@ -18,7 +18,7 @@
       color: var(--rw-ink-strong);
     }
 
-    .admin-layout a:not(.btn):not(.nav-link):not([class*="__doc"]):not([class*="__back"]) {
+    .admin-layout a:not(.btn):not(.nav-link):not([class*="__doc"]):not([class*="__back"]):not([class*="__support"]) {
       color: #6ea8fe;
     }
 
@@ -40,7 +40,21 @@
     .admin-footer {
       background-color: var(--rw-panel-2);
       border-top-color: var(--rw-line);
-      color: var(--rw-ink-muted);
+      color: var(--rw-ink);
+    }
+    /* the support link is an <a> styled as a button (no .btn class) — its mixin
+       paints near-white on brand green (~2.4:1) and the forced link colour makes
+       it worse. Give it the deep-green face the header bands use. */
+    .admin-footer__support {
+      background-color: #1f6f31;
+      border: 1px solid #1f6f31;
+      color: #eafff0;
+
+      &:hover {
+        background-color: #2f9e3f;
+        border-color: #2f9e3f;
+        color: #fff;
+      }
     }
 
     /* ---- Bootstrap gap-fills ------------------------------------------- */
