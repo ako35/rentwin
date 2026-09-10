@@ -74,6 +74,16 @@ $breakpointxl: 1200px;
   &__body {
     padding: 1.15rem 1.35rem;
 
+    // On xl the fields sit next to the model-image column — give them a real
+    // gutter from it (and a touch of right breathing room) so the labels and
+    // section rules don't run flush against the edges.
+    .vehicle-form__fields {
+      @media (min-width: $breakpointxl) {
+        padding-left: 1.75rem;
+        padding-right: 1rem;
+      }
+    }
+
     .form-label {
       margin-bottom: 0.15rem;
       font-size: 0.78rem;

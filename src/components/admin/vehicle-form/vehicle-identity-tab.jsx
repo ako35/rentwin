@@ -31,7 +31,7 @@ const VehicleIdentityTab = ({ formik, disabled, sections, handleModelPicked, pla
         <Col xl={3} className="vehicle-form__image">
           <ModelImagePreview brand={formik.values.brand} model={formik.values.model} />
         </Col>
-        <Col xl={9}>
+        <Col xl={9} className="vehicle-form__fields">
           <div className="vehicle-form__registration-scan-bar">
             <RegistrationScan onExtracted={handleRegistrationExtracted} />
             <span className="text-muted">{t("vehicles.registrationScan.hint")}</span>
