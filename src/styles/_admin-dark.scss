@@ -162,15 +162,18 @@
       box-shadow: var(--rw-shadow);
     }
 
-    /* section wells inside the vehicle / contract forms */
+    /* disabled fields inside the contract card read as wells */
     .admin-layout :is(
-      .vehicle-form__section,
       .contract-page .contract-card .form-control:disabled,
       .contract-page .contract-card .form-select:disabled
     ) {
       background-color: var(--rw-inset);
       border-color: var(--rw-line);
     }
+    /* .vehicle-form__section is a semantic grouping, not a surface — it has no
+       padding / radius, so tinting it just boxes the labels in tight against a
+       darker rectangle. Keep it transparent like light mode; only its <h4>
+       underline is re-toned (below). */
 
     /* nested raised strips: card heads, table heads, sub-tabs, insets */
     .admin-layout :is(
