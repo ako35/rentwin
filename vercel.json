@@ -10,7 +10,7 @@
     { "src": "/api/(.*)", "dest": "backend/api/index.js" },
     { "src": "/sitemap.xml", "dest": "backend/api/index.js" },
     {
-      "src": "/(vehicles/[^/]+|lokasyonlar/[^/]+|vehicles|lokasyonlar|about|contact|sss|privacy-policy)/?",
+      "src": "/(vehicles/[^/]+|lokasyonlar/[^/]+|vehicles|lokasyonlar|kampanyalar|about|contact|sss|privacy-policy)/?",
       "has": [
         {
           "type": "header",

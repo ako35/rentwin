@@ -196,6 +196,14 @@ const STATIC_META = {
       breadcrumbLd([{ name: NAV.home, path: "/" }, { name: "Lokasyonlarımız" }]),
     ],
   },
+  "/kampanyalar": {
+    title: "Kampanyalar ve Fırsatlar | Rentwin Araç Kiralama",
+    description:
+      "Rentwin'in güncel araç kiralama kampanyaları ve indirim fırsatları. Hafta sonu, uzun dönem ve sezon fırsatlarını kaçırmayın, avantajlı fiyatlarla kiralayın.",
+    jsonLd: () => [
+      breadcrumbLd([{ name: NAV.home, path: "/" }, { name: "Kampanyalar" }]),
+    ],
+  },
   "/about": {
     title: "Hakkımızda | Rentwin Araç Kiralama",
     description:

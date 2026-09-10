@@ -20,6 +20,7 @@ const locationsRoutes = require("./modules/locations/locations.routes");
 const corporatesRoutes = require("./modules/corporates/corporates.routes");
 const extrasRoutes = require("./modules/extras/extras.routes");
 const announcementsRoutes = require("./modules/announcements/announcements.routes");
+const campaignsRoutes = require("./modules/campaigns/campaigns.routes");
 const ledgerRoutes = require("./modules/ledger/ledger.routes");
 const settingsRoutes = require("./modules/settings/settings.routes");
 const { getSitemap } = require("./modules/sitemap/sitemap.controller");
@@ -90,6 +91,7 @@ api.use(locationsRoutes);
 api.use(corporatesRoutes);
 api.use(extrasRoutes);
 api.use(announcementsRoutes);
+api.use(campaignsRoutes);
 api.use(ledgerRoutes);
 api.use(settingsRoutes);
 
@@ -107,6 +109,7 @@ app.get(
     "/vehicles/:id",
     "/lokasyonlar",
     "/lokasyonlar/:slug",
+    "/kampanyalar",
     "/about",
     "/contact",
     "/sss",

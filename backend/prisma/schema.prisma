@@ -266,6 +266,25 @@ model Announcement {
   updatedAt DateTime @updatedAt
 }
 
+// A public-facing promotion shown on the homepage and the /kampanyalar page.
+// startsAt/endsAt are display-only ("valid between …"); `active` is the only
+// visibility gate. imageId is an orphan VehicleImage.id, same generic blob
+// store Location uses.
+model Campaign {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  imageId     String?
+  ctaLabel    String?
+  ctaUrl      String?
+  startsAt    DateTime?
+  endsAt      DateTime?
+  active      Boolean   @default(true)
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
 // A lightweight booking: a car held for a customer for a date range. Created
 // online by customers (status PENDING) or by staff, then optionally converted
 // into a Contract when the car is handed over.
