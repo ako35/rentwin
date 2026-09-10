@@ -1308,7 +1308,7 @@
     "imageEmpty": "Görsel seçilmedi",
     "imageSelect": "Görsel Seç",
     "imageRemove": "Kaldır",
-    "imageHint": "Geniş afiş görseli (örn. 1200×675, 16:9). Görsel kırpılmadan gösterilir. JPG veya PNG.",
+    "imageHint": "Yatay afiş, 16:9 oran — ideal 1200×675 px. Kart bu orana göre hizalanır; farklı orandaki görsel kırpılmaz, kenarlarda boşluk kalır. JPG/PNG, 1 MB altı.",
     "startsAtLabel": "Başlangıç Tarihi",
     "endsAtLabel": "Bitiş Tarihi",
     "ctaLabelLabel": "Buton Metni",

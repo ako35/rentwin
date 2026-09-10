@@ -1308,7 +1308,7 @@
     "imageEmpty": "No image selected",
     "imageSelect": "Select Image",
     "imageRemove": "Remove",
-    "imageHint": "Wide banner image (e.g. 1200×675, 16:9). Shown uncropped. JPG or PNG.",
+    "imageHint": "Landscape banner, 16:9 ratio — ideally 1200×675 px. The card is framed to this ratio; an off-ratio image is letterboxed, never cropped. JPG/PNG, under 1 MB.",
     "startsAtLabel": "Start Date",
     "endsAtLabel": "End Date",
     "ctaLabelLabel": "Button Text",
