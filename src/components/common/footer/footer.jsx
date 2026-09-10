@@ -1,14 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Col, Container, Row } from "react-bootstrap";
-import { BsInstagram, BsFacebook, BsLinkedin } from "react-icons/bs";
 import { constants } from "../../../constants";
 import { ContactInfo, QuickLink } from "../../";
 import "./footer.scss";
 
 const {
   routes: { about, contact, faq, home, locations, privacyPolicy, vehicles },
-  website: { instagram, facebook, linkedin },
 } = constants;
 
 const quickLinks = [
@@ -19,12 +17,6 @@ const quickLinks = [
   { direct: faq, key: "faq" },
   { direct: contact, key: "contact" },
   { direct: privacyPolicy, key: "privacyPolicy" },
-];
-
-const socials = [
-  { title: "Instagram", url: instagram, icon: <BsInstagram /> },
-  { title: "Facebook", url: facebook, icon: <BsFacebook /> },
-  { title: "LinkedIn", url: linkedin, icon: <BsLinkedin /> },
 ];
 
 const Footer = () => {
@@ -45,15 +37,6 @@ const Footer = () => {
               </Link>
               <p className="site-footer__slogan">{tHeader("slogan")}</p>
               <p className="site-footer__blurb">{t("blurb")}</p>
-              <ul className="site-footer__social">
-                {socials.map((s) => (
-                  <li key={s.title}>
-                    <a href={s.url} target="_blank" rel="noopener noreferrer" aria-label={s.title}>
-                      {s.icon}
-                    </a>
-                  </li>
-                ))}
-              </ul>
             </div>
           </Col>
 

@@ -6,7 +6,7 @@ import i18n from "../i18n";
 // rewrites the per-page tags on mount; each route overwrites the previous one,
 // so every public route MUST call it (noindex routes included).
 export const SITE_URL = "https://rentwin.com.tr";
-const DEFAULT_IMAGE = `${SITE_URL}/logo_full.png`;
+const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
 const DEFAULT_TITLE = "Rentwin | Güvenilir Araç Kiralama";
 const DEFAULT_DESCRIPTION =
   "Rentwin ile bakımlı filodan uygun fiyatlı araç kiralayın. Şeffaf fiyat, sorunsuz teslimat, online rezervasyon.";

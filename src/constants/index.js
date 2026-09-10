@@ -138,6 +138,10 @@ const routes = {
 
 const rentwinAddress = "KÜLTÜR MAH. 260 SK. NO: 3 E ALİAĞA / İZMİR";
 
+// Google Business Profile place (maps.app.goo.gl/r7VLYXKt7nJjXPuFA resolved).
+const rentwinGeo = { latitude: 38.8020867, longitude: 26.9715113 };
+const rentwinMapsUrl = "https://maps.google.com/?cid=3109543909970773042";
+
 const website = {
   name: "Rentwin",
   url: "https://rentwin.com.tr",
@@ -150,28 +154,18 @@ const website = {
   phone: "0507 350 31 35",
   phoneE164: "+905073503135",
   whatsapp: "https://wa.me/905073503135",
-  mapUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rentwinAddress)}`,
-  mapEmbedUrl: `https://www.google.com/maps?q=${encodeURIComponent(rentwinAddress)}&output=embed`,
+  geo: rentwinGeo,
+  mapUrl: rentwinMapsUrl,
+  mapEmbedUrl: `https://www.google.com/maps?q=${rentwinGeo.latitude},${rentwinGeo.longitude}&z=16&output=embed`,
   email: "info@rentwin.com.tr",
-  instagram: "https://www.instagram.com/rentwin/",
-  facebook: "https://www.facebook.com/rentwin/",
-  twitter: "https://twitter.com/rentwin/",
-  linkedin: "https://www.linkedin.com/company/rentwin/",
-  youtube: "https://www.youtube.com/channel/rentwin/",
   // For schema.org openingHoursSpecification.
   openingHours: [
     { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "19:00" },
     { days: ["Saturday"], opens: "09:00", closes: "17:00" },
   ],
+  // Verified public profiles only — an unverifiable sameAs hurts rich results.
+  sameAs: [rentwinMapsUrl],
 };
-
-website.sameAs = [
-  website.instagram,
-  website.facebook,
-  website.twitter,
-  website.linkedin,
-  website.youtube,
-];
 
 // Full legal identity of the lessor for printed contracts — the two companies
 // that operate under the RENTWİN umbrella brand.

@@ -11,19 +11,6 @@
     font-size: 0.8rem;
     color: v.$color5-2;
 
-    &__social {
-        @include m.flexbox(row, center, center, 0.9rem);
-
-        a {
-            color: v.$color1;
-            font-size: 1.1rem;
-
-            &:hover {
-                color: v.$color2;
-            }
-        }
-    }
-
     &__support {
         @include m.button(v.$color1, v.$color4, v.$color2, v.$color4);
         padding: 0.4rem 0.9rem;

@@ -1,21 +1,13 @@
 import { Container } from "react-bootstrap";
-import { BsFacebook, BsInstagram, BsTwitter, BsYoutube, BsLinkedin } from "react-icons/bs";
+import { BsGeoAlt } from "react-icons/bs";
 import { constants } from "../../../../constants";
 import "./top-menu.scss";
 
 const {
-  website: { email, phone, facebook, instagram, twitter, youtube, linkedin },
+  website: { email, phone, legalAddress, mapUrl },
 } = constants;
 
-const socials = [
-  { title: "instagram", url: instagram, icon: <BsInstagram /> },
-  { title: "facebook", url: facebook, icon: <BsFacebook /> },
-  { title: "twitter", url: twitter, icon: <BsTwitter /> },
-  { title: "youtube", url: youtube, icon: <BsYoutube /> },
-  { title: "linkedin", url: linkedin, icon: <BsLinkedin /> },
-];
-
-// Thin light strip above the main header row: contact details + social links.
+// Thin light strip above the main header row: contact details + address.
 const TopMenu = () => (
   <div className="top-bar">
     <Container className="top-bar__inner">
@@ -24,15 +16,14 @@ const TopMenu = () => (
         <span className="top-bar__sep" />
         <a href={`mailto:${email}`}>{email}</a>
       </div>
-      <ul className="top-bar__social">
-        {socials.map((s) => (
-          <li key={s.title}>
-            <a href={s.url} target="_blank" rel="noopener noreferrer" aria-label={s.title}>
-              {s.icon}
-            </a>
-          </li>
-        ))}
-      </ul>
+      <a
+        className="top-bar__address"
+        href={mapUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <BsGeoAlt /> {legalAddress}
+      </a>
     </Container>
   </div>
 );

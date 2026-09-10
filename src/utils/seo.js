@@ -45,7 +45,7 @@ export const autoRentalLd = () => ({
   priceRange: "₺₺",
   currenciesAccepted: "TRY",
   openingHoursSpecification,
-  sameAs: website.sameAs,
+  ...(website.sameAs?.length ? { sameAs: website.sameAs } : {}),
 });
 
 export const webSiteLd = () => ({

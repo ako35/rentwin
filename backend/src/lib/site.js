@@ -9,7 +9,8 @@
 
 const SITE_URL = (process.env.PUBLIC_SITE_URL || "https://rentwin.com.tr").replace(/\/+$/, "");
 
-const ADDRESS_TEXT = "KÜLTÜR MAH. 260 SK. NO: 3 E ALİAĞA / İZMİR";
+// Google Business Profile place (maps.app.goo.gl/r7VLYXKt7nJjXPuFA resolved).
+const MAPS_URL = "https://maps.google.com/?cid=3109543909970773042";
 
 const business = {
   name: "Rentwin",
@@ -20,13 +21,11 @@ const business = {
   addressRegion: "İzmir",
   postalCode: "35800",
   addressCountry: "TR",
-  mapUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ADDRESS_TEXT)}`,
-  // Aliağa office coordinates — filled from the Google Business Profile in the
-  // local-SEO pass. Keep in sync with src/constants/index.js `website.geo`.
-  geo: null, // e.g. { latitude: 38.7998, longitude: 26.9707 }
-  // Real, verified profiles only. A placeholder `sameAs` hurts rich results, so
-  // this stays empty until the Google Business Profile / socials are live.
-  sameAs: [],
+  mapUrl: MAPS_URL,
+  // Aliağa office coordinates — keep in sync with src/constants/index.js `website.geo`.
+  geo: { latitude: 38.8020867, longitude: 26.9715113 },
+  // Verified public profiles only — an unverifiable sameAs hurts rich results.
+  sameAs: [MAPS_URL],
   openingHours: [
     { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "19:00" },
     { days: ["Saturday"], opens: "09:00", closes: "17:00" },

@@ -54,6 +54,8 @@ const renderHeadTags = (h) => {
     `<meta property="og:url" content="${esc(ogUrl)}" />`,
     `<meta property="og:image" content="${esc(h.ogImage)}" />`,
     `<meta property="og:image:alt" content="${esc(h.title)}" />`,
+    h.ogImageDefault ? `<meta property="og:image:width" content="1200" />` : null,
+    h.ogImageDefault ? `<meta property="og:image:height" content="630" />` : null,
     `<meta property="og:locale" content="tr_TR" />`,
     `<meta property="og:locale:alternate" content="en_US" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,

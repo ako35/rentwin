@@ -12,7 +12,7 @@
 const { SITE_URL, business } = require("./site");
 
 const ORG_ID = `${SITE_URL}/#organization`;
-const DEFAULT_IMAGE = `${SITE_URL}/logo_full.png`;
+const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 /* ------------------------------------------------------------------ JSON-LD */
 
@@ -237,6 +237,7 @@ const base = (path) => ({
   description: STATIC_META["/"].description,
   canonical: `${SITE_URL}${path}`,
   ogImage: DEFAULT_IMAGE,
+  ogImageDefault: true, // the branded 1200x630 card — emit its dimensions
   ogType: "website",
   robots: "index, follow",
   jsonLd: [],
@@ -265,6 +266,7 @@ const buildHead = ({ path, vehicle, vehicleMissing, locationName, locationMissin
       title: `${name} Kiralama | Rentwin`,
       description: `${name} aracını Rentwin güvencesiyle kiralayın. Uygun fiyat, sorunsuz teslimat ve güvenilir hizmet için hemen rezervasyon yapın.`,
       ogImage: vehicle.image || DEFAULT_IMAGE,
+      ogImageDefault: !vehicle.image,
       ogType: "product",
       jsonLd: [
         breadcrumbLd([
