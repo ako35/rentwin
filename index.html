@@ -95,7 +95,20 @@
 </head>
 
 <body>
-  <div id="root"></div>
+  <!-- Static homepage hero snapshot — paints instantly from HTML+CSS, before the
+       ~900KB app bundle has fetched, parsed and executed. Throttled-mobile FCP on
+       "/" was measured at 5.7s (CDP, Slow-4G/4x CPU) because #root stayed empty
+       until React mounted; nothing else in this file blocks first paint the same
+       way. React's createRoot() (not hydrateRoot()) fully replaces #root on mount,
+       so this is inert markup with zero hydration risk — same technique as the
+       bot prerender (backend/src/modules/prerender). Mirrors
+       src/components/common/home-hero/home-hero.jsx + src/i18n/locales/tr/home.json
+       `hero.*` (TR only — the default language; an EN-toggled returning visitor
+       sees this for a moment before React swaps it). KEEP IN SYNC when either
+       changes. The inline script below clears it on every route except "/" so a
+       direct load of e.g. /vehicles never flashes the homepage hero. -->
+  <div id="root"><section class="home-hero"><div class="container home-hero__inner"><div class="home-hero__split"><div class="home-hero__copy"><span class="home-hero__eyebrow">Filo Kiralama</span><h1 class="home-hero__title">Yolculuğunuza güvenle başlayın</h1><p class="home-hero__lead">Bakımlı filomuz ve şeffaf fiyatlarımızla ihtiyacınıza uygun aracı dakikalar içinde ayırtın.</p><ul class="home-hero__trust"><li><svg viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z"/><path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z"/></svg> Ek ücret sürprizi yok, şeffaf fiyat</li><li><svg viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z"/><path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z"/></svg> Bakımlı ve sigortalı geniş filo</li><li><svg viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z"/><path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z"/></svg> Online rezervasyon, 7/24 destek</li></ul><a href="/vehicles" class="home-hero__browse">Tüm araçları gör <svg viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/></svg></a></div><div class="home-hero__visual"><div class="fleet-car"><img src="/img/hero-car.svg" alt="" aria-hidden="true" class="fleet-car__illustration" /></div></div></div></div></section></div>
+  <script>if(location.pathname!=="/"){var r=document.getElementById("root");if(r)r.innerHTML="";}</script>
   <script type="module" src="/src/main.jsx"></script>
 </body>
 
