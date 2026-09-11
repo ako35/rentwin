@@ -8,8 +8,22 @@ const HttpError = require("./http-error");
 const BLOCKING_CONTRACT = { status: { notIn: ["CANCELLED", "DONE"] } };
 const BLOCKING_RESERVATION = { status: { in: ["PENDING", "CONFIRMED"] } };
 
+// An open contract's dropOffTime is only the *scheduled* return — it is not
+// proof the car came back. Until the operator formally closes it out
+// (VehicleReturnModal -> DONE), an open contract that has already started
+// blocks every later request, no matter how far past its scheduled drop-off —
+// otherwise an overdue return would silently let the same car be double-booked
+// for the next slot. So contracts get a half-open window (no upper bound); a
+// reservation is just an advance hold with a real window, so it keeps the
+// normal bounded overlap.
+const contractWindow = (dropOffTime) => ({ pickUpTime: { lt: dropOffTime } });
+const reservationWindow = (pickUpTime, dropOffTime) => ({
+  pickUpTime: { lt: dropOffTime },
+  dropOffTime: { gt: pickUpTime },
+});
+
 // Checks whether a car is free for [pickUpTime, dropOffTime). A car is taken if
-// it has an overlapping non-cancelled Contract OR an overlapping pending/
+// it has a clashing non-cancelled Contract OR an overlapping pending/
 // confirmed Reservation. Shared by the availability endpoint, reservation
 // creation and contract create/update — none may trust a stale client flag.
 // Pricing was removed, so totalPrice is always 0.
@@ -27,14 +41,12 @@ const checkAvailability = async (
   if (!vehicle) throw new HttpError(404, "Vehicle not found.");
   if (vehicle.soldAt) throw new HttpError(409, "Bu araç satılmış, kiralanamaz.", "VEHICLE_SOLD");
 
-  const window = { pickUpTime: { lt: dropOffTime }, dropOffTime: { gt: pickUpTime } };
-
   const [contractClash, reservationClash] = await Promise.all([
     prisma.contract.findFirst({
       where: {
         carId,
         ...BLOCKING_CONTRACT,
-        ...window,
+        ...contractWindow(dropOffTime),
         id: excludeContractId ? { not: excludeContractId } : undefined,
       },
       select: { id: true },
@@ -43,7 +55,7 @@ const checkAvailability = async (
       where: {
         carId,
         ...BLOCKING_RESERVATION,
-        ...window,
+        ...reservationWindow(pickUpTime, dropOffTime),
         id: excludeReservationId ? { not: excludeReservationId } : undefined,
       },
       select: { id: true },
@@ -62,12 +74,11 @@ const getBusyVehicleIds = async (
   dropOffTime,
   { excludeContractId, excludeReservationId } = {}
 ) => {
-  const window = { pickUpTime: { lt: dropOffTime }, dropOffTime: { gt: pickUpTime } };
   const [contractBusy, reservationBusy] = await Promise.all([
     prisma.contract.findMany({
       where: {
         ...BLOCKING_CONTRACT,
-        ...window,
+        ...contractWindow(dropOffTime),
         id: excludeContractId ? { not: excludeContractId } : undefined,
       },
       select: { carId: true },
@@ -75,7 +86,7 @@ const getBusyVehicleIds = async (
     prisma.reservation.findMany({
       where: {
         ...BLOCKING_RESERVATION,
-        ...window,
+        ...reservationWindow(pickUpTime, dropOffTime),
         id: excludeReservationId ? { not: excludeReservationId } : undefined,
       },
       select: { carId: true },

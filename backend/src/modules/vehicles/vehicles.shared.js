@@ -13,16 +13,19 @@ const loadModelImageMap = async () => {
 };
 
 // A vehicle is "RENTED" when it has an open contract (not cancelled, not yet
-// marked returned) whose rental window overlaps today — so a contract created
-// for today counts right away, not only from its exact pick-up hour. Shared by
-// the admin list (per-row status) and the fleet-stats summary.
+// marked returned via VehicleReturnModal -> DONE) that has started. There is
+// deliberately no upper bound on dropOffTime: that field is only the
+// *scheduled* return, and an open contract past it means the car is overdue,
+// not free — nothing has told the system it actually came back. Bounding on
+// dropOffTime used to make an overdue-but-still-open contract show the car as
+// AVAILABLE the day after its scheduled drop-off, which is exactly wrong.
+// Shared by the admin list (per-row status) and the fleet-stats summary.
 const getRentedVehicleIds = async (vehicleIds) => {
   const active = await prisma.contract.findMany({
     where: {
       carId: { in: vehicleIds },
       status: { notIn: ["CANCELLED", "DONE"] },
       pickUpTime: { lte: dayjs().endOf("day").toDate() },
-      dropOffTime: { gte: dayjs().startOf("day").toDate() },
     },
     select: { carId: true },
   });
