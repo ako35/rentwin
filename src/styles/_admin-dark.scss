@@ -99,6 +99,29 @@
       .form-text { color: var(--rw-ink-muted); }
     }
 
+    /* vehicle return modal ("Araç Teslim Alma"): its SCSS hard-codes light-theme
+       ink colors ($color5/$color5_3/$color5_4 — near-black) for labels/intro/
+       stats/section heads, which the generic .modal-content ink rule above
+       doesn't win against — near-invisible text on the dark panel. Portalled at
+       <body>, so scoped bare like the blocks above. */
+    .return-modal {
+      &__intro,
+      &__unit,
+      .form-label { color: var(--rw-ink-muted); }
+
+      &__block {
+        border-color: var(--rw-line);
+        h6 { color: var(--rw-ink-soft); }
+      }
+
+      &__stats {
+        color: var(--rw-ink-muted);
+        strong { color: var(--rw-ink); }
+      }
+
+      &__charge { border-top-color: var(--rw-line); }
+    }
+
     /* ---- customer form (new / edit customer + contract quick-add modal) ---
        scoped bare (not under .admin-layout) so the portalled modal variant
        is covered too; data-theme is only ever "dark" on an admin route. */
