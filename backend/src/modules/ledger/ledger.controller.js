@@ -22,12 +22,30 @@ const parseDate = (value) => {
   return d;
 };
 
-const manualEntryData = (body) => {
+// A manual entry may optionally be attributed to a specific contract — most
+// commonly a "Tahsilat Al" collection that should count toward that contract's
+// balance on the contract list, not just the customer's overall cari balance.
+// Must belong to the same customer (as either the primary or reference user).
+const resolveContractId = async (body, userId) => {
+  const contractId = body.contractId ? String(body.contractId).trim() : "";
+  if (!contractId) return { contractId: null, contractNo: null };
+  const contract = await prisma.contract.findUnique({
+    where: { id: contractId },
+    select: { id: true, contractNo: true, userId: true, referenceUserId: true },
+  });
+  if (!contract || (contract.userId !== userId && contract.referenceUserId !== userId)) {
+    throw new HttpError(400, "Seçilen kontrat bu cariye ait değil.");
+  }
+  return { contractId: contract.id, contractNo: contract.contractNo || null };
+};
+
+const manualEntryData = async (body, userId) => {
   const direction = body.direction === "CREDIT" ? "CREDIT" : "DEBIT";
   const allowed = direction === "CREDIT" ? MANUAL_CREDIT_CATEGORIES : MANUAL_DEBIT_CATEGORIES;
   const category = allowed.includes(body.category) ? body.category : allowed[allowed.length - 1];
   const method =
     direction === "CREDIT" && PAYMENT_METHODS.includes(body.method) ? body.method : null;
+  const { contractId, contractNo } = await resolveContractId(body, userId);
 
   return {
     direction,
@@ -37,6 +55,8 @@ const manualEntryData = (body) => {
     date: parseDate(body.date),
     description: body.description ? String(body.description).trim() : null,
     invoiceNo: body.invoiceNo ? String(body.invoiceNo).trim() : null,
+    contractId,
+    contractNo,
     source: "MANUAL",
   };
 };
@@ -75,7 +95,7 @@ const createEntry = asyncHandler(async (req, res) => {
   if (!user) throw new HttpError(404, "Cari bulunamadı.");
 
   const entry = await prisma.ledgerEntry.create({
-    data: { userId: user.id, ...manualEntryData(req.body) },
+    data: { userId: user.id, ...(await manualEntryData(req.body, user.id)) },
   });
   res.status(201).json(entry);
 });
@@ -90,10 +110,12 @@ const assertManual = async (id) => {
 };
 
 const updateEntry = asyncHandler(async (req, res) => {
-  await assertManual(req.params.id);
+  const existing = await assertManual(req.params.id);
+  // The entry's owner never changes via this form — validate the new contractId
+  // (if any) against the entry's actual customer, not a client-supplied userId.
   const entry = await prisma.ledgerEntry.update({
     where: { id: req.params.id },
-    data: manualEntryData(req.body),
+    data: await manualEntryData(req.body, existing.userId),
   });
   res.json(entry);
 });

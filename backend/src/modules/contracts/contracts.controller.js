@@ -96,11 +96,19 @@ const getContractByIdAdmin = asyncHandler(async (req, res) => {
       extensions: { orderBy: { createdAt: "desc" } },
       vehicleChanges: { orderBy: { changeDate: "desc" } },
       invoices: { orderBy: { issuedAt: "desc" } },
+      // Same source the contract list sums for its Bakiye column (see
+      // contracts.admin.controller.js getContractsByPage) — a payment recorded
+      // from the Finans/Cari screen and tagged to this contract counts here too,
+      // not just ones entered on this screen's own Tahsilat tab.
+      ledgerEntries: {
+        where: { category: "PAYMENT", direction: "CREDIT" },
+        select: { amount: true },
+      },
     },
   });
   if (!contract) throw new HttpError(404, "Contract not found.");
 
-  const { user, referenceUser, ...rest } = contract;
+  const { user, referenceUser, ledgerEntries, ...rest } = contract;
   const totals = user ? await customerTotals([user.id]) : {};
   const t = totals[contract.userId] || { debit: 0, credit: 0 };
 
@@ -108,6 +116,7 @@ const getContractByIdAdmin = asyncHandler(async (req, res) => {
     ...serializeContract(rest),
     carId: contract.carId,
     userId: contract.userId,
+    collected: ledgerEntries.reduce((s, e) => s + e.amount, 0),
     customer: user
       ? { ...serializeUser(user), debit: t.debit, credit: t.credit, balance: t.credit - t.debit }
       : null,

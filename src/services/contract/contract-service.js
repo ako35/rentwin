@@ -20,6 +20,16 @@ export const getContractByIdAdmin = async (id) => {
   return response.data;
 };
 
+// Compact contract list for one customer — feeds the Finans/Cari tahsilat
+// form's "attribute this collection to a contract" picker.
+export const getContractsByUser = async (userId) => {
+  const response = await axios.get(
+    `${API_URL}/contracts/admin/by-user/${userId}/auth`,
+    services.authHeader()
+  );
+  return response.data;
+};
+
 export const createContract = async (payload) => {
   const response = await axios.post(`${API_URL}/contracts/admin/auth`, payload, services.authHeader());
   return response.data;

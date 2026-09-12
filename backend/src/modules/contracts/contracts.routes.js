@@ -3,6 +3,7 @@ const authenticate = require("../../middleware/authenticate");
 const requireAdmin = require("../../middleware/require-admin");
 const {
   getContractsByPage,
+  getContractsByUser,
   createContract,
   getAvailableCarsAdmin,
   deleteContract,
@@ -29,6 +30,7 @@ const router = Router();
 router.get("/contracts/admin/schedule/auth", authenticate, requireAdmin, getAdminSchedule);
 router.get("/contracts/admin/hgs-pending/auth", authenticate, requireAdmin, getHgsPendingContracts);
 router.get("/contracts/admin/all/auth", authenticate, requireAdmin, getContractsByPage);
+router.get("/contracts/admin/by-user/:userId/auth", authenticate, requireAdmin, getContractsByUser);
 router.get("/contracts/admin/available-cars/auth", authenticate, requireAdmin, getAvailableCarsAdmin);
 router.get("/contracts/:id/admin", authenticate, requireAdmin, getContractByIdAdmin);
 

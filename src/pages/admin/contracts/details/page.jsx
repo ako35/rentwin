@@ -237,7 +237,10 @@ const ContractDetail = () => {
 
   const billableDays = useMemo(() => computeBillableDays(formik.values), [formik.values]);
 
-  const collected = payments.reduce((s, p) => s + (Number(p.amount) || 0), 0);
+  // Backend-computed from the ledger, not summed from `payments` here — a
+  // collection recorded from the Finans/Cari screen and tagged to this
+  // contract counts too, not just ones entered on this screen's Tahsilat tab.
+  const collected = meta.collected ?? 0;
 
   const pricing = useMemo(
     () => computePricing(formik.values, billableDays, extensions),

@@ -13,12 +13,14 @@ const today = () => moment().format("YYYY-MM-DD");
 // service and hands control back via onSaved (parent closes + reloads).
 const EntryModal = ({ show, mode, entry, onHide, onSaved, userId }) => {
   const { t } = useTranslation("admin");
+  const { t: tCommon } = useTranslation("common");
   const f = (key) => t(`finance.${key}`);
   const isCredit = mode === "credit";
   const categories = isCredit ? CREDIT_CATEGORIES : DEBIT_CATEGORIES;
 
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [contracts, setContracts] = useState([]);
 
   useEffect(() => {
     if (!show) return;
@@ -31,6 +33,7 @@ const EntryModal = ({ show, mode, entry, onHide, onSaved, userId }) => {
             method: entry.method || "Cash",
             description: entry.description || "",
             invoiceNo: entry.invoiceNo || "",
+            contractId: entry.contractId || "",
           }
         : {
             date: today(),
@@ -39,11 +42,32 @@ const EntryModal = ({ show, mode, entry, onHide, onSaved, userId }) => {
             method: "Cash",
             description: "",
             invoiceNo: "",
+            contractId: "",
           }
     );
   }, [show, entry]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // A credit entry (tahsilat) may be tied to one of this customer's contracts,
+  // so it also counts toward that contract's own balance on the contract list.
+  useEffect(() => {
+    if (!show || !isCredit) return;
+    services.contract
+      .getContractsByUser(userId)
+      .then((data) => setContracts(Array.isArray(data) ? data : []))
+      .catch(() => setContracts([]));
+  }, [show, isCredit, userId]);
+
   if (!form) return null;
+
+  const contractLabel = (c) => {
+    const parts = [
+      c.contractNo || "—",
+      c.vehicle ? `${c.vehicle}${c.plate ? ` ${c.plate}` : ""}` : null,
+      moment(c.pickUpTime).format("DD.MM.YYYY"),
+      tCommon(`options.contractStatus.${c.status}`),
+    ].filter(Boolean);
+    return parts.join(" · ");
+  };
 
   const set = (key) => (e) => setForm((s) => ({ ...s, [key]: e.target.value }));
   const canSave = Number(form.amount) > 0;
@@ -60,6 +84,7 @@ const EntryModal = ({ show, mode, entry, onHide, onSaved, userId }) => {
         description: form.description.trim() || undefined,
         method: isCredit ? form.method : undefined,
         invoiceNo: !isCredit ? form.invoiceNo.trim() || undefined : undefined,
+        contractId: isCredit && form.contractId ? form.contractId : undefined,
       };
       if (entry) await services.ledger.updateLedgerEntry(entry.id, payload);
       else await services.ledger.addLedgerEntry(payload);
@@ -106,6 +131,20 @@ const EntryModal = ({ show, mode, entry, onHide, onSaved, userId }) => {
                 </option>
               ))}
             </Form.Select>
+          </Form.Group>
+        )}
+        {isCredit && (
+          <Form.Group className="mb-2">
+            <Form.Label>{f("fields.contract")}</Form.Label>
+            <Form.Select value={form.contractId} onChange={set("contractId")}>
+              <option value="">{f("fields.noContract")}</option>
+              {contracts.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {contractLabel(c)}
+                </option>
+              ))}
+            </Form.Select>
+            <Form.Text muted>{f("fields.contractHint")}</Form.Text>
           </Form.Group>
         )}
         {!isCredit && (

@@ -32,12 +32,17 @@ export const useContractData = ({ isCreate, contractId }) => {
       .then((d) => setInvoices(Array.isArray(d) ? d : []))
       .catch(() => setInvoices([]));
 
-  // Refresh only the customer block (its cari balance moves when a payment is
-  // recorded) without reloading the contract into the form and losing edits.
+  // Refresh only the customer block + collected total (both move when a
+  // payment is recorded — from this screen's Tahsilat tab or from the
+  // Finans/Cari screen) without reloading the contract into the form and
+  // losing edits.
   const refreshCustomer = () =>
     services.contract
       .getContractByIdAdmin(contractId)
-      .then((r) => setCustomer(r.customer || null))
+      .then((r) => {
+        setCustomer(r.customer || null);
+        setMeta((m) => ({ ...m, collected: r.collected }));
+      })
       .catch(() => {});
 
   const refreshCustomers = () => fetchCustomers().then(setCustomers).catch(() => {});
@@ -88,7 +93,7 @@ export const useContractData = ({ isCreate, contractId }) => {
       setInvoices(r.invoices || []);
       loadPayments();
       setCustomer(r.customer || null);
-      setMeta({ createdAt: r.createdAt, updatedAt: r.updatedAt });
+      setMeta({ createdAt: r.createdAt, updatedAt: r.updatedAt, collected: r.collected });
       setInitialValues(contractToFormValues(r));
     } catch (error) {
       console.log(error);

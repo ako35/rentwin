@@ -1115,7 +1115,10 @@
       "amount": "Amount (TL)",
       "method": "Payment Method",
       "invoiceNo": "Invoice No",
-      "description": "Description"
+      "description": "Description",
+      "contract": "Contract",
+      "noContract": "— No contract (general account) —",
+      "contractHint": "If you pick a contract, this collection also counts toward that contract's balance."
     },
     "categories": {
       "RENTAL": "Rental",

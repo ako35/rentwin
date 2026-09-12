@@ -77,7 +77,15 @@ const getContractsByPage = asyncHandler(async (req, res) => {
         car: { select: { brand: true, model: true, licensePlate: true, branch: { select: { code: true } } } },
         user: { select: { firstName: true, lastName: true, companyTitle: true } },
         corporate: { select: { title: true } },
-        payments: { select: { amount: true } },
+        // Payment credits, wherever they were recorded from: the contract's own
+        // Tahsilat tab (ContractPayment, mirrored here as AUTO_PAYMENT) AND a
+        // manual collection tagged to this contract from the Finans/Cari screen
+        // (source MANUAL). Summing the ledger instead of Contract.payments is
+        // what makes a Finance-side tahsilat show up in this list's balance.
+        ledgerEntries: {
+          where: { category: "PAYMENT", direction: "CREDIT" },
+          select: { amount: true },
+        },
         extensions: { select: { extraDays: true } },
       },
     }),
@@ -102,7 +110,7 @@ const getContractsByPage = asyncHandler(async (req, res) => {
         dropOffLocation: r.dropOffLocation,
         branchCode: r.car?.branch?.code || null,
         totalPrice: r.totalPrice,
-        collected: r.payments.reduce((s, p) => s + p.amount, 0),
+        collected: r.ledgerEntries.reduce((s, e) => s + e.amount, 0),
         dayCount: dayCount(r),
         extensionDays: extensionDays(r),
         plate: r.car?.licensePlate || null,
@@ -115,6 +123,40 @@ const getContractsByPage = asyncHandler(async (req, res) => {
       size,
       sortField,
     })
+  );
+});
+
+// Compact contract list for one customer — feeds the "attribute this collection
+// to a contract" picker on the Finans/Cari tahsilat form. Matches either the
+// primary customer or the reference customer (corporate bookings can be paid
+// by either).
+const getContractsByUser = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const contracts = await prisma.contract.findMany({
+    where: { OR: [{ userId }, { referenceUserId: userId }] },
+    orderBy: { pickUpTime: "desc" },
+    take: 100,
+    select: {
+      id: true,
+      contractNo: true,
+      status: true,
+      pickUpTime: true,
+      dropOffTime: true,
+      totalPrice: true,
+      car: { select: { brand: true, model: true, licensePlate: true } },
+    },
+  });
+  res.json(
+    contracts.map((c) => ({
+      id: c.id,
+      contractNo: c.contractNo,
+      status: c.status,
+      pickUpTime: c.pickUpTime,
+      dropOffTime: c.dropOffTime,
+      totalPrice: c.totalPrice,
+      vehicle: c.car ? `${c.car.brand} ${c.car.model}`.trim() : null,
+      plate: c.car?.licensePlate || null,
+    }))
   );
 });
 
@@ -383,6 +425,7 @@ const getHgsPendingContracts = asyncHandler(async (req, res) => {
 
 module.exports = {
   getContractsByPage,
+  getContractsByUser,
   createContract,
   getAvailableCarsAdmin,
   deleteContract,

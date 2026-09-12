@@ -1115,7 +1115,10 @@
       "amount": "Tutar (TL)",
       "method": "Ödeme Şekli",
       "invoiceNo": "Fatura No",
-      "description": "Açıklama"
+      "description": "Açıklama",
+      "contract": "Kontrat",
+      "noContract": "— Kontratsız (genel cari) —",
+      "contractHint": "Bir kontrat seçerseniz bu tahsilat o kontratın bakiyesine de yansır."
     },
     "categories": {
       "RENTAL": "Kiralama",
