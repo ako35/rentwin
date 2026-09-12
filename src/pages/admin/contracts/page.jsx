@@ -24,8 +24,10 @@ const AdminContractsPage = () => {
   const [size, setSize] = useState(50);
   const [plate, setPlate] = useState("");
   const [customer, setCustomer] = useState("");
-  const [status, setStatus] = useState("");
-  const [applied, setApplied] = useState({ plate: "", customer: "", status: "" });
+  // Default view: only open contracts — closed/cancelled ones pile up over time
+  // and drown out what still needs attention. "Tüm Durumlar" is one click away.
+  const [status, setStatus] = useState("CREATED");
+  const [applied, setApplied] = useState({ plate: "", customer: "", status: "CREATED" });
 
   const load = async () => {
     setLoading(true);
