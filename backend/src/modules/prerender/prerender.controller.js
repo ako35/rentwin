@@ -10,7 +10,7 @@
 // 200 so a bot still gets a working page.
 
 const prisma = require("../../lib/prisma");
-const { SITE_URL, slugify } = require("../../lib/site");
+const { SITE_URL, slugify, localizePath, stripLocalePrefix } = require("../../lib/site");
 const { buildHead } = require("../../lib/seo-ld");
 const { modelImageKey } = require("../../lib/serializers");
 const { loadModelImageMap } = require("../vehicles/vehicles.shared");
@@ -42,11 +42,23 @@ const esc = (value) =>
 
 const renderHeadTags = (h) => {
   const ogUrl = h.canonical || h.url;
+  // hreflang alternates — mirrors src/hooks/use-page-meta.js. Skipped for a
+  // noindex page (h.canonical is null then), same as the client does.
+  const canonicalPath = h.path ? stripLocalePrefix(h.path) : null;
   return [
     `<title>${esc(h.title)}</title>`,
     `<meta name="description" content="${esc(h.description)}" />`,
     `<meta name="robots" content="${esc(h.robots)}" />`,
     h.canonical ? `<link rel="canonical" href="${esc(h.canonical)}" />` : null,
+    h.canonical && canonicalPath
+      ? `<link rel="alternate" hreflang="tr" href="${esc(SITE_URL + canonicalPath)}" />`
+      : null,
+    h.canonical && canonicalPath
+      ? `<link rel="alternate" hreflang="en" href="${esc(SITE_URL + localizePath(canonicalPath, "en"))}" />`
+      : null,
+    h.canonical && canonicalPath
+      ? `<link rel="alternate" hreflang="x-default" href="${esc(SITE_URL + canonicalPath)}" />`
+      : null,
     `<meta property="og:type" content="${esc(h.ogType)}" />`,
     `<meta property="og:site_name" content="Rentwin" />`,
     `<meta property="og:title" content="${esc(h.title)}" />`,
@@ -56,8 +68,8 @@ const renderHeadTags = (h) => {
     `<meta property="og:image:alt" content="${esc(h.title)}" />`,
     h.ogImageDefault ? `<meta property="og:image:width" content="1200" />` : null,
     h.ogImageDefault ? `<meta property="og:image:height" content="630" />` : null,
-    `<meta property="og:locale" content="tr_TR" />`,
-    `<meta property="og:locale:alternate" content="en_US" />`,
+    `<meta property="og:locale" content="${esc(h.ogLocale)}" />`,
+    `<meta property="og:locale:alternate" content="${esc(h.ogLocaleAlt)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${esc(h.title)}" />`,
     `<meta name="twitter:description" content="${esc(h.description)}" />`,
@@ -73,6 +85,34 @@ const renderLd = (blocks) =>
     .map((data) => `<script type="application/ld+json">\n${JSON.stringify(data)}\n</script>`)
     .join("\n  ");
 
+const ROOT_OPEN = '<div id="root">';
+
+// The shell's #root is never actually empty any more — it carries a static
+// TR homepage-hero snapshot for FCP (index.html), which a real browser
+// clears client-side (inline <script>) on every route but "/". A bot never
+// runs that script, so without this it would read the homepage's hero copy
+// under e.g. the vehicles-listing page's <head> — worse than an empty body.
+// A plain regex can't safely find the *matching* closing </div> (the hero
+// snapshot has nested <div>s of its own), so walk tag depth instead. Always
+// replaces (with head.bodyHtml, or "" otherwise) — every path this runs for
+// is, by construction, never the bare "/" (see vercel.json / app.js).
+const replaceRootContent = (html, bodyHtml) => {
+  const start = html.indexOf(ROOT_OPEN);
+  if (start === -1) return html;
+  const contentStart = start + ROOT_OPEN.length;
+  const tagRe = /<div\b[^>]*>|<\/div>/g;
+  tagRe.lastIndex = contentStart;
+  let depth = 1;
+  let match;
+  while ((match = tagRe.exec(html))) {
+    depth += match[0] === "</div>" ? -1 : 1;
+    if (depth === 0) {
+      return html.slice(0, contentStart) + bodyHtml + html.slice(match.index);
+    }
+  }
+  return html; // unbalanced/not found — leave untouched rather than mangle it
+};
+
 const inject = (shell, head) => {
   let html = shell.replace(
     /<!--SEO:START-->[\s\S]*?<!--SEO:END-->/,
@@ -81,18 +121,22 @@ const inject = (shell, head) => {
   if (head.jsonLd.length) {
     html = html.replace("<!--SEO:LD-->", `<!--SEO:LD-->\n  ${renderLd(head.jsonLd)}`);
   }
+  html = html.replace(/<html lang="[^"]*"/, `<html lang="${head.htmlLang}"`);
   // Some routes (currently /kampanyalar) also carry a server-rendered body so a
-  // JS-less crawler reads real content, not the empty shell. A browser never
-  // reaches this path, and createRoot() clears #root before it renders anyway.
-  if (head.bodyHtml) {
-    html = html.replace(/<div id="root">\s*<\/div>/, `<div id="root">${head.bodyHtml}</div>`);
-  }
+  // JS-less crawler reads real content for that page; every other route gets
+  // an empty #root, same as a browser ends up with before React mounts.
+  html = replaceRootContent(html, head.bodyHtml || "");
   return html;
 };
 
-// Resolve the dynamic data a path needs before building its <head>.
+// Resolve the dynamic data a path needs before building its <head>. The data
+// itself (a vehicle, the fleet list, ...) is identical regardless of
+// language, so matching/lookups below are done against the canonical
+// (unprefixed/TR-shaped) path — the returned `path` stays the original
+// (possibly "/en"-prefixed) one, which is all buildHead needs to localize.
 const resolvePath = async (reqPath) => {
-  const vehicleMatch = reqPath.match(/^\/vehicles\/([^/]+)$/);
+  const canonicalPath = stripLocalePrefix(reqPath);
+  const vehicleMatch = canonicalPath.match(/^\/vehicles\/([^/]+)$/);
   if (vehicleMatch) {
     const [vehicle, modelImages] = await Promise.all([
       prisma.vehicle.findUnique({
@@ -127,7 +171,7 @@ const resolvePath = async (reqPath) => {
     };
   }
 
-  const locationMatch = reqPath.match(/^\/lokasyonlar\/([^/]+)$/);
+  const locationMatch = canonicalPath.match(/^\/lokasyonlar\/([^/]+)$/);
   if (locationMatch) {
     const slug = locationMatch[1];
     const locations = await prisma.location.findMany({ select: { name: true } });
@@ -138,7 +182,7 @@ const resolvePath = async (reqPath) => {
 
   // Listing pages: hand buildHead the data it needs for an ItemList (and, for
   // /kampanyalar, the server-rendered card list).
-  if (reqPath === "/vehicles") {
+  if (canonicalPath === "/vehicles") {
     const vehicles = await prisma.vehicle.findMany({
       where: { outOfService: false, soldAt: null },
       select: { id: true, brand: true, model: true },
@@ -148,7 +192,7 @@ const resolvePath = async (reqPath) => {
     return { path: reqPath, vehicles };
   }
 
-  if (reqPath === "/lokasyonlar") {
+  if (canonicalPath === "/lokasyonlar") {
     const locations = await prisma.location.findMany({
       select: { name: true },
       orderBy: { name: "asc" },
@@ -156,7 +200,7 @@ const resolvePath = async (reqPath) => {
     return { path: reqPath, locations };
   }
 
-  if (reqPath === "/kampanyalar") {
+  if (canonicalPath === "/kampanyalar") {
     const rows = await prisma.campaign.findMany({
       where: { active: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
@@ -208,7 +252,7 @@ const renderPage = async (req, res) => {
       return res
         .status(200)
         .send(
-          `<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8" />\n` +
+          `<!DOCTYPE html><html lang="${head.htmlLang}"><head><meta charset="UTF-8" />\n` +
             `<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n` +
             `${renderHeadTags(head)}\n</head><body><div id="root"></div>` +
             `<p><a href="${SITE_URL}${reqPath}">Rentwin</a></p></body></html>`

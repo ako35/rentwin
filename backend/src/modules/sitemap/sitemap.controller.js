@@ -2,7 +2,7 @@ const prisma = require("../../lib/prisma");
 const asyncHandler = require("../../middleware/async-handler");
 const { modelImageKey } = require("../../lib/serializers");
 const { loadModelImageMap } = require("../vehicles/vehicles.shared");
-const { SITE_URL, slugify } = require("../../lib/site");
+const { SITE_URL, slugify, localizePath } = require("../../lib/site");
 
 const STATIC_ROUTES = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
@@ -18,10 +18,18 @@ const STATIC_ROUTES = [
 const xmlEscape = (s = "") =>
   s.replace(/[<>&'"]/g, (ch) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" }[ch]));
 
-const urlEntry = ({ path, lastmod, changefreq, priority, image, images }) =>
+// Every entry also lists its TR/EN twin via the xhtml:link sitemap-alternate
+// convention (same signal as the <link rel=alternate hreflang> tag each page
+// itself carries — see use-page-meta.js / prerender.controller.js) so a
+// search engine can discover /en/* straight from the sitemap, not only by
+// crawling a page and following its hreflang tag.
+const urlEntry = ({ path, lastmod, changefreq, priority, image, images, alternates }) =>
   [
     "  <url>",
     `    <loc>${SITE_URL}${path}</loc>`,
+    ...(alternates || []).map(
+      (a) => `    <xhtml:link rel="alternate" hreflang="${a.hreflang}" href="${xmlEscape(SITE_URL + a.path)}" />`
+    ),
     lastmod ? `    <lastmod>${new Date(lastmod).toISOString().slice(0, 10)}</lastmod>` : null,
     changefreq ? `    <changefreq>${changefreq}</changefreq>` : null,
     priority ? `    <priority>${priority}</priority>` : null,
@@ -34,10 +42,28 @@ const urlEntry = ({ path, lastmod, changefreq, priority, image, images }) =>
     .filter(Boolean)
     .join("\n");
 
+// One TR entry (keeping its image(s)) + its "/en" twin, each cross-linked to
+// the other. The EN twin drops the image entries — same photos, no need to
+// list them twice.
+const withEnglishTwin = (entry) => {
+  const enPath = localizePath(entry.path, "en");
+  const alternates = [
+    { hreflang: "tr", path: entry.path },
+    { hreflang: "en", path: enPath },
+    { hreflang: "x-default", path: entry.path },
+  ];
+  const { image, images, ...rest } = entry;
+  return [
+    { ...entry, alternates },
+    { ...rest, path: enPath, alternates },
+  ];
+};
+
 const latest = (rows, field) =>
   rows.reduce((max, r) => (r[field] && r[field] > max ? r[field] : max), new Date(0));
 
-// Dynamic sitemap: static pages + every in-service vehicle + every location.
+// Dynamic sitemap: static pages + every in-service vehicle + every location,
+// each doubled for its English ("/en/...") twin.
 const getSitemap = asyncHandler(async (req, res) => {
   const [vehicles, locations, campaigns, modelImages] = await Promise.all([
     prisma.vehicle.findMany({
@@ -82,30 +108,37 @@ const getSitemap = asyncHandler(async (req, res) => {
   };
 
   const entries = [
-    ...STATIC_ROUTES.map((r) => ({
-      ...r,
-      ...(staticLastmodByPath[r.path] ? { lastmod: staticLastmodByPath[r.path] } : {}),
-      ...(r.path === "/kampanyalar" && campaignImageUrls.length ? { images: campaignImageUrls } : {}),
-    })),
-    ...vehicles.map((v) => ({
-      path: `/vehicles/${v.id}`,
-      lastmod: v.updatedAt,
-      changefreq: "weekly",
-      priority: "0.8",
-      image: vehicleImage(v),
-    })),
-    ...locations.map((l) => ({
-      path: `/lokasyonlar/${slugify(l.name)}`,
-      lastmod: l.createdAt,
-      changefreq: "monthly",
-      priority: "0.6",
-    })),
+    ...STATIC_ROUTES.flatMap((r) =>
+      withEnglishTwin({
+        ...r,
+        ...(staticLastmodByPath[r.path] ? { lastmod: staticLastmodByPath[r.path] } : {}),
+        ...(r.path === "/kampanyalar" && campaignImageUrls.length ? { images: campaignImageUrls } : {}),
+      })
+    ),
+    ...vehicles.flatMap((v) =>
+      withEnglishTwin({
+        path: `/vehicles/${v.id}`,
+        lastmod: v.updatedAt,
+        changefreq: "weekly",
+        priority: "0.8",
+        image: vehicleImage(v),
+      })
+    ),
+    ...locations.flatMap((l) =>
+      withEnglishTwin({
+        path: `/lokasyonlar/${slugify(l.name)}`,
+        lastmod: l.createdAt,
+        changefreq: "monthly",
+        priority: "0.6",
+      })
+    ),
   ];
 
   const xml =
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' +
-    ' xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n' +
+    ' xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"' +
+    ' xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' +
     entries.map(urlEntry).join("\n") +
     "\n</urlset>\n";
 

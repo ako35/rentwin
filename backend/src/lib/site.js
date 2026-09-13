@@ -46,4 +46,22 @@ const slugify = (value = "") => {
     .replace(/^-+|-+$/g, "");
 };
 
-module.exports = { SITE_URL, business, slugify };
+// TR/EN URL-locale helpers — mirrors src/i18n/locale-routing.js (frontend
+// ESM copy). Same scheme: TR is unprefixed/canonical, EN is the identical
+// path under a literal "/en" prefix. Used by the bot prerender to detect
+// which language a request path wants, and by breadcrumbLd/vehicleLd/
+// itemListLd below to localize the URLs they emit.
+const localeFromPath = (path) => (path === "/en" || path.startsWith("/en/") ? "en" : "tr");
+
+const localizePath = (path, locale) => {
+  if (locale !== "en") return path;
+  return path === "/" ? "/en" : `/en${path}`;
+};
+
+const stripLocalePrefix = (path) => {
+  if (path === "/en") return "/";
+  if (path.startsWith("/en/")) return path.slice(3) || "/";
+  return path;
+};
+
+module.exports = { SITE_URL, business, slugify, localeFromPath, localizePath, stripLocalePrefix };

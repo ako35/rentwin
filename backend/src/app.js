@@ -103,17 +103,31 @@ app.get("/sitemap.xml", getSitemap);
 
 // Bot prerender. vercel.json routes only crawler/social user-agents on these
 // paths here; human browsers keep getting the static SPA shell untouched.
+// Each TR path is mirrored under "/en" (the marketing tree's English twin —
+// see src/router/index.jsx) EXCEPT the bare "/", which never comes here at
+// all: index.html's own static hero snapshot already IS its prerendered
+// content. "/en" has no such snapshot, so it's prerendered here instead.
 app.get(
   [
+    "/en",
     "/vehicles",
+    "/en/vehicles",
     "/vehicles/:id",
+    "/en/vehicles/:id",
     "/lokasyonlar",
+    "/en/lokasyonlar",
     "/lokasyonlar/:slug",
+    "/en/lokasyonlar/:slug",
     "/kampanyalar",
+    "/en/kampanyalar",
     "/about",
+    "/en/about",
     "/contact",
+    "/en/contact",
     "/sss",
+    "/en/sss",
     "/privacy-policy",
+    "/en/privacy-policy",
   ],
   renderPage
 );
