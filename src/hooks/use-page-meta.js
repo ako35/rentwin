@@ -43,6 +43,10 @@ const setProperty = (property, content) => {
   }).setAttribute("content", content);
 };
 
+const removeProperty = (property) => {
+  document.head.querySelector(`meta[property="${property}"]`)?.remove();
+};
+
 const setCanonical = (href) => {
   const existing = document.head.querySelector('link[rel="canonical"]');
   if (!href) {
@@ -88,8 +92,12 @@ export const usePageMeta = (titleOrOptions, description) => {
     const resolvedTitle = title || DEFAULT_TITLE;
     const resolvedDesc = desc || DEFAULT_DESCRIPTION;
     const resolvedImage = absolute(image, DEFAULT_IMAGE);
+    // Dimensions are only known for our own brand card — a vehicle/campaign
+    // photo can be any aspect ratio, so don't claim 1200x630 for those.
+    const usingDefaultImage = resolvedImage === DEFAULT_IMAGE;
     const lang = i18n.resolvedLanguage === "en" ? "en" : "tr";
     const locale = lang === "en" ? "en_US" : "tr_TR";
+    const altLocale = lang === "en" ? "tr_TR" : "en_US";
 
     document.title = resolvedTitle;
     document.documentElement.lang = lang;
@@ -105,7 +113,15 @@ export const usePageMeta = (titleOrOptions, description) => {
     setProperty("og:type", type);
     setProperty("og:image", resolvedImage);
     setProperty("og:image:alt", resolvedTitle);
+    if (usingDefaultImage) {
+      setProperty("og:image:width", "1200");
+      setProperty("og:image:height", "630");
+    } else {
+      removeProperty("og:image:width");
+      removeProperty("og:image:height");
+    }
     setProperty("og:locale", locale);
+    setProperty("og:locale:alternate", altLocale);
     setNamed("twitter:card", "summary_large_image");
     setNamed("twitter:title", resolvedTitle);
     setNamed("twitter:description", resolvedDesc);
