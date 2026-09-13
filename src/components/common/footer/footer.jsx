@@ -1,8 +1,8 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Col, Container, Row } from "react-bootstrap";
 import { constants } from "../../../constants";
-import { ContactInfo, QuickLink } from "../../";
+import { AppLink, ContactInfo, QuickLink } from "../../";
 import "./footer.scss";
 
 const {
@@ -33,9 +33,9 @@ const Footer = () => {
         <Row className="gy-5">
           <Col lg={6} xl={3}>
             <div className="site-footer__brand">
-              <Link to={home} className="site-footer__logo">
+              <AppLink to={home} className="site-footer__logo">
                 RENT<span>WIN</span>
-              </Link>
+              </AppLink>
               <p className="site-footer__slogan">{tHeader("slogan")}</p>
               <p className="site-footer__blurb">{t("blurb")}</p>
             </div>

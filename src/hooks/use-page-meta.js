@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import i18n from "../i18n";
+import { localizePath, stripLocalePrefix } from "../i18n/locale-routing";
 
 // The SPA ships one static <head> in index.html, so without this every route
 // showed the same <title>, description, canonical and social card. This hook
@@ -62,6 +63,21 @@ const setCanonical = (href) => {
     })()).setAttribute("href", href);
 };
 
+const setAlternate = (hreflang, href) => {
+  let el = document.head.querySelector(`link[rel="alternate"][hreflang="${hreflang}"]`);
+  if (!el) {
+    el = document.createElement("link");
+    el.setAttribute("rel", "alternate");
+    el.setAttribute("hreflang", hreflang);
+    document.head.appendChild(el);
+  }
+  el.setAttribute("href", href);
+};
+
+const removeAlternates = () => {
+  document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((el) => el.remove());
+};
+
 /**
  * @param {string|object} titleOrOptions  page title, or an options object
  * @param {string} [description]          used only with the (title, description) form
@@ -105,6 +121,18 @@ export const usePageMeta = (titleOrOptions, description) => {
     setNamed("robots", noindex ? "noindex, nofollow" : "index, follow");
     // A non-indexable URL should not point a canonical at itself.
     setCanonical(noindex ? null : url);
+
+    // hreflang: tell search engines the TR and EN URLs are the same page in
+    // two languages. Keyed off the URL, not the `noindex` page's own
+    // content, so it stays correct even while e.g. a vehicle is loading.
+    if (noindex) {
+      removeAlternates();
+    } else {
+      const canonicalPath = stripLocalePrefix(path);
+      setAlternate("tr", `${SITE_URL}${canonicalPath}`);
+      setAlternate("en", `${SITE_URL}${localizePath(canonicalPath, "en")}`);
+      setAlternate("x-default", `${SITE_URL}${canonicalPath}`);
+    }
 
     setProperty("og:site_name", "Rentwin");
     setProperty("og:title", resolvedTitle);

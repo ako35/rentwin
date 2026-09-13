@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { BsArrowRight, BsGeoAltFill } from "react-icons/bs";
-import { JsonLd, Loading, PageHeader, Spacer } from "../../../components";
+import { AppLink, JsonLd, Loading, PageHeader, Spacer } from "../../../components";
 import { usePageMeta, SITE_URL } from "../../../hooks/use-page-meta";
 import { breadcrumbLd, itemListLd } from "../../../utils/seo";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
 import { constants } from "../../../constants";
+import { useLocale } from "../../../hooks/use-locale";
+import { localizePath } from "../../../i18n/locale-routing";
 import "./style.scss";
 
 const { routes } = constants;
@@ -17,6 +18,7 @@ const API_URL = import.meta.env.VITE_APP_API_URL;
 const LocationsPage = () => {
   const { t } = useTranslation("locations");
   const { t: tCommon } = useTranslation("common");
+  const locale = useLocale();
   usePageMeta(t("seoTitle"), t("seoDescription"));
 
   const [loading, setLoading] = useState(true);
@@ -48,7 +50,7 @@ const LocationsPage = () => {
               "@type": "ListItem",
               position: index + 1,
               name: loc.name,
-              url: `${SITE_URL}${routes.locations}/${utils.functions.slugify(loc.name)}`,
+              url: `${SITE_URL}${localizePath(`${routes.locations}/${utils.functions.slugify(loc.name)}`, locale)}`,
             })),
           })}
         />
@@ -65,7 +67,7 @@ const LocationsPage = () => {
         ) : (
           <div className="locations-page__grid">
             {locations.map((loc) => (
-              <Link
+              <AppLink
                 key={loc.id}
                 to={`${routes.locations}/${utils.functions.slugify(loc.name)}`}
                 className="location-card"
@@ -87,7 +89,7 @@ const LocationsPage = () => {
                     {t("cardCta")} <BsArrowRight />
                   </span>
                 </span>
-              </Link>
+              </AppLink>
             ))}
           </div>
         )}

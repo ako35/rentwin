@@ -1,8 +1,9 @@
 import { Container, Nav, Navbar } from "react-bootstrap"
-import { Link, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { constants } from "../../../../constants"
-import { UserMenu, LanguageSwitcher } from '../../../'
+import { AppLink, UserMenu, LanguageSwitcher } from '../../../'
+import { stripLocalePrefix } from "../../../../i18n/locale-routing"
 import './bottom-menu.scss'
 
 const {
@@ -21,6 +22,7 @@ const navigationLinks = [
 
 const BottomMenu = () => {
   const { pathname } = useLocation();
+  const canonicalPathname = stripLocalePrefix(pathname);
   const { t } = useTranslation("common");
   return (
     <div className="bottom-menu">
@@ -31,7 +33,7 @@ const BottomMenu = () => {
             <Nav className="me-auto">
               {
                 navigationLinks.map(item => (
-                  <Nav.Link key={item.key} as={Link} to={item.direct} active={pathname === item.direct}>
+                  <Nav.Link key={item.key} as={AppLink} to={item.direct} active={canonicalPathname === item.direct}>
                     {t(`nav.${item.key}`)}
                   </Nav.Link>
                 ))

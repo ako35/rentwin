@@ -5,10 +5,11 @@ import { webSiteLd } from '../../../utils/seo'
 
 const HomePage = () => {
   const { t } = useTranslation('home')
+  // No explicit `canonical` — the hook derives it from the URL itself
+  // ("/" or "/en"), which is what we want for both language variants.
   usePageMeta({
     title: t('seo.title'),
     description: t('seo.description'),
-    canonical: 'https://rentwin.com.tr/',
   })
 
   return (

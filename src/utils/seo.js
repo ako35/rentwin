@@ -1,9 +1,17 @@
 import { constants } from "../constants";
 import { SITE_URL } from "../hooks/use-page-meta";
+import { localeFromPath, localizePath } from "../i18n/locale-routing";
 
 // (kept in src/utils as a standalone module, like fuel-eighths.js)
 
 const { website } = constants;
+
+// These builders run synchronously during a page's own render/mount, so
+// reading the URL directly here (rather than threading a `locale` prop
+// through every call site) is safe and keeps every existing caller — which
+// all pass plain, unprefixed ("canonical"/TR-shaped) paths — unchanged.
+const currentLocale = () =>
+  typeof window !== "undefined" ? localeFromPath(window.location.pathname) : "tr";
 
 const postalAddress = {
   "@type": "PostalAddress",
@@ -48,15 +56,18 @@ export const autoRentalLd = () => ({
   ...(website.sameAs?.length ? { sameAs: website.sameAs } : {}),
 });
 
-export const webSiteLd = () => ({
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "@id": `${SITE_URL}/#website`,
-  url: `${SITE_URL}/`,
-  name: website.name,
-  inLanguage: "tr-TR",
-  publisher: { "@id": `${SITE_URL}/#organization` },
-});
+export const webSiteLd = () => {
+  const locale = currentLocale();
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    url: `${SITE_URL}${localizePath("/", locale)}`,
+    name: website.name,
+    inLanguage: locale === "en" ? "en-US" : "tr-TR",
+    publisher: { "@id": `${SITE_URL}/#organization` },
+  };
+};
 
 // items: [{ q, a }] — plain-text question / answer pairs.
 export const faqLd = (items) => ({
@@ -81,17 +92,22 @@ export const itemListLd = ({ name, itemListElement }) => ({
   itemListElement,
 });
 
-// items: [{ name, path }] — the current page is the last item.
-export const breadcrumbLd = (items) => ({
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: items.map((item, index) => ({
-    "@type": "ListItem",
-    position: index + 1,
-    name: item.name,
-    ...(item.path ? { item: `${SITE_URL}${item.path}` } : {}),
-  })),
-});
+// items: [{ name, path }] — the current page is the last item. `path` is
+// always the plain/unprefixed (TR) form; auto-localized to whichever
+// language the current URL is in (see currentLocale above).
+export const breadcrumbLd = (items) => {
+  const locale = currentLocale();
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      ...(item.path ? { item: `${SITE_URL}${localizePath(item.path, locale)}` } : {}),
+    })),
+  };
+};
 
 export const vehicleLd = ({
   name,
@@ -115,7 +131,7 @@ export const vehicleLd = ({
   ...(modelYear ? { vehicleModelDate: String(modelYear) } : {}),
   ...(color ? { color } : {}),
   itemCondition: "https://schema.org/UsedCondition",
-  url: `${SITE_URL}${path}`,
+  url: `${SITE_URL}${localizePath(path, currentLocale())}`,
   offers: {
     "@type": "Offer",
     availability: "https://schema.org/InStock",

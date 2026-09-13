@@ -1,6 +1,7 @@
 import { Col, Container, Row } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
+  AppLink,
   BookingForm,
   DetailsPanel,
   JsonLd,
@@ -67,7 +68,7 @@ const VehicleDetailsPage = () => {
         <Spacer />
         <Container className="vehicle-details">
           <p>{t("loadError")}</p>
-          <Link to="/vehicles">{tCommon("nav.vehicles")}</Link>
+          <AppLink to="/vehicles">{tCommon("nav.vehicles")}</AppLink>
         </Container>
         <Spacer />
       </>

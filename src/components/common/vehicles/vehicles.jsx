@@ -9,6 +9,8 @@ import { utils } from "../../../utils";
 import { clearSearchCriteria } from "../../../store";
 import { constants } from "../../../constants";
 import { SITE_URL } from "../../../hooks/use-page-meta";
+import { useLocale } from "../../../hooks/use-locale";
+import { localizePath } from "../../../i18n/locale-routing";
 import { itemListLd } from "../../../utils/seo";
 import SectionHeader from "../section-header/section-header";
 import Loading from "../loading/loading";
@@ -38,6 +40,7 @@ const buildGroup = (vehicles, key, order) => {
 
 const Vehicles = () => {
   const { t } = useTranslation("vehicles");
+  const locale = useLocale();
   const dispatch = useDispatch();
   const searchCriteria = useSelector((state) => state.reservation.searchCriteria);
   const [loading, setLoading] = useState(true);
@@ -125,9 +128,9 @@ const Vehicles = () => {
       "@type": "ListItem",
       position: index + 1,
       name: [v.brand, v.model].filter(Boolean).join(" ").trim(),
-      url: `${SITE_URL}${routes.vehicles}/${v.id}`,
+      url: `${SITE_URL}${localizePath(`${routes.vehicles}/${v.id}`, locale)}`,
     }));
-  }, [vehicles, searchCriteria]);
+  }, [vehicles, searchCriteria, locale]);
 
   return (
     <Container className="vehicles">

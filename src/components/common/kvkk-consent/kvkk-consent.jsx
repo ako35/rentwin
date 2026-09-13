@@ -1,7 +1,7 @@
 import { Trans, useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import { Form } from "react-bootstrap";
 import { constants } from "../../../constants";
+import AppLink from "../app-link/app-link";
 import "./kvkk-consent.scss";
 
 const { routes } = constants;
@@ -31,7 +31,7 @@ const KvkkConsent = ({ formik, name = "kvkkConsent", i18nKey, ns }) => {
             i18nKey={i18nKey}
             components={{
               policy: (
-                <Link to={routes.privacyPolicy} target="_blank" rel="noopener noreferrer" />
+                <AppLink to={routes.privacyPolicy} target="_blank" rel="noopener noreferrer" />
               ),
             }}
           />

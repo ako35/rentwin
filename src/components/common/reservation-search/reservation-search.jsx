@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BsCalendarEvent, BsClock, BsGeoAlt } from "react-icons/bs";
 import { utils } from "../../../utils";
 import { services } from "../../../services";
 import { constants } from "../../../constants";
 import { setSearchCriteria } from "../../../store";
+import { useLocalizedNavigate } from "../../../hooks/use-localized-navigate";
 import "./reservation-search.scss";
 
 const { routes } = constants;
@@ -15,7 +15,7 @@ const { routes } = constants;
 const ReservationSearch = () => {
   const { t } = useTranslation("home");
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useLocalizedNavigate();
   const [locations, setLocations] = useState([]);
 
   useEffect(() => {

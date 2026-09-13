@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { constants } from "../../../constants";
+import AppLink from "../app-link/app-link";
 import "./page-header.scss";
 
 const { routes } = constants;
@@ -17,13 +17,13 @@ const PageHeader = ({ title, crumbs = [] }) => {
       <div className="page-header__inner">
         <h1>{title}</h1>
         <nav className="page-header__crumbs" aria-label="breadcrumb">
-          <Link to={routes.home}>{t("nav.home")}</Link>
+          <AppLink to={routes.home}>{t("nav.home")}</AppLink>
           {crumbs.map((crumb) => (
             <span key={crumb.to || crumb.label}>
               <span className="page-header__sep" aria-hidden="true">
                 ›
               </span>
-              {crumb.to ? <Link to={crumb.to}>{crumb.label}</Link> : <span>{crumb.label}</span>}
+              {crumb.to ? <AppLink to={crumb.to}>{crumb.label}</AppLink> : <span>{crumb.label}</span>}
             </span>
           ))}
           <span className="page-header__sep" aria-hidden="true">

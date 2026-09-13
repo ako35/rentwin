@@ -1,12 +1,12 @@
 import { useFormik } from "formik";
 import { useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
-import { Link } from "react-router-dom";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { utils } from "../../../../utils";
 import { services } from "../../../../services";
 import { constants } from "../../../../constants";
 import CustomForm from "../../custom-form/custom-form";
+import AppLink from "../../app-link/app-link";
 
 const ContactForm = () => {
   const [loading, setLoading] = useState(false);
@@ -80,7 +80,7 @@ const ContactForm = () => {
               i18nKey="form.kvkk"
               components={{
                 kvkklink: (
-                  <Link
+                  <AppLink
                     to={constants.routes.privacyPolicy}
                     target="_blank"
                     rel="noopener noreferrer"

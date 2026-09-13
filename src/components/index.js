@@ -11,6 +11,7 @@ import VehicleStatsPanel from './admin/vehicle-stats-panel/vehicle-stats-panel'
 
 
 // common components
+import AppLink from './common/app-link/app-link'
 import OfferItem from './common/about/best-offers/offer-item/offer-item'
 import BestOffers from './common/about/best-offers/best-offers'
 import CampaignCard from './common/campaigns/campaign-card/campaign-card'
@@ -67,6 +68,7 @@ export{
     VehicleStatsPanel,
 
     // common components
+    AppLink,
     OfferItem,
     BestOffers,
     CampaignCard,

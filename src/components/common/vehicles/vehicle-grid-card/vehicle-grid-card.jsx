@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { GiGasPump, GiGearStick } from "react-icons/gi";
 import { BsCalendar3, BsArrowRight } from "react-icons/bs";
 import { constants } from "../../../../constants";
+import AppLink from "../../app-link/app-link";
 import "./vehicle-grid-card.scss";
 
 const { routes } = constants;
@@ -26,7 +26,7 @@ const VehicleGridCard = (props) => {
   const imageId = Array.isArray(props.image) ? props.image[0] : props.image;
 
   return (
-    <Link to={`${routes.vehicles}/${props.id}`} className="vehicle-grid-card">
+    <AppLink to={`${routes.vehicles}/${props.id}`} className="vehicle-grid-card">
       <div className="vehicle-grid-card__image">
         {imageId ? (
           <img
@@ -59,7 +59,7 @@ const VehicleGridCard = (props) => {
           </span>
         </div>
       </div>
-    </Link>
+    </AppLink>
   );
 };
 

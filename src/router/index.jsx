@@ -56,32 +56,40 @@ const AdminNewCustomerPage = lazy(() => import("../pages/admin/users/new/page"))
 
 const lazyRoute = (element) => <Suspense fallback={<LoadingPage />}>{element}</Suspense>;
 
+// The public marketing pages — mounted once unprefixed (TR, the existing/
+// canonical URLs) and again under "/en" (see below). Same components both
+// times; CommonLayout tells them which language they're in via the URL
+// (src/hooks/use-locale.js), so nothing page-specific needs to change here.
+const marketingRoutes = () => [
+  { index: true, element: <HomePage /> },
+  { path: "about", element: <AboutPage /> },
+  { path: "kampanyalar", element: <CampaignsPage /> },
+  { path: "contact", element: <ContactPage /> },
+  { path: "sss", element: <FaqPage /> },
+  {
+    path: "lokasyonlar",
+    children: [
+      { index: true, element: <LocationsPage /> },
+      { path: ":slug", element: <LocationDetailPage /> },
+    ],
+  },
+  { path: "privacy-policy", element: <PrivacyPolicyPage /> },
+  {
+    path: "vehicles",
+    children: [
+      { index: true, element: <VehiclesPage /> },
+      { path: ":vehicleId", element: <VehicleDetailsPage /> },
+    ],
+  },
+];
+
 const router = createBrowserRouter([
   // COMMON ROUTES
   {
     path: "/",
     element: <CommonLayout />,
     children: [
-      { index: true, element: <HomePage /> },
-      { path: "about", element: <AboutPage /> },
-      { path: "kampanyalar", element: <CampaignsPage /> },
-      { path: "contact", element: <ContactPage /> },
-      { path: "sss", element: <FaqPage /> },
-      {
-        path: "lokasyonlar",
-        children: [
-          { index: true, element: <LocationsPage /> },
-          { path: ":slug", element: <LocationDetailPage /> },
-        ],
-      },
-      { path: "privacy-policy", element: <PrivacyPolicyPage /> },
-      {
-        path: "vehicles",
-        children: [
-          { index: true, element: <VehiclesPage /> },
-          { path: ":vehicleId", element: <VehicleDetailsPage /> },
-        ],
-      },
+      ...marketingRoutes(),
       // USER ROUTES
       {
         path: "user",
@@ -98,6 +106,16 @@ const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  // ENGLISH MARKETING ROUTES — same pages, "/en" prefix. Not react-snap'd,
+  // not (yet) FCP-optimized on the homepage; see [[rentwin-seo]] for the
+  // scope note. Kept as its own top-level root (not nested under "/") so its
+  // pages match on an exact "/en/..." pathname instead of react-router
+  // treating "en" as a dynamic segment of "/".
+  {
+    path: "/en",
+    element: <CommonLayout />,
+    children: marketingRoutes(),
   },
   // AUTH ROUTES
   {

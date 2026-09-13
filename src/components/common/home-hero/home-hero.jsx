@@ -1,9 +1,8 @@
-import { Link } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { BsArrowRight, BsCheck2Circle } from "react-icons/bs";
 import { constants } from "../../../constants";
-import { ReservationSearch } from "../../";
+import { AppLink, ReservationSearch } from "../../";
 import FleetCar from "./fleet-car";
 import "./home-hero.scss";
 
@@ -30,9 +29,9 @@ const HomeHero = () => {
               ))}
             </ul>
 
-            <Link to={routes.vehicles} className="home-hero__browse">
+            <AppLink to={routes.vehicles} className="home-hero__browse">
               {t("hero.browseCta")} <BsArrowRight />
-            </Link>
+            </AppLink>
           </div>
 
           <div className="home-hero__visual">

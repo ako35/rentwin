@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { BsArrowRight } from "react-icons/bs";
-import { CampaignCard, SectionHeader, Spacer } from "../../../";
+import { AppLink, CampaignCard, SectionHeader, Spacer } from "../../../";
 import { services } from "../../../../services";
 import { constants } from "../../../../constants";
 import "./campaigns-section.scss";
@@ -42,9 +41,9 @@ const CampaignsSection = () => {
             ))}
           </div>
           <div className="campaigns-section__all">
-            <Link to={routes.campaigns}>
+            <AppLink to={routes.campaigns}>
               {t("sections.campaigns.seeAll")} <BsArrowRight />
-            </Link>
+            </AppLink>
           </div>
         </Container>
       </div>

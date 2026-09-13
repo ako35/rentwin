@@ -1,6 +1,7 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
+import { isAccountPath, localeFromPath } from "./locale-routing";
 
 import trCommon from "./locales/tr/common.json";
 import trHeader from "./locales/tr/header.json";
@@ -105,17 +106,30 @@ i18n
     ],
     defaultNS: "common",
     // Rentwin is a Turkish-market site: default to TR and only switch when the
-    // visitor explicitly picks EN (which caches to localStorage). Following the
-    // browser's `navigator.language` made Googlebot — which crawls with an
-    // en-US locale — index the English <title>/description for every page.
+    // visitor explicitly picks EN (persisted to localStorage — see below).
+    // Following the browser's `navigator.language` made Googlebot — which
+    // crawls with an en-US locale — index the English <title>/description for
+    // every page.
     detection: {
       order: ["localStorage"],
-      caches: ["localStorage"],
+      // Caching is off here: the marketing tree's language is a fact of the
+      // URL now (/en/...), decided fresh on every navigation by CommonLayout
+      // — it must never write back and clobber the admin/auth/user toggle's
+      // saved preference (same key). LanguageSwitcher persists that
+      // preference itself, only for its non-URL (account-surface) toggle mode.
+      caches: [],
       lookupLocalStorage: "rentwinLanguage",
     },
     interpolation: {
       escapeValue: false,
     },
+    // A fresh load of a marketing URL must render in ITS language immediately
+    // — not whatever the account-surface toggle last saved — so there's no
+    // flash while languageChanged catches up async. /admin, /auth and /user
+    // aren't part of this URL scheme, so leave those to the detector above.
+    ...(typeof window !== "undefined" && !isAccountPath(window.location.pathname)
+      ? { lng: localeFromPath(window.location.pathname) }
+      : {}),
   })
   .then(() => {
     syncDocumentLanguage(i18n.resolvedLanguage);

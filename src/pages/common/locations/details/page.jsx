@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { BsArrowRight, BsCheck2, BsGeoAltFill } from "react-icons/bs";
-import { JsonLd, Loading, PageHeader, Spacer } from "../../../../components";
+import { AppLink, JsonLd, Loading, PageHeader, Spacer } from "../../../../components";
 import { usePageMeta } from "../../../../hooks/use-page-meta";
 import { breadcrumbLd } from "../../../../utils/seo";
 import { services } from "../../../../services";
@@ -52,7 +52,7 @@ const LocationDetailPage = () => {
         <Spacer />
         <p className="locations-page__empty">{t("detail.notFound")}</p>
         <p>
-          <Link to={routes.locations}>{t("detail.backToList")}</Link>
+          <AppLink to={routes.locations}>{t("detail.backToList")}</AppLink>
         </p>
         <Spacer />
       </Container>
@@ -79,9 +79,9 @@ const LocationDetailPage = () => {
       />
       <Spacer />
       <Container className="location-detail">
-        <Link to={routes.locations} className="location-detail__back">
+        <AppLink to={routes.locations} className="location-detail__back">
           &larr; {t("detail.backToList")}
-        </Link>
+        </AppLink>
 
         {location.imageId && (
           <div className="location-detail__hero">
@@ -92,12 +92,12 @@ const LocationDetailPage = () => {
         <p className="location-detail__lead">{t("detail.lead", { name })}</p>
 
         <div className="location-detail__actions">
-          <Link to={routes.vehicles} className="btn btn-primary">
+          <AppLink to={routes.vehicles} className="btn btn-primary">
             {t("detail.vehiclesCta")} <BsArrowRight />
-          </Link>
-          <Link to={routes.home} className="btn btn-outline-primary">
+          </AppLink>
+          <AppLink to={routes.home} className="btn btn-outline-primary">
             {t("detail.reserveCta")}
-          </Link>
+          </AppLink>
         </div>
 
         <Spacer />
@@ -119,7 +119,7 @@ const LocationDetailPage = () => {
         </ol>
         <p className="location-detail__faq">
           {t("detail.faqLead")}{" "}
-          <Link to={routes.faq}>{t("detail.faqLink")}</Link>
+          <AppLink to={routes.faq}>{t("detail.faqLink")}</AppLink>
         </p>
 
         <Spacer />

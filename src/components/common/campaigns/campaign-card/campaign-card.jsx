@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BsArrowRight, BsCalendarEvent, BsTag } from "react-icons/bs";
+import AppLink from "../../app-link/app-link";
 import "./campaign-card.scss";
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
@@ -38,9 +38,9 @@ const CampaignCard = ({ campaign, compact = false }) => {
         <p className="campaign-card__desc">{description}</p>
         {ctaUrl &&
           (isInternal ? (
-            <Link to={ctaUrl} className="btn btn-primary btn-sm campaign-card__cta">
+            <AppLink to={ctaUrl} className="btn btn-primary btn-sm campaign-card__cta">
               {ctaText} <BsArrowRight />
-            </Link>
+            </AppLink>
           ) : (
             <a
               href={ctaUrl}
