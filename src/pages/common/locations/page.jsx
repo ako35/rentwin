@@ -4,8 +4,8 @@ import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { BsArrowRight, BsGeoAltFill } from "react-icons/bs";
 import { JsonLd, Loading, PageHeader, Spacer } from "../../../components";
-import { usePageMeta } from "../../../hooks/use-page-meta";
-import { breadcrumbLd } from "../../../utils/seo";
+import { usePageMeta, SITE_URL } from "../../../hooks/use-page-meta";
+import { breadcrumbLd, itemListLd } from "../../../utils/seo";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
 import { constants } from "../../../constants";
@@ -39,6 +39,20 @@ const LocationsPage = () => {
           { name: t("pageTitle") },
         ])}
       />
+      {!loading && locations.length > 0 && (
+        <JsonLd
+          id="ld-itemlist"
+          data={itemListLd({
+            name: t("pageTitle"),
+            itemListElement: locations.map((loc, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              name: loc.name,
+              url: `${SITE_URL}${routes.locations}/${utils.functions.slugify(loc.name)}`,
+            })),
+          })}
+        />
+      )}
       <PageHeader title={t("pageTitle")} />
       <Spacer />
       <Container className="locations-page">

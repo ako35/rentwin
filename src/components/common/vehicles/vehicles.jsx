@@ -7,12 +7,18 @@ import moment from "moment/moment";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
 import { clearSearchCriteria } from "../../../store";
+import { constants } from "../../../constants";
+import { SITE_URL } from "../../../hooks/use-page-meta";
+import { itemListLd } from "../../../utils/seo";
 import SectionHeader from "../section-header/section-header";
 import Loading from "../loading/loading";
+import JsonLd from "../json-ld/json-ld";
 import VehicleFilters from "./vehicle-filters/vehicle-filters";
 import VehicleGridCard from "./vehicle-grid-card/vehicle-grid-card";
 import CustomPagination from "../custom-pagination/custom-pagination";
 import "./vehicles.scss";
+
+const { routes } = constants;
 
 const PAGE_SIZE = 9;
 const TRANSMISSION_ORDER = ["Manual", "SemiAutomatic", "Automatic"];
@@ -111,8 +117,23 @@ const Vehicles = () => {
 
   const fmt = (date, time) => moment(`${date} ${time}`).format("DD MMM YYYY HH:mm");
 
+  // ItemList mirrors the bot-prerender's (backend/src/lib/seo-ld.js) — only
+  // for the plain catalog view, not an ephemeral date-search result.
+  const itemListElement = useMemo(() => {
+    if (searchCriteria || vehicles.length === 0) return null;
+    return vehicles.slice(0, 100).map((v, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: [v.brand, v.model].filter(Boolean).join(" ").trim(),
+      url: `${SITE_URL}${routes.vehicles}/${v.id}`,
+    }));
+  }, [vehicles, searchCriteria]);
+
   return (
     <Container className="vehicles">
+      {itemListElement && (
+        <JsonLd id="ld-itemlist" data={itemListLd({ name: t("pageTitle"), itemListElement })} />
+      )}
       {searchCriteria && (
         <div className="vehicles__search-summary">
           <div className="vehicles__search-summary-text">

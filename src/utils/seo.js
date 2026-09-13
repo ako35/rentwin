@@ -69,6 +69,18 @@ export const faqLd = (items) => ({
   })),
 });
 
+// A listing page's contents. `itemListElement` is a ready array of ListItem
+// objects (summary form: position + url to each item's own page; or plain
+// position + name when the items have no detail page). Mirrors the backend
+// bot-prerender's itemListLd (backend/src/lib/seo-ld.js) for client parity.
+export const itemListLd = ({ name, itemListElement }) => ({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name,
+  numberOfItems: itemListElement.length,
+  itemListElement,
+});
+
 // items: [{ name, path }] — the current page is the last item.
 export const breadcrumbLd = (items) => ({
   "@context": "https://schema.org",
