@@ -38,11 +38,17 @@
 
   &__thumb {
     position: relative;
-    aspect-ratio: 4 / 3;
+    // A fixed height (not aspect-ratio) so every card's image box is
+    // identical regardless of the photo's own dimensions — aspect-ratio on a
+    // flex item only gives percentage-sized children a *definite* height to
+    // resolve against in some browsers, so a tall/odd-cropped upload (e.g. an
+    // AI-generated one) could end up taller than its siblings.
+    height: 172px;
     background-color: v.$surface-sunken;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 
     img {
       width: 100%;
