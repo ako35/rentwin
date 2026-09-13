@@ -21,7 +21,7 @@ const AdminFinancePage = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [applied, setApplied] = useState("");
-  const [onlyDebtors, setOnlyDebtors] = useState(false);
+  const [onlyDebtors, setOnlyDebtors] = useState(true);
 
   useEffect(() => {
     setLoading(true);
@@ -36,6 +36,22 @@ const AdminFinancePage = () => {
     const list = onlyDebtors ? rows.filter((r) => (r.balance ?? 0) < 0) : rows;
     return [...list].sort((a, b) => (a.balance ?? 0) - (b.balance ?? 0));
   }, [rows, onlyDebtors]);
+
+  // Footer totals track whatever's actually on screen — with the "sadece
+  // borçlular" default this IS "toplam alacaklarımız" (total we're owed);
+  // unchecking to see everyone turns it into the company-wide net position.
+  const totals = useMemo(
+    () =>
+      visible.reduce(
+        (acc, r) => ({
+          debit: acc.debit + (r.debit ?? 0),
+          credit: acc.credit + (r.credit ?? 0),
+          balance: acc.balance + (r.balance ?? 0),
+        }),
+        { debit: 0, credit: 0, balance: 0 }
+      ),
+    [visible]
+  );
 
   return (
     <div className="finance-page">
@@ -98,6 +114,18 @@ const AdminFinancePage = () => {
                 </tr>
               ))}
             </tbody>
+            {visible.length > 0 && (
+              <tfoot>
+                <tr>
+                  <td colSpan={3}>{f("table.totals")}</td>
+                  <td className="text-end">{money(totals.debit)}</td>
+                  <td className="text-end">{money(totals.credit)}</td>
+                  <td className={`text-end ledger-table__bal${totals.balance < 0 ? " is-negative" : ""}`}>
+                    {money(totals.balance)}
+                  </td>
+                </tr>
+              </tfoot>
+            )}
           </Table>
         )}
       </div>
