@@ -97,34 +97,57 @@ export const computeRentalTerm = ({ pickUpDate, dropOffDate }) => {
 };
 
 // Live pricing card figures.
-//   base rental — the window [pick-up, <drop-off before the first extension>]:
-//     DAILY   : net = gross = billableDays x dailyPrice        (VAT-inclusive)
+//   base rental — the window [pick-up, <drop-off before the first extension>],
+//   NEVER the contract's current (extension-pushed-out) drop-off:
+//     DAILY   : net = gross = baseDays x dailyPrice             (VAT-inclusive)
 //     MONTHLY : net  = months x monthlyPrice + kıst x (monthlyPrice / 30)
-//               gross = net x (1 + vatRate/100)                (VAT on top)
+//               gross = net x (1 + vatRate/100)                 (VAT on top)
 //   + Σ extension.extraAmount (flat operator-priced lines) + returnExtraAmount
-// Mirrors backend contract-financials.recomputeContractFinancials.
+// Mirrors backend contract-financials.recomputeContractFinancials — that one
+// bounds `pricePeriod`'s `end` to baseEnd for BOTH rental types; this used to
+// pass the full (already-extended) `billableDays` straight into the DAILY
+// branch, pricing the extension's days twice (once here, once again as the
+// extension's own extraAmount line) — fixed 2026-09-13.
 export const computePricing = (values, billableDays, extensions = []) => {
   const n = numOr;
   const isMonthly = values.rentalType === "MONTHLY";
   const vatRate = n(values.vatRate) || 20;
 
-  // The base window ends where the drop-off was before the first extension.
-  const baseEndDate = extensions.length
-    ? extensions
-        .map((e) => utcDate(e.previousDropOff))
-        .reduce((min, d) => (d < min ? d : min))
-    : values.dropOffDate;
+  // The base window ends where the drop-off was before the first extension —
+  // keep the raw (time-of-day-bearing) value for the DAILY hour-based day
+  // count below; MONTHLY's calendar-only termBetween still wants the
+  // date-only string.
+  const baseEndRaw = extensions.length
+    ? extensions.reduce(
+        (min, e) => (e.previousDropOff < min ? e.previousDropOff : min),
+        extensions[0].previousDropOff
+      )
+    : null;
+  const baseEndDate = baseEndRaw ? utcDate(baseEndRaw) : values.dropOffDate;
 
   let rentalNet;
   let rentalGross;
-  let term = { months: 0, days: billableDays };
+  let term;
   if (isMonthly) {
     term = termBetween(values.pickUpDate, baseEndDate);
     const m = n(values.monthlyPrice);
     rentalNet = round2(term.months * m + term.days * round2(m / 30));
     rentalGross = round2(rentalNet * (1 + vatRate / 100));
   } else {
-    rentalNet = round2(n(values.dailyPrice) * billableDays);
+    // Mirrors backend contract-fields.rentalDays: whole hours / 24, min 1.
+    const baseDays = baseEndRaw
+      ? Math.max(
+          1,
+          Math.ceil(
+            moment(baseEndRaw).diff(
+              moment(`${values.pickUpDate} ${values.pickUpTime || "00:00"}`),
+              "hours"
+            ) / 24
+          )
+        )
+      : billableDays;
+    term = { months: 0, days: baseDays };
+    rentalNet = round2(n(values.dailyPrice) * baseDays);
     rentalGross = rentalNet;
   }
   const vat = round2(rentalGross - rentalNet);

@@ -73,7 +73,11 @@ const PricingBlock = ({ formik, pricing, billableDays, collected, money }) => {
               <Form.Control type="number" value={formik.values.dailyPrice} onChange={setV("dailyPrice")} />
             )}
             <span className="pricing__unit">
-              {isMonthly ? `TL × ${termText}` : `TL × ${billableDays}`}
+              {/* pricing.days is the BASE window only (excludes extension days,
+                  which are priced separately as their own flat line below) —
+                  not the raw billableDays prop, which spans the full,
+                  already-extended period. */}
+              {isMonthly ? `TL × ${termText}` : `TL × ${pricing.days}`}
             </span>
           </span>
         </div>
