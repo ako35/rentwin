@@ -240,6 +240,9 @@ const changeVehicle = asyncHandler(async (req, res) => {
   if (parsedNewCarKm !== null) contractUpdate.pickUpKm = parsedNewCarKm;
   if (parsedNewCarFuelEighths !== null) contractUpdate.pickUpFuelEighths = parsedNewCarFuelEighths;
 
+  const parsedReturnKm = num(returnKm);
+  const parsedReturnFuelEighths = num(returnFuelEighths);
+
   const updated = await prisma.$transaction(async (tx) => {
     await tx.contractVehicleChange.create({
       data: {
@@ -247,8 +250,8 @@ const changeVehicle = asyncHandler(async (req, res) => {
         changeDate,
         previousCarId: contract.carId,
         previousCarLabel: label(previousVehicle, contract.carId),
-        returnKm: num(returnKm),
-        returnFuelEighths: num(returnFuelEighths),
+        returnKm: parsedReturnKm,
+        returnFuelEighths: parsedReturnFuelEighths,
         newCarId,
         newCarLabel: label(newVehicle, newCarId),
         newCarKm: parsedNewCarKm,
@@ -256,6 +259,28 @@ const changeVehicle = asyncHandler(async (req, res) => {
         note: note || null,
       },
     });
+    // Same write-back as a full return (contracts.admin.controller.js
+    // returnContract): each car's own record should hold its latest known
+    // odometer/fuel so the next time it's picked (a new contract, or another
+    // swap) the hand-over fields prefill from real data, not a stale value.
+    if (parsedReturnKm !== null || parsedReturnFuelEighths !== null) {
+      await tx.vehicle.update({
+        where: { id: contract.carId },
+        data: {
+          ...(parsedReturnKm !== null ? { currentKm: parsedReturnKm } : {}),
+          ...(parsedReturnFuelEighths !== null ? { currentFuelEighths: parsedReturnFuelEighths } : {}),
+        },
+      });
+    }
+    if (parsedNewCarKm !== null || parsedNewCarFuelEighths !== null) {
+      await tx.vehicle.update({
+        where: { id: newCarId },
+        data: {
+          ...(parsedNewCarKm !== null ? { currentKm: parsedNewCarKm } : {}),
+          ...(parsedNewCarFuelEighths !== null ? { currentFuelEighths: parsedNewCarFuelEighths } : {}),
+        },
+      });
+    }
     return tx.contract.update({
       where: { id: contract.id },
       data: contractUpdate,

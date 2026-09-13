@@ -376,6 +376,18 @@ const returnContract = asyncHandler(async (req, res) => {
       });
     }
     await recomputeContractFinancials(existing.id, tx);
+    // The vehicle's own record should reflect its latest known odometer/fuel
+    // once it's handed back — the next contract's pick-up fields prefill
+    // straight from this (contracts/details/page.jsx `selectedCar.currentKm`).
+    if (returnKm != null || returnFuelEighths != null) {
+      await tx.vehicle.update({
+        where: { id: existing.carId },
+        data: {
+          ...(returnKm != null ? { currentKm: returnKm } : {}),
+          ...(returnFuelEighths != null ? { currentFuelEighths: returnFuelEighths } : {}),
+        },
+      });
+    }
   });
 
   res.json({ id: existing.id, status: "DONE" });
