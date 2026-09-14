@@ -44,7 +44,9 @@ const AdminReservationFormPage = () => {
       ? {
           ...EMPTY,
           pickUpDate: moment().format("YYYY-MM-DD"),
+          pickUpTime: moment().format("HH:mm"),
           dropOffDate: moment().add(3, "days").format("YYYY-MM-DD"),
+          dropOffTime: moment().format("HH:mm"),
         }
       : EMPTY
   );
