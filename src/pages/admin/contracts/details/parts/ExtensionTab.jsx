@@ -6,7 +6,9 @@ import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import SaveFirstHint from "./SaveFirstHint";
 
-const EMPTY_EXT_FORM = { date: "", time: "", extraAmount: "", note: "" };
+// time defaults to "now" (editable) each time the form opens/resets, not a
+// frozen module-load value.
+const emptyExtForm = () => ({ date: "", time: moment().format("HH:mm"), extraAmount: "", note: "" });
 const day = (d) => (d ? moment.utc(d).format("DD.MM.YYYY") : "—");
 
 // Sub tab: contract extensions. Each extension pushes the drop-off out and adds
@@ -16,7 +18,7 @@ const day = (d) => (d ? moment.utc(d).format("DD.MM.YYYY") : "—");
 const ExtensionTab = ({ isCreate, contractId, minDate, extensions = [], isMonthly, onExtended, money }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.${key}`, opts);
-  const [form, setForm] = useState(EMPTY_EXT_FORM);
+  const [form, setForm] = useState(emptyExtForm);
   const [extending, setExtending] = useState(false);
   const [removingId, setRemovingId] = useState(null);
 
@@ -25,12 +27,12 @@ const ExtensionTab = ({ isCreate, contractId, minDate, extensions = [], isMonthl
     setExtending(true);
     try {
       await services.contract.extendContract(contractId, {
-        newDropOff: utils.functions.combineDateAndTime(form.date, form.time || "10:00"),
+        newDropOff: utils.functions.combineDateAndTime(form.date, form.time || moment().format("HH:mm")),
         extraAmount: form.extraAmount,
         note: form.note,
       });
       utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
-      setForm(EMPTY_EXT_FORM);
+      setForm(emptyExtForm());
       onExtended();
     } catch {
       utils.functions.swalToast(t("reservations.contract.records.error"), "error");
