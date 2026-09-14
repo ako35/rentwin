@@ -99,6 +99,45 @@
       .form-text { color: var(--rw-ink-muted); }
     }
 
+    /* blog modal: same image well pattern, plus the Quill "snow" theme, which
+       ships hardcoded light chrome (white toolbar, near-black icon strokes) —
+       every piece needs an explicit override, not just a background swap. */
+    .admin-blog-page__modal {
+      .admin-blog-page__image {
+        background-color: var(--rw-inset);
+        border-color: var(--rw-line);
+      }
+      .admin-blog-page__image-empty,
+      .form-text { color: var(--rw-ink-muted); }
+
+      .ql-toolbar.ql-snow,
+      .ql-container.ql-snow {
+        background-color: var(--rw-inset);
+        border-color: var(--rw-line);
+      }
+      .ql-editor {
+        color: var(--rw-ink);
+
+        &.ql-blank::before { color: var(--rw-ink-muted); }
+      }
+      .ql-snow .ql-stroke { stroke: var(--rw-ink-muted); }
+      .ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill { fill: var(--rw-ink-muted); }
+      .ql-snow .ql-picker { color: var(--rw-ink-muted); }
+      .ql-snow .ql-picker-options {
+        background-color: var(--rw-panel);
+        border-color: var(--rw-line);
+      }
+      .ql-snow.ql-toolbar button:hover,
+      .ql-snow.ql-toolbar button.ql-active,
+      .ql-snow .ql-picker-label:hover,
+      .ql-snow .ql-picker-item:hover {
+        color: #6ea8fe;
+
+        .ql-stroke { stroke: #6ea8fe; }
+        .ql-fill { fill: #6ea8fe; }
+      }
+    }
+
     /* vehicle return modal ("Araç Teslim Alma"): its SCSS hard-codes light-theme
        ink colors ($color5/$color5_3/$color5_4 — near-black) for labels/intro/
        stats/section heads, which the generic .modal-content ink rule above
@@ -439,7 +478,8 @@
       .model-image-card__thumb,
       .admin-rental-locations-page__thumb,
       .admin-rental-locations-page__image,
-      .admin-campaigns-page__thumb
+      .admin-campaigns-page__thumb,
+      .admin-blog-page__thumb
     ) {
       background-color: var(--rw-inset);
       border-color: var(--rw-line);
@@ -498,6 +538,7 @@
       .model-image-card__placeholder,
       .admin-rental-locations-page__hint,
       .admin-campaigns-page__hint,
+      .admin-blog-page__hint,
       .admin-settings__card-head p,
       .admin-settings__field .form-label,
       .admin-settings__input span,
