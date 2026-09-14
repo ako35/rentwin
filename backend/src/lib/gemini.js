@@ -58,10 +58,20 @@ Kurallar:
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// One vision call: a document photo + a prompt + a response schema -> the parsed
-// JSON object. gemini-flash routinely answers 503 ("high demand — usually
-// temporary") or 429 under load, so one quick retry turns most of those into a
-// success while staying inside the 10s function cap.
+// gemini-flash routinely answers 503 ("high demand — usually temporary") or
+// 429 under load, so a couple of quick retries turn most of those into a
+// success — but Vercel kills this function at a hard wall-clock cap, and a
+// bare fetch() has NO timeout of its own: under that same load a call can
+// hang well past the cap with the platform silently dropping the connection
+// and the admin's upload spinner never resolving ("nothing happens" — not an
+// error, just no response at all). Budget the whole call (every attempt +
+// backoff) so it always finishes — success or a real thrown error — with
+// enough of the cap left to actually answer the client.
+const TOTAL_BUDGET_MS = 8000;
+const PER_ATTEMPT_TIMEOUT_MS = 6000;
+
+// One vision call: a document photo + a prompt + a response schema -> the
+// parsed JSON object.
 const geminiVisionJson = async (buffer, mimeType, prompt, schema) => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY tanımlı değil.");
@@ -78,15 +88,33 @@ const geminiVisionJson = async (buffer, mimeType, prompt, schema) => {
     generationConfig: { responseMimeType: "application/json", responseSchema: schema },
   });
 
+  const deadline = Date.now() + TOTAL_BUDGET_MS;
   let response;
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    response = await fetch(ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-      body,
-    });
-    if (response.ok || (response.status !== 503 && response.status !== 429)) break;
-    if (attempt < 2) await sleep(700 * (attempt + 1));
+    const remaining = deadline - Date.now();
+    if (remaining <= 0) break;
+    try {
+      response = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+        body,
+        signal: AbortSignal.timeout(Math.min(PER_ATTEMPT_TIMEOUT_MS, remaining)),
+      });
+    } catch {
+      // Network error, or the attempt itself hit its own timeout — treat it
+      // like a retryable failure rather than propagating, same as a 503.
+      response = null;
+    }
+    if (response && (response.ok || (response.status !== 503 && response.status !== 429))) break;
+    const backoff = 700 * (attempt + 1);
+    const left = deadline - Date.now();
+    if (attempt < 2 && left > 0) await sleep(Math.min(backoff, left));
+  }
+
+  if (!response) {
+    const err = new Error("Yapay zeka servisi zamanında yanıt vermedi. Lütfen tekrar deneyin.");
+    err.code = "AI_TIMEOUT";
+    throw err;
   }
 
   if (!response.ok) {

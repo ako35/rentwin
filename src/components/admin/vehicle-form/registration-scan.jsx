@@ -7,6 +7,17 @@ import { utils } from "../../../utils";
 // "Ruhsattan Doldur": admin picks a photo of the registration certificate,
 // Gemini reads it server-side and we hand the extracted fields back up so the
 // caller can prefill the form — the admin still reviews/corrects before saving.
+// Gemini returns 200 + documentDetected:false (wrong/unreadable document) or,
+// more rarely, documentDetected:true with every specific field still null (a
+// genuine ruhsat it just couldn't read anything off) — either way there is
+// nothing to prefill. Without this check the UI showed "success" and silently
+// filled in nothing, which read as "the button doesn't do anything".
+const hasExtractedFields = (fields) =>
+  !!fields &&
+  Object.entries(fields).some(
+    ([key, value]) => key !== "documentDetected" && value !== null && value !== undefined && value !== ""
+  );
+
 const RegistrationScan = ({ onExtracted }) => {
   const { t } = useTranslation("admin");
   const inputRef = useRef();
@@ -27,6 +38,10 @@ const RegistrationScan = ({ onExtracted }) => {
         return;
       }
       const fields = await services.vehicle.extractRegistration(prepared);
+      if (!hasExtractedFields(fields)) {
+        utils.functions.swalToast(tr("notDetected"), "error");
+        return;
+      }
       onExtracted(fields);
       utils.functions.swalToast(tr("success"), "success");
     } catch (error) {
