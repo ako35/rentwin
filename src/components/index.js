@@ -43,6 +43,10 @@ import ReservationSearch from './common/reservation-search/reservation-search'
 import SectionHeader from './common/section-header/section-header'
 import HomeHero from './common/home-hero/home-hero'
 import Spacer from './common/spacer/spacer'
+import StarRating from './common/star-rating/star-rating'
+import ReviewCard from './common/reviews/review-card/review-card'
+import ReviewForm from './common/reviews/form/form'
+import ReviewsTeaser from './common/reviews-teaser/reviews-teaser'
 import UserAvatar from './common/user/avatar/avatar'
 import UserPasswordForm from './common/user/password-form/password-form'
 import UserProfileForm from './common/user/profile-form/profile-form'
@@ -100,6 +104,10 @@ export{
     SectionHeader,
     HomeHero,
     Spacer,
+    StarRating,
+    ReviewCard,
+    ReviewForm,
+    ReviewsTeaser,
     UserAvatar,
     UserPasswordForm,
     UserProfileForm,

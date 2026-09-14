@@ -1,0 +1,19 @@
+@use '../../../../styles/variables' as v;
+
+.review-form {
+  &__rating-error {
+    margin-top: 0.35rem;
+    font-size: 0.82rem;
+    color: v.$accent-rose;
+  }
+
+  // Off-screen, not display:none — some bots skip elements hidden that way.
+  // Never visible or reachable by tab for a real visitor.
+  &__honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+}

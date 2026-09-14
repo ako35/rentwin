@@ -30,6 +30,15 @@ export const contactFormInitialValues = {
     kvkk: false,
 };
 
+// REVIEW FORM (/yorumlar)
+export const reviewFormInitialValues = {
+    name: "",
+    rating: 0,
+    body: "",
+    kvkkConsent: false,
+    company: "", // honeypot — always sent, always empty for real users
+};
+
 // HOMEPAGE RESERVATION SEARCH
 export const reservationSearchInitialValues = () => ({
     pickUpLocation: "Aliağa",

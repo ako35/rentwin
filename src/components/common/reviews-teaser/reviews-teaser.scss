@@ -1,0 +1,20 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+.reviews-teaser {
+  @include m.flexbox(row, center, center, 0.7rem);
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem 1.5rem;
+  text-align: center;
+
+  &__text {
+    font-weight: 700;
+    color: v.$color5;
+  }
+
+  &__link {
+    font-size: 0.9rem;
+  }
+}

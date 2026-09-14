@@ -70,6 +70,24 @@ export const contactFormValidationSchema = Yup.object({
         .oneOf([true], t("contact.kvkkRequired")),
 });
 
+// REVIEW FORM (/yorumlar)
+export const reviewFormValidationSchema = Yup.object({
+    name: Yup.string()
+        .min(2, t("review.nameMin"))
+        .max(60, t("review.nameMax"))
+        .required(t("review.nameRequired")),
+    rating: Yup.number()
+        .integer(t("review.ratingInvalid"))
+        .min(1, t("review.ratingRequired"))
+        .max(5, t("review.ratingInvalid"))
+        .required(t("review.ratingRequired")),
+    body: Yup.string()
+        .min(10, t("review.bodyMin"))
+        .max(500, t("review.bodyMax"))
+        .required(t("review.bodyRequired")),
+    kvkkConsent: Yup.bool().oneOf([true], t("review.kvkkRequired")),
+});
+
 // HOMEPAGE RESERVATION SEARCH
 const tSearch = (key) => () => i18n.t(`reservationSearch.${key}`, { ns: "validation" });
 

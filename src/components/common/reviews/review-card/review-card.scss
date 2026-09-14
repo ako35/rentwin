@@ -1,0 +1,36 @@
+@use '../../../../styles/variables' as v;
+
+.review-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.1rem 1.25rem;
+  background-color: #fff;
+  border: 1px solid v.$color3;
+  border-radius: 14px;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  &__date {
+    font-size: 0.78rem;
+    color: v.$color5_3;
+  }
+
+  &__body {
+    margin: 0;
+    color: v.$color5_2;
+    line-height: 1.55;
+  }
+
+  &__name {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: v.$color5;
+  }
+}

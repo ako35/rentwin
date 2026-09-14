@@ -1,0 +1,19 @@
+{
+  "pageTitle": "Customer Reviews",
+  "seoTitle": "Customer Reviews | Rentwin Car Rental",
+  "seoDescription": "Real reviews and ratings from Rentwin customers. Share your experience and read what others are saying.",
+  "intro": "Real reviews and ratings from Rentwin customers. You can share your own experience too.",
+  "summary": "{{count}} reviews, {{average}} average rating",
+  "teaserCta": "See all reviews",
+  "empty": "No reviews have been published yet.",
+  "form": {
+    "heading": "Share Your Experience",
+    "name": "Your Name",
+    "rating": "Your Rating",
+    "body": "Your Review",
+    "kvkk": "I have read the <policy>Privacy Notice and KVKK Disclosure</policy> and consent to my personal data being processed as described. Once published, only my first name and last initial (e.g. \"Ayşe Y.\") will be shown.",
+    "submit": "Submit Review",
+    "successToast": "Thank you! Your review will be published after it's reviewed.",
+    "errorToast": "Your review couldn't be submitted, please try again."
+  }
+}

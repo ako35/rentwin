@@ -1,0 +1,23 @@
+@use "../../../styles/variables" as v;
+
+.star-rating {
+  display: inline-flex;
+  gap: 0.15em;
+  color: v.$accent-amber;
+  line-height: 1;
+
+  &__star {
+    display: inline-flex;
+  }
+
+  &--interactive &__star {
+    cursor: pointer;
+    outline: none;
+
+    &:focus-visible {
+      outline: 2px solid v.$color1;
+      outline-offset: 2px;
+      border-radius: 3px;
+    }
+  }
+}

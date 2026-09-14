@@ -13,6 +13,7 @@ import trFaq from "./locales/tr/faq.json";
 import trLocations from "./locales/tr/locations.json";
 import trCampaigns from "./locales/tr/campaigns.json";
 import trBlog from "./locales/tr/blog.json";
+import trReviews from "./locales/tr/reviews.json";
 import trAuth from "./locales/tr/auth.json";
 import trVehicles from "./locales/tr/vehicles.json";
 import trUser from "./locales/tr/user.json";
@@ -30,6 +31,7 @@ import enFaq from "./locales/en/faq.json";
 import enLocations from "./locales/en/locations.json";
 import enCampaigns from "./locales/en/campaigns.json";
 import enBlog from "./locales/en/blog.json";
+import enReviews from "./locales/en/reviews.json";
 import enAuth from "./locales/en/auth.json";
 import enVehicles from "./locales/en/vehicles.json";
 import enUser from "./locales/en/user.json";
@@ -49,6 +51,7 @@ const resources = {
     locations: trLocations,
     campaigns: trCampaigns,
     blog: trBlog,
+    reviews: trReviews,
     auth: trAuth,
     vehicles: trVehicles,
     user: trUser,
@@ -67,6 +70,7 @@ const resources = {
     locations: enLocations,
     campaigns: enCampaigns,
     blog: enBlog,
+    reviews: enReviews,
     auth: enAuth,
     vehicles: enVehicles,
     user: enUser,
@@ -102,6 +106,7 @@ i18n
       "locations",
       "campaigns",
       "blog",
+      "reviews",
       "auth",
       "vehicles",
       "user",

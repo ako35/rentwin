@@ -17,6 +17,7 @@ import ErrorPage from "../pages/common/error/page";
 import HomePage from "../pages/common/home/page";
 import LoadingPage from "../pages/common/loading/page";
 import PrivacyPolicyPage from "../pages/common/privacy-policy/page";
+import ReviewsPage from "../pages/common/reviews/page";
 import VehiclesPage from "../pages/common/vehicles/page";
 import VehicleDetailsPage from "../pages/common/vehicles/details/page";
 
@@ -84,6 +85,7 @@ const marketingRoutes = () => [
     ],
   },
   { path: "privacy-policy", element: <PrivacyPolicyPage /> },
+  { path: "yorumlar", element: <ReviewsPage /> },
   {
     path: "vehicles",
     children: [

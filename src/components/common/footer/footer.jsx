@@ -6,7 +6,7 @@ import { AppLink, ContactInfo, QuickLink } from "../../";
 import "./footer.scss";
 
 const {
-  routes: { about, blog, campaigns, contact, faq, home, locations, privacyPolicy, vehicles },
+  routes: { about, blog, campaigns, contact, faq, home, locations, privacyPolicy, reviews, vehicles },
 } = constants;
 
 const quickLinks = [
@@ -15,6 +15,7 @@ const quickLinks = [
   { direct: campaigns, key: "campaigns" },
   { direct: locations, key: "locations" },
   { direct: blog, key: "blog" },
+  { direct: reviews, key: "reviews" },
   { direct: about, key: "about" },
   { direct: faq, key: "faq" },
   { direct: contact, key: "contact" },

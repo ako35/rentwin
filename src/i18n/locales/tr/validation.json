@@ -49,6 +49,17 @@
     "phoneInvalid": "Lütfen geçerli bir telefon numarası girin",
     "kvkkRequired": "Devam etmek için KVKK Aydınlatma Metni'ni onaylayın"
   },
+  "review": {
+    "nameMin": "İsim en az 2 karakter olmalıdır",
+    "nameMax": "İsim en fazla 60 karakter olmalıdır",
+    "nameRequired": "Lütfen isminizi girin",
+    "ratingRequired": "Lütfen bir puan seçin",
+    "ratingInvalid": "Geçersiz puan",
+    "bodyMin": "Yorumunuz en az 10 karakter olmalıdır",
+    "bodyMax": "Yorumunuz en fazla 500 karakter olmalıdır",
+    "bodyRequired": "Lütfen yorumunuzu girin",
+    "kvkkRequired": "Devam etmek için Gizlilik Politikası ve KVKK Aydınlatma Metni'ni kabul etmelisiniz"
+  },
   "reservationSearch": {
     "pickUpLocationRequired": "Alış yerini seçin",
     "dropOffLocationRequired": "Bırakış yerini seçin",

@@ -7,7 +7,7 @@ import { stripLocalePrefix } from "../../../../i18n/locale-routing"
 import './bottom-menu.scss'
 
 const {
-  routes: { home, vehicles, campaigns, locations, blog, about, faq, contact },
+  routes: { home, vehicles, campaigns, locations, blog, reviews, about, faq, contact },
 } = constants;
 
 const navigationLinks = [
@@ -16,6 +16,7 @@ const navigationLinks = [
   { direct: campaigns, key: "campaigns" },
   { direct: locations, key: "locations" },
   { direct: blog, key: "blog" },
+  { direct: reviews, key: "reviews" },
   { direct: about, key: "about" },
   { direct: faq, key: "faq" },
   { direct: contact, key: "contact" },

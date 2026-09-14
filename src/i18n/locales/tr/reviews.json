@@ -1,0 +1,19 @@
+{
+  "pageTitle": "Müşteri Yorumları",
+  "seoTitle": "Müşteri Yorumları | Rentwin Araç Kiralama",
+  "seoDescription": "Rentwin müşterilerinin gerçek yorumları ve puanları. Deneyiminizi paylaşın, diğer müşterilerin yorumlarını inceleyin.",
+  "intro": "Rentwin müşterilerinin gerçek yorumları ve puanları. Siz de deneyiminizi paylaşabilirsiniz.",
+  "summary": "{{count}} yorum, ortalama {{average}} yıldız",
+  "teaserCta": "Tüm yorumları gör",
+  "empty": "Henüz yayınlanmış bir yorum bulunmuyor.",
+  "form": {
+    "heading": "Deneyiminizi Paylaşın",
+    "name": "Adınız Soyadınız",
+    "rating": "Puanınız",
+    "body": "Yorumunuz",
+    "kvkk": "<policy>Gizlilik Politikası ve KVKK Aydınlatma Metni</policy>'ni okudum, kişisel verilerimin belirtilen kapsamda işlenmesini kabul ediyorum. Yorumum yayınlandığında sadece adım ve soyadımın baş harfi (ör. \"Ayşe Y.\") gösterilecektir.",
+    "submit": "Yorumu Gönder",
+    "successToast": "Teşekkürler! Yorumunuz incelendikten sonra yayınlanacaktır.",
+    "errorToast": "Yorumunuz gönderilemedi, lütfen tekrar deneyin."
+  }
+}

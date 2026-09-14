@@ -1,0 +1,53 @@
+@use '../../../styles/variables' as v;
+
+.reviews-page {
+  &__intro {
+    max-width: 720px;
+    margin: 0 auto 0.5rem;
+    text-align: center;
+    color: v.$color5_2;
+  }
+
+  &__summary {
+    text-align: center;
+    font-weight: 700;
+    color: v.$color5;
+    margin-bottom: 1.75rem;
+  }
+
+  &__layout {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 1.75rem;
+    align-items: start;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  &__empty {
+    text-align: center;
+    color: v.$color5_3;
+    padding: 2.5rem 0;
+  }
+
+  &__form {
+    background-color: #fff;
+    border: 1px solid v.$color3;
+    border-radius: 16px;
+    padding: 1.5rem;
+
+    h2 {
+      font-size: 1.15rem;
+      margin-bottom: 1rem;
+      color: v.$color5;
+    }
+  }
+}
