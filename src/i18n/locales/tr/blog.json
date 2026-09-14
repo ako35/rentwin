@@ -1,0 +1,13 @@
+{
+  "pageTitle": "Blog",
+  "seoTitle": "Blog | Rentwin Araç Kiralama",
+  "seoDescription": "Araç kiralama rehberleri, seyahat önerileri ve Rentwin'den güncel bilgiler. Aliağa ve İzmir'de araç kiralarken bilmeniz gerekenler.",
+  "intro": "Araç kiralama rehberleri, seyahat önerileri ve Rentwin'den güncel bilgiler.",
+  "empty": "Şu anda yayında bir blog yazısı bulunmuyor.",
+  "readMore": "Devamını Oku",
+  "publishedOn": "{{date}} tarihinde yayınlandı",
+  "detail": {
+    "backToList": "Tüm yazılar",
+    "notFound": "Aradığınız yazı bulunamadı."
+  }
+}

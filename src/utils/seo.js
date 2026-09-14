@@ -140,3 +140,18 @@ export const vehicleLd = ({
     seller: { "@id": `${SITE_URL}/#organization` },
   },
 });
+
+// Mirrors the backend bot-prerender's articleLd (backend/src/lib/seo-ld.js)
+// for client parity — a /blog/:slug post.
+export const articleLd = ({ title, excerpt, image, publishedAt, updatedAt, path }) => ({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: title,
+  description: excerpt,
+  ...(image ? { image } : {}),
+  datePublished: new Date(publishedAt).toISOString(),
+  dateModified: new Date(updatedAt || publishedAt).toISOString(),
+  author: { "@id": `${SITE_URL}/#organization` },
+  publisher: { "@id": `${SITE_URL}/#organization` },
+  mainEntityOfPage: `${SITE_URL}${localizePath(path, currentLocale())}`,
+});

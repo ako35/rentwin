@@ -22,6 +22,7 @@ import { addExtra, deleteExtra, getExtras, updateExtra } from "./extra/extra-ser
 
 import { addAnnouncement, deleteAnnouncement, getActiveAnnouncements, getAnnouncements, updateAnnouncement } from "./announcement/announcement-service";
 import { addCampaign, deleteCampaign, getCampaigns, getCampaignsAdmin, updateCampaign, uploadCampaignImage } from "./campaign/campaign-service";
+import { addBlogPost, deleteBlogPost, getBlogPostBySlug, getBlogPosts, getBlogPostsAdmin, updateBlogPost, uploadBlogImage } from "./blog/blog-service";
 import { getSettings, updateSettings } from "./settings/settings-service";
 
 import { addLedgerEntry, deleteLedgerEntry, getUserLedger, updateLedgerEntry } from "./ledger/ledger-service";
@@ -166,6 +167,15 @@ export const services = {
         updateCampaign,
         deleteCampaign,
         uploadCampaignImage,
+    },
+    blog: {
+        getBlogPosts,
+        getBlogPostBySlug,
+        getBlogPostsAdmin,
+        addBlogPost,
+        updateBlogPost,
+        deleteBlogPost,
+        uploadBlogImage,
     },
     ledger: {
         getUserLedger,

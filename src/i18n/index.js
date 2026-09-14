@@ -12,6 +12,7 @@ import trContact from "./locales/tr/contact.json";
 import trFaq from "./locales/tr/faq.json";
 import trLocations from "./locales/tr/locations.json";
 import trCampaigns from "./locales/tr/campaigns.json";
+import trBlog from "./locales/tr/blog.json";
 import trAuth from "./locales/tr/auth.json";
 import trVehicles from "./locales/tr/vehicles.json";
 import trUser from "./locales/tr/user.json";
@@ -28,6 +29,7 @@ import enContact from "./locales/en/contact.json";
 import enFaq from "./locales/en/faq.json";
 import enLocations from "./locales/en/locations.json";
 import enCampaigns from "./locales/en/campaigns.json";
+import enBlog from "./locales/en/blog.json";
 import enAuth from "./locales/en/auth.json";
 import enVehicles from "./locales/en/vehicles.json";
 import enUser from "./locales/en/user.json";
@@ -46,6 +48,7 @@ const resources = {
     faq: trFaq,
     locations: trLocations,
     campaigns: trCampaigns,
+    blog: trBlog,
     auth: trAuth,
     vehicles: trVehicles,
     user: trUser,
@@ -63,6 +66,7 @@ const resources = {
     faq: enFaq,
     locations: enLocations,
     campaigns: enCampaigns,
+    blog: enBlog,
     auth: enAuth,
     vehicles: enVehicles,
     user: enUser,
@@ -97,6 +101,7 @@ i18n
       "faq",
       "locations",
       "campaigns",
+      "blog",
       "auth",
       "vehicles",
       "user",

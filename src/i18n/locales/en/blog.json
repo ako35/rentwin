@@ -1,0 +1,13 @@
+{
+  "pageTitle": "Blog",
+  "seoTitle": "Blog | Rentwin Car Rental",
+  "seoDescription": "Car rental guides, travel tips and the latest news from Rentwin. What to know when renting a car in Aliağa and İzmir.",
+  "intro": "Car rental guides, travel tips and the latest news from Rentwin.",
+  "empty": "There are no published blog posts right now.",
+  "readMore": "Read More",
+  "publishedOn": "Published on {{date}}",
+  "detail": {
+    "backToList": "All posts",
+    "notFound": "The post you're looking for could not be found."
+  }
+}

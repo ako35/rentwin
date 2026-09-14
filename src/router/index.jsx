@@ -6,6 +6,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // is code-split so an anonymous visitor or crawler never downloads it.
 import CommonLayout from "../layouts/common/layout";
 import AboutPage from "../pages/common/about/page";
+import BlogPage from "../pages/common/blog/page";
+import BlogDetailPage from "../pages/common/blog/details/page";
 import CampaignsPage from "../pages/common/campaigns/page";
 import ContactPage from "../pages/common/contact/page";
 import FaqPage from "../pages/common/faq/page";
@@ -29,6 +31,7 @@ const UserReservationsPage = lazy(() => import("../pages/common/user/reservation
 const UserReservationDetailsPage = lazy(() => import("../pages/common/user/reservations/details/page"));
 
 const AdminAnnouncementsPage = lazy(() => import("../pages/admin/announcements/page"));
+const AdminBlogPage = lazy(() => import("../pages/admin/blog/page"));
 const AdminCampaignsPage = lazy(() => import("../pages/admin/campaigns/page"));
 const AdminComingSoonPage = lazy(() => import("../pages/admin/coming-soon/page"));
 const AdminContactMessagesPage = lazy(() => import("../pages/admin/contact-messages/page"));
@@ -63,6 +66,13 @@ const lazyRoute = (element) => <Suspense fallback={<LoadingPage />}>{element}</S
 const marketingRoutes = () => [
   { index: true, element: <HomePage /> },
   { path: "about", element: <AboutPage /> },
+  {
+    path: "blog",
+    children: [
+      { index: true, element: <BlogPage /> },
+      { path: ":slug", element: <BlogDetailPage /> },
+    ],
+  },
   { path: "kampanyalar", element: <CampaignsPage /> },
   { path: "contact", element: <ContactPage /> },
   { path: "sss", element: <FaqPage /> },
@@ -134,6 +144,7 @@ const router = createBrowserRouter([
       { index: true, element: lazyRoute(<AdminDashboard />) },
       { path: "announcements", element: lazyRoute(<AdminAnnouncementsPage />) },
       { path: "campaigns", element: lazyRoute(<AdminCampaignsPage />) },
+      { path: "blog", element: lazyRoute(<AdminBlogPage />) },
       { path: "branches", element: lazyRoute(<AdminBranchesPage />) },
       { path: "rental-locations", element: lazyRoute(<AdminRentalLocationsPage />) },
       { path: "extras", element: lazyRoute(<AdminExtrasPage />) },

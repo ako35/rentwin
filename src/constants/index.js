@@ -107,6 +107,7 @@ const roles = [
 const routes = {
   // ADMIN ROUTES
   adminAnnouncements: "/admin/announcements",
+  adminBlog: "/admin/blog",
   adminCampaigns: "/admin/campaigns",
   adminComingSoon: "/admin/coming-soon",
   adminContactMessages: "/admin/contact-messages",
@@ -124,6 +125,7 @@ const routes = {
 
   // COMMON ROUTES
   about: "/about",
+  blog: "/blog",
   campaigns: "/kampanyalar",
   contact: "/contact",
   faq: "/sss",
