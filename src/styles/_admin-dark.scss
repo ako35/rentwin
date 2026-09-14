@@ -436,7 +436,13 @@
       .contract-page__inv-sum span,
       .contract-page__inv-table thead th,
       .contract-page__inv-card-head,
-      .contract-page__inv-preview
+      .contract-page__inv-preview,
+      .contract-page__rex-card-head,
+      .contract-page__rex-period-label,
+      .contract-page__rex-period-hint,
+      .contract-page__rex-table thead th,
+      .contract-page__rex-total-label span,
+      .contract-page__rex-total-label small
     ) { color: var(--rw-ink-muted); }
 
     /* value text on the contract screen that hard-codes near-black $color5 */
@@ -446,7 +452,8 @@
       .contract-page__fin-value,
       .contract-page__hgs-range,
       .contract-page__inv-sum strong,
-      .contract-page__inv-preview strong
+      .contract-page__inv-preview strong,
+      .contract-page__rex-total strong
     ) { color: var(--rw-ink); }
 
     /* Fatura (invoice) tab — no dark overrides existed at all before this;
@@ -460,6 +467,23 @@
       .contract-page__inv-table {
         thead th { border-bottom-color: var(--rw-line); }
         tbody tr:hover { background-color: var(--rw-hover); }
+      }
+    }
+
+    /* Dönüş Ekstra (return-extra) tab — same gap: the add-card, table head
+       and total-strip labels all hard-code light-tuned $color5* ink. */
+    .admin-layout {
+      .contract-page__rex-card {
+        background-color: var(--rw-panel-2);
+        border-color: var(--rw-line);
+      }
+      .contract-page__rex-table {
+        thead th { border-bottom-color: var(--rw-line); }
+        tbody tr:hover { background-color: var(--rw-hover); }
+      }
+      .contract-page__rex-badge {
+        background-color: var(--rw-inset);
+        color: var(--rw-ink);
       }
     }
 
