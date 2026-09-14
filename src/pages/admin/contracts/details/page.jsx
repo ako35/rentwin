@@ -283,6 +283,7 @@ const ContractDetail = () => {
               selectedCar={selectedCar}
               isCreate={isCreate}
               showNoAvailable={!availableCars.length}
+              extensions={extensions}
             />
             {!isCreate && <KbsSection formik={formik} />}
             {!isCreate && (

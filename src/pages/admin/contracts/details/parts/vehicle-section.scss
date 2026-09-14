@@ -44,6 +44,12 @@
     color: v.$color1;
   }
 
+  &__dropoff-hint {
+    margin: 0.35rem 0 0.6rem;
+    font-size: 0.7rem;
+    color: v.$color5_4;
+  }
+
   &__days-badge {
     padding: 0.16rem 0.65rem;
     border-radius: 999px;
@@ -74,6 +80,7 @@
   }
 
   &__plate {
+    display: inline-block;
     padding: 0.22rem 0.6rem;
     border-radius: 6px;
     background-color: #1e293b;
@@ -82,6 +89,14 @@
     font-weight: 800;
     letter-spacing: 0.06em;
     white-space: nowrap;
+    text-decoration: none;
+    transition: background-color 0.12s ease;
+
+    &:hover,
+    &:focus-visible {
+      background-color: #334155;
+      color: #fff;
+    }
   }
 
   &__car-specs {

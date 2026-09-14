@@ -1,19 +1,42 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import moment from "moment/moment";
 import { GiGasPump, GiGearStick } from "react-icons/gi";
 import { BsBuilding } from "react-icons/bs";
 import { CustomForm } from "../../../../../components";
 import { buildFuelEighthsOptions } from "../../../../../utils/fuel-eighths";
 import { computeBillableDays } from "../contract-helpers";
+import { constants } from "../../../../../constants";
 import "./vehicle-section.scss";
+
+const { routes } = constants;
 
 // Left card: pick-up / drop-off grouped side by side, an auto rental-day badge,
 // the vehicle picker + a one-line summary card, then the hand-over km / fuel.
-const VehicleSection = ({ formik, locationNames, vehicleOptions, selectedCar, isCreate, showNoAvailable }) => {
+const VehicleSection = ({
+  formik,
+  locationNames,
+  vehicleOptions,
+  selectedCar,
+  isCreate,
+  showNoAvailable,
+  extensions = [],
+}) => {
   const { t } = useTranslation("admin");
   const { t: tCommon } = useTranslation("common");
   const c = (key, opts) => t(`reservations.contract.${key}`, opts);
   const fuelOptions = buildFuelEighthsOptions(t);
+
+  // The drop-off date/time stay editable after the contract is saved — a plain
+  // save re-prices the base rental off the live pick-up/drop-off window (see
+  // recomputeContractFinancials). But once the contract has been extended at
+  // least once, the base window freezes at the drop-off *before* the first
+  // extension and only Σ extension amounts move the total from there —
+  // editing dropOffTime directly at that point would silently desync the
+  // displayed drop-off from what the contract is actually priced for. So the
+  // field re-locks once an extension exists; the Uzatma tab is the only path
+  // for pushing the drop-off out from there.
+  const dropOffLocked = !isCreate && extensions.length > 0;
 
   // A saved contract may carry a location that is no longer in the Location list
   // (renamed, removed, or a legacy free-text value). Keep it as an option so the
@@ -64,9 +87,10 @@ const VehicleSection = ({ formik, locationNames, vehicleOptions, selectedCar, is
             type="select" itemsArr={locationOptions}
           />
           <div className="contract-page__pair contract-page__pair--even">
-            <CustomForm formik={formik} name="dropOffDate" label={`* ${c("dropOffDate")}`} type="date" disabled={!isCreate} />
-            <CustomForm formik={formik} name="dropOffTime" label={t("reservations.form.dropOffTime")} type="time" disabled={!isCreate} />
+            <CustomForm formik={formik} name="dropOffDate" label={`* ${c("dropOffDate")}`} type="date" disabled={dropOffLocked} />
+            <CustomForm formik={formik} name="dropOffTime" label={t("reservations.form.dropOffTime")} type="time" disabled={dropOffLocked} />
           </div>
+          {dropOffLocked && <p className="contract-page__dropoff-hint">{c("dropOffLockedHint")}</p>}
         </div>
       </div>
 
@@ -80,7 +104,13 @@ const VehicleSection = ({ formik, locationNames, vehicleOptions, selectedCar, is
       {selectedCar && (
         <div className="contract-page__car-summary">
           {selectedCar.licensePlate && (
-            <span className="contract-page__plate">{selectedCar.licensePlate}</span>
+            <Link
+              className="contract-page__plate"
+              to={`${routes.adminVehicles}/${selectedCar.id}`}
+              title={c("vehiclePageLinkTitle")}
+            >
+              {selectedCar.licensePlate}
+            </Link>
           )}
           <span className="contract-page__car-specs">
             {selectedCar.transmission && (
