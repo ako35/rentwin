@@ -592,6 +592,31 @@ model ContactMessage {
   createdAt DateTime @default(now())
 }
 
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// Public customer reviews (star rating + text). Visitor-submitted, admin-
+// moderated: stays PENDING until an admin approves/rejects it — only
+// APPROVED reviews are ever shown on the public site or fed into the
+// homepage's AggregateRating JSON-LD (see backend/src/lib/seo-ld.js
+// autoRentalLd). `name` is stored raw; every PUBLIC read masks it to
+// "Ayşe Y." (backend/src/modules/reviews/reviews.shared.js maskName) — the
+// admin moderation queue sees the full name.
+model Review {
+  id          String       @id @default(uuid())
+  name        String
+  rating      Int
+  body        String
+  status      ReviewStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+  moderatedAt DateTime?
+
+  @@index([status, createdAt])
+}
+
 // App-wide settings. Single row, id fixed to "singleton" — always upserted.
 model Setting {
   id                      String   @id @default("singleton")

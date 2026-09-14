@@ -29,9 +29,12 @@ const openingHoursSpecification = website.openingHours.map((slot) => ({
   closes: slot.closes,
 }));
 
-// The primary business entity — reused as the base for the home page and the
-// static block in index.html.
-export const autoRentalLd = () => ({
+// The primary business entity — rendered by ReviewsTeaser (homepage) and the
+// /yorumlar page; mirrors the backend bot-prerender's autoRentalLd
+// (backend/src/lib/seo-ld.js) for parity. reviewSummary: {count,average} |
+// null (null until the first approved review — never emit AggregateRating
+// with zero reviews). reviews: latest approved Review rows (name-masked).
+export const autoRentalLd = ({ reviewSummary, reviews } = {}) => ({
   "@context": "https://schema.org",
   "@type": "AutoRental",
   "@id": `${SITE_URL}/#organization`,
@@ -39,6 +42,10 @@ export const autoRentalLd = () => ({
   url: `${SITE_URL}/`,
   logo: `${SITE_URL}/logo_full.png`,
   image: `${SITE_URL}/logo_full.png`,
+  // Was only in the now-deleted static index.html AutoRental block — restored
+  // here so nothing regresses now that this is the only place it's rendered.
+  description:
+    "Aliağa ve İzmir'de bakımlı filodan uygun fiyatlı araç kiralama. Şeffaf fiyat, sorunsuz teslimat.",
   email: website.email,
   telephone: website.phoneE164,
   address: postalAddress,
@@ -54,6 +61,18 @@ export const autoRentalLd = () => ({
   currenciesAccepted: "TRY",
   openingHoursSpecification,
   ...(website.sameAs?.length ? { sameAs: website.sameAs } : {}),
+  ...(reviewSummary
+    ? {
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: reviewSummary.average,
+          reviewCount: reviewSummary.count,
+          bestRating: 5,
+          worstRating: 1,
+        },
+      }
+    : {}),
+  ...(reviews && reviews.length ? { review: reviews.map(reviewLd) } : {}),
 });
 
 export const webSiteLd = () => {
@@ -154,4 +173,13 @@ export const articleLd = ({ title, excerpt, image, publishedAt, updatedAt, path 
   author: { "@id": `${SITE_URL}/#organization` },
   publisher: { "@id": `${SITE_URL}/#organization` },
   mainEntityOfPage: `${SITE_URL}${localizePath(path, currentLocale())}`,
+});
+
+// Embedded inside autoRentalLd()'s `review` array — never emitted on its own.
+export const reviewLd = ({ name, rating, body, createdAt }) => ({
+  "@type": "Review",
+  author: { "@type": "Person", name },
+  reviewRating: { "@type": "Rating", ratingValue: rating, bestRating: 5, worstRating: 1 },
+  reviewBody: body,
+  datePublished: new Date(createdAt).toISOString(),
 });

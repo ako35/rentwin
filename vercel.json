@@ -10,7 +10,18 @@
     { "src": "/api/(.*)", "dest": "backend/api/index.js" },
     { "src": "/sitemap.xml", "dest": "backend/api/index.js" },
     {
-      "src": "/((en/)?(vehicles/[^/]+|lokasyonlar/[^/]+|blog/[^/]+|vehicles|lokasyonlar|blog|kampanyalar|about|contact|sss|privacy-policy)|en)/?",
+      "src": "/((en/)?(vehicles/[^/]+|lokasyonlar/[^/]+|blog/[^/]+|vehicles|lokasyonlar|blog|kampanyalar|yorumlar|about|contact|sss|privacy-policy)|en)/?",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*([Bb]ot|[Cc]rawl|[Ss]pider|facebookexternalhit|WhatsApp|Twitterbot|Slackbot|LinkedInBot|TelegramBot|Discordbot|Applebot|Pinterest|Embedly|Googlebot|Google-InspectionTool|bingbot|BingPreview|YandexBot|Baiduspider|DuckDuckBot|Lighthouse|GPTBot|ChatGPT|OAI-SearchBot|ClaudeBot|Claude-Web|PerplexityBot|Amazonbot|redditbot|vkShare|SkypeUriPreview).*"
+        }
+      ],
+      "dest": "backend/api/index.js"
+    },
+    {
+      "src": "/",
       "has": [
         {
           "type": "header",

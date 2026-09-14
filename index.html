@@ -50,47 +50,15 @@
   <title>Rentwin | Aliağa & İzmir Araç Kiralama — Şeffaf Fiyat</title>
   <!--SEO:END-->
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "AutoRental",
-    "@id": "https://rentwin.com.tr/#organization",
-    "name": "Rentwin",
-    "url": "https://rentwin.com.tr/",
-    "logo": "https://rentwin.com.tr/logo_full.png",
-    "image": "https://rentwin.com.tr/logo_full.png",
-    "description": "Aliağa ve İzmir'de bakımlı filodan uygun fiyatlı araç kiralama. Şeffaf fiyat, sorunsuz teslimat.",
-    "email": "info@rentwin.com.tr",
-    "telephone": "+905073503135",
-    "priceRange": "₺₺",
-    "currenciesAccepted": "TRY",
-    "hasMap": "https://maps.google.com/?cid=3109543909970773042",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Kültür Mah. 260 Sk. No: 3 E",
-      "addressLocality": "Aliağa",
-      "addressRegion": "İzmir",
-      "postalCode": "35800",
-      "addressCountry": "TR"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 38.8020867,
-      "longitude": 26.9715113
-    },
-    "areaServed": [
-      { "@type": "State", "name": "İzmir" },
-      { "@type": "Country", "name": "Türkiye" }
-    ],
-    "openingHoursSpecification": [
-      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "09:00", "closes": "19:00" },
-      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Saturday"], "opens": "09:00", "closes": "17:00" }
-    ],
-    "sameAs": [
-      "https://maps.google.com/?cid=3109543909970773042"
-    ]
-  }
-  </script>
+  <!-- AutoRental JSON-LD used to be hardcoded here (static, build-time only —
+       could never carry a live review count). "/" now goes through the bot
+       prerender like every other page (backend/src/app.js), which injects
+       the live version — including AggregateRating once reviews exist — via
+       autoRentalLd() (backend/src/lib/seo-ld.js) right after the marker
+       below. Hydrated (non-bot) browsers get the same node from
+       src/components/common/reviews-teaser/reviews-teaser.jsx. Don't restore
+       a static copy here — a second node sharing the same "#organization"
+       @id, with different content, is exactly the failure mode this avoids. -->
   <!--SEO:LD-->
 </head>
 

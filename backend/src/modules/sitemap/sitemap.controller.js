@@ -10,6 +10,7 @@ const STATIC_ROUTES = [
   { path: "/lokasyonlar", changefreq: "weekly", priority: "0.7" },
   { path: "/kampanyalar", changefreq: "weekly", priority: "0.6" },
   { path: "/blog", changefreq: "weekly", priority: "0.6" },
+  { path: "/yorumlar", changefreq: "weekly", priority: "0.6" },
   { path: "/about", changefreq: "monthly", priority: "0.5" },
   { path: "/sss", changefreq: "monthly", priority: "0.6" },
   { path: "/contact", changefreq: "monthly", priority: "0.5" },
@@ -66,7 +67,7 @@ const latest = (rows, field) =>
 // Dynamic sitemap: static pages + every in-service vehicle + every location,
 // each doubled for its English ("/en/...") twin.
 const getSitemap = asyncHandler(async (req, res) => {
-  const [vehicles, locations, campaigns, posts, modelImages] = await Promise.all([
+  const [vehicles, locations, campaigns, posts, reviewsAgg, modelImages] = await Promise.all([
     prisma.vehicle.findMany({
       where: { outOfService: false, soldAt: null },
       select: {
@@ -83,6 +84,7 @@ const getSitemap = asyncHandler(async (req, res) => {
       where: { published: true },
       select: { slug: true, imageId: true, updatedAt: true },
     }),
+    prisma.review.aggregate({ where: { status: "APPROVED" }, _max: { createdAt: true } }),
     loadModelImageMap(),
   ]);
 
@@ -107,6 +109,7 @@ const getSitemap = asyncHandler(async (req, res) => {
   const locationsLastmod = latest(locations, "createdAt");
   const campaignsLastmod = latest(campaigns, "updatedAt");
   const postsLastmod = latest(posts, "updatedAt");
+  const reviewsLastmod = reviewsAgg._max.createdAt;
 
   const staticLastmodByPath = {
     "/": staticLastmod,
@@ -114,6 +117,7 @@ const getSitemap = asyncHandler(async (req, res) => {
     "/lokasyonlar": locationsLastmod.getTime() ? locationsLastmod : undefined,
     "/kampanyalar": campaignsLastmod.getTime() ? campaignsLastmod : undefined,
     "/blog": postsLastmod.getTime() ? postsLastmod : undefined,
+    "/yorumlar": reviewsLastmod || undefined,
   };
 
   const entries = [

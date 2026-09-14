@@ -24,7 +24,11 @@ const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 /* ------------------------------------------------------------------ JSON-LD */
 
-const autoRentalLd = () => ({
+// reviewSummary: { count, average } | null (null until the first approved
+// review exists — Google's guidance is to never emit AggregateRating with
+// zero reviews). reviews: latest approved Review rows (already name-masked
+// by reviews/reviews.shared.js), used to embed individual Review nodes.
+const autoRentalLd = ({ reviewSummary, reviews } = {}) => ({
   "@context": "https://schema.org",
   "@type": "AutoRental",
   "@id": ORG_ID,
@@ -32,6 +36,10 @@ const autoRentalLd = () => ({
   url: `${SITE_URL}/`,
   logo: `${SITE_URL}/logo_full.png`,
   image: `${SITE_URL}/logo_full.png`,
+  // Was only in the now-deleted static index.html AutoRental block — restored
+  // here so nothing regresses now that this is the only place it's rendered.
+  description:
+    "Aliağa ve İzmir'de bakımlı filodan uygun fiyatlı araç kiralama. Şeffaf fiyat, sorunsuz teslimat.",
   email: business.email,
   telephone: business.phoneE164,
   address: {
@@ -65,6 +73,18 @@ const autoRentalLd = () => ({
     closes: slot.closes,
   })),
   ...(business.sameAs.length ? { sameAs: business.sameAs } : {}),
+  ...(reviewSummary
+    ? {
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: reviewSummary.average,
+          reviewCount: reviewSummary.count,
+          bestRating: 5,
+          worstRating: 1,
+        },
+      }
+    : {}),
+  ...(reviews && reviews.length ? { review: reviews.map(reviewLd) } : {}),
 });
 
 const webSiteLd = (locale = "tr") => ({
@@ -142,6 +162,15 @@ const articleLd = ({ title, excerpt, image, publishedAt, updatedAt, path, locale
   author: { "@id": ORG_ID },
   publisher: { "@id": ORG_ID },
   mainEntityOfPage: `${SITE_URL}${localizePath(path, locale)}`,
+});
+
+// Embedded inside autoRentalLd()'s `review` array — never emitted on its own.
+const reviewLd = ({ name, rating, body, createdAt }) => ({
+  "@type": "Review",
+  author: { "@type": "Person", name },
+  reviewRating: { "@type": "Rating", ratingValue: rating, bestRating: 5, worstRating: 1 },
+  reviewBody: body,
+  datePublished: new Date(createdAt).toISOString(),
 });
 
 /* --------------------------------------------------- per-route <head> copy  */
@@ -378,6 +407,12 @@ const STATIC_META = {
         "Araç kiralama rehberleri, seyahat önerileri ve Rentwin'den güncel bilgiler. Aliağa ve İzmir'de araç kiralarken bilmeniz gerekenler.",
       jsonLd: (locale) => [breadcrumbLd([{ name: NAV.tr.home, path: "/" }, { name: "Blog" }], locale)],
     },
+    "/yorumlar": {
+      title: "Müşteri Yorumları | Rentwin Araç Kiralama",
+      description:
+        "Rentwin müşterilerinin gerçek yorumları ve puanları. Deneyiminizi paylaşın, diğer müşterilerin yorumlarını inceleyin.",
+      jsonLd: (locale) => [breadcrumbLd([{ name: NAV.tr.home, path: "/" }, { name: "Yorumlar" }], locale)],
+    },
     "/about": {
       title: "Hakkımızda | Rentwin Araç Kiralama",
       description:
@@ -412,6 +447,12 @@ const STATIC_META = {
       description:
         "Car rental guides, travel tips and the latest news from Rentwin. What to know when renting a car in Aliağa and İzmir.",
       jsonLd: (locale) => [breadcrumbLd([{ name: NAV.en.home, path: "/" }, { name: "Blog" }], locale)],
+    },
+    "/yorumlar": {
+      title: "Customer Reviews | Rentwin Car Rental",
+      description:
+        "Real reviews and ratings from Rentwin customers. Share your experience and read what others are saying.",
+      jsonLd: (locale) => [breadcrumbLd([{ name: NAV.en.home, path: "/" }, { name: "Reviews" }], locale)],
     },
     "/": {
       title: "Rentwin | Car Rental in Aliağa & İzmir — Transparent Pricing",
@@ -510,6 +551,8 @@ const noindex = (head) => ({ ...head, canonical: null, robots: "noindex, nofollo
  * @param {object[]} [args.locations]       [{ name }] for the /lokasyonlar list
  * @param {object[]} [args.campaigns]       [{ title, description, image, ctaLabel, ctaUrl, startsAt, endsAt }]
  * @param {object[]} [args.posts]           [{ slug, title }] for the /blog list
+ * @param {object} [args.reviewSummary]     { count, average } | null — for "/" and "/yorumlar"
+ * @param {object[]} [args.reviews]         latest approved reviews (name-masked) — for "/" and "/yorumlar"
  * @returns {{title,description,canonical,ogImage,ogType,ogLocale,ogLocaleAlt,htmlLang,robots,jsonLd:object[],bodyHtml?:string}}
  */
 const buildHead = ({
@@ -524,6 +567,8 @@ const buildHead = ({
   locations,
   campaigns,
   posts,
+  reviewSummary,
+  reviews,
 }) => {
   const locale = localeFromPath(path);
   const canonicalPath = stripLocalePrefix(path);
@@ -688,6 +733,10 @@ const buildHead = ({
       );
     }
 
+    if (canonicalPath === "/" || canonicalPath === "/yorumlar") {
+      head.jsonLd.push(autoRentalLd({ reviewSummary, reviews }));
+    }
+
     return head;
   }
 
@@ -704,5 +753,6 @@ module.exports = {
   itemListLd,
   vehicleLd,
   articleLd,
+  reviewLd,
   FAQ_ITEMS,
 };

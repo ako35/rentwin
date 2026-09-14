@@ -22,6 +22,7 @@ const extrasRoutes = require("./modules/extras/extras.routes");
 const announcementsRoutes = require("./modules/announcements/announcements.routes");
 const campaignsRoutes = require("./modules/campaigns/campaigns.routes");
 const blogRoutes = require("./modules/blog/blog.routes");
+const reviewsRoutes = require("./modules/reviews/reviews.routes");
 const ledgerRoutes = require("./modules/ledger/ledger.routes");
 const settingsRoutes = require("./modules/settings/settings.routes");
 const { getSitemap } = require("./modules/sitemap/sitemap.controller");
@@ -94,6 +95,7 @@ api.use(extrasRoutes);
 api.use(announcementsRoutes);
 api.use(campaignsRoutes);
 api.use(blogRoutes);
+api.use(reviewsRoutes);
 api.use(ledgerRoutes);
 api.use(settingsRoutes);
 
@@ -106,11 +108,14 @@ app.get("/sitemap.xml", getSitemap);
 // Bot prerender. vercel.json routes only crawler/social user-agents on these
 // paths here; human browsers keep getting the static SPA shell untouched.
 // Each TR path is mirrored under "/en" (the marketing tree's English twin —
-// see src/router/index.jsx) EXCEPT the bare "/", which never comes here at
-// all: index.html's own static hero snapshot already IS its prerendered
-// content. "/en" has no such snapshot, so it's prerendered here instead.
+// see src/router/index.jsx). "/" is included too: it used to be considered
+// "prerendered enough" by index.html's own static hero snapshot, but the
+// homepage's AggregateRating JSON-LD needs a live DB read (approved review
+// count/average), which a build-committed static file can never carry — see
+// seo-ld.js buildHead + reviews/reviews.shared.js loadReviewSeoData.
 app.get(
   [
+    "/",
     "/en",
     "/vehicles",
     "/en/vehicles",
@@ -126,6 +131,8 @@ app.get(
     "/en/blog/:slug",
     "/kampanyalar",
     "/en/kampanyalar",
+    "/yorumlar",
+    "/en/yorumlar",
     "/about",
     "/en/about",
     "/contact",

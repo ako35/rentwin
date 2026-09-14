@@ -14,6 +14,7 @@ const { SITE_URL, slugify, localizePath, stripLocalePrefix } = require("../../li
 const { buildHead } = require("../../lib/seo-ld");
 const { modelImageKey } = require("../../lib/serializers");
 const { loadModelImageMap } = require("../vehicles/vehicles.shared");
+const { loadReviewSeoData } = require("../reviews/reviews.shared");
 
 const SHELL_URL = process.env.PRERENDER_SHELL_URL || `${SITE_URL}/index.html`;
 const SHELL_TTL_MS = 10 * 60 * 1000;
@@ -122,10 +123,21 @@ const inject = (shell, head) => {
     html = html.replace("<!--SEO:LD-->", `<!--SEO:LD-->\n  ${renderLd(head.jsonLd)}`);
   }
   html = html.replace(/<html lang="[^"]*"/, `<html lang="${head.htmlLang}"`);
-  // Some routes (currently /kampanyalar) also carry a server-rendered body so a
-  // JS-less crawler reads real content for that page; every other route gets
-  // an empty #root, same as a browser ends up with before React mounts.
-  html = replaceRootContent(html, head.bodyHtml || "");
+  // The bare (Turkish) "/" ships its own real hero-snapshot content in #root
+  // already — that IS this page's prerendered body (see the ROOT_OPEN
+  // comment above), so it's left untouched here rather than wiped to "" like
+  // every other route's #root. ("/" now reaches this function too — see
+  // vercel.json / app.js — so this is no longer unconditional.) Checked
+  // against the raw request path, not the canonicalized one, so "/en" (whose
+  // canonical path is also "/") keeps its existing behavior below — the
+  // Turkish snapshot is the wrong language for it, an empty #root is not a
+  // new regression there. Some other routes (currently /kampanyalar) carry
+  // their own server-rendered body so a JS-less crawler reads real content
+  // for that page; every remaining route gets an empty #root, same as a
+  // browser ends up with before React mounts.
+  if (head.path !== "/") {
+    html = replaceRootContent(html, head.bodyHtml || "");
+  }
   return html;
 };
 
@@ -254,6 +266,11 @@ const resolvePath = async (reqPath) => {
         endsAt: c.endsAt,
       })),
     };
+  }
+
+  if (canonicalPath === "/" || canonicalPath === "/yorumlar") {
+    const { reviewSummary, reviews } = await loadReviewSeoData(prisma);
+    return { path: reqPath, reviewSummary, reviews };
   }
 
   return { path: reqPath };
