@@ -344,10 +344,21 @@ const returnContract = asyncHandler(async (req, res) => {
 
   const returnKm = num(req.body?.returnKm);
   const returnFuelEighths = num(req.body?.returnFuelEighths);
-  if (returnKm != null && existing.pickUpKm != null && returnKm < existing.pickUpKm) {
+  // Mandatory: this is the only moment the vehicle's own currentKm/
+  // currentFuelEighths get refreshed (see the write-back below), which the
+  // *next* contract's pick-up fields prefill from — skipping it here would
+  // silently leave the car's record stale forever.
+  if (returnKm == null || returnFuelEighths == null) {
+    throw new HttpError(
+      400,
+      "Kontratı kapatmak için dönüş km ve yakıt seviyesi girilmelidir.",
+      "RETURN_DATA_REQUIRED"
+    );
+  }
+  if (existing.pickUpKm != null && returnKm < existing.pickUpKm) {
     throw new HttpError(400, "Dönüş km alış km'sinden küçük olamaz.", "RETURN_KM_BELOW_PICKUP");
   }
-  if (returnFuelEighths != null && (returnFuelEighths < 0 || returnFuelEighths > 8)) {
+  if (returnFuelEighths < 0 || returnFuelEighths > 8) {
     throw new HttpError(400, "Yakıt göstergesi 0-8 aralığında olmalıdır.");
   }
   const charges = sanitizeReturnCharges(req.body?.charges);
@@ -380,15 +391,11 @@ const returnContract = asyncHandler(async (req, res) => {
     // The vehicle's own record should reflect its latest known odometer/fuel
     // once it's handed back — the next contract's pick-up fields prefill
     // straight from this (contracts/details/page.jsx `selectedCar.currentKm`).
-    if (returnKm != null || returnFuelEighths != null) {
-      await tx.vehicle.update({
-        where: { id: existing.carId },
-        data: {
-          ...(returnKm != null ? { currentKm: returnKm } : {}),
-          ...(returnFuelEighths != null ? { currentFuelEighths: returnFuelEighths } : {}),
-        },
-      });
-    }
+    // Always runs now: returnKm/returnFuelEighths are required above.
+    await tx.vehicle.update({
+      where: { id: existing.carId },
+      data: { currentKm: returnKm, currentFuelEighths: returnFuelEighths },
+    });
   });
 
   res.json({ id: existing.id, status: "DONE" });

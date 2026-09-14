@@ -484,6 +484,8 @@
         "kbsWarning": "This rental is filed in KABİS but not released. Closing the contract requires the KABİS release.",
         "releaseKbsAndClose": "Release KABİS and close",
         "returnKmBelowPickup": "Return km cannot be below the pick-up km ({{km}}).",
+        "returnKmRequired": "Return km is required.",
+        "returnFuelRequired": "Return fuel level is required.",
         "submit": "Take Vehicle Back and Close",
         "kmExcessNote": "{{km}} km excess × {{unit}} ₺",
         "fuelNote": "{{n}}/8 missing fuel"

@@ -26,6 +26,7 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
   const [releaseKbs, setReleaseKbs] = useState(false);
   const [saving, setSaving] = useState(false);
   const [errorCode, setErrorCode] = useState(null);
+  const [attempted, setAttempted] = useState(false);
 
   const kmEdited = useRef(false);
   const fuelEdited = useRef(false);
@@ -39,6 +40,7 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
     setReleaseKbs(false);
     setSaving(false);
     setErrorCode(null);
+    setAttempted(false);
     kmEdited.current = false;
     fuelEdited.current = false;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,12 +68,17 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
 
   const kbsBlocked = kbsStatus(values) === "reported";
   const pickUpKmNum = Number(values.pickUpKm) || 0;
-  const returnKmInvalid = returnKm !== "" && Number(returnKm) < pickUpKmNum;
+  const returnKmMissing = returnKm === "";
+  const returnFuelMissing = returnFuelEighths === "";
+  const returnKmInvalid = !returnKmMissing && Number(returnKm) < pickUpKmNum;
   const kmLimited = Number.isFinite(overage.allowedKm);
   const hasKmFee = Number(values.kmOverageFee) > 0;
 
   const submit = async () => {
-    if (returnKmInvalid) return;
+    if (returnKmMissing || returnFuelMissing || returnKmInvalid) {
+      setAttempted(true);
+      return;
+    }
     setSaving(true);
     setErrorCode(null);
 
@@ -140,11 +147,14 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
                 min={pickUpKmNum || 0}
                 value={returnKm}
                 onChange={(e) => setReturnKm(e.target.value)}
-                isInvalid={returnKmInvalid}
+                isInvalid={returnKmInvalid || (attempted && returnKmMissing)}
+                required
                 autoFocus
               />
               <Form.Control.Feedback type="invalid">
-                {c("returnKmBelowPickup", { km: values.pickUpKm })}
+                {returnKmInvalid
+                  ? c("returnKmBelowPickup", { km: values.pickUpKm })
+                  : c("returnKmRequired")}
               </Form.Control.Feedback>
             </Form.Group>
           </div>
@@ -217,6 +227,7 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
               <Form.Select
                 value={returnFuelEighths}
                 onChange={(e) => setReturnFuelEighths(e.target.value)}
+                isInvalid={attempted && returnFuelMissing}
               >
                 {fuelOptions.map((o) => (
                   <option key={o.id} value={o.value}>
@@ -224,6 +235,7 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
                   </option>
                 ))}
               </Form.Select>
+              <Form.Control.Feedback type="invalid">{c("returnFuelRequired")}</Form.Control.Feedback>
             </Form.Group>
           </div>
           <div className="return-modal__stats">

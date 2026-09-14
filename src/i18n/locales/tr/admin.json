@@ -484,6 +484,8 @@
         "kbsWarning": "Bu kiralama KABİS'te bildirilmiş ama çıkışı yapılmamış. Kontratı kapatmak için KABİS çıkışı gerekiyor.",
         "releaseKbsAndClose": "KABİS çıkışını yap ve kapat",
         "returnKmBelowPickup": "Teslim km, alış km'sinden ({{km}}) küçük olamaz.",
+        "returnKmRequired": "Teslim km girilmelidir.",
+        "returnFuelRequired": "Teslim yakıtı seçilmelidir.",
         "submit": "Aracı Teslim Al ve Kapat",
         "kmExcessNote": "{{km}} km aşım × {{unit}} ₺",
         "fuelNote": "{{n}}/8 eksik yakıt"
