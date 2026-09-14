@@ -1019,6 +1019,7 @@
     "announcements": "Duyurular",
     "campaigns": "Kampanyalar",
     "blog": "Blog",
+    "reviews": "Yorumlar",
     "backToWebsite": "Web Sitesine Dön",
     "logout": "Çıkış Yap",
     "logoutConfirmTitle": "Çıkış Yap",
@@ -1379,6 +1380,30 @@
       "deleteConfirmTitle": "Bu yazıyı silmek istediğinizden emin misiniz?",
       "deleteConfirmText": "Bu işlemi geri alamazsınız!"
     }
+  },
+  "reviewsPage": {
+    "title": "Yorum Moderasyonu",
+    "hint": "Ziyaretçilerin gönderdiği yorumlar önce burada bekler. Onayladığınız yorumlar /yorumlar sayfasında ve ana sayfanın puan özetinde görünür.",
+    "empty": "Bu durumda yorum yok.",
+    "status": {
+      "PENDING": "Bekleyen",
+      "APPROVED": "Onaylı",
+      "REJECTED": "Reddedilen"
+    },
+    "table": {
+      "name": "İsim",
+      "rating": "Puan",
+      "body": "Yorum",
+      "date": "Tarih",
+      "actions": "İşlemler"
+    },
+    "approve": "Onayla",
+    "reject": "Reddet",
+    "delete": "Sil",
+    "deleteTitle": "Bu yorumu silmek istediğinizden emin misiniz?",
+    "deleteText": "Bu işlemi geri alamazsınız!",
+    "actionSuccess": "İşlem tamamlandı.",
+    "actionError": "İşlem sırasında bir hata oluştu."
   },
   "comingSoon": {
     "title": "Yakında",

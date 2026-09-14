@@ -1019,6 +1019,7 @@
     "announcements": "Announcements",
     "campaigns": "Campaigns",
     "blog": "Blog",
+    "reviews": "Reviews",
     "backToWebsite": "Back To Website",
     "logout": "Logout",
     "logoutConfirmTitle": "Logout",
@@ -1379,6 +1380,30 @@
       "deleteConfirmTitle": "Are you sure you want to delete this post?",
       "deleteConfirmText": "You won't be able to revert this action!"
     }
+  },
+  "reviewsPage": {
+    "title": "Review Moderation",
+    "hint": "Visitor-submitted reviews wait here first. Approved reviews show on the /yorumlar page and the homepage rating summary.",
+    "empty": "No reviews in this status.",
+    "status": {
+      "PENDING": "Pending",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected"
+    },
+    "table": {
+      "name": "Name",
+      "rating": "Rating",
+      "body": "Review",
+      "date": "Date",
+      "actions": "Actions"
+    },
+    "approve": "Approve",
+    "reject": "Reject",
+    "delete": "Delete",
+    "deleteTitle": "Are you sure you want to delete this review?",
+    "deleteText": "You won't be able to revert this action!",
+    "actionSuccess": "Action completed.",
+    "actionError": "There was an error completing the action."
   },
   "comingSoon": {
     "title": "Coming Soon",

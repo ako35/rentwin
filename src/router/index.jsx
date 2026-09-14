@@ -50,6 +50,7 @@ const AdminContractDetailsPage = lazy(() => import("../pages/admin/contracts/det
 const AdminContractPrintPage = lazy(() => import("../pages/admin/contracts/print/page"));
 const AdminReservationsPage = lazy(() => import("../pages/admin/reservations/page"));
 const AdminReservationFormPage = lazy(() => import("../pages/admin/reservations/form/page"));
+const AdminReviewsPage = lazy(() => import("../pages/admin/reviews/page"));
 const AdminUsersPage = lazy(() => import("../pages/admin/users/page"));
 const AdminUserDetailsPage = lazy(() => import("../pages/admin/users/details/page"));
 const AdminVehiclesPage = lazy(() => import("../pages/admin/vehicles/page"));
@@ -147,6 +148,7 @@ const router = createBrowserRouter([
       { path: "announcements", element: lazyRoute(<AdminAnnouncementsPage />) },
       { path: "campaigns", element: lazyRoute(<AdminCampaignsPage />) },
       { path: "blog", element: lazyRoute(<AdminBlogPage />) },
+      { path: "reviews", element: lazyRoute(<AdminReviewsPage />) },
       { path: "branches", element: lazyRoute(<AdminBranchesPage />) },
       { path: "rental-locations", element: lazyRoute(<AdminRentalLocationsPage />) },
       { path: "extras", element: lazyRoute(<AdminExtrasPage />) },
