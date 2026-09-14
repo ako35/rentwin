@@ -72,7 +72,13 @@ const AdminDashboard = () => {
 
           <Row className="gy-2">
             <Col xl={6}>
-              <ScheduleTable title={t("dashboard.returns")} type="returns" dateField="dropOffTime" branchId={branchId} />
+              <ScheduleTable
+                title={t("dashboard.returns")}
+                type="returns"
+                dateField="dropOffTime"
+                branchId={branchId}
+                defaultWindow="3"
+              />
             </Col>
             <Col xl={6}>
               <ScheduleTable

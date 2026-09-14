@@ -10,7 +10,7 @@ import "./schedule-table.scss";
 
 const { routes } = constants;
 
-const ScheduleTable = ({ title, type, dateField, branchId, source = "contract" }) => {
+const ScheduleTable = ({ title, type, dateField, branchId, source = "contract", defaultWindow = "7" }) => {
   const { t } = useTranslation("admin");
   const isReservation = source === "reservation";
   const WINDOWS = [
@@ -20,7 +20,7 @@ const ScheduleTable = ({ title, type, dateField, branchId, source = "contract" }
     { value: "15", label: t("scheduleTable.windows.15") },
     { value: "30", label: t("scheduleTable.windows.30") },
   ];
-  const [window, setWindow] = useState("7");
+  const [window, setWindow] = useState(defaultWindow);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
