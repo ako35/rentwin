@@ -21,6 +21,7 @@ const CATEGORIES = [
   "ROADSIDE",
   "CLEANING",
   "FUEL",
+  "DEPOSIT",
   "OTHER",
 ];
 // Only an HGS/OGS toll line carries a travel-date range (which days the

@@ -22,6 +22,7 @@ const RETURN_CHARGE_CATEGORIES = [
   "ROADSIDE",
   "CLEANING",
   "HGS_OGS",
+  "DEPOSIT",
   "OTHER",
 ];
 

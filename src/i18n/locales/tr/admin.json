@@ -410,6 +410,7 @@
           "ROADSIDE": "Yol Yardım / Çekici",
           "CLEANING": "Temizlik",
           "FUEL": "Yakıt Farkı",
+          "DEPOSIT": "Depozito",
           "OTHER": "Diğer"
         },
         "hint": {
@@ -420,6 +421,7 @@
           "ROADSIDE": "Yol yardım / çekici detayı",
           "CLEANING": "Temizlik nedeni",
           "FUEL": "Eksik yakıt miktarı",
+          "DEPOSIT": "Depozito nedeni / açıklaması",
           "OTHER": "Açıklama (opsiyonel)"
         }
       },

@@ -410,6 +410,7 @@
           "ROADSIDE": "Roadside / Tow",
           "CLEANING": "Cleaning",
           "FUEL": "Fuel Difference",
+          "DEPOSIT": "Deposit",
           "OTHER": "Other"
         },
         "hint": {
@@ -420,6 +421,7 @@
           "ROADSIDE": "Roadside / tow detail",
           "CLEANING": "Reason for cleaning",
           "FUEL": "Missing fuel amount",
+          "DEPOSIT": "Deposit reason / note",
           "OTHER": "Note (optional)"
         }
       },
