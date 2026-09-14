@@ -396,17 +396,21 @@ const returnContract = asyncHandler(async (req, res) => {
 
 const cancelContract = setContractStatus("CANCELLED");
 
-// Admin dashboard "Returns"/"Departures" tables: contracts whose drop-off
-// (returns) or pick-up (departures) falls within a day window from now.
-// Always excludes CANCELLED; optionally excludes DONE too.
+// Admin dashboard "Returns"/"Departures" tables: contracts due by the end of
+// a day window from now. No lower bound on purpose — a car that was due
+// back three days ago and never came in is still due, and should keep
+// showing (now visibly overdue — see ScheduleTable's row--overdue class)
+// instead of quietly falling out of every window once its date passes.
+// Always excludes CANCELLED; optionally excludes DONE too (a genuinely
+// completed return is the only thing that should ever drop off this list).
 const getAdminSchedule = asyncHandler(async (req, res) => {
   const { type = "returns", window = "7", excludeCompleted, branchId } = req.query;
   const dateField = type === "departures" ? "pickUpTime" : "dropOffTime";
-  const { from, to } = resolveWindow(window);
+  const { to } = resolveWindow(window);
 
   const contracts = await prisma.contract.findMany({
     where: {
-      [dateField]: { gte: from, lte: to },
+      [dateField]: { lte: to },
       status: excludeCompleted === "true" ? { notIn: ["CANCELLED", "DONE"] } : { not: "CANCELLED" },
       ...(branchId ? { car: { branchId } } : {}),
     },
