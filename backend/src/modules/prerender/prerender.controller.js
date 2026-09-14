@@ -180,6 +180,25 @@ const resolvePath = async (reqPath) => {
     return { path: reqPath, locationName: match.name };
   }
 
+  const postMatch = canonicalPath.match(/^\/blog\/([^/]+)$/);
+  if (postMatch) {
+    const post = await prisma.blogPost.findUnique({ where: { slug: postMatch[1] } });
+    if (!post || !post.published) return { path: reqPath, postMissing: true };
+    const image = post.imageId
+      ? (await prisma.vehicleImage.findUnique({ where: { id: post.imageId }, select: { blobUrl: true } }))?.blobUrl || null
+      : null;
+    return {
+      path: reqPath,
+      post: {
+        title: post.title,
+        excerpt: post.excerpt,
+        image,
+        publishedAt: post.publishedAt,
+        updatedAt: post.updatedAt,
+      },
+    };
+  }
+
   // Listing pages: hand buildHead the data it needs for an ItemList (and, for
   // /kampanyalar, the server-rendered card list).
   if (canonicalPath === "/vehicles") {
@@ -198,6 +217,16 @@ const resolvePath = async (reqPath) => {
       orderBy: { name: "asc" },
     });
     return { path: reqPath, locations };
+  }
+
+  if (canonicalPath === "/blog") {
+    const posts = await prisma.blogPost.findMany({
+      where: { published: true },
+      select: { slug: true, title: true },
+      orderBy: { publishedAt: "desc" },
+      take: 100,
+    });
+    return { path: reqPath, posts };
   }
 
   if (canonicalPath === "/kampanyalar") {

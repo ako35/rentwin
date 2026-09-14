@@ -9,6 +9,7 @@ const STATIC_ROUTES = [
   { path: "/vehicles", changefreq: "daily", priority: "0.9" },
   { path: "/lokasyonlar", changefreq: "weekly", priority: "0.7" },
   { path: "/kampanyalar", changefreq: "weekly", priority: "0.6" },
+  { path: "/blog", changefreq: "weekly", priority: "0.6" },
   { path: "/about", changefreq: "monthly", priority: "0.5" },
   { path: "/sss", changefreq: "monthly", priority: "0.6" },
   { path: "/contact", changefreq: "monthly", priority: "0.5" },
@@ -65,7 +66,7 @@ const latest = (rows, field) =>
 // Dynamic sitemap: static pages + every in-service vehicle + every location,
 // each doubled for its English ("/en/...") twin.
 const getSitemap = asyncHandler(async (req, res) => {
-  const [vehicles, locations, campaigns, modelImages] = await Promise.all([
+  const [vehicles, locations, campaigns, posts, modelImages] = await Promise.all([
     prisma.vehicle.findMany({
       where: { outOfService: false, soldAt: null },
       select: {
@@ -78,6 +79,10 @@ const getSitemap = asyncHandler(async (req, res) => {
     }),
     prisma.location.findMany({ select: { name: true, createdAt: true } }),
     prisma.campaign.findMany({ where: { active: true }, select: { imageId: true, updatedAt: true } }),
+    prisma.blogPost.findMany({
+      where: { published: true },
+      select: { slug: true, imageId: true, updatedAt: true },
+    }),
     loadModelImageMap(),
   ]);
 
@@ -85,13 +90,15 @@ const getSitemap = asyncHandler(async (req, res) => {
     modelImages.get(modelImageKey(v.brand, v.model))?.blobUrl || v.images[0]?.blobUrl;
 
   const campaignImageIds = campaigns.map((c) => c.imageId).filter(Boolean);
-  const campaignImages = campaignImageIds.length
+  const postImageIds = posts.map((p) => p.imageId).filter(Boolean);
+  const orphanImageIds = [...new Set([...campaignImageIds, ...postImageIds])];
+  const orphanImages = orphanImageIds.length
     ? await prisma.vehicleImage.findMany({
-        where: { id: { in: campaignImageIds } },
+        where: { id: { in: orphanImageIds } },
         select: { id: true, blobUrl: true },
       })
     : [];
-  const blobById = new Map(campaignImages.map((i) => [i.id, i.blobUrl]));
+  const blobById = new Map(orphanImages.map((i) => [i.id, i.blobUrl]));
   const campaignImageUrls = campaignImageIds.map((id) => blobById.get(id)).filter(Boolean);
 
   // The listing pages are as fresh as the most recently touched item they list.
@@ -99,12 +106,14 @@ const getSitemap = asyncHandler(async (req, res) => {
   const staticLastmod = fleetLastmod.getTime() ? fleetLastmod : new Date();
   const locationsLastmod = latest(locations, "createdAt");
   const campaignsLastmod = latest(campaigns, "updatedAt");
+  const postsLastmod = latest(posts, "updatedAt");
 
   const staticLastmodByPath = {
     "/": staticLastmod,
     "/vehicles": staticLastmod,
     "/lokasyonlar": locationsLastmod.getTime() ? locationsLastmod : undefined,
     "/kampanyalar": campaignsLastmod.getTime() ? campaignsLastmod : undefined,
+    "/blog": postsLastmod.getTime() ? postsLastmod : undefined,
   };
 
   const entries = [
@@ -130,6 +139,15 @@ const getSitemap = asyncHandler(async (req, res) => {
         lastmod: l.createdAt,
         changefreq: "monthly",
         priority: "0.6",
+      })
+    ),
+    ...posts.flatMap((p) =>
+      withEnglishTwin({
+        path: `/blog/${p.slug}`,
+        lastmod: p.updatedAt,
+        changefreq: "monthly",
+        priority: "0.6",
+        image: p.imageId ? blobById.get(p.imageId) : undefined,
       })
     ),
   ];

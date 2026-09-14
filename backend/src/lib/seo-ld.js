@@ -131,6 +131,19 @@ const vehicleLd = ({ name, brand, model, image, transmission, fuelType, modelYea
   },
 });
 
+const articleLd = ({ title, excerpt, image, publishedAt, updatedAt, path, locale = "tr" }) => ({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: title,
+  description: excerpt,
+  ...(image ? { image } : {}),
+  datePublished: new Date(publishedAt).toISOString(),
+  dateModified: new Date(updatedAt || publishedAt).toISOString(),
+  author: { "@id": ORG_ID },
+  publisher: { "@id": ORG_ID },
+  mainEntityOfPage: `${SITE_URL}${localizePath(path, locale)}`,
+});
+
 /* --------------------------------------------------- per-route <head> copy  */
 // Mirrors src/i18n/locales/{tr,en}/{home,vehicles,locations,about,contact,faq}.json
 // and locales/{tr,en}/common.json (privacyPolicy + nav labels).
@@ -359,6 +372,12 @@ const STATIC_META = {
         "Rentwin'in güncel araç kiralama kampanyaları ve indirim fırsatları. Hafta sonu, uzun dönem ve sezon fırsatlarını kaçırmayın, avantajlı fiyatlarla kiralayın.",
       jsonLd: (locale) => [breadcrumbLd([{ name: NAV.tr.home, path: "/" }, { name: "Kampanyalar" }], locale)],
     },
+    "/blog": {
+      title: "Blog | Rentwin Araç Kiralama",
+      description:
+        "Araç kiralama rehberleri, seyahat önerileri ve Rentwin'den güncel bilgiler. Aliağa ve İzmir'de araç kiralarken bilmeniz gerekenler.",
+      jsonLd: (locale) => [breadcrumbLd([{ name: NAV.tr.home, path: "/" }, { name: "Blog" }], locale)],
+    },
     "/about": {
       title: "Hakkımızda | Rentwin Araç Kiralama",
       description:
@@ -388,6 +407,12 @@ const STATIC_META = {
     },
   },
   en: {
+    "/blog": {
+      title: "Blog | Rentwin Car Rental",
+      description:
+        "Car rental guides, travel tips and the latest news from Rentwin. What to know when renting a car in Aliağa and İzmir.",
+      jsonLd: (locale) => [breadcrumbLd([{ name: NAV.en.home, path: "/" }, { name: "Blog" }], locale)],
+    },
     "/": {
       title: "Rentwin | Car Rental in Aliağa & İzmir — Transparent Pricing",
       description:
@@ -446,6 +471,7 @@ const ITEM_LIST_NAMES = {
   vehicles: { tr: "Kiralık Araçlar", en: "Rental Cars" },
   locations: { tr: "Araç Kiralama Lokasyonları", en: "Car Rental Locations" },
   campaigns: { tr: "Kampanyalar", en: "Campaigns" },
+  blog: { tr: "Blog Yazıları", en: "Blog Posts" },
 };
 
 /* --------------------------------------------------------------- buildHead  */
@@ -478,9 +504,12 @@ const noindex = (head) => ({ ...head, canonical: null, robots: "noindex, nofollo
  * @param {boolean} [args.vehicleMissing]  path was /vehicles/:id but no such vehicle
  * @param {string} [args.locationName]     resolved Location.name for /lokasyonlar/:slug
  * @param {boolean} [args.locationMissing] path was /lokasyonlar/:slug but no match
+ * @param {object} [args.post]      { title, excerpt, image, publishedAt, updatedAt } for /blog/:slug
+ * @param {boolean} [args.postMissing]  path was /blog/:slug but no such (published) post
  * @param {object[]} [args.vehicles]        [{ id, brand, model }] for the /vehicles list
  * @param {object[]} [args.locations]       [{ name }] for the /lokasyonlar list
  * @param {object[]} [args.campaigns]       [{ title, description, image, ctaLabel, ctaUrl, startsAt, endsAt }]
+ * @param {object[]} [args.posts]           [{ slug, title }] for the /blog list
  * @returns {{title,description,canonical,ogImage,ogType,ogLocale,ogLocaleAlt,htmlLang,robots,jsonLd:object[],bodyHtml?:string}}
  */
 const buildHead = ({
@@ -489,9 +518,12 @@ const buildHead = ({
   vehicleMissing,
   locationName,
   locationMissing,
+  post,
+  postMissing,
   vehicles,
   locations,
   campaigns,
+  posts,
 }) => {
   const locale = localeFromPath(path);
   const canonicalPath = stripLocalePrefix(path);
@@ -558,6 +590,35 @@ const buildHead = ({
     };
   }
 
+  // blog post detail
+  if (/^\/blog\/[^/]+$/.test(canonicalPath)) {
+    if (postMissing || !post) {
+      return noindex({
+        ...base(path),
+        title: locale === "en" ? "Blog Post | Rentwin" : "Blog Yazısı | Rentwin Araç Kiralama",
+      });
+    }
+    return {
+      ...base(path),
+      title: `${post.title} | Rentwin ${locale === "en" ? "Blog" : "Blog"}`,
+      description: post.excerpt,
+      ogImage: post.image || DEFAULT_IMAGE,
+      ogImageDefault: !post.image,
+      ogType: "article",
+      jsonLd: [
+        breadcrumbLd(
+          [
+            { name: nav.home, path: "/" },
+            { name: "Blog", path: "/blog" },
+            { name: post.title },
+          ],
+          locale
+        ),
+        articleLd({ ...post, path: canonicalPath, locale }),
+      ],
+    };
+  }
+
   // static routes
   const meta = STATIC_META[locale][canonicalPath];
   if (meta) {
@@ -613,6 +674,20 @@ const buildHead = ({
       head.bodyHtml = renderCampaignsBody(list, locale);
     }
 
+    if (canonicalPath === "/blog" && posts && posts.length) {
+      head.jsonLd.push(
+        itemListLd({
+          name: ITEM_LIST_NAMES.blog[locale],
+          itemListElement: posts.map((p, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            name: p.title,
+            url: `${SITE_URL}${localizePath(`/blog/${p.slug}`, locale)}`,
+          })),
+        })
+      );
+    }
+
     return head;
   }
 
@@ -628,5 +703,6 @@ module.exports = {
   faqLd,
   itemListLd,
   vehicleLd,
+  articleLd,
   FAQ_ITEMS,
 };

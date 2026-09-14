@@ -285,6 +285,24 @@ model Campaign {
   updatedAt   DateTime  @updatedAt
 }
 
+// A public blog post (SEO content marketing) with a persisted slug — unlike
+// Location's on-the-fly slugify(name), the slug here is stored so it survives
+// title edits. `content` is HTML from the admin's rich-text editor; only an
+// authenticated admin can write it (see requireAdmin on the /blog/admin/*
+// routes), so it's rendered on the frontend without sanitization.
+model BlogPost {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  title       String
+  excerpt     String
+  content     String
+  imageId     String?
+  published   Boolean  @default(true)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 // A lightweight booking: a car held for a customer for a date range. Created
 // online by customers (status PENDING) or by staff, then optionally converted
 // into a Contract when the car is handed over.
