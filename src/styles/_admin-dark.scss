@@ -320,7 +320,10 @@
       background-color: var(--rw-inset);
       border-color: var(--rw-line);
     }
-    .admin-layout .contract-page__typeahead-list button:hover {
+    /* the list itself is plain <li> rows, not buttons — the light-mode sheet's
+       li:hover falls through to its own $color4 tint (a light surface) when this
+       selector doesn't match it, leaving a near-white row in dark mode. */
+    .admin-layout .contract-page__typeahead-list li:hover {
       background-color: var(--rw-hover);
     }
 
