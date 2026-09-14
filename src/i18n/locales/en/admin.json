@@ -503,6 +503,7 @@
       "corporateTitle": "Corporate Title",
       "taxOffice": "Tax Office",
       "taxNo": "Tax No",
+      "authorizedPerson": "Authorized Person",
       "pricingGroups": {
         "service": "Service Items",
         "limits": "Limits",

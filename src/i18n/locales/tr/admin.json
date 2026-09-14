@@ -503,6 +503,7 @@
       "corporateTitle": "Cari Ünvan",
       "taxOffice": "Vergi Dairesi",
       "taxNo": "Vergi No",
+      "authorizedPerson": "Yetkili Kişi",
       "pricingGroups": {
         "service": "Hizmet Kalemleri",
         "limits": "Limitler",
