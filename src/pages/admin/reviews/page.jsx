@@ -36,7 +36,6 @@ const AdminReviewsPage = () => {
 
   useEffect(() => {
     loadData(0, status);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 
   const runAction = async (id, action) => {
