@@ -29,7 +29,7 @@ const VehicleIdentityTab = ({ formik, disabled, sections, handleModelPicked, pla
     <fieldset disabled={disabled}>
       <Row>
         <Col xl={3} className="vehicle-form__image">
-          <ModelImagePreview brand={formik.values.brand} model={formik.values.model} />
+          <ModelImagePreview brand={formik.values.brand} model={formik.values.model} color={formik.values.color} />
         </Col>
         <Col xl={9} className="vehicle-form__fields">
           <div className="vehicle-form__registration-scan-bar">
