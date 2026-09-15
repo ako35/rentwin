@@ -134,6 +134,11 @@ const ContractPrintPage = () => {
       fuelFeePerEighth: money(c.fuelFeePerEighth),
       deposit: money(c.deposit),
       dailyPrice: money(c.dailyPrice),
+      drivers: (c.drivers || []).map((d) => ({
+        name: `${d.firstName || ""} ${d.lastName || ""}`.trim() || "—",
+        licenseNo: d.licenseNo || "—",
+        phone: d.phone || "—",
+      })),
     };
   }, [contract, p, tc]);
 

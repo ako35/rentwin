@@ -372,6 +372,27 @@
     }
   }
 
+  &__driverstable {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      border: 1px solid #999;
+      padding: 0.25rem 0.4rem;
+      font-size: 9.5px;
+      text-align: left;
+    }
+
+    thead th {
+      background: #f4f6f4;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 8px;
+      letter-spacing: 0.02em;
+      color: #444;
+    }
+  }
+
   &__article {
     margin-top: 0.55rem;
     break-inside: avoid;

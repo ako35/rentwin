@@ -4,6 +4,7 @@ import { Nav } from "react-bootstrap";
 import moment from "moment/moment";
 import CustomerPanel from "./CustomerPanel";
 import CustomerSummary from "./CustomerSummary";
+import DriversTab from "./DriversTab";
 import InvoiceTab from "./InvoiceTab";
 import SummaryTab from "./SummaryTab";
 import PaymentsTab from "./PaymentsTab";
@@ -44,6 +45,7 @@ const ContractRightCard = ({
       <Panel title={c("panels.party")}>
         <Nav variant="tabs" activeKey={topTab} onSelect={(k) => k && setTopTab(k)} className="mb-3">
           <Nav.Item><Nav.Link eventKey="customer">{c("topTabs.customer")}</Nav.Link></Nav.Item>
+          <Nav.Item><Nav.Link eventKey="drivers">{c("topTabs.drivers")}</Nav.Link></Nav.Item>
           <Nav.Item><Nav.Link eventKey="invoice">{c("topTabs.invoice")}</Nav.Link></Nav.Item>
         </Nav>
 
@@ -60,6 +62,14 @@ const ContractRightCard = ({
           ) : (
             <CustomerSummary customer={customer} userId={formik.values.userId} money={money} />
           )
+        )}
+
+        {topTab === "drivers" && (
+          <DriversTab
+            isCreate={isCreate}
+            contractId={contractId}
+            recordLabels={recordLabels}
+          />
         )}
 
         {topTab === "invoice" && (

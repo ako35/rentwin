@@ -96,6 +96,7 @@ const getContractByIdAdmin = asyncHandler(async (req, res) => {
       extensions: { orderBy: { createdAt: "desc" } },
       vehicleChanges: { orderBy: { changeDate: "desc" } },
       invoices: { orderBy: { issuedAt: "desc" } },
+      drivers: { orderBy: { createdAt: "asc" } },
       // Same source the contract list sums for its Bakiye column (see
       // contracts.admin.controller.js getContractsByPage) — a payment recorded
       // from the Finans/Cari screen and tagged to this contract counts here too,

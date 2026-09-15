@@ -82,6 +82,31 @@ const GenelSozlesme = ({ data, p }) => {
         </div>
       </section>
 
+      {/* EK SÜRÜCÜ(LER) — only printed when at least one is on file */}
+      {data.drivers.length > 0 && (
+        <section className="cprint-block">
+          <h2>{s("driversHeading")}</h2>
+          <table className="cprint-legal__driverstable">
+            <thead>
+              <tr>
+                <th>{s("driversName")}</th>
+                <th>{s("driversLicense")}</th>
+                <th>{s("driversPhone")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.drivers.map((d, i) => (
+                <tr key={i}>
+                  <td>{d.name}</td>
+                  <td>{d.licenseNo}</td>
+                  <td>{d.phone}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
+
       {/* SÖZLEŞMEYE ESAS KİRALAMA BİLGİLERİ (EK-1 özeti) */}
       <section className="cprint-block">
         <h2>{s("summaryTitle")}</h2>

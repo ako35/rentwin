@@ -31,7 +31,12 @@
       font-size: 0.68rem;
       text-transform: uppercase;
       letter-spacing: 0.03em;
-      color: v.$color5_3;
+      // var(--rw-ink-muted), not v.$color5_3: _admin-dark.scss only ever
+      // overrode this selector's border-colour, never its text colour, so it
+      // stayed on the light-mode navy and read as low-contrast under
+      // data-theme dark (same root cause fixed in vehicle-form.scss and
+      // maintenance-alert-bar.scss's record tables).
+      color: var(--rw-ink-muted);
       border-bottom-color: v.$color3;
     }
 
