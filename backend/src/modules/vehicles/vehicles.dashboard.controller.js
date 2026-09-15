@@ -52,6 +52,9 @@ const getFleetStats = asyncHandler(async (req, res) => {
 // them tighter than Bakım (which is just a scheduling reminder, kept at 30).
 const EXPIRY_WINDOW_DAYS = 15;
 const MAINTENANCE_WINDOW_DAYS = 30;
+// Vehicles within this many km of their planned service (odometer + interval)
+// also count as "due soon", alongside the date-based check above.
+const MAINTENANCE_WINDOW_KM = 1000;
 
 const getExpiryAlerts = asyncHandler(async (req, res) => {
   const { branchId } = req.query;
@@ -82,8 +85,14 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
       select: { vehicleId: true, dueDate: true, paidDate: true, vehicle: carSelect },
     }),
     prisma.vehicleMaintenance.findMany({
-      where: { vehicle: vehicleWhere, nextDate: { not: null } },
-      select: { vehicleId: true, nextDate: true, vehicle: carSelect },
+      where: { vehicle: vehicleWhere, OR: [{ nextDate: { not: null } }, { nextOdometer: { not: null } }] },
+      select: {
+        vehicleId: true,
+        date: true,
+        nextDate: true,
+        nextOdometer: true,
+        vehicle: { select: { id: true, licensePlate: true, brand: true, model: true, currentKm: true } },
+      },
     }),
   ]);
 
@@ -146,9 +155,29 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
   }
   categories.inspection.push(...missingItemsFor(new Set(inspections.map((r) => r.vehicleId))));
 
-  for (const row of latestPerVehicle(maintenances, "nextDate")) {
-    if (new Date(row.nextDate) <= maintenanceThreshold) {
-      categories.maintenance.push(toItem(row.vehicle, row.nextDate));
+  // A vehicle's plan can be due by date, by km, or both — surface it once with
+  // whichever signals apply, keyed off its most recently logged service.
+  for (const row of latestPerVehicle(maintenances, "date")) {
+    const daysLeft = row.nextDate
+      ? Math.ceil((new Date(row.nextDate).getTime() - now.getTime()) / 86400000)
+      : null;
+    const kmLeft =
+      row.nextOdometer != null && row.vehicle.currentKm != null
+        ? row.nextOdometer - row.vehicle.currentKm
+        : null;
+    const dueByDate = row.nextDate != null && new Date(row.nextDate) <= maintenanceThreshold;
+    const dueByKm = kmLeft != null && kmLeft <= MAINTENANCE_WINDOW_KM;
+    if (dueByDate || dueByKm) {
+      categories.maintenance.push({
+        vehicleId: row.vehicle.id,
+        plate: row.vehicle.licensePlate,
+        name: [row.vehicle.brand, row.vehicle.model].filter(Boolean).join(" "),
+        date: row.nextDate || null,
+        daysLeft,
+        km: row.nextOdometer ?? null,
+        kmLeft,
+        missing: false,
+      });
     }
   }
 
@@ -167,8 +196,12 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
 
   // Missing-record rows have no date to sort by — surface them ahead of the
   // merely-expiring-soon ones (having nothing on file is the worse state).
+  // Maintenance rows may only have a km-based signal (no nextDate); days and km
+  // aren't directly comparable, but falling back to km keeps those rows ordered
+  // sensibly among themselves instead of colliding at the end of the list.
+  const sortKey = (item) => (item.daysLeft ?? item.kmLeft ?? Infinity);
   Object.values(categories).forEach((list) =>
-    list.sort((a, b) => (a.missing !== b.missing ? (a.missing ? -1 : 1) : a.daysLeft - b.daysLeft))
+    list.sort((a, b) => (a.missing !== b.missing ? (a.missing ? -1 : 1) : sortKey(a) - sortKey(b)))
   );
 
   res.json({
@@ -178,6 +211,9 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
       tax: EXPIRY_WINDOW_DAYS,
       inspection: EXPIRY_WINDOW_DAYS,
       maintenance: MAINTENANCE_WINDOW_DAYS,
+    },
+    windowKm: {
+      maintenance: MAINTENANCE_WINDOW_KM,
     },
     categories,
   });

@@ -65,6 +65,7 @@ const VehicleIdentityTab = ({ formik, disabled, sections, handleModelPicked, pla
                       type={item.type || "text"}
                       itemsArr={item.itemsArr || []}
                       list={item.list}
+                      placeholder={item.placeholder}
                     />
                   )
                 )}

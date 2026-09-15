@@ -72,6 +72,7 @@ const AdminVehicleDetailsPage = () => {
         registrationSerialNo: toText(response.registrationSerialNo),
         modelYear: response.modelYear ?? "",
         currentKm: response.currentKm ?? "",
+        maintenanceIntervalKm: response.maintenanceIntervalKm ?? "",
         currentFuelEighths: response.currentFuelEighths != null ? String(response.currentFuelEighths) : "",
         registrationDate: toDateInput(response.registrationDate),
         nextMaintenanceDate: toDateInput(response.nextMaintenanceDate),

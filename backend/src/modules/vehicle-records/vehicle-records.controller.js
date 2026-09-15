@@ -29,8 +29,24 @@ const RESOURCES = {
     dateFields: ["date", "nextDate"],
     numberFields: ["odometer", "cost", "nextOdometer"],
     orderBy: [{ date: "desc" }],
+    // If the vehicle has a periodic km interval set but the operator didn't type a
+    // "next service km" by hand, plan it automatically from this service's odometer.
+    prepare: async (body, vehicleId) => {
+      if (!isBlank(body.nextOdometer) || isBlank(body.odometer)) return body;
+      const vehicle = await prisma.vehicle.findUnique({
+        where: { id: vehicleId },
+        select: { maintenanceIntervalKm: true },
+      });
+      if (!vehicle?.maintenanceIntervalKm) return body;
+      return { ...body, nextOdometer: Number(body.odometer) + vehicle.maintenanceIntervalKm };
+    },
     // Keep the dashboard "Bakim" alert badge in sync with the latest planned service.
-    sync: (record) => (record.nextDate ? { nextMaintenanceDate: record.nextDate } : null),
+    sync: (record) => {
+      const patch = {};
+      if (record.nextDate) patch.nextMaintenanceDate = record.nextDate;
+      if (record.nextOdometer != null) patch.nextMaintenanceKm = record.nextOdometer;
+      return Object.keys(patch).length ? patch : null;
+    },
   },
   inspections: {
     model: "vehicleInspection",
@@ -117,8 +133,9 @@ const createRecord = asyncHandler(async (req, res) => {
   const vehicle = await prisma.vehicle.findUnique({ where: { id: vehicleId }, select: { id: true } });
   if (!vehicle) throw new HttpError(404, "Vehicle not found.");
 
+  const body = resource.prepare ? await resource.prepare(req.body, vehicleId) : req.body;
   const record = await prisma[resource.model].create({
-    data: { ...buildData(resource, req.body), vehicleId },
+    data: { ...buildData(resource, body), vehicleId },
   });
   await applyVehicleSync(resource, record);
 
@@ -132,9 +149,10 @@ const updateRecord = asyncHandler(async (req, res) => {
   const target = await prisma[resource.model].findUnique({ where: { id } });
   if (!target) throw new HttpError(404, "Record not found.");
 
+  const body = resource.prepare ? await resource.prepare(req.body, target.vehicleId) : req.body;
   const record = await prisma[resource.model].update({
     where: { id },
-    data: buildData(resource, req.body, { partial: true }),
+    data: buildData(resource, body, { partial: true }),
   });
   await applyVehicleSync(resource, record);
 

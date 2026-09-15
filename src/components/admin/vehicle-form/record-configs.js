@@ -80,6 +80,7 @@ export const RECORD_CONFIGS = {
       { key: "vendor" },
       { key: "cost", kind: "money" },
       { key: "nextDate", kind: "date" },
+      { key: "nextOdometer", kind: "number" },
     ],
     fields: [
       { name: "type", type: "select", options: constants.maintenanceTypes, optionNs: "maintenanceTypes" },

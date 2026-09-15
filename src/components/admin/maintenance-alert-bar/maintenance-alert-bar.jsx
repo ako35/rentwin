@@ -61,7 +61,7 @@ const ClosedContractsTable = ({ rows, onRowClick }) => {
 };
 
 const MaintenanceAlertBar = ({ alerts, hgsPending = [], invoicePending = [] }) => {
-  const { t } = useTranslation("admin");
+  const { t, i18n } = useTranslation("admin");
   const navigate = useNavigate();
   const [open, setOpen] = useState(null);
 
@@ -77,7 +77,12 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [], invoicePending = [] }) =
         <div className="maintenance-alert-bar__tabs">
           {CATEGORIES.map(({ key, icon }) => {
             const list = categories[key] || [];
-            const overdue = list.some((item) => item.missing || item.daysLeft < 0);
+            const overdue = list.some(
+              (item) =>
+                item.missing ||
+                (item.daysLeft != null && item.daysLeft < 0) ||
+                (item.kmLeft != null && item.kmLeft < 0)
+            );
             return (
               <button
                 key={key}
@@ -125,18 +130,35 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [], invoicePending = [] }) =
         <div className="maintenance-alert-bar__panel">
           <div className="maintenance-alert-bar__panel-head">
             {t(`alertBar.${open}`)} — {t("alertBar.dueWithin", { days: alerts?.windowDays?.[open] ?? 30 })}
+            {open === "maintenance" && alerts?.windowKm?.maintenance
+              ? ` / ${t("alertBar.dueWithinKm", { km: alerts.windowKm.maintenance })}`
+              : ""}
           </div>
           {activeList.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.none")}</div>
           ) : (
             <div className="maintenance-alert-bar__chips">
               {activeList.map((item) => {
-                const urgent = item.missing || item.daysLeft < 0;
-                const statusText = item.missing
-                  ? t("alertBar.noRecord")
-                  : item.daysLeft < 0
-                    ? t("alertBar.daysOverdue", { days: Math.abs(item.daysLeft) })
-                    : t("alertBar.daysLeft", { days: item.daysLeft });
+                const urgent =
+                  item.missing ||
+                  (item.daysLeft != null && item.daysLeft < 0) ||
+                  (item.kmLeft != null && item.kmLeft < 0);
+                const statusParts = [];
+                if (item.daysLeft != null) {
+                  statusParts.push(
+                    item.daysLeft < 0
+                      ? t("alertBar.daysOverdue", { days: Math.abs(item.daysLeft) })
+                      : t("alertBar.daysLeft", { days: item.daysLeft })
+                  );
+                }
+                if (item.kmLeft != null) {
+                  statusParts.push(
+                    item.kmLeft < 0
+                      ? t("alertBar.kmOverdue", { km: Math.abs(item.kmLeft).toLocaleString(i18n.language) })
+                      : t("alertBar.kmLeft", { km: item.kmLeft.toLocaleString(i18n.language) })
+                  );
+                }
+                const statusText = item.missing ? t("alertBar.noRecord") : statusParts.join(" · ");
                 return (
                   <button
                     key={item.vehicleId + (item.date || "missing")}

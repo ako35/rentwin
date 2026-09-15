@@ -159,6 +159,8 @@ model Vehicle {
   branch               Branch?              @relation(fields: [branchId], references: [id], onDelete: SetNull)
   nextMaintenanceDate  DateTime?
   nextInspectionDate   DateTime?
+  maintenanceIntervalKm Int? // periodic maintenance km interval the operator plans around, e.g. 10000
+  nextMaintenanceKm    Int? // synced from the latest logged maintenance record's planned "next odometer"
   modelYear            Int?
   chassisNo            String?
   engineNo             String?

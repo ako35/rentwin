@@ -10,6 +10,8 @@ const VEHICLE_FIELDS = [
   "branchId",
   "nextMaintenanceDate",
   "nextInspectionDate",
+  "maintenanceIntervalKm",
+  "nextMaintenanceKm",
   "modelYear",
   "chassisNo",
   "engineNo",
@@ -23,7 +25,13 @@ const VEHICLE_FIELDS = [
 
 const DATE_FIELDS = ["nextMaintenanceDate", "nextInspectionDate", "registrationDate"];
 // Optional numeric columns: an empty-string form value must land as null, not NaN.
-const NULLABLE_NUMBER_FIELDS = ["modelYear", "currentKm", "currentFuelEighths"];
+const NULLABLE_NUMBER_FIELDS = [
+  "modelYear",
+  "currentKm",
+  "currentFuelEighths",
+  "maintenanceIntervalKm",
+  "nextMaintenanceKm",
+];
 // Optional string/enum columns: an empty-string form value must land as null.
 const NULLABLE_STRING_FIELDS = [
   "chassisNo",
