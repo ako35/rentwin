@@ -1420,5 +1420,15 @@
   "aiQuota": {
     "remaining": "AI reads left today: {{remaining}}/{{limit}}",
     "exhausted": "Today's AI read quota is used up — resets tomorrow."
+  },
+  "vehicleFilters": {
+    "allBrands": "All Brands",
+    "allModels": "All Models",
+    "allBranches": "All Branches",
+    "allTransmissions": "All Transmissions",
+    "allFuels": "All Fuels",
+    "allStatuses": "All Statuses",
+    "apply": "Filter",
+    "clear": "Clear"
   }
 }

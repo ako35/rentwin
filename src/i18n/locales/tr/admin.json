@@ -1420,5 +1420,15 @@
   "aiQuota": {
     "remaining": "Bugün kalan AI okuma hakkı: {{remaining}}/{{limit}}",
     "exhausted": "Bugünkü AI okuma kotası bitti — yarın sıfırlanır."
+  },
+  "vehicleFilters": {
+    "allBrands": "Tüm Markalar",
+    "allModels": "Tüm Modeller",
+    "allBranches": "Tüm Şubeler",
+    "allTransmissions": "Tüm Vitesler",
+    "allFuels": "Tüm Yakıtlar",
+    "allStatuses": "Tüm Durumlar",
+    "apply": "Filtrele",
+    "clear": "Temizle"
   }
 }

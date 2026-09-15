@@ -95,14 +95,72 @@ const getVehiclesByPage = asyncHandler(async (req, res) => {
   );
 });
 
+// Status (Durum) isn't a column — it's derived from outOfService + whether a
+// contract currently has the car out (see getVehicleStatus) — so filtering by
+// it can't be a plain `where` clause. Below, brand/model/branch/transmission/
+// fuel narrow the query as usual; a status filter then resolves the matching
+// id set up front (cheap: id + outOfService only, no images) and paginates
+// over that instead of the raw table.
 const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
   const { page, size, direction, sortField } = parsePageParams(req.query, {
     defaultSize: 20,
     allowedSortFields: ALLOWED_SORT_FIELDS,
   });
 
+  const { brand, model, branchId, transmission, fuelType, status } = req.query;
+  const STATUS_VALUES = ["AVAILABLE", "RENTED", "OUT_OF_SERVICE"];
+
   // Default view is the live fleet; ?sold=1 switches to the sold archive.
-  const where = req.query.sold === "1" ? { soldAt: { not: null } } : { soldAt: null };
+  const where = {
+    ...(req.query.sold === "1" ? { soldAt: { not: null } } : { soldAt: null }),
+    ...(brand ? { brand: { contains: brand, mode: "insensitive" } } : {}),
+    ...(model ? { model: { contains: model, mode: "insensitive" } } : {}),
+    ...(branchId ? { branchId } : {}),
+    ...(transmission ? { transmission } : {}),
+    ...(fuelType ? { fuelType } : {}),
+  };
+
+  if (STATUS_VALUES.includes(status)) {
+    const candidates = await prisma.vehicle.findMany({
+      where,
+      select: { id: true, outOfService: true },
+      orderBy: { [sortField]: direction },
+    });
+
+    let matchingIds;
+    if (status === "OUT_OF_SERVICE") {
+      matchingIds = candidates.filter((v) => v.outOfService).map((v) => v.id);
+    } else {
+      const inService = candidates.filter((v) => !v.outOfService);
+      const rentedIds = await getRentedVehicleIds(inService.map((v) => v.id));
+      matchingIds = inService
+        .filter((v) => (status === "RENTED" ? rentedIds.has(v.id) : !rentedIds.has(v.id)))
+        .map((v) => v.id);
+    }
+
+    const pageIds = matchingIds.slice(page * size, page * size + size);
+    const [rows, modelImages] = await Promise.all([
+      pageIds.length
+        ? prisma.vehicle.findMany({ where: { id: { in: pageIds } }, include: IMAGES_AND_BRANCH_INCLUDE })
+        : [],
+      loadModelImageMap(),
+    ]);
+    const byId = new Map(rows.map((v) => [v.id, v]));
+
+    res.json(
+      buildPageResponse({
+        content: pageIds
+          .map((id) => byId.get(id))
+          .filter(Boolean)
+          .map((vehicle) => ({ ...serializeVehicle(vehicle, modelImages), status })),
+        totalElements: matchingIds.length,
+        page,
+        size,
+        sortField,
+      })
+    );
+    return;
+  }
 
   const [content, totalElements, modelImages] = await Promise.all([
     prisma.vehicle.findMany({

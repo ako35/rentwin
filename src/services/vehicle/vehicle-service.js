@@ -85,12 +85,20 @@ export const getVehiclesByPageAdmin = async (
   size = 20,
   sort = "id",
   direction = "DESC",
-  sold = false
+  sold = false,
+  filters = {}
 ) => {
-  const response = await axios.get(
-    `${API_URL}/car/admin/pages/auth?page=${page}&size=${size}&sort=${sort}&direction=${direction}${sold ? "&sold=1" : ""}`,
-    services.authHeader()
-  );
+  const params = new URLSearchParams({ page, size, sort, direction });
+  if (sold) params.set("sold", "1");
+  const { brand, model, branchId, transmission, fuelType, status } = filters || {};
+  if (brand) params.set("brand", brand);
+  if (model) params.set("model", model);
+  if (branchId) params.set("branchId", branchId);
+  if (transmission) params.set("transmission", transmission);
+  if (fuelType) params.set("fuelType", fuelType);
+  if (status) params.set("status", status);
+
+  const response = await axios.get(`${API_URL}/car/admin/pages/auth?${params}`, services.authHeader());
   return response.data;
 };
 export const getFleetStats = async (branchId) => {

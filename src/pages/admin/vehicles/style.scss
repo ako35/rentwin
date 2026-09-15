@@ -30,6 +30,15 @@
         }
     }
 
+    // Filter row reuses .contract-list__filters' layout/dark-mode handling,
+    // but its own labels ("Tüm Markalar", "Tüm Şubeler"...) run longer than
+    // that class's tuned min-width, cramming right up against the caret —
+    // widen it here (this compound selector beats the shared one on
+    // specificity regardless of stylesheet import order).
+    .admin-vehicle-page__filters .form-select {
+        min-width: 8.5rem;
+    }
+
     a[role="button"] {
         background-color: v.$color2;
         border: 1px solid v.$color2;
