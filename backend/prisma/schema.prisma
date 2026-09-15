@@ -626,3 +626,17 @@ model Setting {
   defaultFuelFeePerEighth Float?
   updatedAt               DateTime @updatedAt
 }
+
+// Approximate, informational counter for the shared Gemini vision free-tier
+// quota — "Ruhsattan Doldur" and "Belgeden Doldur" both call the same model
+// on the same API key/project, so they draw from one daily pool. id is a
+// fixed key per tracked model (currently just "vision"); day is the Google
+// quota-reset calendar date (Pacific Time) as "YYYY-MM-DD". Not an exact
+// mirror of Google's own ledger — a retried call can cost more than the 1
+// counted here — just enough to warn an admin before the real 429 hits.
+model AiUsageCounter {
+  id        String   @id
+  day       String
+  count     Int      @default(0)
+  updatedAt DateTime @updatedAt
+}

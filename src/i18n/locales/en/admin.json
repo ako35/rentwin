@@ -1416,5 +1416,9 @@
   "comingSoon": {
     "title": "Coming Soon",
     "desc": "We're working on the {{module}} module. This section will be available soon."
+  },
+  "aiQuota": {
+    "remaining": "AI reads left today: {{remaining}}/{{limit}}",
+    "exhausted": "Today's AI read quota is used up — resets tomorrow."
   }
 }

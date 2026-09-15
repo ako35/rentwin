@@ -12,3 +12,8 @@ export const updateSettings = async (payload) => {
   const response = await axios.put(`${API_URL}/settings/admin/auth`, payload, services.authHeader());
   return response.data;
 };
+
+export const getAiUsage = async () => {
+  const response = await axios.get(`${API_URL}/settings/ai-usage/auth`, services.authHeader());
+  return response.data;
+};

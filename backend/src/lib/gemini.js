@@ -2,6 +2,8 @@
 // POST): (1) vision — read a Turkish document (vehicle registration / driving
 // licence / company stamp) photo into structured fields; (2) image generation —
 // produce a studio catalog photo of a vehicle from its make/model/colour.
+const prisma = require("./prisma");
+
 const API_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 // gemini-3.6-flash has a tiny free-tier daily cap (20 requests) that a busy
 // office blows through; gemini-3.7-flash has the normal free quota and answers
@@ -56,6 +58,53 @@ Kurallar:
 - registrationDate: YYYY-MM-DD formatında.
 - modelYear: yalnızca 4 haneli yıl sayısı.`;
 
+// Free-tier vision quota is informational guesswork — Google no longer
+// publishes an exact number for this tier and doesn't guarantee one — but
+// third-party measurements for the current Flash model converge on roughly
+// this figure, so it's a reasonable "warn before you hit the wall" threshold
+// for the admin UI. Override with GEMINI_VISION_DAILY_LIMIT if Google's
+// actual cap turns out different. This never gates the real call — only
+// Google's own 429 (AI_QUOTA, above) does that.
+const VISION_DAILY_LIMIT = Number(process.env.GEMINI_VISION_DAILY_LIMIT) || 1500;
+const VISION_USAGE_ID = "vision";
+
+// Google's free-tier quota resets at midnight Pacific Time, not local/UTC
+// midnight — the counter has to key off the same calendar day Google does or
+// it drifts hours off the real reset every day.
+const pacificDay = () =>
+  new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles" }).format(new Date());
+
+// Bumps today's (Pacific) vision-call count by one, rolling over to a fresh
+// day when it's turned. Best-effort — a failure here must never block the
+// actual Gemini call, so callers swallow its errors.
+const recordVisionUsage = async () => {
+  const day = pacificDay();
+  const existing = await prisma.aiUsageCounter.findUnique({ where: { id: VISION_USAGE_ID } });
+  if (existing && existing.day === day) {
+    await prisma.aiUsageCounter.update({ where: { id: VISION_USAGE_ID }, data: { count: { increment: 1 } } });
+  } else {
+    await prisma.aiUsageCounter.upsert({
+      where: { id: VISION_USAGE_ID },
+      create: { id: VISION_USAGE_ID, day, count: 1 },
+      update: { day, count: 1 },
+    });
+  }
+};
+
+// Today's usage snapshot for the admin UI. Never throws — an unreadable
+// counter just reads as "no data yet" instead of breaking the scan buttons.
+const getVisionUsage = async () => {
+  const day = pacificDay();
+  let row;
+  try {
+    row = await prisma.aiUsageCounter.findUnique({ where: { id: VISION_USAGE_ID } });
+  } catch {
+    row = null;
+  }
+  const count = row && row.day === day ? row.count : 0;
+  return { day, count, limit: VISION_DAILY_LIMIT, remaining: Math.max(0, VISION_DAILY_LIMIT - count) };
+};
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // gemini-flash routinely answers 503 ("high demand — usually temporary") or
@@ -75,6 +124,8 @@ const PER_ATTEMPT_TIMEOUT_MS = 6000;
 const geminiVisionJson = async (buffer, mimeType, prompt, schema) => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY tanımlı değil.");
+
+  recordVisionUsage().catch(() => {});
 
   const body = JSON.stringify({
     contents: [
@@ -248,4 +299,4 @@ const generateVehicleImage = async ({ brand, model, modelYear, color }) => {
   return { base64: inline.data, mimeType: inline.mimeType || inline.mime_type || "image/png" };
 };
 
-module.exports = { extractVehicleRegistration, extractCustomerDocument, generateVehicleImage };
+module.exports = { extractVehicleRegistration, extractCustomerDocument, generateVehicleImage, getVisionUsage };

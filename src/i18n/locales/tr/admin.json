@@ -1416,5 +1416,9 @@
   "comingSoon": {
     "title": "Yakında",
     "desc": "{{module}} modülü üzerinde çalışıyoruz. Bu bölüm yakında kullanıma açılacak."
+  },
+  "aiQuota": {
+    "remaining": "Bugün kalan AI okuma hakkı: {{remaining}}/{{limit}}",
+    "exhausted": "Bugünkü AI okuma kotası bitti — yarın sıfırlanır."
   }
 }
