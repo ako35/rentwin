@@ -442,7 +442,7 @@
       "drivers": {
         "firstName": "Ad",
         "lastName": "Soyad",
-        "licenseNo": "Ehliyet No",
+        "nationalId": "TC No",
         "licenseDate": "Ehliyet Tarihi",
         "birthDate": "Doğum Tarihi",
         "phone": "Telefon"
@@ -712,7 +712,7 @@
           "lessorNote": "İşbu sözleşmede RENTWİN çatı markasını ve grubunu temsil eden şirketler olup, bundan böyle kısaca \"RENTWİN\" veya \"KİRALAYAN\" olarak anılacaktır.",
           "driversHeading": "EK SÜRÜCÜ(LER)",
           "driversName": "Ad Soyad",
-          "driversLicense": "Ehliyet No",
+          "driversNationalId": "TC No",
           "driversPhone": "Telefon",
           "summaryTitle": "SÖZLEŞMEYE ESAS KİRALAMA BİLGİLERİ (EK-1 ÖZETİ)",
           "sumDate": "Sözleşme Tarihi",

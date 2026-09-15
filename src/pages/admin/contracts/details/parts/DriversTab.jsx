@@ -17,12 +17,12 @@ const DriversTab = ({ isCreate, contractId, recordLabels, onChange }) => {
       contractId={contractId}
       resource="drivers"
       onChange={onChange}
-      initial={{ firstName: "", lastName: "", licenseNo: "", licenseDate: "", birthDate: "", phone: "" }}
+      initial={{ firstName: "", lastName: "", nationalId: "", licenseDate: "", birthDate: "", phone: "" }}
       emptyIcon={<BsPersonBadge />}
       columns={[
         { key: "firstName", label: c("drivers.firstName") },
         { key: "lastName", label: c("drivers.lastName") },
-        { key: "licenseNo", label: c("drivers.licenseNo") },
+        { key: "nationalId", label: c("drivers.nationalId") },
         { key: "licenseDate", label: c("drivers.licenseDate"), kind: "date" },
         { key: "birthDate", label: c("drivers.birthDate"), kind: "date" },
         { key: "phone", label: c("drivers.phone") },
@@ -30,7 +30,7 @@ const DriversTab = ({ isCreate, contractId, recordLabels, onChange }) => {
       fields={[
         { name: "firstName", label: c("drivers.firstName"), type: "text" },
         { name: "lastName", label: c("drivers.lastName"), type: "text" },
-        { name: "licenseNo", label: c("drivers.licenseNo"), type: "text" },
+        { name: "nationalId", label: c("drivers.nationalId"), type: "text" },
         { name: "licenseDate", label: c("drivers.licenseDate"), type: "date" },
         { name: "birthDate", label: c("drivers.birthDate"), type: "date" },
         { name: "phone", label: c("drivers.phone"), type: "text" },

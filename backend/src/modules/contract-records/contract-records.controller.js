@@ -22,7 +22,7 @@ const syncPaymentToLedger = async (payment) => {
 const RESOURCES = {
   drivers: {
     model: "contractDriver",
-    fields: ["firstName", "lastName", "licenseNo", "licenseDate", "birthDate", "phone"],
+    fields: ["firstName", "lastName", "nationalId", "licenseDate", "birthDate", "phone"],
     required: ["firstName", "lastName"],
     dateFields: ["licenseDate", "birthDate"],
     numberFields: [],

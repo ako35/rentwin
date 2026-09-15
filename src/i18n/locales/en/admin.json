@@ -442,7 +442,7 @@
       "drivers": {
         "firstName": "First Name",
         "lastName": "Last Name",
-        "licenseNo": "License No",
+        "nationalId": "National ID",
         "licenseDate": "License Date",
         "birthDate": "Birth Date",
         "phone": "Phone"
@@ -712,7 +712,7 @@
           "lessorNote": "These are the companies representing the RENTWİN umbrella brand and group under this agreement, hereinafter referred to as \"RENTWİN\" or \"LESSOR\".",
           "driversHeading": "ADDITIONAL DRIVER(S)",
           "driversName": "Full Name",
-          "driversLicense": "License No",
+          "driversNationalId": "National ID",
           "driversPhone": "Phone",
           "summaryTitle": "KEY RENTAL DETAILS (ANNEX-1 SUMMARY)",
           "sumDate": "Agreement Date",

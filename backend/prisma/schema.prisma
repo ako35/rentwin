@@ -462,7 +462,7 @@ model ContractDriver {
   contract    Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
   firstName   String
   lastName    String
-  licenseNo   String?
+  nationalId  String?
   licenseDate DateTime?
   birthDate   DateTime?
   phone       String?
