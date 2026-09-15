@@ -1079,9 +1079,6 @@
     "none": "Nothing upcoming",
     "col": {
       "plate": "Plate",
-      "vehicle": "Vehicle",
-      "date": "Expiry Date",
-      "remaining": "Remaining",
       "contractNo": "Contract No",
       "customer": "Customer",
       "closedAt": "Closed On"

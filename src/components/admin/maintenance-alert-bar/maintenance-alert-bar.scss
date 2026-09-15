@@ -70,6 +70,44 @@
         color: var(--rw-ink-soft);
     }
 
+    // Plate-only chips for the category panels (Sigorta/Kasko/MTV/Muayene/Bakım) —
+    // no per-row date/remaining-days columns, just a clickable plate that jumps
+    // straight to the vehicle's matching record tab. --rw-panel keeps the chip
+    // background correct in both themes without a separate dark override.
+    &__chips {
+        @include m.flexbox(row, flex-start, center, 0.5rem);
+        flex-wrap: wrap;
+    }
+
+    &__chip {
+        border: 1.5px solid v.$color1;
+        border-radius: 6px;
+        padding: 0.3rem 0.65rem;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        color: v.$color1;
+        background-color: var(--rw-panel);
+        cursor: pointer;
+        transition: background-color 0.12s ease, color 0.12s ease;
+
+        &:hover {
+            background-color: v.$color1;
+            color: #fff;
+        }
+
+        &--overdue {
+            border-color: #c0392b;
+            color: #c0392b;
+
+            &:hover {
+                background-color: #c0392b;
+                color: #fff;
+            }
+        }
+    }
+
     &__table {
         width: 100%;
         border-collapse: collapse;
@@ -100,22 +138,6 @@
 
         tbody tr:last-child td {
             border-bottom: none;
-        }
-
-        // Plaka | Araç | Tarih | Kalan Süre
-        th:nth-child(1),
-        td:nth-child(1) { width: 22%; }
-        th:nth-child(2),
-        td:nth-child(2) { width: 38%; }
-        th:nth-child(3),
-        td:nth-child(3) { width: 20%; }
-        th:nth-child(4),
-        td:nth-child(4) { width: 20%; }
-
-        td:nth-child(2) {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
 
         // HGS panel: Kontrat No | Plaka | Müşteri | Kapanış — customer column
@@ -151,15 +173,5 @@
         font-weight: 700;
         color: v.$color1;
         white-space: nowrap;
-    }
-
-    &__days {
-        font-weight: 600;
-        color: v.$color5;
-        white-space: nowrap;
-
-        &--overdue {
-            color: #c0392b;
-        }
     }
 }

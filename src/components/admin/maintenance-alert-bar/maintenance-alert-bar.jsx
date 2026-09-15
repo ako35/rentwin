@@ -86,45 +86,31 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [] }) => {
           {activeList.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.none")}</div>
           ) : (
-            <table className="maintenance-alert-bar__table">
-              <thead>
-                <tr>
-                  <th>{t("alertBar.col.plate")}</th>
-                  <th>{t("alertBar.col.vehicle")}</th>
-                  <th>{t("alertBar.col.date")}</th>
-                  <th>{t("alertBar.col.remaining")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {activeList.map((item) => (
-                  <tr
+            <div className="maintenance-alert-bar__chips">
+              {activeList.map((item) => {
+                const urgent = item.missing || item.daysLeft < 0;
+                const statusText = item.missing
+                  ? t("alertBar.noRecord")
+                  : item.daysLeft < 0
+                    ? t("alertBar.daysOverdue", { days: Math.abs(item.daysLeft) })
+                    : t("alertBar.daysLeft", { days: item.daysLeft });
+                return (
+                  <button
                     key={item.vehicleId + (item.date || "missing")}
-                    className="maintenance-alert-bar__rowlink"
+                    type="button"
+                    className={"maintenance-alert-bar__chip" + (urgent ? " maintenance-alert-bar__chip--overdue" : "")}
+                    title={`${item.name} — ${statusText}`}
                     onClick={() =>
                       navigate(
                         `${constants.routes.adminVehicles}/${item.vehicleId}?tab=${VEHICLE_TAB_BY_CATEGORY[open]}`
                       )
                     }
                   >
-                    <td className="maintenance-alert-bar__plate">{item.plate}</td>
-                    <td>{item.name}</td>
-                    <td>{item.missing ? "—" : utils.functions.getDate(item.date)}</td>
-                    <td
-                      className={
-                        "maintenance-alert-bar__days" +
-                        (item.missing || item.daysLeft < 0 ? " maintenance-alert-bar__days--overdue" : "")
-                      }
-                    >
-                      {item.missing
-                        ? t("alertBar.noRecord")
-                        : item.daysLeft < 0
-                          ? t("alertBar.daysOverdue", { days: Math.abs(item.daysLeft) })
-                          : t("alertBar.daysLeft", { days: item.daysLeft })}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    {item.plate}
+                  </button>
+                );
+              })}
+            </div>
           )}
         </div>
       )}
