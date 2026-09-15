@@ -218,6 +218,7 @@ export const adminReservationBookingValidationSchema = Yup.object({
     dropOffDate: Yup.string().required(t("adminReservation.dropOffDateRequired")),
     dropOffTime: Yup.string().required(t("adminReservation.dropOffTimeRequired")),
     carId: Yup.string().required(t("adminReservation.carRequired")),
+    userId: Yup.string().required(t("adminReservation.customerRequired")),
 });
 
 // VEHICLE SUB-RECORD FORMS (insurance / tax / maintenance / inspection)

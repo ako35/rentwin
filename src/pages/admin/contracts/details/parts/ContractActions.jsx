@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button, Dropdown, Spinner } from "react-bootstrap";
 import { constants } from "../../../../../constants";
+import { FormErrorSummary } from "../../../../../components";
 import "./contract-actions.scss";
 
 const PRINT_DOCS = ["sozlesme", "ek1", "tutanak"];
@@ -12,7 +13,7 @@ const PRINT_DOCS = ["sozlesme", "ek1", "tutanak"];
 // Edit (open): "Kontratı İptal Et", "Sil" | "Yazdır ▾", "Araç Teslim Al", "Kaydet".
 // Edit (closed DONE/CANCELLED): the form is read-only, so only "Geri Aç" shows.
 const ContractActions = ({
-  isCreate, contractId, updating, deleting, canSave, status,
+  isCreate, contractId, updating, deleting, canSave, status, errors,
   onDiscard, onDelete, onVehicleReturn, onCancelContract, onReopen,
 }) => {
   const { t } = useTranslation("admin");
@@ -47,6 +48,7 @@ const ContractActions = ({
           </Button>
         </div>
         <div className="contract-page__actionbar-right">
+          <FormErrorSummary errors={errors} />
           <Button type="submit" disabled={!canSave || updating}>
             {updating && <Spinner animation="border" size="sm" />} {c("createSave")}
           </Button>

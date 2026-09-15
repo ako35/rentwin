@@ -108,6 +108,7 @@ const ContractDetail = () => {
     validationSchema: utils.validations.adminReservationDetailsFormValidationSchema,
     onSubmit,
     enableReinitialize: true,
+    validateOnMount: true,
   });
 
   // Create mode: keep the vehicle picker limited to cars actually free for the
@@ -325,6 +326,7 @@ const ContractDetail = () => {
           updating={updating}
           deleting={deleting}
           canSave={isCreate ? formik.isValid : formik.isValid && formik.dirty}
+          errors={isCreate ? formik.errors : undefined}
           status={contractStatus}
           onDiscard={() => navigate(routes.adminContracts)}
           onDelete={handleDelete}

@@ -6,7 +6,7 @@ import { Button, Form, Spinner } from "react-bootstrap";
 import moment from "moment/moment";
 import { services } from "../../../../services";
 import { utils } from "../../../../utils";
-import { CustomForm, Loading } from "../../../../components";
+import { CustomForm, FormErrorSummary, Loading } from "../../../../components";
 import { constants } from "../../../../constants";
 import {
   custLabel,
@@ -82,6 +82,7 @@ const AdminReservationFormPage = () => {
     validationSchema: utils.validations.adminReservationBookingValidationSchema,
     onSubmit,
     enableReinitialize: true,
+    validateOnMount: true,
   });
 
   useEffect(() => {
@@ -242,8 +243,10 @@ const AdminReservationFormPage = () => {
           <Button variant="outline-secondary" type="button" disabled={saving} onClick={() => navigate(routes.adminReservations)}>
             {c("discard")}
           </Button>
-          <span className="contract-page__actions-spacer" />
-          <Button type="submit" disabled={!formik.isValid || !formik.values.userId || saving}>
+          <div className="contract-page__actions-spacer">
+            <FormErrorSummary errors={formik.errors} />
+          </div>
+          <Button type="submit" disabled={!formik.isValid || saving}>
             {saving && <Spinner animation="border" size="sm" />} {c(isCreate ? "create" : "save")}
           </Button>
         </div>

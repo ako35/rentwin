@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { constants } from "../../../../constants";
 import { utils } from "../../../../utils";
-import { VehicleForm } from "../../../../components";
+import { FormErrorSummary, VehicleForm } from "../../../../components";
 import { services } from "../../../../services";
 import "./style.scss";
 
@@ -36,12 +36,14 @@ const AdminNewVehiclePage = () => {
   const formik = useFormik({
     initialValues: utils.initialValues.adminNewVehicleFormInitialValues,
     validationSchema: utils.validations.adminVehicleFormValidationSchema,
+    validateOnMount: true,
     onSubmit,
   });
 
   return (
     <Form noValidate onSubmit={formik.handleSubmit}>
       <VehicleForm mode="create" formik={formik}>
+        <FormErrorSummary errors={formik.errors} className="me-auto" />
         <ButtonGroup>
           <Button
             variant="outline-primary"

@@ -25,6 +25,7 @@ import ContactInfo from './common/contact/info/info'
 import ContactMap from './common/contact/map/map'
 import CustomForm from './common/custom-form/custom-form'
 import CustomPagination from './common/custom-pagination/custom-pagination'
+import FormErrorSummary from './common/form-error-summary/form-error-summary'
 import GaugeChart from './common/gauge-chart/gauge-chart'
 import LanguageSwitcher from './common/language-switcher/language-switcher'
 import QuickLink from './common/footer/quick-link/quick-link'
@@ -86,6 +87,7 @@ export{
     ContactMap,
     CustomForm,
     CustomPagination,
+    FormErrorSummary,
     GaugeChart,
     LanguageSwitcher,
     QuickLink,

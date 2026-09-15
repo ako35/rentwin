@@ -6,7 +6,7 @@ import { Form, Button, Spinner } from "react-bootstrap";
 import { constants } from "../../../../constants";
 import { services } from "../../../../services";
 import { utils } from "../../../../utils";
-import { CustomForm } from "../../../../components";
+import { CustomForm, FormErrorSummary } from "../../../../components";
 import DocumentScan from "../../../../components/admin/customer-form/document-scan";
 import { applyExtractedCustomerFields } from "../../../../components/admin/customer-form/apply-extracted";
 import { TR_PROVINCES, TR_DISTRICTS } from "../../../../constants/tr-geo";
@@ -175,7 +175,9 @@ const AdminNewCustomerPage = () => {
       </section>
 
       <div className="customer-form__actions">
-        <span className="customer-form__actions-spacer" />
+        <div className="customer-form__actions-spacer">
+          <FormErrorSummary errors={formik.errors} />
+        </div>
         <Button variant="outline-secondary" type="button" onClick={() => navigate(routes.adminUsers)}>
           {t("users.cancel")}
         </Button>
