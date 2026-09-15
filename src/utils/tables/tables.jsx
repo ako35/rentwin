@@ -64,16 +64,16 @@ export const getAdminVehiclesColumns = (t, tCommon, showSold = false) => {
             ),
         },
         {
+            name: t("table.vehicle.plate"),
+            selector: (row) => row?.licensePlate,
+        },
+        {
             name: t("table.vehicle.brand"),
             selector: (row) => row?.brand,
         },
         {
             name: t("table.vehicle.model"),
             selector: (row) => row?.model,
-        },
-        {
-            name: t("table.vehicle.plate"),
-            selector: (row) => row?.licensePlate,
         },
         {
             name: t("table.vehicle.branch"),

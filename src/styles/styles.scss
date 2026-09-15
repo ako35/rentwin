@@ -109,6 +109,22 @@ textarea.is-invalid {
     color: $accent-rose;
 }
 
+// Valid-state checkmark icon removed everywhere — it isn't needed, and on
+// <input type="date"/"time"> it collided with the browser's own picker icon.
+.form-control.is-valid,
+textarea.is-valid {
+    background-image: none;
+    padding-right: $input-padding-x;
+}
+
+.form-select.is-valid:not([multiple]):not([size]),
+.form-select.is-valid:not([multiple])[size="1"] {
+    --#{$prefix}form-select-bg-icon: none;
+    background-position: $form-select-bg-position;
+    background-size: $form-select-bg-size;
+    padding-right: $form-select-indicator-padding;
+}
+
 // SweetAlert2 — brand polish the SCSS vars can't reach: soft-tinted icon disc,
 // rounded / weighted buttons, brand focus rings, and the danger-mode confirm
 // button emitted by swalQuestion({ danger: true }) for destructive actions.
