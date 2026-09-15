@@ -16,11 +16,20 @@ const emptyForm = () => ({
   id: null,
   number: "",
   issuedAt: moment().format("YYYY-MM-DD"),
+  periodFrom: "",
+  periodTo: "",
   grossAmount: "",
   customerTitle: "",
   taxNo: "",
   note: "",
 });
+
+const fmtPeriod = (from, to) => {
+  if (!from && !to) return "—";
+  const f = from ? moment(from).format("DD.MM.YYYY") : "…";
+  const tt = to ? moment(to).format("DD.MM.YYYY") : "…";
+  return `${f} – ${tt}`;
+};
 
 const InvoiceTab = ({ isCreate, contractId, invoices, onInvoicesChange, total, vatRate, money }) => {
   const { t } = useTranslation("admin");
@@ -43,6 +52,8 @@ const InvoiceTab = ({ isCreate, contractId, invoices, onInvoicesChange, total, v
       id: inv.id,
       number: inv.number || "",
       issuedAt: moment(inv.issuedAt).format("YYYY-MM-DD"),
+      periodFrom: inv.periodFrom ? moment(inv.periodFrom).format("YYYY-MM-DD") : "",
+      periodTo: inv.periodTo ? moment(inv.periodTo).format("YYYY-MM-DD") : "",
       grossAmount: inv.grossAmount != null ? String(inv.grossAmount) : "",
       customerTitle: inv.customerTitle || "",
       taxNo: inv.taxNo || "",
@@ -59,6 +70,8 @@ const InvoiceTab = ({ isCreate, contractId, invoices, onInvoicesChange, total, v
         await services.contract.updateInvoice(form.id, {
           number: form.number.trim(),
           issuedAt: form.issuedAt,
+          periodFrom: form.periodFrom,
+          periodTo: form.periodTo,
           grossAmount: gross ?? 0,
           customerTitle: form.customerTitle.trim(),
           taxNo: form.taxNo.trim(),
@@ -68,6 +81,8 @@ const InvoiceTab = ({ isCreate, contractId, invoices, onInvoicesChange, total, v
         await services.contract.createInvoice(contractId, {
           number: form.number.trim() || undefined,
           issuedAt: form.issuedAt || undefined,
+          periodFrom: form.periodFrom || undefined,
+          periodTo: form.periodTo || undefined,
           grossAmount: gross,
           customerTitle: form.customerTitle.trim() || undefined,
           taxNo: form.taxNo.trim() || undefined,
@@ -124,6 +139,7 @@ const InvoiceTab = ({ isCreate, contractId, invoices, onInvoicesChange, total, v
           <tr>
             <th>{c("invoice.number")}</th>
             <th>{c("invoice.issuedAt")}</th>
+            <th>{c("invoice.period")}</th>
             <th>{c("invoice.customer")}</th>
             <th className="text-end">{c("invoice.gross")}</th>
             <th className="text-end">{rc("actions")}</th>
@@ -132,7 +148,7 @@ const InvoiceTab = ({ isCreate, contractId, invoices, onInvoicesChange, total, v
         <tbody>
           {list.length === 0 && (
             <tr>
-              <td colSpan={5}>
+              <td colSpan={6}>
                 <div className="contract-records__empty">
                   <BsReceipt />
                   <span>{c("invoice.none")}</span>
@@ -144,6 +160,7 @@ const InvoiceTab = ({ isCreate, contractId, invoices, onInvoicesChange, total, v
             <tr key={inv.id} className={form?.id === inv.id ? "table-active" : ""}>
               <td>{inv.number}</td>
               <td>{utils.functions.getDate(inv.issuedAt)}</td>
+              <td>{fmtPeriod(inv.periodFrom, inv.periodTo)}</td>
               <td>{inv.customerTitle || "—"}</td>
               <td className="text-end">{money(inv.grossAmount)} TL</td>
               <td className="contract-records__actions text-end">
@@ -176,6 +193,24 @@ const InvoiceTab = ({ isCreate, contractId, invoices, onInvoicesChange, total, v
             <Form.Group>
               <Form.Label>{c("invoice.issuedAt")}</Form.Label>
               <Form.Control type="date" value={form.issuedAt} onChange={set("issuedAt")} />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>{c("invoice.periodFrom")}</Form.Label>
+              <Form.Control
+                type="date"
+                value={form.periodFrom}
+                max={form.periodTo || undefined}
+                onChange={set("periodFrom")}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>{c("invoice.periodTo")}</Form.Label>
+              <Form.Control
+                type="date"
+                value={form.periodTo}
+                min={form.periodFrom || undefined}
+                onChange={set("periodTo")}
+              />
             </Form.Group>
             <Form.Group>
               <Form.Label>{c("invoice.amount")}</Form.Label>

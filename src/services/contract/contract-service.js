@@ -170,6 +170,15 @@ export const getHgsPendingContracts = async ({ branchId } = {}) => {
   return response.data;
 };
 
+// Admin dashboard alert bar: closed contracts with zero invoices raised.
+export const getInvoicePendingContracts = async ({ branchId } = {}) => {
+  const response = await axios.get(
+    `${API_URL}/contracts/admin/invoice-pending/auth${branchId ? `?branchId=${branchId}` : ""}`,
+    services.authHeader()
+  );
+  return response.data;
+};
+
 export const downloadContractReports = async () => {
   const token = services.encryptedLocalStorage.getItem("rentwintoken");
   const response = await axios.get(`${API_URL}/excel/download/contracts`, {

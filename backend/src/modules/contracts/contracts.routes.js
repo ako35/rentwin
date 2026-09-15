@@ -9,6 +9,7 @@ const {
   deleteContract,
   getAdminSchedule,
   getHgsPendingContracts,
+  getInvoicePendingContracts,
   returnContract,
   cancelContract,
   reopenContract,
@@ -29,6 +30,12 @@ const router = Router();
 
 router.get("/contracts/admin/schedule/auth", authenticate, requireAdmin, getAdminSchedule);
 router.get("/contracts/admin/hgs-pending/auth", authenticate, requireAdmin, getHgsPendingContracts);
+router.get(
+  "/contracts/admin/invoice-pending/auth",
+  authenticate,
+  requireAdmin,
+  getInvoicePendingContracts
+);
 router.get("/contracts/admin/all/auth", authenticate, requireAdmin, getContractsByPage);
 router.get("/contracts/admin/by-user/:userId/auth", authenticate, requireAdmin, getContractsByUser);
 router.get("/contracts/admin/available-cars/auth", authenticate, requireAdmin, getAvailableCarsAdmin);

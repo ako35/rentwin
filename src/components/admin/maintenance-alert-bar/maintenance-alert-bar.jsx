@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { GiCarWheel, GiMechanicGarage } from "react-icons/gi";
-import { BsShieldCheck, BsShield, BsReceipt, BsSignpost2 } from "react-icons/bs";
+import { BsShieldCheck, BsShield, BsReceipt, BsSignpost2, BsFileEarmarkText } from "react-icons/bs";
 import { utils } from "../../../utils";
 import { constants } from "../../../constants";
 import "./maintenance-alert-bar.scss";
@@ -16,6 +16,7 @@ const CATEGORIES = [
 ];
 
 const HGS_KEY = "hgsPending";
+const INVOICE_KEY = "invoicePending";
 
 // Maps an alert category to the vehicle-detail record tab it belongs to —
 // Sigorta and Kasko are both entries on the vehicle form's single "insurance"
@@ -31,14 +32,44 @@ const VEHICLE_TAB_BY_CATEGORY = {
 const custName = (u) =>
   (u?.companyTitle || `${u?.firstName || ""} ${u?.lastName || ""}`.trim() || "—");
 
-const MaintenanceAlertBar = ({ alerts, hgsPending = [] }) => {
+// HGS Kontrolü and Fatura Bekleyen are the same row shape (closed contracts
+// that still need something done) — one shared table for both.
+const ClosedContractsTable = ({ rows, onRowClick }) => {
+  const { t } = useTranslation("admin");
+  return (
+    <table className="maintenance-alert-bar__table maintenance-alert-bar__table--hgs">
+      <thead>
+        <tr>
+          <th>{t("alertBar.col.contractNo")}</th>
+          <th>{t("alertBar.col.plate")}</th>
+          <th>{t("alertBar.col.customer")}</th>
+          <th>{t("alertBar.col.closedAt")}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr key={row.id} className="maintenance-alert-bar__rowlink" onClick={() => onRowClick(row)}>
+            <td>{row.contractNo || "—"}</td>
+            <td className="maintenance-alert-bar__plate">{row.car?.licensePlate || "—"}</td>
+            <td title={custName(row.user)}>{custName(row.user)}</td>
+            <td>{utils.functions.getDate(row.returnedAt || row.dropOffTime)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+const MaintenanceAlertBar = ({ alerts, hgsPending = [], invoicePending = [] }) => {
   const { t } = useTranslation("admin");
   const navigate = useNavigate();
   const [open, setOpen] = useState(null);
 
   const categories = alerts?.categories || {};
 
-  const activeList = open && open !== HGS_KEY ? categories[open] || [] : [];
+  const activeList = open && open !== HGS_KEY && open !== INVOICE_KEY ? categories[open] || [] : [];
+
+  const goToContract = (row) => navigate(`${constants.routes.adminContracts}/${row.id}`);
 
   return (
     <div className="maintenance-alert-bar">
@@ -75,10 +106,22 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [] }) => {
           >
             <BsSignpost2 /> {t("alertBar.hgs")} ({hgsPending.length})
           </button>
+
+          <button
+            type="button"
+            className={
+              "maintenance-alert-bar__tab" +
+              (invoicePending.length ? " maintenance-alert-bar__tab--due maintenance-alert-bar__tab--overdue" : "") +
+              (open === INVOICE_KEY ? " maintenance-alert-bar__tab--active" : "")
+            }
+            onClick={() => setOpen(open === INVOICE_KEY ? null : INVOICE_KEY)}
+          >
+            <BsFileEarmarkText /> {t("alertBar.invoicePending")} ({invoicePending.length})
+          </button>
         </div>
       </div>
 
-      {open && open !== HGS_KEY && (
+      {open && open !== HGS_KEY && open !== INVOICE_KEY && (
         <div className="maintenance-alert-bar__panel">
           <div className="maintenance-alert-bar__panel-head">
             {t(`alertBar.${open}`)} — {t("alertBar.dueWithin", { days: alerts?.windowDays?.[open] ?? 30 })}
@@ -121,30 +164,18 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [] }) => {
           {hgsPending.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.hgsNone")}</div>
           ) : (
-            <table className="maintenance-alert-bar__table maintenance-alert-bar__table--hgs">
-              <thead>
-                <tr>
-                  <th>{t("alertBar.col.contractNo")}</th>
-                  <th>{t("alertBar.col.plate")}</th>
-                  <th>{t("alertBar.col.customer")}</th>
-                  <th>{t("alertBar.col.closedAt")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {hgsPending.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="maintenance-alert-bar__rowlink"
-                    onClick={() => navigate(`${constants.routes.adminContracts}/${row.id}`)}
-                  >
-                    <td>{row.contractNo || "—"}</td>
-                    <td className="maintenance-alert-bar__plate">{row.car?.licensePlate || "—"}</td>
-                    <td title={custName(row.user)}>{custName(row.user)}</td>
-                    <td>{utils.functions.getDate(row.returnedAt || row.dropOffTime)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <ClosedContractsTable rows={hgsPending} onRowClick={goToContract} />
+          )}
+        </div>
+      )}
+
+      {open === INVOICE_KEY && (
+        <div className="maintenance-alert-bar__panel">
+          <div className="maintenance-alert-bar__panel-head">{t("alertBar.invoicePendingHead")}</div>
+          {invoicePending.length === 0 ? (
+            <div className="maintenance-alert-bar__empty">{t("alertBar.invoicePendingNone")}</div>
+          ) : (
+            <ClosedContractsTable rows={invoicePending} onRowClick={goToContract} />
           )}
         </div>
       )}

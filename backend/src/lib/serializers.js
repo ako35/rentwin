@@ -74,6 +74,13 @@ const serializeHgsPendingRow = (contract) => ({
   hgsStatus: contract.hgsStatus || null,
 });
 
+// Admin dashboard "invoice pending" bar: same lightweight shape as the HGS
+// panel — a closed contract with zero Invoice rows still needs one raised.
+const serializeInvoicePendingRow = (contract) => ({
+  ...serializeScheduleRow(contract),
+  returnedAt: contract.returnedAt || null,
+});
+
 module.exports = {
   serializeUser,
   serializeVehicle,
@@ -82,4 +89,5 @@ module.exports = {
   serializeReservation,
   serializeScheduleRow,
   serializeHgsPendingRow,
+  serializeInvoicePendingRow,
 };

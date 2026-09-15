@@ -446,6 +446,8 @@ model Invoice {
   contract      Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
   number        String   @unique
   issuedAt      DateTime @default(now())
+  periodFrom    DateTime? // billing period this invoice covers (e.g. one month of a monthly rental)
+  periodTo      DateTime?
   netAmount     Float    @default(0)
   taxAmount     Float    @default(0)
   grossAmount   Float    @default(0)

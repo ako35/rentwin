@@ -1,7 +1,12 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const { parseFrontendDateTime, resolveWindow } = require("../../lib/dates");
-const { serializeScheduleRow, serializeVehicle, serializeHgsPendingRow } = require("../../lib/serializers");
+const {
+  serializeScheduleRow,
+  serializeVehicle,
+  serializeHgsPendingRow,
+  serializeInvoicePendingRow,
+} = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 const { ALLOWED_SORT_FIELDS } = require("./contracts.shared");
@@ -447,6 +452,24 @@ const getHgsPendingContracts = asyncHandler(async (req, res) => {
   res.json(contracts.map(serializeHgsPendingRow));
 });
 
+// Closed contracts that have never had an invoice raised against them — same
+// gate as the HGS panel (only once the car is actually back, status DONE),
+// oldest-closed first so the longest-outstanding ones sit at the top.
+const getInvoicePendingContracts = asyncHandler(async (req, res) => {
+  const { branchId } = req.query;
+  const contracts = await prisma.contract.findMany({
+    where: {
+      status: "DONE",
+      invoices: { none: {} },
+      ...(branchId ? { car: { branchId } } : {}),
+    },
+    orderBy: [{ returnedAt: "asc" }, { dropOffTime: "asc" }],
+    include: { car: { include: { branch: true } }, user: true },
+  });
+
+  res.json(contracts.map(serializeInvoicePendingRow));
+});
+
 module.exports = {
   getContractsByPage,
   getContractsByUser,
@@ -455,6 +478,7 @@ module.exports = {
   deleteContract,
   getAdminSchedule,
   getHgsPendingContracts,
+  getInvoicePendingContracts,
   returnContract,
   cancelContract,
   reopenContract,

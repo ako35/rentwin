@@ -312,6 +312,15 @@ const parseIssuedAt = (value) => {
   return d;
 };
 
+// Billing period the invoice covers (e.g. one month of a monthly rental) —
+// unlike issuedAt, blank means "not set", not "today".
+const parsePeriodDate = (value) => {
+  if (!value) return null;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) throw new HttpError(400, "Invalid invoice period date.");
+  return d;
+};
+
 const P2002 = (err) => {
   if (err.code === "P2002") {
     throw new HttpError(409, "That invoice number is already in use.", "INVOICE_NUMBER_TAKEN");
@@ -352,6 +361,11 @@ const createInvoice = asyncHandler(async (req, res) => {
 
   const number = (req.body.number || "").trim() || (await nextInvoiceNumber());
   const issuedAt = parseIssuedAt(req.body.issuedAt);
+  const periodFrom = parsePeriodDate(req.body.periodFrom);
+  const periodTo = parsePeriodDate(req.body.periodTo);
+  if (periodFrom && periodTo && periodTo < periodFrom) {
+    throw new HttpError(400, "Invoice period end must be on or after its start.");
+  }
 
   const requestedGross = num(req.body.grossAmount);
   const gross = requestedGross != null ? requestedGross : contract.totalPrice || 0;
@@ -375,6 +389,8 @@ const createInvoice = asyncHandler(async (req, res) => {
         contractId: contract.id,
         number,
         issuedAt,
+        periodFrom,
+        periodTo,
         ...splitVat(gross, contract.vatRate),
         customerTitle: (req.body.customerTitle || "").trim() || defaultTitle,
         taxNo: (req.body.taxNo || "").trim() || defaultTaxNo,
@@ -401,6 +417,11 @@ const updateInvoice = asyncHandler(async (req, res) => {
     data.number = number;
   }
   if (req.body.issuedAt !== undefined) data.issuedAt = parseIssuedAt(req.body.issuedAt);
+  if (req.body.periodFrom !== undefined) data.periodFrom = parsePeriodDate(req.body.periodFrom);
+  if (req.body.periodTo !== undefined) data.periodTo = parsePeriodDate(req.body.periodTo);
+  if (data.periodFrom && data.periodTo && data.periodTo < data.periodFrom) {
+    throw new HttpError(400, "Invoice period end must be on or after its start.");
+  }
   if (req.body.grossAmount !== undefined) {
     const gross = num(req.body.grossAmount);
     if (gross == null || gross < 0) throw new HttpError(400, "Invalid invoice amount.");
