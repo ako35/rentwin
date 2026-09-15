@@ -12,6 +12,8 @@ import {
   getCurrentDate,
   getDate,
   getTime,
+  getDateUTC,
+  getTimeUTC,
 } from "./functions/functions";
 
 // INITIAL VALUES
@@ -72,6 +74,8 @@ export const utils = {
     getCurrentDate,
     getDate,
     getTime,
+    getDateUTC,
+    getTimeUTC,
   },
   initialValues: {
     loginFormInitialValues,

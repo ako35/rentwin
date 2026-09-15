@@ -152,8 +152,8 @@ const AdminReservationsPage = () => {
                 const locked = r.status === "CANCELLED" || r.status === "CONVERTED";
                 return (
                   <tr key={r.id}>
-                    <td>{utils.functions.getDate(r.pickUpTime)}</td>
-                    <td>{utils.functions.getDate(r.dropOffTime)}</td>
+                    <td>{utils.functions.getDateUTC(r.pickUpTime)}</td>
+                    <td>{utils.functions.getDateUTC(r.dropOffTime)}</td>
                     <td className="contract-list__plate">{r.plate || "—"}</td>
                     <td className="contract-list__customer">{r.customerName}</td>
                     <td>{r.branchCode || "—"}</td>

@@ -231,7 +231,7 @@ const VehicleChangeTab = ({
               <span className="vct-timeline__dot" />
               <div className="vct-timeline__card">
                 <div className="vct-timeline__time">
-                  {utils.functions.getDate(vc.changeDate)} · {utils.functions.getTime(vc.changeDate)}
+                  {utils.functions.getDateUTC(vc.changeDate)} · {utils.functions.getTimeUTC(vc.changeDate)}
                 </div>
                 <div className="vct-timeline__swap">
                   <span className="vct-chip vct-chip--old">{vc.previousCarLabel}</span>

@@ -145,4 +145,21 @@ export const getDate = (dateTime) => {
 
 export const getTime = (dateTime) => {
     return moment(dateTime).format("HH:mm")
-} 
+}
+
+// UTC counterparts of getDate/getTime for "wall-clock, no timezone" fields —
+// contract/reservation pickUpTime & dropOffTime, extension newDropOff, vehicle
+// change changeDate. combineDateAndTime sends whatever the operator typed
+// as-is (no TZ math) and the backend stores it as if it were UTC (see
+// backend/src/lib/dates.js parseFrontendDateTime), so reading it back must
+// also skip the browser's local offset — plain moment(dateTime) re-applies
+// it and can roll the date over near midnight (e.g. an entered 22:35 comes
+// back as 01:35 the *next* day for a UTC+3 browser). Same fix already used
+// by the contract print pages (see pages/admin/contracts/print/page.jsx).
+export const getDateUTC = (dateTime) => {
+    return moment.utc(dateTime).format("YYYY-MM-DD")
+}
+
+export const getTimeUTC = (dateTime) => {
+    return moment.utc(dateTime).format("HH:mm")
+}

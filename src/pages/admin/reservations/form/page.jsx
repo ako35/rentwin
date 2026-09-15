@@ -100,10 +100,10 @@ const AdminReservationFormPage = () => {
             userId: r.userId,
             pickUpLocation: r.pickUpLocation,
             dropOffLocation: r.dropOffLocation,
-            pickUpDate: utils.functions.getDate(r.pickUpTime),
-            pickUpTime: utils.functions.getTime(r.pickUpTime),
-            dropOffDate: utils.functions.getDate(r.dropOffTime),
-            dropOffTime: utils.functions.getTime(r.dropOffTime),
+            pickUpDate: utils.functions.getDateUTC(r.pickUpTime),
+            pickUpTime: utils.functions.getTimeUTC(r.pickUpTime),
+            dropOffDate: utils.functions.getDateUTC(r.dropOffTime),
+            dropOffTime: utils.functions.getTimeUTC(r.dropOffTime),
             note: r.note || "",
           });
           setCustQuery(custLabel(r.customer));

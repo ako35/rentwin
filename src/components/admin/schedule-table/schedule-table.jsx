@@ -86,7 +86,16 @@ const ScheduleTable = ({ title, type, dateField, branchId, source = "contract", 
             {!loading &&
               rows.map((row) => {
                 const target = row[dateField];
-                const daysRemaining = moment(target).startOf("day").diff(moment().startOf("day"), "days");
+                // target is a wall-clock pickUp/dropOff value (see
+                // utils/functions/functions.js getDateUTC) — read its calendar
+                // date with the UTC-based helper first, then diff two local
+                // midnights. Diffing moment.utc(target) directly against
+                // moment() would compare different absolute instants (UTC
+                // midnight vs. local midnight) and could throw the day count
+                // off by one near local midnight.
+                const daysRemaining = moment(utils.functions.getDateUTC(target))
+                  .startOf("day")
+                  .diff(moment().startOf("day"), "days");
                 const goToDetails = () =>
                   navigate(`${isReservation ? routes.adminReservations : routes.adminContracts}/${row.id}`);
                 return (
@@ -95,8 +104,8 @@ const ScheduleTable = ({ title, type, dateField, branchId, source = "contract", 
                     onClick={goToDetails}
                     className={daysRemaining < 0 ? "schedule-table__row--overdue" : ""}
                   >
-                    <td>{utils.functions.getDate(target)}</td>
-                    <td>{utils.functions.getTime(target)}</td>
+                    <td>{utils.functions.getDateUTC(target)}</td>
+                    <td>{utils.functions.getTimeUTC(target)}</td>
                     <td className="schedule-table__plate">{row.car?.licensePlate}</td>
                     <td className="schedule-table__vehicle">{row.car?.brand} {row.car?.model}</td>
                     {(() => {

@@ -266,10 +266,10 @@ export const buildContractDto = (values) => ({
 // Merge a loaded reservation onto EMPTY_CONTRACT for formik.
 export const contractToFormValues = (r) => ({
   ...EMPTY_CONTRACT, ...r,
-  pickUpDate: utils.functions.getDate(r.pickUpTime),
-  pickUpTime: utils.functions.getTime(r.pickUpTime),
-  dropOffDate: utils.functions.getDate(r.dropOffTime),
-  dropOffTime: utils.functions.getTime(r.dropOffTime),
+  pickUpDate: utils.functions.getDateUTC(r.pickUpTime),
+  pickUpTime: utils.functions.getTimeUTC(r.pickUpTime),
+  dropOffDate: utils.functions.getDateUTC(r.dropOffTime),
+  dropOffTime: utils.functions.getTimeUTC(r.dropOffTime),
   customerNote: r.customerNote || "", adminNote: r.adminNote || "",
   contractNo: r.contractNo || "", flightNo: r.flightNo || "",
   pickUpKm: r.pickUpKm ?? "",
