@@ -29,18 +29,27 @@ export const useFleetPicklist = (formik) => {
 
   const selectedBrand = (formik.values.brand || "").trim().toLowerCase();
 
-  const brandOptions = useMemo(
-    () => [...new Set(fleet.map((v) => v.brand).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
-    [fleet]
-  );
+  // Always include the vehicle currently being edited's own brand/model, even
+  // if it's the only one of its kind in the fleet — otherwise a one-off value
+  // never counts as "known" and the field is stuck showing the free-text
+  // escape hatch instead of its real dropdown.
+  const brandOptions = useMemo(() => {
+    const own = (formik.values.brand || "").trim();
+    return [...new Set([...fleet.map((v) => v.brand).filter(Boolean), ...(own ? [own] : [])])].sort((a, b) =>
+      a.localeCompare(b)
+    );
+  }, [fleet, formik.values.brand]);
 
   // Models already used for the selected brand; falls back to every known model
   // when the brand is new / unmatched.
   const modelOptions = useMemo(() => {
+    const own = (formik.values.model || "").trim();
     const forBrand = fleet.filter((v) => v.brand.toLowerCase() === selectedBrand && v.model);
     const source = forBrand.length ? forBrand : fleet;
-    return [...new Set(source.map((v) => v.model).filter(Boolean))].sort((a, b) => a.localeCompare(b));
-  }, [fleet, selectedBrand]);
+    return [...new Set([...source.map((v) => v.model).filter(Boolean), ...(own ? [own] : [])])].sort((a, b) =>
+      a.localeCompare(b)
+    );
+  }, [fleet, selectedBrand, formik.values.model]);
 
   // True when the typed plate already belongs to another vehicle (edit mode
   // excludes the vehicle being edited).

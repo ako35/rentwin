@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Col, Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
@@ -12,16 +12,24 @@ const CUSTOM = "__custom__";
 const EditableSelectField = ({ formik, name, label, options = [], onValuePicked }) => {
   const { t } = useTranslation("admin");
   const value = formik.values[name] || "";
-  const isKnown = options.some((o) => o.toLowerCase() === value.toLowerCase());
+  // Trimmed compare — real fleet data has stray leading/trailing spaces
+  // ("FİAT " vs "FİAT"), and without this a value that's genuinely a known
+  // option, just with extra whitespace, reads as unmatched and the field
+  // falls back to the free-text box for no visible reason.
+  const norm = value.trim().toLowerCase();
+  const isKnown = options.some((o) => o.toLowerCase() === norm);
+  // Only the explicit "+ yeni ekle" escape hatch sets this — it must NOT be
+  // latched from a value that merely looked unmatched, or the field gets
+  // stuck showing the free-text box forever even once a real match loads a
+  // moment later (options start empty while the fleet picklist fetch is in
+  // flight, so on mount every value briefly "isn't known").
   const [manual, setManual] = useState(false);
 
-  // When the vehicle being edited has a value that isn't in the (later-loaded)
-  // option list, drop into manual mode so it stays visible/editable.
-  useEffect(() => {
-    if (value && !isKnown) setManual(true);
-  }, [value, isKnown]);
-
-  const forceManual = manual || options.length === 0;
+  // While the option list hasn't loaded yet (empty), keep showing the select
+  // rather than guessing manual — it snaps onto the right option the instant
+  // options arrive. Only once options are actually loaded and the value truly
+  // isn't among them do we fall back to the editable text box.
+  const forceManual = manual || (value !== "" && options.length > 0 && !isKnown);
   const invalid = formik.touched[name] && !!formik.errors[name];
 
   return (
@@ -55,7 +63,7 @@ const EditableSelectField = ({ formik, name, label, options = [], onValuePicked 
         ) : (
           <Form.Select
             name={name}
-            value={isKnown ? options.find((o) => o.toLowerCase() === value.toLowerCase()) : ""}
+            value={isKnown ? options.find((o) => o.toLowerCase() === norm) : ""}
             onChange={(e) => {
               if (e.target.value === CUSTOM) {
                 setManual(true);
