@@ -185,6 +185,16 @@
     }
   }
 
+  &__local-paragraph {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: v.$color5_2;
+
+    & + & {
+      margin-top: 0.75rem;
+    }
+  }
+
   &__map {
     border-radius: 16px;
     overflow: hidden;

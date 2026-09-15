@@ -29,6 +29,15 @@
     "vehiclesCta": "View Vehicles",
     "reserveCta": "Book Now",
     "backToList": "All locations",
-    "notFound": "The location you are looking for was not found."
+    "notFound": "The location you are looking for was not found.",
+    "local": {
+      "aliaga": {
+        "title": "Renting a car in Aliağa",
+        "paragraphs": [
+          "Aliağa is one of İzmir's key industrial hubs, home to the STAR Refinery, the Petkim petrochemical complex and major port facilities. If you're here for business travel, plant visits or shift changes, you can pick up a car from our office in Kültür Mahallesi in minutes.",
+          "From central Aliağa you can easily reach nearby coastal towns like Foça, Yeni Foça and Çandarlı, and we also offer airport delivery and meet-and-greet at İzmir Adnan Menderes Airport. Our office is open 7 days a week: Monday–Friday 09:00–21:00, Saturday 09:00–19:00, Sunday 09:00–17:00."
+        ]
+      }
+    }
   }
 }

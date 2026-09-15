@@ -166,8 +166,9 @@ const website = {
   email: "info@rentwin.com.tr",
   // For schema.org openingHoursSpecification.
   openingHours: [
-    { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "19:00" },
-    { days: ["Saturday"], opens: "09:00", closes: "17:00" },
+    { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "21:00" },
+    { days: ["Saturday"], opens: "09:00", closes: "19:00" },
+    { days: ["Sunday"], opens: "09:00", closes: "17:00" },
   ],
   // Verified public profiles only — an unverifiable sameAs hurts rich results.
   sameAs: [rentwinMapsUrl],

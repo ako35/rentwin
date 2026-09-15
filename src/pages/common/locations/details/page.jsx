@@ -62,6 +62,7 @@ const LocationDetailPage = () => {
   const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(`${name} İzmir`)}&output=embed`;
   const bullets = t("detail.why", { name, returnObjects: true });
   const steps = t("detail.how", { name, returnObjects: true });
+  const local = t(`detail.local.${slug}`, { returnObjects: true, defaultValue: null });
 
   return (
     <>
@@ -121,6 +122,18 @@ const LocationDetailPage = () => {
           {t("detail.faqLead")}{" "}
           <AppLink to={routes.faq}>{t("detail.faqLink")}</AppLink>
         </p>
+
+        {local && (
+          <>
+            <Spacer />
+            <h2 className="location-detail__subtitle">{local.title}</h2>
+            {(Array.isArray(local.paragraphs) ? local.paragraphs : []).map((paragraph, index) => (
+              <p key={index} className="location-detail__local-paragraph">
+                {paragraph}
+              </p>
+            ))}
+          </>
+        )}
 
         <Spacer />
         <h2 className="location-detail__subtitle">

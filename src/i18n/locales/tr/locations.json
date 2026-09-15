@@ -29,6 +29,15 @@
     "vehiclesCta": "Araçları Gör",
     "reserveCta": "Hemen Rezervasyon Yap",
     "backToList": "Tüm lokasyonlar",
-    "notFound": "Aradığınız lokasyon bulunamadı."
+    "notFound": "Aradığınız lokasyon bulunamadı.",
+    "local": {
+      "aliaga": {
+        "title": "Aliağa'da araç kiralama hakkında",
+        "paragraphs": [
+          "Aliağa; STAR Rafineri, Petkim petrokimya kompleksi ve liman tesisleriyle İzmir'in önemli sanayi merkezlerinden biri. İş seyahati, fabrika ziyaretleri veya vardiya değişimleri için araç kiralamak isteyenler Rentwin'in Kültür Mahallesi'ndeki ofisinden dakikalar içinde araç teslim alabilir.",
+          "Aliağa merkezden Foça, Yeni Foça ve Çandarlı'daki tatil beldelerine kolayca ulaşabilir, İzmir Adnan Menderes Havalimanı'na teslim ve karşılama hizmetimizden yararlanabilirsiniz. Ofisimiz haftanın 7 günü açık: Pazartesi–Cuma 09:00–21:00, Cumartesi 09:00–19:00, Pazar 09:00–17:00."
+        ]
+      }
+    }
   }
 }
