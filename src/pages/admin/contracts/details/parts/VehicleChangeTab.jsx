@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
+import { buildFuelEighthsOptions } from "../../../../../utils/fuel-eighths";
 import { buildVehicleOptions } from "../contract-helpers";
 import SaveFirstHint from "./SaveFirstHint";
 import "./vehicle-change-tab.scss";
@@ -13,8 +14,6 @@ const EMPTY_FORM = {
   newCarKm: "", newCarFuelEighths: "",
   note: "",
 };
-
-const FUEL_MARKS = { 0: true, 2: true, 4: true, 6: true, 8: true };
 
 const splitDateTime = (value) => {
   const [d, tm] = (value || "").split("T");
@@ -27,26 +26,6 @@ const nowLocalValue = () => {
   return `${n.getFullYear()}-${pad(n.getMonth() + 1)}-${pad(n.getDate())}T${pad(n.getHours())}:${pad(n.getMinutes())}`;
 };
 
-const FuelPicker = ({ value, onChange, disabled }) => (
-  <div className={`vct-fuel${disabled ? " vct-fuel--disabled" : ""}`}>
-    {Array.from({ length: 9 }, (_, n) => {
-      const active = String(value) === String(n);
-      return (
-        <button
-          key={n}
-          type="button"
-          disabled={disabled}
-          title={`${n}/8`}
-          className={`vct-fuel__pill${active ? " is-active" : ""}${FUEL_MARKS[n] ? " vct-fuel__pill--mark" : ""}`}
-          onClick={() => onChange(active ? "" : String(n))}
-        >
-          {n}/8
-        </button>
-      );
-    })}
-  </div>
-);
-
 // Sub tab: swap the vehicle mid-contract. The car picker only lists vehicles
 // actually free from the change date through the contract's existing drop-off;
 // each swap is logged (previous/new car snapshot) and repoints Contract.carId —
@@ -56,6 +35,7 @@ const VehicleChangeTab = ({
 }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.${key}`, opts);
+  const fuelOptions = buildFuelEighthsOptions(t);
   const [form, setForm] = useState(EMPTY_FORM);
   const [availableCars, setAvailableCars] = useState([]);
   const [loadingCars, setLoadingCars] = useState(false);
@@ -89,7 +69,6 @@ const VehicleChangeTab = ({
   if (isCreate) return <SaveFirstHint />;
 
   const setField = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
-  const setFuel = (key) => (val) => setForm((f) => ({ ...f, [key]: val }));
 
   // Picking the new vehicle also pulls its current odometer + fuel gauge in as
   // a starting point (same prefill-then-editable pattern as the contract's own
@@ -173,7 +152,11 @@ const VehicleChangeTab = ({
             </Form.Group>
             <Form.Group className="vct__field">
               <Form.Label>{c("vehicleChange.returnFuelLevel")}</Form.Label>
-              <FuelPicker value={form.returnFuelEighths} onChange={setFuel("returnFuelEighths")} />
+              <Form.Select size="sm" value={form.returnFuelEighths} onChange={setField("returnFuelEighths")}>
+                {fuelOptions.map((o) => (
+                  <option key={o.id} value={o.value}>{o.name}</option>
+                ))}
+              </Form.Select>
             </Form.Group>
           </section>
 
@@ -196,11 +179,16 @@ const VehicleChangeTab = ({
             </Form.Group>
             <Form.Group className="vct__field">
               <Form.Label>{c("vehicleChange.newCarFuelLevel")}</Form.Label>
-              <FuelPicker
+              <Form.Select
+                size="sm"
                 value={form.newCarFuelEighths}
                 disabled={!form.newCarId}
-                onChange={setFuel("newCarFuelEighths")}
-              />
+                onChange={setField("newCarFuelEighths")}
+              >
+                {fuelOptions.map((o) => (
+                  <option key={o.id} value={o.value}>{o.name}</option>
+                ))}
+              </Form.Select>
             </Form.Group>
           </section>
         </div>

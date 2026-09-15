@@ -59,40 +59,6 @@
   }
 }
 
-/* fuel gauge in eighths as a compact pill row */
-.vct-fuel {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-
-  &--disabled { opacity: 0.5; pointer-events: none; }
-
-  &__pill {
-    min-width: 32px;
-    padding: 0.2rem 0.3rem;
-    border: 1px solid v.$color3;
-    border-radius: 6px;
-    background-color: #fff;
-    color: v.$color5_3;
-    font-size: 0.7rem;
-    font-weight: 600;
-    line-height: 1;
-    cursor: pointer;
-    transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
-
-    &:hover { border-color: v.$color2; }
-
-    &--mark { border-color: v.$color2_4; color: v.$color5; }
-
-    &.is-active {
-      background-color: v.$color1;
-      border-color: v.$color1;
-      color: #fff;
-      font-weight: 700;
-    }
-  }
-}
-
 /* change history as a vertical timeline */
 .vct-timeline {
   @include m.reset-list;
