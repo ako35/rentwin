@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { constants } from "../../../constants";
 import { Link, useNavigate } from "react-router-dom";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
-import { Button, ButtonGroup, Form, Spinner } from "react-bootstrap";
+import { Button, ButtonGroup, Spinner } from "react-bootstrap";
+import { BsSearch, BsXLg } from "react-icons/bs";
 import DataTable from "react-data-table-component";
 import { Loading } from "../../../components";
-import '../contracts/style.scss'
 import './style.scss'
 
 const { routes } = constants;
@@ -26,15 +26,20 @@ const AdminVehiclesPage = () => {
   const [resetPage, setResetPage] = useState(false);
   const navigate = useNavigate();
 
-  // Draft value the search box is bound to vs. the query actually applied —
-  // mirrors the reservations/contracts list pattern so typing doesn't refetch
-  // until "Filtrele" (or Enter) is used. One free-text box replaces the old
-  // brand/model/branch/transmission/fuel/status dropdown row — the backend
-  // matches it against all of those at once.
-  const [draftSearch, setDraftSearch] = useState("");
-  const [appliedSearch, setAppliedSearch] = useState("");
+  // One free-text box replaces the old brand/model/branch/transmission/fuel/
+  // status dropdown row — the backend matches every word against all of
+  // those at once. Live-searches (debounced) instead of needing an "Apply"
+  // click, matching a normal search-box feel.
+  const [search, setSearch] = useState("");
+  const isFirstSearch = useRef(true);
+  // Live search means two fetches can be in flight at once (type fast enough
+  // and the previous debounced request hasn't resolved yet) — without this,
+  // an older request resolving after a newer one can overwrite fresh results
+  // with stale ones. Only the response matching the latest request wins.
+  const requestId = useRef(0);
 
-  const loadData = async (page, size = perPage, sold = showSold, search = appliedSearch) => {
+  const loadData = async (page, size = perPage, sold = showSold, query = search) => {
+    const thisRequest = ++requestId.current;
     setLoading(true);
     try {
       const vehicleData = await services.vehicle.getVehiclesByPageAdmin(
@@ -43,14 +48,15 @@ const AdminVehiclesPage = () => {
         "id",
         "DESC",
         sold,
-        search
+        query.trim()
       );
+      if (thisRequest !== requestId.current) return;
       setVehicles(vehicleData.content);
       setTotalRows(vehicleData.totalElements);
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
+      if (thisRequest === requestId.current) setLoading(false);
     }
   };
 
@@ -61,22 +67,18 @@ const AdminVehiclesPage = () => {
     loadData(0, perPage, sold);
   };
 
-  const applyFilters = () => {
-    const next = draftSearch.trim();
-    setAppliedSearch(next);
-    setResetPage((prev) => !prev);
-    loadData(0, perPage, showSold, next);
-  };
-
-  const clearFilters = () => {
-    if (!draftSearch && !appliedSearch) return;
-    setDraftSearch("");
-    setAppliedSearch("");
-    setResetPage((prev) => !prev);
-    loadData(0, perPage, showSold, "");
-  };
-
-  const hasActiveFilters = !!appliedSearch;
+  useEffect(() => {
+    if (isFirstSearch.current) {
+      isFirstSearch.current = false;
+      return;
+    }
+    const handle = setTimeout(() => {
+      setResetPage((prev) => !prev);
+      loadData(0, perPage, showSold, search);
+    }, 350);
+    return () => clearTimeout(handle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
 
   const handleDownload = async () => {
     setDownloading(true);
@@ -138,35 +140,43 @@ const AdminVehiclesPage = () => {
           {downloading && <Spinner animation="border" size="sm" />} {t("vehicles.downloadReports")}
         </Button>
       </ButtonGroup>
-      <div className="admin-vehicle-page__view-toggle">
-        <button
-          type="button"
-          className={showSold ? "" : "is-active"}
-          onClick={() => switchView(false)}
-        >
-          {t("vehicles.filterActive")}
-        </button>
-        <button
-          type="button"
-          className={showSold ? "is-active" : ""}
-          onClick={() => switchView(true)}
-        >
-          {t("vehicles.filterSold")}
-        </button>
-      </div>
+      <div className="admin-vehicle-page__toolbar">
+        <div className="admin-vehicle-page__view-toggle">
+          <button
+            type="button"
+            className={showSold ? "" : "is-active"}
+            onClick={() => switchView(false)}
+          >
+            {t("vehicles.filterActive")}
+          </button>
+          <button
+            type="button"
+            className={showSold ? "is-active" : ""}
+            onClick={() => switchView(true)}
+          >
+            {t("vehicles.filterSold")}
+          </button>
+        </div>
 
-      <div className="contract-list__filters admin-vehicle-page__filters">
-        <Form.Control
-          size="sm"
-          placeholder={f("searchPlaceholder")}
-          value={draftSearch}
-          onChange={(e) => setDraftSearch(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && applyFilters()}
-        />
-        <Button size="sm" variant="secondary" onClick={applyFilters}>{f("apply")}</Button>
-        {hasActiveFilters && (
-          <Button size="sm" variant="outline-secondary" onClick={clearFilters}>{f("clear")}</Button>
-        )}
+        <div className="admin-vehicle-page__search">
+          <BsSearch className="admin-vehicle-page__search-icon" />
+          <input
+            type="text"
+            placeholder={f("searchPlaceholder")}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          {search && (
+            <button
+              type="button"
+              className="admin-vehicle-page__search-clear"
+              onClick={() => setSearch("")}
+              aria-label={f("clear")}
+            >
+              <BsXLg />
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="admin-vehicle-table-container">

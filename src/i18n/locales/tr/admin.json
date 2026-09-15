@@ -160,6 +160,7 @@
       "editTitle": "Kaydı Düzenle",
       "save": "Kaydet",
       "cancel": "Vazgeç",
+      "edit": "Düzenle",
       "delete": "Sil",
       "actions": "İşlem",
       "empty": "Kayıt bulunmuyor.",
@@ -1435,7 +1436,6 @@
   },
   "vehicleFilters": {
     "searchPlaceholder": "Plaka, marka, model, şube, vites, yakıt veya durum ara…",
-    "apply": "Filtrele",
     "clear": "Temizle"
   }
 }

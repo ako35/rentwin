@@ -110,80 +110,90 @@ const FUEL_LABELS = {
 };
 const STATUS_LABELS = { AVAILABLE: "müsait", RENTED: "kirada", OUT_OF_SERVICE: "servis dışı" };
 
+// A single word from the search box: which plain-column/relation conditions
+// it satisfies (OR'd together), and which computed status value it names, if
+// any ("otomatik egea" -> two words, each resolved separately, then AND'd).
+const resolveToken = (token) => {
+  const lower = token.toLocaleLowerCase("tr-TR");
+  const transmissions = Object.entries(TRANSMISSION_LABELS)
+    .filter(([, label]) => label.includes(lower))
+    .map(([value]) => value);
+  const fuels = Object.entries(FUEL_LABELS)
+    .filter(([, label]) => label.includes(lower))
+    .map(([value]) => value);
+  const statuses = Object.entries(STATUS_LABELS)
+    .filter(([, label]) => label.includes(lower))
+    .map(([value]) => value);
+
+  return {
+    status: statuses[0] || null,
+    or: [
+      { licensePlate: { contains: token, mode: "insensitive" } },
+      { brand: { contains: token, mode: "insensitive" } },
+      { model: { contains: token, mode: "insensitive" } },
+      { branch: { name: { contains: token, mode: "insensitive" } } },
+      ...(transmissions.length ? [{ transmission: { in: transmissions } }] : []),
+      ...(fuels.length ? [{ fuelType: { in: fuels } }] : []),
+    ],
+  };
+};
+
 // One search box stands in for every column shown on the admin list
-// (plaka/marka/model/şube/vites/yakıt/durum). Plate/brand/model/branch name
-// are plain columns/relations, so they fold into a single OR `where`. Durum
-// isn't a column — it's derived from outOfService + whether a contract
-// currently has the car out (see getVehicleStatus) — so a query that matches
-// a status word (Müsait/Kirada/Servis Dışı) takes a separate, slower path
-// that resolves the matching id set up front and unions it with the plain
-// text/enum matches before paginating.
+// (plaka/marka/model/şube/vites/yakıt/durum), and multiple words are AND'd
+// together ("otomatik egea" -> Automatic AND model contains "egea") while
+// each word alone is OR'd across every field it could mean. Plate/brand/
+// model/branch name are plain columns/relations, so word-level OR blocks
+// fold straight into a native `where: { AND: [...] }`. Durum isn't a column
+// — it's derived from outOfService + whether a contract currently has the
+// car out (see getVehicleStatus) — so a word that names a status
+// (Müsait/Kirada/Servis Dışı) is pulled out of the AND and applied as a
+// separate, slower post-filter over the id set instead.
 const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
   const { page, size, direction, sortField } = parsePageParams(req.query, {
     defaultSize: 20,
     allowedSortFields: ALLOWED_SORT_FIELDS,
   });
 
-  const q = (req.query.q || "").trim();
-  const qLower = q.toLocaleLowerCase("tr-TR");
+  const tokens = (req.query.q || "").trim().split(/\s+/).filter(Boolean).map(resolveToken);
 
   // Default view is the live fleet; ?sold=1 switches to the sold archive.
   const soldScope = req.query.sold === "1" ? { soldAt: { not: null } } : { soldAt: null };
 
-  const matchedTransmissions = q
-    ? Object.entries(TRANSMISSION_LABELS).filter(([, label]) => label.includes(qLower)).map(([value]) => value)
-    : [];
-  const matchedFuels = q
-    ? Object.entries(FUEL_LABELS).filter(([, label]) => label.includes(qLower)).map(([value]) => value)
-    : [];
-  const matchedStatuses = q
-    ? Object.entries(STATUS_LABELS).filter(([, label]) => label.includes(qLower)).map(([value]) => value)
-    : [];
+  const statusValues = [...new Set(tokens.map((t) => t.status).filter(Boolean))];
+  // A word names a status purely as a status ("kirada" isn't also a plate/
+  // brand/model/branch/transmission/fuel word in practice) — keep it out of
+  // the column AND so it doesn't force an always-false OR branch there.
+  const columnTokens = tokens.filter((t) => !t.status);
 
-  const textOr = q
-    ? [
-        { licensePlate: { contains: q, mode: "insensitive" } },
-        { brand: { contains: q, mode: "insensitive" } },
-        { model: { contains: q, mode: "insensitive" } },
-        { branch: { name: { contains: q, mode: "insensitive" } } },
-        ...(matchedTransmissions.length ? [{ transmission: { in: matchedTransmissions } }] : []),
-        ...(matchedFuels.length ? [{ fuelType: { in: matchedFuels } }] : []),
-      ]
-    : [];
+  const where = {
+    ...soldScope,
+    ...(columnTokens.length ? { AND: columnTokens.map((t) => ({ OR: t.or })) } : {}),
+  };
 
-  const where = { ...soldScope, ...(textOr.length ? { OR: textOr } : {}) };
-
-  if (matchedStatuses.length) {
-    const [candidates, textMatches] = await Promise.all([
-      prisma.vehicle.findMany({
-        where: soldScope,
-        select: { id: true, outOfService: true },
-        orderBy: { [sortField]: direction },
-      }),
-      prisma.vehicle.findMany({ where, select: { id: true } }),
-    ]);
-    const textMatchIds = new Set(textMatches.map((v) => v.id));
-
-    const statusMatchIds = new Set();
-    if (matchedStatuses.includes("OUT_OF_SERVICE")) {
-      candidates.filter((v) => v.outOfService).forEach((v) => statusMatchIds.add(v.id));
+  if (statusValues.length) {
+    // Two different status words ("kirada müsait") can never both be true.
+    if (statusValues.length > 1) {
+      res.json(buildPageResponse({ content: [], totalElements: 0, page, size, sortField }));
+      return;
     }
-    if (matchedStatuses.includes("AVAILABLE") || matchedStatuses.includes("RENTED")) {
+    const [requiredStatus] = statusValues;
+
+    const candidates = await prisma.vehicle.findMany({
+      where,
+      select: { id: true, outOfService: true },
+      orderBy: { [sortField]: direction },
+    });
+
+    let matchingIds;
+    if (requiredStatus === "OUT_OF_SERVICE") {
+      matchingIds = candidates.filter((v) => v.outOfService).map((v) => v.id);
+    } else {
       const inService = candidates.filter((v) => !v.outOfService);
       const rentedIds = await getRentedVehicleIds(inService.map((v) => v.id));
-      inService.forEach((v) => {
-        const rented = rentedIds.has(v.id);
-        if ((rented && matchedStatuses.includes("RENTED")) || (!rented && matchedStatuses.includes("AVAILABLE"))) {
-          statusMatchIds.add(v.id);
-        }
-      });
+      matchingIds = inService
+        .filter((v) => (requiredStatus === "RENTED" ? rentedIds.has(v.id) : !rentedIds.has(v.id)))
+        .map((v) => v.id);
     }
-
-    // `candidates` is already ordered by the requested sort — filtering it
-    // down to the union keeps that order without a second sorted query.
-    const matchingIds = candidates
-      .filter((v) => statusMatchIds.has(v.id) || textMatchIds.has(v.id))
-      .map((v) => v.id);
 
     const pageIds = matchingIds.slice(page * size, page * size + size);
     const [rows, modelImages] = await Promise.all([

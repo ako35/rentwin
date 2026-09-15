@@ -4,12 +4,21 @@
 .admin-vehicle-page {
     @include m.flexbox(column, flex-start, center, 3rem);
 
+    &__toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        width: 100%;
+    }
+
     &__view-toggle {
-        align-self: flex-start;
         display: inline-flex;
         border: 1px solid v.$color3;
         border-radius: 6px;
         overflow: hidden;
+        flex-shrink: 0;
 
         button {
             border: none;
@@ -30,13 +39,66 @@
         }
     }
 
-    // Filter row reuses .contract-list__filters' layout/dark-mode handling,
-    // but the single search box's placeholder runs longer than that class's
-    // tuned 200px cap — widen it here (this compound selector beats the
-    // shared one on specificity regardless of stylesheet import order).
-    .admin-vehicle-page__filters .form-control {
-        max-width: 26rem;
-        min-width: 16rem;
+    // Live search — icon-prefixed pill input with an inline clear button
+    // instead of the old floating dropdown row + separate Filtrele/Temizle
+    // buttons. var(--rw-*) tokens (not $color* SCSS vars) so it reads
+    // correctly in both themes without a separate _admin-dark.scss entry.
+    &__search {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        max-width: 24rem;
+
+        &-icon {
+            position: absolute;
+            left: 0.85rem;
+            color: var(--rw-ink-subtle);
+            font-size: 0.8rem;
+            pointer-events: none;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.5rem 2.25rem;
+            border-radius: 999px;
+            border: 1px solid var(--rw-line);
+            background-color: var(--rw-panel);
+            color: var(--rw-ink);
+            font-size: 0.85rem;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+            &::placeholder {
+                color: var(--rw-ink-subtle);
+            }
+
+            &:focus {
+                outline: none;
+                border-color: v.$color1;
+                box-shadow: 0 0 0 3px rgba(v.$color1, 0.16);
+            }
+        }
+
+        &-clear {
+            position: absolute;
+            right: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.4rem;
+            height: 1.4rem;
+            border: none;
+            border-radius: 50%;
+            background: var(--rw-inset);
+            color: var(--rw-ink-soft);
+            font-size: 0.6rem;
+            cursor: pointer;
+
+            &:hover {
+                background: var(--rw-hover);
+                color: var(--rw-ink);
+            }
+        }
     }
 
     a[role="button"] {

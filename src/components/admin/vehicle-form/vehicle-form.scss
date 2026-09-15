@@ -213,9 +213,12 @@ $breakpointxl: 1200px;
   &__table {
     font-size: 0.88rem;
 
+    // var(--rw-ink-muted) — same fix as .records-two-pane__group .table th:
+    // a light-mode-only SCSS grey here outranks Bootstrap's own dark-table
+    // text colour on specificity, reading near-invisible in dark mode.
     th {
       white-space: nowrap;
-      color: v.$color5_2;
+      color: var(--rw-ink-muted);
       font-weight: 600;
     }
   }
@@ -248,14 +251,18 @@ $breakpointxl: 1200px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.4px;
-      color: v.$color1;
+      color: var(--rw-ink);
       margin-bottom: 0.4rem;
     }
 
+    // var(--rw-ink-muted), not v.$color5_2: a compound selector like this
+    // beats Bootstrap's own dark-table `--bs-table-color` on specificity, so
+    // a light-mode-only SCSS grey here stayed on top even under data-theme
+    // dark and read as near-invisible against the dark panel.
     .table {
       th {
         white-space: nowrap;
-        color: v.$color5_2;
+        color: var(--rw-ink-muted);
         font-weight: 600;
       }
     }
