@@ -95,48 +95,95 @@ const getVehiclesByPage = asyncHandler(async (req, res) => {
   );
 });
 
-// Status (Durum) isn't a column — it's derived from outOfService + whether a
-// contract currently has the car out (see getVehicleStatus) — so filtering by
-// it can't be a plain `where` clause. Below, brand/model/branch/transmission/
-// fuel narrow the query as usual; a status filter then resolves the matching
-// id set up front (cheap: id + outOfService only, no images) and paginates
-// over that instead of the raw table.
+// Turkish labels for the enum/computed fields a free-text search should also
+// reach — kept in sync by hand with src/i18n/locales/tr/{common,admin}.json
+// (options.transmissionTypes / options.fuelTypes / vehicleStatus).
+const TRANSMISSION_LABELS = { Manual: "manuel", SemiAutomatic: "yarı otomatik", Automatic: "otomatik" };
+const FUEL_LABELS = {
+  Diesel: "dizel",
+  Gasoline: "benzin",
+  Hybrid: "hibrit",
+  Electricity: "elektrik",
+  LPG: "lpg",
+  CNG: "cng",
+  Hydrogen: "hidrojen",
+};
+const STATUS_LABELS = { AVAILABLE: "müsait", RENTED: "kirada", OUT_OF_SERVICE: "servis dışı" };
+
+// One search box stands in for every column shown on the admin list
+// (plaka/marka/model/şube/vites/yakıt/durum). Plate/brand/model/branch name
+// are plain columns/relations, so they fold into a single OR `where`. Durum
+// isn't a column — it's derived from outOfService + whether a contract
+// currently has the car out (see getVehicleStatus) — so a query that matches
+// a status word (Müsait/Kirada/Servis Dışı) takes a separate, slower path
+// that resolves the matching id set up front and unions it with the plain
+// text/enum matches before paginating.
 const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
   const { page, size, direction, sortField } = parsePageParams(req.query, {
     defaultSize: 20,
     allowedSortFields: ALLOWED_SORT_FIELDS,
   });
 
-  const { brand, model, branchId, transmission, fuelType, status } = req.query;
-  const STATUS_VALUES = ["AVAILABLE", "RENTED", "OUT_OF_SERVICE"];
+  const q = (req.query.q || "").trim();
+  const qLower = q.toLocaleLowerCase("tr-TR");
 
   // Default view is the live fleet; ?sold=1 switches to the sold archive.
-  const where = {
-    ...(req.query.sold === "1" ? { soldAt: { not: null } } : { soldAt: null }),
-    ...(brand ? { brand: { contains: brand, mode: "insensitive" } } : {}),
-    ...(model ? { model: { contains: model, mode: "insensitive" } } : {}),
-    ...(branchId ? { branchId } : {}),
-    ...(transmission ? { transmission } : {}),
-    ...(fuelType ? { fuelType } : {}),
-  };
+  const soldScope = req.query.sold === "1" ? { soldAt: { not: null } } : { soldAt: null };
 
-  if (STATUS_VALUES.includes(status)) {
-    const candidates = await prisma.vehicle.findMany({
-      where,
-      select: { id: true, outOfService: true },
-      orderBy: { [sortField]: direction },
-    });
+  const matchedTransmissions = q
+    ? Object.entries(TRANSMISSION_LABELS).filter(([, label]) => label.includes(qLower)).map(([value]) => value)
+    : [];
+  const matchedFuels = q
+    ? Object.entries(FUEL_LABELS).filter(([, label]) => label.includes(qLower)).map(([value]) => value)
+    : [];
+  const matchedStatuses = q
+    ? Object.entries(STATUS_LABELS).filter(([, label]) => label.includes(qLower)).map(([value]) => value)
+    : [];
 
-    let matchingIds;
-    if (status === "OUT_OF_SERVICE") {
-      matchingIds = candidates.filter((v) => v.outOfService).map((v) => v.id);
-    } else {
+  const textOr = q
+    ? [
+        { licensePlate: { contains: q, mode: "insensitive" } },
+        { brand: { contains: q, mode: "insensitive" } },
+        { model: { contains: q, mode: "insensitive" } },
+        { branch: { name: { contains: q, mode: "insensitive" } } },
+        ...(matchedTransmissions.length ? [{ transmission: { in: matchedTransmissions } }] : []),
+        ...(matchedFuels.length ? [{ fuelType: { in: matchedFuels } }] : []),
+      ]
+    : [];
+
+  const where = { ...soldScope, ...(textOr.length ? { OR: textOr } : {}) };
+
+  if (matchedStatuses.length) {
+    const [candidates, textMatches] = await Promise.all([
+      prisma.vehicle.findMany({
+        where: soldScope,
+        select: { id: true, outOfService: true },
+        orderBy: { [sortField]: direction },
+      }),
+      prisma.vehicle.findMany({ where, select: { id: true } }),
+    ]);
+    const textMatchIds = new Set(textMatches.map((v) => v.id));
+
+    const statusMatchIds = new Set();
+    if (matchedStatuses.includes("OUT_OF_SERVICE")) {
+      candidates.filter((v) => v.outOfService).forEach((v) => statusMatchIds.add(v.id));
+    }
+    if (matchedStatuses.includes("AVAILABLE") || matchedStatuses.includes("RENTED")) {
       const inService = candidates.filter((v) => !v.outOfService);
       const rentedIds = await getRentedVehicleIds(inService.map((v) => v.id));
-      matchingIds = inService
-        .filter((v) => (status === "RENTED" ? rentedIds.has(v.id) : !rentedIds.has(v.id)))
-        .map((v) => v.id);
+      inService.forEach((v) => {
+        const rented = rentedIds.has(v.id);
+        if ((rented && matchedStatuses.includes("RENTED")) || (!rented && matchedStatuses.includes("AVAILABLE"))) {
+          statusMatchIds.add(v.id);
+        }
+      });
     }
+
+    // `candidates` is already ordered by the requested sort — filtering it
+    // down to the union keeps that order without a second sorted query.
+    const matchingIds = candidates
+      .filter((v) => statusMatchIds.has(v.id) || textMatchIds.has(v.id))
+      .map((v) => v.id);
 
     const pageIds = matchingIds.slice(page * size, page * size + size);
     const [rows, modelImages] = await Promise.all([
@@ -146,13 +193,17 @@ const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
       loadModelImageMap(),
     ]);
     const byId = new Map(rows.map((v) => [v.id, v]));
+    const rentedIdsForPage = await getRentedVehicleIds(pageIds);
 
     res.json(
       buildPageResponse({
         content: pageIds
           .map((id) => byId.get(id))
           .filter(Boolean)
-          .map((vehicle) => ({ ...serializeVehicle(vehicle, modelImages), status })),
+          .map((vehicle) => ({
+            ...serializeVehicle(vehicle, modelImages),
+            status: getVehicleStatus(vehicle, rentedIdsForPage),
+          })),
         totalElements: matchingIds.length,
         page,
         size,

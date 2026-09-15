@@ -31,12 +31,12 @@
     }
 
     // Filter row reuses .contract-list__filters' layout/dark-mode handling,
-    // but its own labels ("Tüm Markalar", "Tüm Şubeler"...) run longer than
-    // that class's tuned min-width, cramming right up against the caret —
-    // widen it here (this compound selector beats the shared one on
-    // specificity regardless of stylesheet import order).
-    .admin-vehicle-page__filters .form-select {
-        min-width: 8.5rem;
+    // but the single search box's placeholder runs longer than that class's
+    // tuned 200px cap — widen it here (this compound selector beats the
+    // shared one on specificity regardless of stylesheet import order).
+    .admin-vehicle-page__filters .form-control {
+        max-width: 26rem;
+        min-width: 16rem;
     }
 
     a[role="button"] {

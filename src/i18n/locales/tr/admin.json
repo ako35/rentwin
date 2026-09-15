@@ -1434,12 +1434,7 @@
     "exhausted": "Bugünkü kota {{at}} istekte doldu — yarın sıfırlanır."
   },
   "vehicleFilters": {
-    "allBrands": "Tüm Markalar",
-    "allModels": "Tüm Modeller",
-    "allBranches": "Tüm Şubeler",
-    "allTransmissions": "Tüm Vitesler",
-    "allFuels": "Tüm Yakıtlar",
-    "allStatuses": "Tüm Durumlar",
+    "searchPlaceholder": "Plaka, marka, model, şube, vites, yakıt veya durum ara…",
     "apply": "Filtrele",
     "clear": "Temizle"
   }

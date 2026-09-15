@@ -1434,12 +1434,7 @@
     "exhausted": "Today's quota ran out after {{at}} requests — resets tomorrow."
   },
   "vehicleFilters": {
-    "allBrands": "All Brands",
-    "allModels": "All Models",
-    "allBranches": "All Branches",
-    "allTransmissions": "All Transmissions",
-    "allFuels": "All Fuels",
-    "allStatuses": "All Statuses",
+    "searchPlaceholder": "Search plate, brand, model, branch, transmission, fuel or status…",
     "apply": "Filter",
     "clear": "Clear"
   }
