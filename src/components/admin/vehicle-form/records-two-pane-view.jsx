@@ -96,7 +96,21 @@ const RecordsTwoPaneView = ({
             <span className="text-muted">{t("vehicles.insuranceScan.hint")}</span>
           </div>
         )}
-        <Form noValidate onSubmit={formik.handleSubmit}>
+        {/* Not a <form>: RecordsTwoPaneView renders inline inside the vehicle
+            edit page's own <Form> (unlike RecordsTableView's modal, which
+            portals out of it), so a nested <form> here would be invalid HTML —
+            Chromium was observed falling back to a native GET submission on
+            click (bypassing formik.handleSubmit entirely and losing the
+            record). Submit explicitly via the button's onClick + Enter-key
+            handling below instead. */}
+        <div
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+              e.preventDefault();
+              formik.handleSubmit();
+            }
+          }}
+        >
           <div className="records-two-pane__type mb-2">
             {config.groups.map((group) => (
               <Form.Check
@@ -128,12 +142,12 @@ const RecordsTwoPaneView = ({
                 {t("vehicles.records.cancel")}
               </Button>
             )}
-            <Button type="submit" disabled={saving || !formik.isValid}>
+            <Button type="button" onClick={() => formik.handleSubmit()} disabled={saving || !formik.isValid}>
               {saving && <Spinner animation="border" size="sm" />}{" "}
               {editing ? t("vehicles.records.save") : t("vehicles.records.add")}
             </Button>
           </div>
-        </Form>
+        </div>
       </div>
     </div>
   );
