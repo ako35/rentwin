@@ -17,7 +17,7 @@ const RESOURCES = {
   taxes: {
     model: "vehicleTax",
     fields: ["period", "installment", "amount", "dueDate", "paidDate", "notes"],
-    required: ["period", "installment", "amount"],
+    required: ["period", "installment"],
     dateFields: ["dueDate", "paidDate"],
     numberFields: ["period", "installment", "amount"],
     orderBy: [{ period: "desc" }, { installment: "asc" }],

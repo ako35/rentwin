@@ -201,7 +201,7 @@ model VehicleTax {
   vehicle     Vehicle   @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   period      Int
   installment Int
-  amount      Float
+  amount      Float?
   dueDate     DateTime?
   paidDate    DateTime?
   notes       String?

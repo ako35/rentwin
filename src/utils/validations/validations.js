@@ -257,7 +257,7 @@ export const vehicleTaxValidationSchema = Yup.object({
         .max(2999, tRec("numberInvalid"))
         .required(tRec("required")),
     installment: Yup.number().oneOf([1, 2], tRec("required")).required(tRec("required")),
-    amount: Yup.number().typeError(tRec("numberInvalid")).min(0, tRec("numberMin")).required(tRec("required")),
+    amount: optionalNumber(),
     dueDate: optionalDate(),
     paidDate: optionalDate(),
     notes: Yup.string(),
