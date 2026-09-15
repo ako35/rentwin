@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Alert, Nav } from "react-bootstrap";
 import { utils } from "../../../utils";
@@ -22,7 +23,11 @@ const VehicleForm = ({
 }) => {
   const { t } = useTranslation("admin");
   const { t: tCommon } = useTranslation("common");
-  const [tab, setTab] = useState("vehicle");
+  // Deep-link support: the dashboard's expiry-alert bar links straight into a
+  // vehicle's Sigorta/Kasko, MTV, Bakım or Muayene tab via ?tab=<key>.
+  const [searchParams] = useSearchParams();
+  const requestedTab = searchParams.get("tab");
+  const [tab, setTab] = useState(RECORD_TABS.includes(requestedTab) ? requestedTab : "vehicle");
 
   const { branches, brandOptions, modelOptions, plateTaken, handleModelPicked } =
     useFleetPicklist(formik);

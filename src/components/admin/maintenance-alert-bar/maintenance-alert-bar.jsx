@@ -17,6 +17,17 @@ const CATEGORIES = [
 
 const HGS_KEY = "hgsPending";
 
+// Maps an alert category to the vehicle-detail record tab it belongs to —
+// Sigorta and Kasko are both entries on the vehicle form's single "insurance"
+// tab (two-pane Sigorta/Kasko view), so both point there.
+const VEHICLE_TAB_BY_CATEGORY = {
+  maintenance: "maintenance",
+  inspection: "inspection",
+  insurance: "insurance",
+  kasko: "insurance",
+  tax: "tax",
+};
+
 const custName = (u) =>
   (u?.companyTitle || `${u?.firstName || ""} ${u?.lastName || ""}`.trim() || "—");
 
@@ -86,7 +97,15 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [] }) => {
               </thead>
               <tbody>
                 {activeList.map((item) => (
-                  <tr key={item.vehicleId + (item.date || "missing")}>
+                  <tr
+                    key={item.vehicleId + (item.date || "missing")}
+                    className="maintenance-alert-bar__rowlink"
+                    onClick={() =>
+                      navigate(
+                        `${constants.routes.adminVehicles}/${item.vehicleId}?tab=${VEHICLE_TAB_BY_CATEGORY[open]}`
+                      )
+                    }
+                  >
                     <td className="maintenance-alert-bar__plate">{item.plate}</td>
                     <td>{item.name}</td>
                     <td>{item.missing ? "—" : utils.functions.getDate(item.date)}</td>
