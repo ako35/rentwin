@@ -1418,8 +1418,8 @@
     "desc": "{{module}} modülü üzerinde çalışıyoruz. Bu bölüm yakında kullanıma açılacak."
   },
   "aiQuota": {
-    "remaining": "Bugün kalan AI okuma hakkı: {{remaining}}/{{limit}}",
-    "exhausted": "Bugünkü AI okuma kotası bitti — yarın sıfırlanır."
+    "used": "Bugün {{count}} AI okuma yapıldı",
+    "exhausted": "Bugünkü kota {{at}} istekte doldu — yarın sıfırlanır."
   },
   "vehicleFilters": {
     "allBrands": "Tüm Markalar",

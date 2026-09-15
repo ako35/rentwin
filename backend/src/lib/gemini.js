@@ -58,14 +58,13 @@ Kurallar:
 - registrationDate: YYYY-MM-DD formatında.
 - modelYear: yalnızca 4 haneli yıl sayısı.`;
 
-// Free-tier vision quota is informational guesswork — Google no longer
-// publishes an exact number for this tier and doesn't guarantee one — but
-// third-party measurements for the current Flash model converge on roughly
-// this figure, so it's a reasonable "warn before you hit the wall" threshold
-// for the admin UI. Override with GEMINI_VISION_DAILY_LIMIT if Google's
-// actual cap turns out different. This never gates the real call — only
-// Google's own 429 (AI_QUOTA, above) does that.
-const VISION_DAILY_LIMIT = Number(process.env.GEMINI_VISION_DAILY_LIMIT) || 1500;
+// Google doesn't publish a free-tier daily cap for this model any more (and
+// never guaranteed one even when it did) — third-party numbers found for it
+// were inconsistent and partly about older models, so guessing a number here
+// would just be a different kind of wrong. Instead of asserting a limit we
+// don't actually know, this only ever reports facts: how many vision calls
+// have actually gone out today, and — once Google's own 429 has genuinely
+// been hit — the exact count that happened at (see recordVisionExhausted).
 const VISION_USAGE_ID = "vision";
 
 // Google's free-tier quota resets at midnight Pacific Time, not local/UTC
@@ -91,6 +90,18 @@ const recordVisionUsage = async () => {
   }
 };
 
+// First time today's calls actually hit Google's real 429, stamp the count
+// it happened at — the one number about the quota we can ever be sure of,
+// since we saw Google enforce it ourselves. Only the first hit of the day is
+// kept (an idle afternoon after the reset shouldn't overwrite the morning's
+// real reading with a stale one).
+const recordVisionExhausted = async () => {
+  const day = pacificDay();
+  const row = await prisma.aiUsageCounter.findUnique({ where: { id: VISION_USAGE_ID } });
+  if (!row || row.day !== day || row.exhaustedAt != null) return;
+  await prisma.aiUsageCounter.update({ where: { id: VISION_USAGE_ID }, data: { exhaustedAt: row.count } });
+};
+
 // Today's usage snapshot for the admin UI. Never throws — an unreadable
 // counter just reads as "no data yet" instead of breaking the scan buttons.
 const getVisionUsage = async () => {
@@ -101,8 +112,8 @@ const getVisionUsage = async () => {
   } catch {
     row = null;
   }
-  const count = row && row.day === day ? row.count : 0;
-  return { day, count, limit: VISION_DAILY_LIMIT, remaining: Math.max(0, VISION_DAILY_LIMIT - count) };
+  const fresh = row && row.day === day;
+  return { day, count: fresh ? row.count : 0, exhaustedAt: fresh ? row.exhaustedAt : null };
 };
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -174,6 +185,7 @@ const geminiVisionJson = async (buffer, mimeType, prompt, schema) => {
     // runs out every call 429s until the daily reset — flag it so the operator
     // gets a "come back tomorrow / enable billing" message, not "try again".
     if (response.status === 429) {
+      recordVisionExhausted().catch(() => {});
       const err = new Error(
         "Yapay zeka görsel okuma kotası (günlük ücretsiz sınır) doldu. Yarın tekrar deneyin ya da API anahtarının projesinde faturalandırmayı açın."
       );

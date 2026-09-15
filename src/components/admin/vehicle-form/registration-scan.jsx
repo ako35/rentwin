@@ -81,8 +81,10 @@ const RegistrationScan = ({ onExtracted }) => {
         {t("vehicles.registrationScan.button")}
       </Button>
       {usage && (
-        <span className={`ms-2 small ${usage.remaining <= 0 ? "text-danger" : "text-muted"}`}>
-          {usage.remaining <= 0 ? t("aiQuota.exhausted") : t("aiQuota.remaining", usage)}
+        <span className={`ms-2 small ${usage.exhaustedAt != null ? "text-danger" : "text-muted"}`}>
+          {usage.exhaustedAt != null
+            ? t("aiQuota.exhausted", { at: usage.exhaustedAt })
+            : t("aiQuota.used", { count: usage.count })}
         </span>
       )}
     </Form.Group>

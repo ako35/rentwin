@@ -627,16 +627,21 @@ model Setting {
   updatedAt               DateTime @updatedAt
 }
 
-// Approximate, informational counter for the shared Gemini vision free-tier
-// quota — "Ruhsattan Doldur" and "Belgeden Doldur" both call the same model
-// on the same API key/project, so they draw from one daily pool. id is a
-// fixed key per tracked model (currently just "vision"); day is the Google
-// quota-reset calendar date (Pacific Time) as "YYYY-MM-DD". Not an exact
-// mirror of Google's own ledger — a retried call can cost more than the 1
-// counted here — just enough to warn an admin before the real 429 hits.
+// Informational counter for the shared Gemini vision free-tier quota —
+// "Ruhsattan Doldur" and "Belgeden Doldur" both call the same model on the
+// same API key/project, so they draw from one daily pool. id is a fixed key
+// per tracked model (currently just "vision"); day is the Google quota-reset
+// calendar date (Pacific Time) as "YYYY-MM-DD". count is how many calls have
+// actually gone out today — a retried call can cost Google more than the 1
+// counted here, so it's a floor, not exact. exhaustedAt is null until
+// Google's own 429 is actually hit that day, then holds the count it
+// happened at — deliberately NOT a guessed daily limit (Google doesn't
+// publish one for this tier), just the one fact about the quota we can ever
+// be sure of because we watched it happen.
 model AiUsageCounter {
-  id        String   @id
-  day       String
-  count     Int      @default(0)
-  updatedAt DateTime @updatedAt
+  id          String   @id
+  day         String
+  count       Int      @default(0)
+  exhaustedAt Int?
+  updatedAt   DateTime @updatedAt
 }
