@@ -5,11 +5,13 @@ const { modelImageKey } = require("../../lib/serializers");
 const ALLOWED_SORT_FIELDS = ["id", "model"];
 const IMAGES_AND_BRANCH_INCLUDE = { images: { orderBy: { createdAt: "asc" } }, branch: true };
 
-// All VehicleModelImage rows keyed for serializeVehicle. The table holds one row
-// per make+model (a few dozen at most), so a full scan is cheap.
+// All VehicleModelImage rows keyed (brand+model+colour, generic colour "")
+// for serializeVehicle's two-tier lookup. The table holds a handful of rows
+// per make+model (one generic + a few colour variants at most), so a full
+// scan is cheap.
 const loadModelImageMap = async () => {
   const rows = await prisma.vehicleModelImage.findMany();
-  return new Map(rows.map((row) => [modelImageKey(row.brand, row.model), row]));
+  return new Map(rows.map((row) => [modelImageKey(row.brand, row.model, row.color), row]));
 };
 
 // A vehicle is "RENTED" when it has an open contract (not cancelled, not yet

@@ -12,7 +12,6 @@ import {
   getCurrentDate,
   getDate,
   getTime,
-  getVehicleColorTint,
 } from "./functions/functions";
 
 // INITIAL VALUES
@@ -73,7 +72,6 @@ export const utils = {
     getCurrentDate,
     getDate,
     getTime,
-    getVehicleColorTint,
   },
   initialValues: {
     loginFormInitialValues,

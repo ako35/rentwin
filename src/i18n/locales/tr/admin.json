@@ -78,10 +78,12 @@
     },
     "modelImages": {
       "title": "Model Görselleri",
-      "subtitle": "Her marka + model için tek görsel — aynı modeldeki tüm araçlar bu görseli kullanır. Yıl önemsiz.",
+      "subtitle": "Her marka + model için genel bir görsel tanımlayın; isterseniz filodaki her renk için ayrıca kendi görselini de ekleyebilirsiniz — bir aracın rengiyle eşleşen görsel varsa o gösterilir, yoksa genel görsele düşer.",
       "emptyFleet": "Filoda henüz araç yok. Önce araç ekleyin.",
       "noImage": "Görsel yok",
       "vehicleCount": "{{n}} araç",
+      "generic": "Genel Görsel",
+      "noColors": "Bu modelde filoda kayıtlı bir renk yok — renk girildiğinde burada kendi görsel alanı açılır.",
       "upload": "Görsel Yükle",
       "generate": "AI ile Oluştur",
       "remove": "Kaldır",

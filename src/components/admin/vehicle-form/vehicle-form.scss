@@ -137,22 +137,6 @@ $breakpointxl: 1200px;
     }
   }
 
-  // Wraps the shared brand+model stock photo so an approximate colour tint
-  // (from the vehicle's own "Renk" field — see utils/getVehicleColorTint) can
-  // sit over it without disturbing the frame's centering/sizing.
-  &__model-image-tint {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-
-  &__model-image-overlay {
-    position: absolute;
-    inset: 0;
-    mix-blend-mode: color;
-    pointer-events: none;
-  }
-
   &__model-image-empty {
     @include m.flexbox(column, center, center, 0.35rem);
     color: v.$color5_4;

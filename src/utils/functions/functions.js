@@ -110,46 +110,6 @@ export const slugify = (value = "") => {
         .replace(/^-+|-+$/g, "");
 }
 
-// Every vehicle sharing a brand+model shows the same stock photo (see
-// ModelImagePreview) regardless of its own "Renk" field — this gives that
-// photo an approximate tint toward the vehicle's actual colour so it doesn't
-// mislead (e.g. a grey Egea showing a white studio shot). Keyword match
-// against common Turkish paint names; unrecognised/typo'd text returns null
-// and the photo shows unfiltered rather than risk a wrong-looking tint. Not
-// photo-realistic — just close enough to read as "this one's grey/red/...".
-const NEUTRAL_COLOR_TINTS = [
-    { keywords: ["beyaz", "white", "inci", "pearl"], filter: "saturate(0.15) brightness(1.08)" },
-    { keywords: ["siyah", "black"], filter: "saturate(0.2) brightness(0.55) contrast(1.15)" },
-    { keywords: ["gri", "gray", "grey", "antrasit", "füme", "fume"], filter: "saturate(0.15) brightness(0.85)" },
-    { keywords: ["gümüş", "gumus", "silver"], filter: "saturate(0.1) brightness(1.02)" },
-];
-
-const HUE_COLOR_TINTS = [
-    { keywords: ["kırmızı", "kirmizi", "red", "bordo"], color: "#c41e2a" },
-    { keywords: ["mavi", "blue", "lacivert", "navy"], color: "#1f4fb0" },
-    { keywords: ["yeşil", "yesil", "green"], color: "#1f7a3d" },
-    { keywords: ["sarı", "sari", "yellow"], color: "#e6c619" },
-    { keywords: ["turuncu", "orange"], color: "#e0721f" },
-    { keywords: ["kahverengi", "kahve", "brown", "bej", "beige"], color: "#7a5230" },
-    { keywords: ["mor", "purple", "eflatun"], color: "#6a2fa0" },
-    { keywords: ["pembe", "pink"], color: "#d94f8f" },
-    { keywords: ["altın", "altin", "gold"], color: "#c9a227" },
-    { keywords: ["turkuaz", "turquoise"], color: "#1fa7a0" },
-];
-
-export const getVehicleColorTint = (colorText) => {
-    const norm = (colorText || "").toString().trim().toLocaleLowerCase("tr");
-    if (!norm) return null;
-
-    const neutral = NEUTRAL_COLOR_TINTS.find((t) => t.keywords.some((k) => norm.includes(k)));
-    if (neutral) return { type: "neutral", filter: neutral.filter };
-
-    const hue = HUE_COLOR_TINTS.find((t) => t.keywords.some((k) => norm.includes(k)));
-    if (hue) return { type: "hue", color: hue.color, opacity: 0.5, filter: "saturate(1.1)" };
-
-    return null;
-};
-
 export const getCurrentDate = () => {
     return moment().format("YYYY-MM-DD");
 }

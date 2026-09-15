@@ -3,20 +3,26 @@ const serializeUser = (user) => {
   return safeUser;
 };
 
-// Make+model key for VehicleModelImage lookups — normalized the same way the
-// model-image API stores brand/model (trim + TR-uppercase). Year is irrelevant.
-const modelImageKey = (brand, model) =>
-  `${(brand || "").trim().toLocaleUpperCase("tr")} ${(model || "").trim().toLocaleUpperCase("tr")}`;
+// Make+model(+colour) key for VehicleModelImage lookups — normalized the same
+// way the model-image API stores brand/model/color (trim + TR-uppercase).
+// color defaults to "" (the generic/no-colour-specific image), so every
+// existing 2-arg call site keeps resolving to the same row it always did.
+// Year is irrelevant.
+const modelImageKey = (brand, model, color = "") =>
+  `${(brand || "").trim().toLocaleUpperCase("tr")} ${(model || "").trim().toLocaleUpperCase("tr")} ${(color || "").trim().toLocaleUpperCase("tr")}`;
 
 // Vehicle must expose `image` as an array of image ids (frontend reads
 // response.image[0], values.image.length, etc). Resolution order:
-//   1. the make+model's VehicleModelImage (when `modelImageMap` is supplied)
-//   2. the vehicle's own VehicleImage rows (legacy per-vehicle fallback)
+//   1. the make+model+this vehicle's own colour's VehicleModelImage
+//   2. the make+model's generic (no-colour) VehicleModelImage
+//   3. the vehicle's own VehicleImage rows (legacy per-vehicle fallback)
 // `modelImageMap` is Map(modelImageKey -> VehicleModelImage); omit it to keep
 // the legacy behaviour (used where a car image is never rendered).
 const serializeVehicle = (vehicle, modelImageMap) => {
   const { images, ...rest } = vehicle;
-  const modelImage = modelImageMap?.get(modelImageKey(vehicle.brand, vehicle.model));
+  const modelImage =
+    modelImageMap?.get(modelImageKey(vehicle.brand, vehicle.model, vehicle.color)) ||
+    modelImageMap?.get(modelImageKey(vehicle.brand, vehicle.model));
   if (modelImage) return { ...rest, image: [modelImage.id] };
   return { ...rest, image: (images || []).map((image) => image.id) };
 };

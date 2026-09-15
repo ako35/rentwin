@@ -78,10 +78,12 @@
     },
     "modelImages": {
       "title": "Model Images",
-      "subtitle": "One image per make + model — every vehicle of that model uses it. Year doesn't matter.",
+      "subtitle": "Set a generic image per make + model; optionally add one per colour actually in your fleet too — a vehicle shows the image matching its own colour when one exists, otherwise the generic one.",
       "emptyFleet": "No vehicles in the fleet yet. Add a vehicle first.",
       "noImage": "No image",
       "vehicleCount": "{{n}} vehicles",
+      "generic": "Generic Image",
+      "noColors": "No colour is recorded for this model in the fleet yet — its own slot appears here once one is.",
       "upload": "Upload Image",
       "generate": "Generate with AI",
       "remove": "Remove",

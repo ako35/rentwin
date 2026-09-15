@@ -126,19 +126,22 @@ model VehicleImage {
   createdAt DateTime @default(now())
 }
 
-// One catalog image per make+model — every vehicle of that make+model shows it.
-// brand/model are stored normalized (trim + TR-uppercase); year is irrelevant.
+// A catalog image per make+model, optionally per colour too. brand/model/color
+// are stored normalized (trim + TR-uppercase); year is irrelevant. color=""
+// is the generic/no-colour-specific image — every vehicle of that make+model
+// falls back to it when no image exists for its own exact colour.
 model VehicleModelImage {
   id        String   @id @default(uuid())
   brand     String
   model     String
+  color     String   @default("")
   blobUrl   String
   pathname  String
   source    String   @default("UPLOAD") // UPLOAD | AI
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([brand, model])
+  @@unique([brand, model, color])
 }
 
 model Vehicle {

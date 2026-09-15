@@ -4,17 +4,14 @@ import { Link } from "react-router-dom";
 import { BsImage } from "react-icons/bs";
 import { services } from "../../../services";
 import { constants } from "../../../constants";
-import { utils } from "../../../utils";
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
 const norm = (value) => (value || "").trim().toLocaleUpperCase("tr");
 
-// Read-only: the image this vehicle shows comes from its make+model, managed on
-// /admin/vehicles/model-images — never uploaded per vehicle. Every vehicle of
-// that brand+model shares this one photo, so it's given an approximate tint
-// toward this specific vehicle's own "Renk" value (see getVehicleColorTint) —
-// otherwise a grey Egea would show whatever colour the shared photo happens
-// to be in.
+// Read-only: the image this vehicle shows comes from its make+model — and,
+// when one's been set, this specific colour too — managed on
+// /admin/vehicles/model-images, never uploaded per vehicle. Falls back to
+// the model's generic (no-colour) image when no exact colour match exists.
 const ModelImagePreview = ({ brand, model, color }) => {
   const { t } = useTranslation("admin");
   const [rows, setRows] = useState([]);
@@ -23,27 +20,16 @@ const ModelImagePreview = ({ brand, model, color }) => {
     services.vehicle.listModelImages().then(setRows).catch(() => setRows([]));
   }, []);
 
-  const match = rows.find((r) => norm(r.brand) === norm(brand) && norm(r.model) === norm(model));
+  const group = rows.find((r) => norm(r.brand) === norm(brand) && norm(r.model) === norm(model));
+  const colorMatch = group?.colors.find((c) => norm(c.color) === norm(color));
+  const image = colorMatch?.image || group?.genericImage || null;
   const name = [brand, model].filter(Boolean).join(" ").trim();
-  const tint = utils.functions.getVehicleColorTint(color);
 
   return (
     <div className="vehicle-form__model-image">
       <div className="vehicle-form__model-image-frame">
-        {match?.image ? (
-          <div className="vehicle-form__model-image-tint">
-            <img
-              src={`${API_URL}/files/display/${match.image.id}`}
-              alt={name}
-              style={tint?.type === "neutral" ? { filter: tint.filter } : undefined}
-            />
-            {tint?.type === "hue" && (
-              <span
-                className="vehicle-form__model-image-overlay"
-                style={{ backgroundColor: tint.color, opacity: tint.opacity }}
-              />
-            )}
-          </div>
+        {image ? (
+          <img src={`${API_URL}/files/display/${image.id}`} alt={name} />
         ) : (
           <div className="vehicle-form__model-image-empty">
             <BsImage />

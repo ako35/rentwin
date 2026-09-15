@@ -10,10 +10,11 @@ export const listModelImages = async () => {
   return response.data;
 };
 
-export const uploadModelImage = async ({ brand, model, file }) => {
+export const uploadModelImage = async ({ brand, model, color, file }) => {
   const formData = new FormData();
   formData.append("brand", brand);
   formData.append("model", model);
+  if (color) formData.append("color", color);
   formData.append("file", file);
   const response = await axios.put(`${API_URL}/car/admin/model-images/auth`, formData, {
     headers: { "Content-Type": "multipart/form-data", Authorization: bearer() },
