@@ -135,7 +135,12 @@
         padding: 0;
         border: 0;
         background: none;
-        color: v.$color5_4;
+        // var(--rw-ink-muted), not v.$color5_4: that's a light-mode-only dark
+        // navy-at-48%-opacity tone with no dark-theme override, so it read as
+        // near-invisible once the row's own background moved to the dark inset
+        // above (same recurring root cause fixed elsewhere this session, e.g.
+        // maintenance-alert-bar.scss / contract-records.scss table headers).
+        color: var(--rw-ink-muted);
         font-size: 0.72rem;
         font-weight: 600;
         text-decoration: underline;
