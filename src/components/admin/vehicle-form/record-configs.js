@@ -15,6 +15,8 @@ export const RECORD_CONFIGS = {
     twoPane: true,
     typeField: "type",
     totalField: "premium",
+    // Shows "Poliçeden Doldur" (Gemini AI scan) above the form — see InsuranceScan.
+    aiScan: true,
     groups: [
       { key: "sigorta", type: "Traffic" },
       { key: "kasko", type: "Kasko" },

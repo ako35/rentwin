@@ -76,6 +76,16 @@
       "busy": "The AI service is busy right now. Please try again in a few seconds.",
       "quota": "The AI document-reading quota (free daily limit) is used up. Try again tomorrow or enable billing."
     },
+    "insuranceScan": {
+      "button": "Fill from Policy",
+      "hint": "Upload a photo or PDF of the traffic insurance or kasko policy to auto-fill the fields.",
+      "success": "Policy read successfully — please review the fields.",
+      "notDetected": "Couldn't recognize an insurance/kasko policy in the photo, or nothing on it was readable. Try a clearer/brighter photo, or fill in the fields manually.",
+      "error": "Could not read the policy document, please fill in manually.",
+      "tooLarge": "File is too large. Please upload a smaller image (about 4 MB max) or a PDF.",
+      "busy": "The AI service is busy right now. Please try again in a few seconds.",
+      "quota": "The AI document-reading quota (free daily limit) is used up. Try again tomorrow or enable billing."
+    },
     "modelImages": {
       "title": "Model Images",
       "subtitle": "Set a generic image per make + model; optionally add one per colour actually in your fleet too — a vehicle shows the image matching its own colour when one exists, otherwise the generic one.",

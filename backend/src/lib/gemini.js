@@ -262,6 +262,44 @@ const extractCustomerDocument = (buffer, mimeType, kind) =>
     ? geminiVisionJson(buffer, mimeType, CORPORATE_DOC_PROMPT, CORPORATE_DOC_SCHEMA)
     : geminiVisionJson(buffer, mimeType, INDIVIDUAL_DOC_PROMPT, INDIVIDUAL_DOC_SCHEMA);
 
+// --- Vehicle insurance: trafik sigortası / kasko poliçesi -> the "Sigorta /
+// Kasko" tab's add-record form. --------------------------------------------
+
+const INSURANCE_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    documentDetected: {
+      type: "BOOLEAN",
+      description: "Görselde gerçekten bir Türkiye trafik sigortası veya kasko poliçesi görülüyor mu?",
+    },
+    type: {
+      type: "STRING",
+      nullable: true,
+      enum: ["Traffic", "Kasko"],
+      description: "Poliçe türü — Zorunlu Trafik Sigortası ise Traffic, Kasko ise Kasko.",
+    },
+    company: { type: "STRING", nullable: true, description: "Sigorta şirketinin ticari adı (örn. Anadolu Sigorta)" },
+    policyNo: { type: "STRING", nullable: true, description: "Poliçe numarası" },
+    startDate: { type: "STRING", nullable: true, description: "Poliçe başlangıç / tanzim tarihi, YYYY-MM-DD" },
+    endDate: { type: "STRING", nullable: true, description: "Poliçe bitiş / vade sonu tarihi, YYYY-MM-DD" },
+    premium: { type: "NUMBER", nullable: true, description: "Poliçe brüt prim tutarı (TL), yalnızca sayı" },
+  },
+  required: ["documentDetected"],
+};
+
+const INSURANCE_PROMPT = `Bu görüntü bir Türkiye trafik sigortası (zorunlu mali sorumluluk) ya da kasko poliçesi mi incele.
+Kurallar:
+- Böyle bir belge değilse ya da hiçbir alan güvenle okunamıyorsa documentDetected=false yap ve tüm alanları null bırak. Asla tahmin etme.
+- Belgeyse documentDetected=true yap; yalnızca NET okuduğun alanları doldur, okuyamadığını null bırak.
+- type: belge "Trafik Sigortası" / "Zorunlu Mali Sorumluluk Sigortası" ise Traffic; "Kasko" ise Kasko.
+- company: sigorta şirketinin ticari adı, ekler olmadan (örn. "Anadolu Sigorta", "Allianz", "Ak Sigorta").
+- policyNo: poliçe numarası, olduğu gibi.
+- startDate/endDate: YYYY-MM-DD formatında — "Başlangıç/Bitiş", "Tanzim/Vade Sonu" gibi alanlardan.
+- premium: brüt prim / poliçe toplam tutarı — yalnızca sayı, TL sembolü ve binlik ayırıcı olmadan (örn. 4520.50).`;
+
+const extractVehicleInsurance = (buffer, mimeType) =>
+  geminiVisionJson(buffer, mimeType, INSURANCE_PROMPT, INSURANCE_SCHEMA);
+
 const IMAGE_PROMPT = ({ brand, model, modelYear, color }) => {
   const subject = [modelYear, color, brand, model].filter(Boolean).join(" ").trim();
   return `Profesyonel bir araç kataloğu için stüdyo fotoğrafı üret: ${subject}.
@@ -311,4 +349,10 @@ const generateVehicleImage = async ({ brand, model, modelYear, color }) => {
   return { base64: inline.data, mimeType: inline.mimeType || inline.mime_type || "image/png" };
 };
 
-module.exports = { extractVehicleRegistration, extractCustomerDocument, generateVehicleImage, getVisionUsage };
+module.exports = {
+  extractVehicleRegistration,
+  extractCustomerDocument,
+  extractVehicleInsurance,
+  generateVehicleImage,
+  getVisionUsage,
+};

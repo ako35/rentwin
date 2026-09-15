@@ -296,6 +296,16 @@ $breakpointxl: 1200px;
     background-color: v.$color4;
   }
 
+  &__ai-scan {
+    @include m.flexbox(row, flex-start, center, 0.75rem);
+    flex-wrap: wrap;
+    margin-bottom: 0.85rem;
+
+    span {
+      font-size: 0.8rem;
+    }
+  }
+
   &__form-actions {
     @include m.flexbox(row, flex-end, center, 0.5rem);
     margin-top: 0.5rem;

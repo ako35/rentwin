@@ -76,6 +76,16 @@
       "busy": "Yapay zeka servisi şu an yoğun. Lütfen birkaç saniye sonra tekrar deneyin.",
       "quota": "Yapay zeka görsel okuma kotası (günlük ücretsiz sınır) doldu. Yarın tekrar deneyin ya da faturalandırmayı açın."
     },
+    "insuranceScan": {
+      "button": "Poliçeden Doldur",
+      "hint": "Trafik sigortası veya kasko poliçesi fotoğrafı ya da PDF'i yükleyin, alanlar otomatik doldurulsun.",
+      "success": "Poliçe okundu, alanlar dolduruldu. Lütfen kontrol edin.",
+      "notDetected": "Görselde bir sigorta/kasko poliçesi tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",
+      "error": "Poliçe okunamadı, lütfen alanları elle doldurun.",
+      "tooLarge": "Dosya çok büyük. Lütfen daha küçük bir görsel (en fazla ~4 MB) veya PDF yükleyin.",
+      "busy": "Yapay zeka servisi şu an yoğun. Lütfen birkaç saniye sonra tekrar deneyin.",
+      "quota": "Yapay zeka görsel okuma kotası (günlük ücretsiz sınır) doldu. Yarın tekrar deneyin ya da faturalandırmayı açın."
+    },
     "modelImages": {
       "title": "Model Görselleri",
       "subtitle": "Her marka + model için genel bir görsel tanımlayın; isterseniz filodaki her renk için ayrıca kendi görselini de ekleyebilirsiniz — bir aracın rengiyle eşleşen görsel varsa o gösterilir, yoksa genel görsele düşer.",

@@ -1,6 +1,7 @@
 import { Button, Form, Spinner, Table } from "react-bootstrap";
 import CustomForm from "../../common/custom-form/custom-form";
 import Loading from "../../common/loading/loading";
+import InsuranceScan from "./insurance-scan";
 
 // Two-pane records view (Sigorta / Kasko): side-by-side group lists on the left,
 // an inline add/edit form on the right, with per-group totals.
@@ -21,6 +22,16 @@ const RecordsTwoPaneView = ({
   const cancelEdit = () => {
     setEditing(null);
     formik.resetForm({ values: config.initialValues });
+  };
+
+  // AI-scan field names (type/company/policyNo/startDate/endDate/premium)
+  // already match the formik field names 1:1 — no allowlist/translation
+  // needed, just drop in whatever came back non-empty.
+  const handleAiExtracted = (fields) => {
+    Object.entries(fields).forEach(([key, value]) => {
+      if (value === null || value === undefined || value === "") return;
+      formik.setFieldValue(key, typeof value === "number" ? String(value) : value);
+    });
   };
 
   return (
@@ -79,6 +90,12 @@ const RecordsTwoPaneView = ({
       </div>
 
       <div className="records-two-pane__form">
+        {config.aiScan && !editing && (
+          <div className="records-two-pane__ai-scan">
+            <InsuranceScan onExtracted={handleAiExtracted} />
+            <span className="text-muted">{t("vehicles.insuranceScan.hint")}</span>
+          </div>
+        )}
         <Form noValidate onSubmit={formik.handleSubmit}>
           <div className="records-two-pane__type mb-2">
             {config.groups.map((group) => (
