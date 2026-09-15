@@ -48,9 +48,10 @@ const getFleetStats = asyncHandler(async (req, res) => {
   });
 });
 
-// Vehicles whose insurance / kasko / MTV / inspection expires within this many
-// days (or is already overdue) drive the dashboard expiry-alert bar.
-const EXPIRY_WINDOW_DAYS = 30;
+// Sigorta/Kasko/MTV/Muayene are hard legal deadlines, so the dashboard flags
+// them tighter than Bakım (which is just a scheduling reminder, kept at 30).
+const EXPIRY_WINDOW_DAYS = 15;
+const MAINTENANCE_WINDOW_DAYS = 30;
 
 const getExpiryAlerts = asyncHandler(async (req, res) => {
   const { branchId } = req.query;
@@ -58,21 +59,27 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
   const now = new Date();
   const threshold = new Date();
   threshold.setDate(threshold.getDate() + EXPIRY_WINDOW_DAYS);
+  const maintenanceThreshold = new Date();
+  maintenanceThreshold.setDate(maintenanceThreshold.getDate() + MAINTENANCE_WINDOW_DAYS);
 
   const carSelect = { select: { id: true, licensePlate: true, brand: true, model: true } };
 
-  const [insurances, inspections, taxes, maintenances] = await Promise.all([
+  // Insurance/inspection/tax are fetched unfiltered (every row, not just ones
+  // with a set/unpaid date) so the same query can tell "expiring soon" apart
+  // from "no record was ever entered" for that vehicle.
+  const [allVehicles, insurances, inspections, taxes, maintenances] = await Promise.all([
+    prisma.vehicle.findMany({ where: vehicleWhere, select: { id: true, licensePlate: true, brand: true, model: true } }),
     prisma.vehicleInsurance.findMany({
       where: { vehicle: vehicleWhere },
       select: { vehicleId: true, type: true, endDate: true, vehicle: carSelect },
     }),
     prisma.vehicleInspection.findMany({
-      where: { vehicle: vehicleWhere, expiryDate: { not: null } },
+      where: { vehicle: vehicleWhere },
       select: { vehicleId: true, expiryDate: true, vehicle: carSelect },
     }),
     prisma.vehicleTax.findMany({
-      where: { vehicle: vehicleWhere, paidDate: null, dueDate: { not: null } },
-      select: { vehicleId: true, dueDate: true, vehicle: carSelect },
+      where: { vehicle: vehicleWhere },
+      select: { vehicleId: true, dueDate: true, paidDate: true, vehicle: carSelect },
     }),
     prisma.vehicleMaintenance.findMany({
       where: { vehicle: vehicleWhere, nextDate: { not: null } },
@@ -86,7 +93,21 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
     name: [car.brand, car.model].filter(Boolean).join(" "),
     date,
     daysLeft: Math.ceil((new Date(date).getTime() - now.getTime()) / 86400000),
+    missing: false,
   });
+
+  const missingItem = (car) => ({
+    vehicleId: car.id,
+    plate: car.licensePlate,
+    name: [car.brand, car.model].filter(Boolean).join(" "),
+    date: null,
+    daysLeft: null,
+    missing: true,
+  });
+
+  // A vehicle with zero records of a type at all never shows up in that
+  // type's rows, so it needs its own pass over the full fleet per category.
+  const missingItemsFor = (haveIds) => allVehicles.filter((v) => !haveIds.has(v.id)).map(missingItem);
 
   // Keep only the most recent record per vehicle (a renewal pushes the date out);
   // alert when that latest date still falls inside the window / is overdue.
@@ -114,19 +135,27 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
       categories[bucket].push(toItem(row.vehicle, row.endDate));
     }
   }
-  for (const row of latestPerVehicle(inspections, "expiryDate")) {
+  categories.insurance.push(...missingItemsFor(new Set(insurances.filter((r) => r.type === "Traffic").map((r) => r.vehicleId))));
+  categories.kasko.push(...missingItemsFor(new Set(insurances.filter((r) => r.type === "Kasko").map((r) => r.vehicleId))));
+
+  const inspectionsWithDate = inspections.filter((r) => r.expiryDate);
+  for (const row of latestPerVehicle(inspectionsWithDate, "expiryDate")) {
     if (new Date(row.expiryDate) <= threshold) {
       categories.inspection.push(toItem(row.vehicle, row.expiryDate));
     }
   }
+  categories.inspection.push(...missingItemsFor(new Set(inspections.map((r) => r.vehicleId))));
+
   for (const row of latestPerVehicle(maintenances, "nextDate")) {
-    if (new Date(row.nextDate) <= threshold) {
+    if (new Date(row.nextDate) <= maintenanceThreshold) {
       categories.maintenance.push(toItem(row.vehicle, row.nextDate));
     }
   }
+
   // MTV: earliest unpaid instalment still due within the window, one row per vehicle.
+  const unpaidTaxes = taxes.filter((r) => r.paidDate == null && r.dueDate);
   const taxByVehicle = new Map();
-  for (const row of taxes) {
+  for (const row of unpaidTaxes) {
     if (new Date(row.dueDate) > threshold) continue;
     const current = taxByVehicle.get(row.vehicleId);
     if (!current || new Date(row.dueDate) < new Date(current.dueDate)) taxByVehicle.set(row.vehicleId, row);
@@ -134,10 +163,24 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
   for (const row of taxByVehicle.values()) {
     categories.tax.push(toItem(row.vehicle, row.dueDate));
   }
+  categories.tax.push(...missingItemsFor(new Set(taxes.map((r) => r.vehicleId))));
 
-  Object.values(categories).forEach((list) => list.sort((a, b) => a.daysLeft - b.daysLeft));
+  // Missing-record rows have no date to sort by — surface them ahead of the
+  // merely-expiring-soon ones (having nothing on file is the worse state).
+  Object.values(categories).forEach((list) =>
+    list.sort((a, b) => (a.missing !== b.missing ? (a.missing ? -1 : 1) : a.daysLeft - b.daysLeft))
+  );
 
-  res.json({ windowDays: EXPIRY_WINDOW_DAYS, categories });
+  res.json({
+    windowDays: {
+      insurance: EXPIRY_WINDOW_DAYS,
+      kasko: EXPIRY_WINDOW_DAYS,
+      tax: EXPIRY_WINDOW_DAYS,
+      inspection: EXPIRY_WINDOW_DAYS,
+      maintenance: MAINTENANCE_WINDOW_DAYS,
+    },
+    categories,
+  });
 });
 
 module.exports = { getFleetStats, getExpiryAlerts };

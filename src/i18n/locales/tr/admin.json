@@ -1071,6 +1071,7 @@
     "dueWithin": "{{days}} gün içinde / süresi geçmiş",
     "daysLeft": "{{days}} gün kaldı",
     "daysOverdue": "{{days}} gün geçti",
+    "noRecord": "Kayıt yok",
     "none": "Yaklaşan kayıt yok",
     "col": {
       "plate": "Plaka",

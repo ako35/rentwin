@@ -35,7 +35,7 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [] }) => {
         <div className="maintenance-alert-bar__tabs">
           {CATEGORIES.map(({ key, icon }) => {
             const list = categories[key] || [];
-            const overdue = list.some((item) => item.daysLeft < 0);
+            const overdue = list.some((item) => item.missing || item.daysLeft < 0);
             return (
               <button
                 key={key}
@@ -70,7 +70,7 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [] }) => {
       {open && open !== HGS_KEY && (
         <div className="maintenance-alert-bar__panel">
           <div className="maintenance-alert-bar__panel-head">
-            {t(`alertBar.${open}`)} — {t("alertBar.dueWithin", { days: alerts?.windowDays ?? 30 })}
+            {t(`alertBar.${open}`)} — {t("alertBar.dueWithin", { days: alerts?.windowDays?.[open] ?? 30 })}
           </div>
           {activeList.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.none")}</div>
@@ -86,19 +86,21 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [] }) => {
               </thead>
               <tbody>
                 {activeList.map((item) => (
-                  <tr key={item.vehicleId + item.date}>
+                  <tr key={item.vehicleId + (item.date || "missing")}>
                     <td className="maintenance-alert-bar__plate">{item.plate}</td>
                     <td>{item.name}</td>
-                    <td>{utils.functions.getDate(item.date)}</td>
+                    <td>{item.missing ? "—" : utils.functions.getDate(item.date)}</td>
                     <td
                       className={
                         "maintenance-alert-bar__days" +
-                        (item.daysLeft < 0 ? " maintenance-alert-bar__days--overdue" : "")
+                        (item.missing || item.daysLeft < 0 ? " maintenance-alert-bar__days--overdue" : "")
                       }
                     >
-                      {item.daysLeft < 0
-                        ? t("alertBar.daysOverdue", { days: Math.abs(item.daysLeft) })
-                        : t("alertBar.daysLeft", { days: item.daysLeft })}
+                      {item.missing
+                        ? t("alertBar.noRecord")
+                        : item.daysLeft < 0
+                          ? t("alertBar.daysOverdue", { days: Math.abs(item.daysLeft) })
+                          : t("alertBar.daysLeft", { days: item.daysLeft })}
                     </td>
                   </tr>
                 ))}

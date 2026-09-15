@@ -67,7 +67,7 @@
 
     &__empty {
         font-size: 0.85rem;
-        color: v.$color5-3;
+        color: var(--rw-ink-soft);
     }
 
     &__table {
@@ -84,12 +84,17 @@
             vertical-align: middle;
         }
 
+        // var(--rw-ink-muted), not v.$color5-3: _admin-dark.scss only ever
+        // overrode this selector's border-colour, never its text colour, so
+        // it stayed on the light-mode grey and read as near-invisible under
+        // data-theme dark (same root cause fixed in vehicle-form.scss's
+        // record tables).
         th {
             font-size: 0.72rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.03em;
-            color: v.$color5-3;
+            color: var(--rw-ink-muted);
             border-bottom: 1px solid v.$color1-5;
         }
 
