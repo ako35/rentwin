@@ -22,7 +22,7 @@ const AdminVehiclesPage = () => {
   const [downloading, setDownloading] = useState(false);
   const [vehicles, setVehicles] = useState([]);
   const [totalRows, setTotalRows] = useState(0);
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(15);
   const [resetPage, setResetPage] = useState(false);
   const navigate = useNavigate();
 
