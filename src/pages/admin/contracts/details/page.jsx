@@ -291,7 +291,7 @@ const ContractDetail = () => {
             {/* HGS check-ins stay usable after the contract closes — the toll
                 query itself often only comes in a few days after drop-off. */}
             {!isCreate && (
-              <HgsSection formik={formik} contractId={contractId} billableDays={billableDays} />
+              <HgsSection formik={formik} contractId={contractId} />
             )}
           </div>
 

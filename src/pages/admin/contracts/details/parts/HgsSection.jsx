@@ -15,7 +15,7 @@ const HGS_PORTAL = "https://hgs.ptt.gov.tr/";
 // portal (who ran it + when, stamped server-side). The status flips to
 // "Tamamlandı" on its own once the logged ranges together span the whole rental
 // period. Toll amounts are itemised on the Dönüş Ekstra tab, not here.
-const HgsSection = ({ formik, contractId, billableDays }) => {
+const HgsSection = ({ formik, contractId }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.hgs.${key}`, opts);
   const rc = (key) => t(`reservations.contract.records.${key}`);
@@ -27,6 +27,15 @@ const HgsSection = ({ formik, contractId, billableDays }) => {
     rentalStart && rentalEnd
       ? `${moment(rentalStart).format("DD.MM.YYYY")} — ${moment(rentalEnd).format("DD.MM.YYYY")}`
       : "—";
+  // The day count shown here must track the same rentalStart/rentalEnd as the
+  // coverage check below — a late return pushes rentalEnd past the originally
+  // billed dropOffDate, and the parent's billableDays (billing-only) doesn't
+  // follow that, which used to show a day count inconsistent with the period
+  // actually being checked.
+  const periodDays =
+    rentalStart && rentalEnd
+      ? Math.max(1, moment(rentalEnd).diff(moment(rentalStart), "days"))
+      : null;
 
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -113,7 +122,7 @@ const HgsSection = ({ formik, contractId, billableDays }) => {
         <span>{c("period")}</span>
         <strong>
           {period}
-          {billableDays ? ` · ${c("days", { count: billableDays })}` : ""}
+          {periodDays ? ` · ${c("days", { count: periodDays })}` : ""}
         </strong>
       </div>
 
