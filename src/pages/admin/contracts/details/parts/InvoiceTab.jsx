@@ -31,7 +31,10 @@ const fmtPeriod = (from, to) => {
   return `${f} – ${tt}`;
 };
 
-const InvoiceTab = ({ isCreate, contractId, invoices, onInvoicesChange, total, vatRate, money }) => {
+const InvoiceTab = ({
+  isCreate, contractId, invoices, onInvoicesChange, total, vatRate, money,
+  rentalStart, rentalEnd,
+}) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.${key}`, opts);
   const rc = (key) => t(`reservations.contract.records.${key}`);
@@ -46,7 +49,20 @@ const InvoiceTab = ({ isCreate, contractId, invoices, onInvoicesChange, total, v
   const rate = Number(vatRate) || 20;
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
-  const openAdd = () => setForm(emptyForm());
+  // Default period: the whole rental. If an invoice was already raised, pick
+  // up right where the most recently issued one left off (list is sorted
+  // newest-first) instead of the rental start — still just a default, the
+  // admin can change either date freely.
+  const openAdd = () => {
+    const lastInvoice = list[0];
+    setForm({
+      ...emptyForm(),
+      periodFrom: lastInvoice?.periodTo
+        ? moment(lastInvoice.periodTo).format("YYYY-MM-DD")
+        : rentalStart || "",
+      periodTo: rentalEnd || "",
+    });
+  };
   const openEdit = (inv) =>
     setForm({
       id: inv.id,

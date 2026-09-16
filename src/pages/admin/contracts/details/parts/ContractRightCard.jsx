@@ -94,6 +94,10 @@ const ContractRightCard = ({
               total={pricing.total}
               vatRate={formik.values.vatRate === "" ? 20 : formik.values.vatRate}
               money={money}
+              rentalStart={formik.values.pickUpDate}
+              rentalEnd={formik.values.returnedAt
+                ? moment(formik.values.returnedAt).format("YYYY-MM-DD")
+                : formik.values.dropOffDate}
             />
           )}
         </fieldset>
