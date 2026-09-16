@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { constants } from "../../../../../constants";
 import { custLabel, matchCustomers } from "../contract-helpers";
 import CustomerTypeahead from "./CustomerTypeahead";
 import "./reference-cari-field.scss";
@@ -56,8 +58,11 @@ const ReferenceCariField = ({ formik, customers, excludeUserId, initialRefCust, 
             />
           ) : referenceUserId ? (
             <span className="contract-page__ref-value">
-              <button type="button" className="contract-page__link" onClick={openSearch}>
+              <Link className="contract-page__link" to={`${constants.routes.adminUsers}/${referenceUserId}`}>
                 {label}
+              </Link>
+              <button type="button" className="contract-page__ref-change" onClick={openSearch}>
+                {c("referenceCariChange")}
               </button>
               <button
                 type="button"

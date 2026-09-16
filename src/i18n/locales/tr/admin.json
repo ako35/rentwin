@@ -843,6 +843,7 @@
       "referenceCariSelect": "Referans cari seç",
       "referenceCariSearch": "Referans cari ara…",
       "referenceCariNoMatch": "Eşleşen müşteri yok",
+      "referenceCariChange": "Değiştir",
       "referenceCariClear": "Referans cariyi kaldır",
       "referenceCariHint": "Bu kontratın tutarı seçilen referans carinin hesabına işlenir."
     },

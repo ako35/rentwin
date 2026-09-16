@@ -39,6 +39,19 @@
 
   &__ref-value {
     @include m.flexbox(row, flex-start, center, 0.35rem);
+    flex-wrap: wrap;
+  }
+
+  &__ref-change {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--rw-ink-muted);
+    font-size: 0.74rem;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover { color: v.$color1; }
   }
 
   &__ref-clear {

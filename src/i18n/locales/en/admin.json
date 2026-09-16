@@ -843,6 +843,7 @@
       "referenceCariSelect": "Select reference account",
       "referenceCariSearch": "Search reference account…",
       "referenceCariNoMatch": "No matching customer",
+      "referenceCariChange": "Change",
       "referenceCariClear": "Remove reference account",
       "referenceCariHint": "This contract's total is billed to the selected reference account."
     },
