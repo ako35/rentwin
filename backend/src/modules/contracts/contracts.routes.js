@@ -13,6 +13,7 @@ const {
   returnContract,
   cancelContract,
   reopenContract,
+  getContractsByVehicle,
 } = require("./contracts.admin.controller");
 const {
   updateContract,
@@ -38,6 +39,12 @@ router.get(
 );
 router.get("/contracts/admin/all/auth", authenticate, requireAdmin, getContractsByPage);
 router.get("/contracts/admin/by-user/:userId/auth", authenticate, requireAdmin, getContractsByUser);
+router.get(
+  "/contracts/admin/by-vehicle/:vehicleId/auth",
+  authenticate,
+  requireAdmin,
+  getContractsByVehicle
+);
 router.get("/contracts/admin/available-cars/auth", authenticate, requireAdmin, getAvailableCarsAdmin);
 router.get("/contracts/:id/admin", authenticate, requireAdmin, getContractByIdAdmin);
 

@@ -121,7 +121,18 @@
       "insurance": "Sigorta / Kasko",
       "tax": "MTV",
       "maintenance": "Bakım / Tamir",
-      "inspection": "Muayene / Egzoz"
+      "inspection": "Muayene / Egzoz",
+      "contracts": "Kontratlar"
+    },
+    "contractsTab": {
+      "title": "Kontrat Geçmişi",
+      "contractNo": "Kontrat No",
+      "customer": "Müşteri",
+      "pickUpDate": "Alış",
+      "dropOffDate": "Teslim",
+      "amount": "Tutar",
+      "status": "Durum",
+      "empty": "Bu araca ait kontrat bulunmuyor."
     },
     "sections": {
       "identity": "Araç Bilgileri",

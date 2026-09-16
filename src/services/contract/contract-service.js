@@ -30,6 +30,16 @@ export const getContractsByUser = async (userId) => {
   return response.data;
 };
 
+// Full rental history for one vehicle — feeds the vehicle detail page's
+// "Kontratlar" tab.
+export const getContractsByVehicle = async (vehicleId) => {
+  const response = await axios.get(
+    `${API_URL}/contracts/admin/by-vehicle/${vehicleId}/auth`,
+    services.authHeader()
+  );
+  return response.data;
+};
+
 export const createContract = async (payload) => {
   const response = await axios.post(`${API_URL}/contracts/admin/auth`, payload, services.authHeader());
   return response.data;

@@ -121,7 +121,18 @@
       "insurance": "Insurance",
       "tax": "Road Tax",
       "maintenance": "Maintenance",
-      "inspection": "Inspection"
+      "inspection": "Inspection",
+      "contracts": "Contracts"
+    },
+    "contractsTab": {
+      "title": "Rental History",
+      "contractNo": "Contract No",
+      "customer": "Customer",
+      "pickUpDate": "Pick-up",
+      "dropOffDate": "Drop-off",
+      "amount": "Amount",
+      "status": "Status",
+      "empty": "No contracts for this vehicle yet."
     },
     "sections": {
       "identity": "Vehicle Details",

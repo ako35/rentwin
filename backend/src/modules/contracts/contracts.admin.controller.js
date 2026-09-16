@@ -166,6 +166,43 @@ const getContractsByUser = asyncHandler(async (req, res) => {
   );
 });
 
+// Full rental history for one vehicle — every contract ever opened against
+// it, open or closed, newest first. Shown on the vehicle detail page.
+const getContractsByVehicle = asyncHandler(async (req, res) => {
+  const { vehicleId } = req.params;
+  const contracts = await prisma.contract.findMany({
+    where: { carId: vehicleId },
+    orderBy: { pickUpTime: "desc" },
+    select: {
+      id: true,
+      contractNo: true,
+      status: true,
+      pickUpTime: true,
+      dropOffTime: true,
+      returnedAt: true,
+      totalPrice: true,
+      user: { select: { firstName: true, lastName: true, companyTitle: true } },
+      corporate: { select: { title: true } },
+    },
+  });
+  res.json(
+    contracts.map((c) => ({
+      id: c.id,
+      contractNo: c.contractNo,
+      status: c.status,
+      pickUpTime: c.pickUpTime,
+      dropOffTime: c.dropOffTime,
+      returnedAt: c.returnedAt,
+      totalPrice: c.totalPrice,
+      customerName:
+        c.corporate?.title ||
+        c.user?.companyTitle ||
+        `${c.user?.firstName || ""} ${c.user?.lastName || ""}`.trim() ||
+        null,
+    }))
+  );
+});
+
 // Admin-created contract: minimal draft, admin fills in the rest on the detail
 // page. Optionally started from a reservation (`reservationId`).
 const createContract = asyncHandler(async (req, res) => {
@@ -473,6 +510,7 @@ const getInvoicePendingContracts = asyncHandler(async (req, res) => {
 module.exports = {
   getContractsByPage,
   getContractsByUser,
+  getContractsByVehicle,
   createContract,
   getAvailableCarsAdmin,
   deleteContract,

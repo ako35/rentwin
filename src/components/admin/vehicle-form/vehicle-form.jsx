@@ -8,6 +8,7 @@ import { RECORD_CONFIGS } from "./record-configs";
 import { buildVehicleSections } from "./vehicle-form-sections";
 import { useFleetPicklist } from "./use-fleet-picklist";
 import VehicleIdentityTab from "./vehicle-identity-tab";
+import VehicleContractsTab from "./vehicle-contracts-tab";
 import "./vehicle-form.scss";
 
 const RECORD_TABS = ["insurance", "tax", "maintenance", "inspection"];
@@ -75,6 +76,11 @@ const VehicleForm = ({
             <Nav.Link eventKey={key}>{t(`vehicles.tabs.${key}`)}</Nav.Link>
           </Nav.Item>
         ))}
+        {mode === "edit" && (
+          <Nav.Item>
+            <Nav.Link eventKey="contracts">{t("vehicles.tabs.contracts")}</Nav.Link>
+          </Nav.Item>
+        )}
       </Nav>
 
       <div className="vehicle-form__body">
@@ -94,6 +100,8 @@ const VehicleForm = ({
               <RecordsPanel key={key} vehicleId={vehicleId} config={RECORD_CONFIGS[key]} />
             )
         )}
+
+        {tab === "contracts" && <VehicleContractsTab vehicleId={vehicleId} />}
       </div>
 
       {builtInWarning && (
