@@ -87,6 +87,9 @@ export const useContractData = ({ isCreate, contractId }) => {
     if (isCreate) return loadCreate();
     try {
       await loadRefData();
+      // Needed for the "Referans Cari" search on an existing contract too —
+      // not just the single already-picked `customer`.
+      setCustomers(await fetchCustomers().catch(() => []));
       const r = await services.contract.getContractByIdAdmin(contractId);
       setExtensions(r.extensions || []);
       setVehicleChanges(r.vehicleChanges || []);

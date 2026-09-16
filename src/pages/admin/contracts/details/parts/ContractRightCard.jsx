@@ -4,6 +4,7 @@ import { Nav } from "react-bootstrap";
 import moment from "moment/moment";
 import CustomerPanel from "./CustomerPanel";
 import CustomerSummary from "./CustomerSummary";
+import ReferenceCariField from "./ReferenceCariField";
 import DriversTab from "./DriversTab";
 import InvoiceTab from "./InvoiceTab";
 import SummaryTab from "./SummaryTab";
@@ -64,7 +65,15 @@ const ContractRightCard = ({
                 money={money}
               />
             ) : (
-              <CustomerSummary customer={customer} userId={formik.values.userId} money={money} />
+              <>
+                <CustomerSummary customer={customer} userId={formik.values.userId} money={money} />
+                <ReferenceCariField
+                  formik={formik}
+                  customers={customers}
+                  excludeUserId={formik.values.userId}
+                  resetKey={navKey}
+                />
+              </>
             )
           )}
 
