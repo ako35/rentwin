@@ -72,6 +72,27 @@
     &-f-amount { grid-area: amount; }
     &-f-desc { grid-area: desc; }
 
+    &-vat-check {
+      margin-top: 0.3rem;
+
+      // var(--rw-ink-muted), not v.$color5_3 — see reference-cari-field.scss
+      // for why the static light-mode SCSS greys go near-invisible in dark mode.
+      .form-check-label { font-size: 0.72rem; color: var(--rw-ink-muted); }
+    }
+
+    &-vat-tag {
+      display: inline-block;
+      margin-left: 0.35rem;
+      padding: 0.02rem 0.4rem;
+      border-radius: 999px;
+      background-color: rgba(v.$color1, 0.12);
+      color: v.$color2;
+      font-size: 0.62rem;
+      font-weight: 700;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
     // HGS/OGS only: the travel-date range the reflected toll covers
     &-f-period {
       grid-area: period;

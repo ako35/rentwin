@@ -420,6 +420,8 @@
         "description": "Açıklama",
         "amount": "Tutar (TL)",
         "quantity": "Adet",
+        "applyVat": "KDV Ekle (%{{rate}})",
+        "vatTag": "+KDV %{{rate}}",
         "lineTotal": "Tutar",
         "addLine": "Yeni Ekstra Ekle",
         "addBtn": "Ekstra Ekle",

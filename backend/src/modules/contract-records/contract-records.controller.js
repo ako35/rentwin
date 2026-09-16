@@ -52,12 +52,13 @@ const RESOURCES = {
   },
   returnCharges: {
     model: "contractReturnCharge",
-    fields: ["category", "description", "amount", "quantity", "periodFrom", "periodTo"],
+    fields: ["category", "description", "amount", "quantity", "periodFrom", "periodTo", "applyVat"],
     required: ["category"],
     // periodFrom/periodTo: the travel-date range an HGS toll line covers; null
     // for every other category (blank -> null, see buildData).
     dateFields: ["periodFrom", "periodTo"],
     numberFields: ["amount", "quantity"],
+    boolFields: ["applyVat"],
     orderBy: [{ createdAt: "asc" }],
     // After any change, resync Contract.returnExtraAmount + totalPrice + ledger.
     recomputeFinancials: true,

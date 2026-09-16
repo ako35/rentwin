@@ -420,6 +420,8 @@
         "description": "Description",
         "amount": "Amount (TL)",
         "quantity": "Qty",
+        "applyVat": "Add VAT ({{rate}}%)",
+        "vatTag": "+VAT {{rate}}%",
         "lineTotal": "Amount",
         "addLine": "Add Extra",
         "addBtn": "Add Extra",

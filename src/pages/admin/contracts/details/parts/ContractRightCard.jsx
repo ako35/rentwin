@@ -48,6 +48,7 @@ const ContractRightCard = ({
   const billToCustomer =
     customers.find((u) => u.id === formik.values.referenceUserId) || customer;
   const defaultInvoiceTitle = billToCustomer ? custLabel(billToCustomer) : "";
+  const vatRate = formik.values.vatRate === "" ? 20 : formik.values.vatRate;
 
   return (
     <section className="contract-card contract-card--right">
@@ -100,7 +101,7 @@ const ContractRightCard = ({
               invoices={invoices}
               onInvoicesChange={onInvoicesChange}
               total={pricing.total}
-              vatRate={formik.values.vatRate === "" ? 20 : formik.values.vatRate}
+              vatRate={vatRate}
               money={money}
               rentalStart={formik.values.pickUpDate}
               rentalEnd={formik.values.returnedAt
@@ -151,6 +152,7 @@ const ContractRightCard = ({
               rentalEnd={formik.values.returnedAt
                 ? moment(formik.values.returnedAt).format("YYYY-MM-DD")
                 : formik.values.dropOffDate}
+              vatRate={vatRate}
             />
           )}
 

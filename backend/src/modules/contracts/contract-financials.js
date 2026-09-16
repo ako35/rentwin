@@ -52,7 +52,10 @@ const recomputeContractFinancials = async (contractId, client = prisma) => {
 
   const rows = await client.contractReturnCharge.findMany({ where: { contractId } });
   const returnExtraAmount = round2(
-    rows.reduce((sum, r) => sum + (r.amount || 0) * (r.quantity || 1), 0)
+    rows.reduce((sum, r) => {
+      const lineNet = (r.amount || 0) * (r.quantity || 1);
+      return sum + (r.applyVat ? lineNet * (1 + vatRate / 100) : lineNet);
+    }, 0)
   );
 
   const addOns = (contract.oneWayFee || 0) + (contract.extrasTotal || 0);

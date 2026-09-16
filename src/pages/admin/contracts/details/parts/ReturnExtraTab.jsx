@@ -27,7 +27,14 @@ const CATEGORIES = [
 // Only an HGS/OGS toll line carries a travel-date range (which days the
 // reflected toll is for).
 const PERIOD_CATEGORY = "HGS_OGS";
-const EMPTY = { category: "", description: "", amount: "", periodFrom: "", periodTo: "" };
+const EMPTY = { category: "", description: "", amount: "", periodFrom: "", periodTo: "", applyVat: false };
+
+// Gross amount actually reflected in the total: VAT added on top of the
+// entered amount only when the line is flagged for it.
+const lineGross = (row, vatRate) => {
+  const net = (Number(row.amount) || 0) * (Number(row.quantity) || 1);
+  return row.applyVat ? net * (1 + vatRate / 100) : net;
+};
 
 const fmtRange = (from, to) => {
   if (!from && !to) return "";
@@ -36,7 +43,7 @@ const fmtRange = (from, to) => {
   return `${f} – ${tt}`;
 };
 
-const ReturnExtraTab = ({ isCreate, contractId, onChange, money, rentalStart, rentalEnd }) => {
+const ReturnExtraTab = ({ isCreate, contractId, onChange, money, rentalStart, rentalEnd, vatRate = 20 }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.returnCharges.${key}`, opts);
   const rc = (key) => t(`reservations.contract.records.${key}`);
@@ -67,8 +74,8 @@ const ReturnExtraTab = ({ isCreate, contractId, onChange, money, rentalStart, re
   }, [contractId]);
 
   const total = useMemo(
-    () => rows.reduce((s, r) => s + (Number(r.amount) || 0) * (Number(r.quantity) || 1), 0),
-    [rows]
+    () => rows.reduce((s, r) => s + lineGross(r, vatRate), 0),
+    [rows, vatRate]
   );
 
   if (isCreate) return <SaveFirstHint />;
@@ -108,6 +115,7 @@ const ReturnExtraTab = ({ isCreate, contractId, onChange, money, rentalStart, re
       amount: form.amount,
       periodFrom: hasPeriod ? form.periodFrom || "" : "",
       periodTo: hasPeriod ? form.periodTo || "" : "",
+      applyVat: form.applyVat,
     });
   };
 
@@ -140,6 +148,7 @@ const ReturnExtraTab = ({ isCreate, contractId, onChange, money, rentalStart, re
       amount: row.amount ?? "",
       periodFrom: row.periodFrom ? moment(row.periodFrom).format("YYYY-MM-DD") : "",
       periodTo: row.periodTo ? moment(row.periodTo).format("YYYY-MM-DD") : "",
+      applyVat: !!row.applyVat,
     });
     setOpen(true);
   };
@@ -206,6 +215,14 @@ const ReturnExtraTab = ({ isCreate, contractId, onChange, money, rentalStart, re
                 step="0.01"
                 value={form.amount}
                 onChange={(e) => setForm({ ...form, amount: e.target.value })}
+              />
+              <Form.Check
+                type="checkbox"
+                id="rex-apply-vat"
+                className="contract-page__rex-vat-check"
+                label={c("applyVat", { rate: vatRate })}
+                checked={form.applyVat}
+                onChange={(e) => setForm({ ...form, applyVat: e.target.checked })}
               />
             </Form.Group>
 
@@ -308,7 +325,10 @@ const ReturnExtraTab = ({ isCreate, contractId, onChange, money, rentalStart, re
                     </span>
                   )}
                 </td>
-                <td className="text-end">{money((row.amount || 0) * (row.quantity || 1))} TL</td>
+                <td className="text-end">
+                  {money(lineGross(row, vatRate))} TL
+                  {row.applyVat && <span className="contract-page__rex-vat-tag">{c("vatTag", { rate: vatRate })}</span>}
+                </td>
                 <td className="contract-records__actions text-end">
                   <button type="button" onClick={() => startEdit(row)}>
                     {rc("edit")}
