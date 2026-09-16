@@ -20,6 +20,17 @@
     overflow: hidden;
   }
 
+  // The party panel (Müşteri / Sürücüler / Fatura) hosts the customer and
+  // reference-cari search dropdowns — those are absolutely positioned and
+  // can run taller than the remaining panel height, so the panel-level
+  // overflow:hidden (kept elsewhere to clip square-cornered children to the
+  // rounded card) would cut them off. Only this panel opts back into
+  // overflow:visible; &__panel-head's own border-radius (below) keeps its
+  // top corners looking right either way.
+  &__panel--party {
+    overflow: visible;
+  }
+
   // the pricing panel wraps the existing .pricing card — drop its own frame so
   // the panel is the only border. (Extra &-qualified for specificity over the
   // `.contract-page .pricing` base rule.)
@@ -39,6 +50,10 @@
     background-color: v.$color4;
     border-bottom: 1px solid v.$color3;
     border-left: 3px solid v.$anchor-navy;
+    // Previously relied on &__panel's overflow:hidden to clip this to the
+    // parent's rounded top corners — &__panel--party no longer clips, so
+    // round it directly (harmless no-op on panels that still do clip).
+    border-radius: 9px 9px 0 0;
   }
 
   &__panel-body { padding: 0.85rem 0.9rem; }

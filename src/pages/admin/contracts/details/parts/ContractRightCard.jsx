@@ -43,7 +43,7 @@ const ContractRightCard = ({
 
   return (
     <section className="contract-card contract-card--right">
-      <Panel title={c("panels.party")}>
+      <Panel title={c("panels.party")} className="contract-page__panel--party">
         <Nav variant="tabs" activeKey={topTab} onSelect={(k) => k && setTopTab(k)} className="mb-3">
           <Nav.Item><Nav.Link eventKey="customer">{c("topTabs.customer")}</Nav.Link></Nav.Item>
           <Nav.Item><Nav.Link eventKey="drivers">{c("topTabs.drivers")}</Nav.Link></Nav.Item>
