@@ -33,7 +33,7 @@ const fmtPeriod = (from, to) => {
 
 const InvoiceTab = ({
   isCreate, contractId, invoices, onInvoicesChange, total, vatRate, money,
-  rentalStart, rentalEnd,
+  rentalStart, rentalEnd, defaultCustomerTitle,
 }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.${key}`, opts);
@@ -61,6 +61,10 @@ const InvoiceTab = ({
         ? moment(lastInvoice.periodTo).format("YYYY-MM-DD")
         : rentalStart || "",
       periodTo: rentalEnd || "",
+      // Bills to the reference cari when the contract has one, else the
+      // actual renting customer — same default the backend applies if this
+      // is left blank, just made visible/editable up front.
+      customerTitle: defaultCustomerTitle || "",
     });
   };
   const openEdit = (inv) =>

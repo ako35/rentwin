@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Nav } from "react-bootstrap";
 import moment from "moment/moment";
+import { custLabel } from "../contract-helpers";
 import CustomerPanel from "./CustomerPanel";
 import CustomerSummary from "./CustomerSummary";
 import ReferenceCariField from "./ReferenceCariField";
@@ -40,6 +41,13 @@ const ContractRightCard = ({
   const c = (key) => t(`reservations.contract.${key}`);
   const [topTab, setTopTab] = useState("customer");
   const [subTab, setSubTab] = useState("summary");
+
+  // Who a new invoice bills to by default: the reference cari if one is set
+  // on the contract, else the actual renting customer — mirrors the backend's
+  // own createInvoice fallback (contracts.controller.js).
+  const billToCustomer =
+    customers.find((u) => u.id === formik.values.referenceUserId) || customer;
+  const defaultInvoiceTitle = billToCustomer ? custLabel(billToCustomer) : "";
 
   return (
     <section className="contract-card contract-card--right">
@@ -98,6 +106,7 @@ const ContractRightCard = ({
               rentalEnd={formik.values.returnedAt
                 ? moment(formik.values.returnedAt).format("YYYY-MM-DD")
                 : formik.values.dropOffDate}
+              defaultCustomerTitle={defaultInvoiceTitle}
             />
           )}
         </fieldset>

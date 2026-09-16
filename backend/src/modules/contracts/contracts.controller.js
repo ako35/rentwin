@@ -342,19 +342,19 @@ const listInvoices = asyncHandler(async (req, res) => {
 });
 
 const createInvoice = asyncHandler(async (req, res) => {
+  const custSelect = {
+    firstName: true,
+    lastName: true,
+    customerType: true,
+    companyTitle: true,
+    nationalId: true,
+  };
   const contract = await prisma.contract.findUnique({
     where: { id: req.params.id },
     include: {
       corporate: true,
-      user: {
-        select: {
-          firstName: true,
-          lastName: true,
-          customerType: true,
-          companyTitle: true,
-          nationalId: true,
-        },
-      },
+      user: { select: custSelect },
+      referenceUser: { select: custSelect },
     },
   });
   if (!contract) throw new HttpError(404, "Contract not found.");
@@ -371,16 +371,19 @@ const createInvoice = asyncHandler(async (req, res) => {
   const gross = requestedGross != null ? requestedGross : contract.totalPrice || 0;
   if (gross < 0) throw new HttpError(400, "Invalid invoice amount.");
 
-  // Bill to: the reference cari if one is set, else the corporate customer's
-  // registered title, else the individual's name. Corporate customers keep
-  // their 10-digit VKN (stored in nationalId) as the invoice tax no.
-  const corporateCustomer = contract.user.customerType === "Kurumsal";
+  // Bill to: the reference cari if one is set, else the actual renting
+  // customer. `contract.corporate` is a separate, currently-unused legacy
+  // relation kept as an even-higher-priority override in case it's ever
+  // populated. Corporate customers keep their 10-digit VKN (stored in
+  // nationalId) as the invoice tax no.
+  const billTo = contract.referenceUser || contract.user;
+  const corporateCustomer = billTo.customerType === "Kurumsal";
   const defaultTitle =
     contract.corporate?.title ||
-    (corporateCustomer && contract.user.companyTitle) ||
-    `${contract.user.firstName} ${contract.user.lastName}`.trim();
+    (corporateCustomer && billTo.companyTitle) ||
+    `${billTo.firstName} ${billTo.lastName}`.trim();
   const defaultTaxNo =
-    contract.corporate?.taxNo || (corporateCustomer ? contract.user.nationalId : null) || null;
+    contract.corporate?.taxNo || (corporateCustomer ? billTo.nationalId : null) || null;
 
   let invoice;
   try {
