@@ -67,8 +67,30 @@ const HgsSection = ({ formik, contractId }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contractId]);
 
+  // Pick up where the last logged check left off (not from the start again) —
+  // and always reach for the current rentalEnd, so a late return that pushes
+  // the period out a day is covered by the very next check without the
+  // operator having to notice or recompute anything.
   const startAdd = () => {
-    setForm({ rangeFrom: rentalStart || "", rangeTo: rentalEnd || "", note: "" });
+    // .startOf("day") strips the residual UTC-midnight time-of-day that a
+    // stored rangeTo carries — without it, a local-timezone browser compares
+    // "today 03:00" against "today 00:00" and (wrongly) calls it a later day.
+    const latestChecked = rows.length
+      ? rows.reduce(
+          (max, r) => {
+            const to = moment(r.rangeTo).startOf("day");
+            return to.isAfter(max) ? to : max;
+          },
+          moment(rows[0].rangeTo).startOf("day")
+        )
+      : null;
+    const suggestedFrom = latestChecked ? latestChecked.clone().add(1, "day") : null;
+    const endOfPeriod = rentalEnd ? moment(rentalEnd, "YYYY-MM-DD").startOf("day") : null;
+    const from =
+      suggestedFrom && endOfPeriod && suggestedFrom.isSameOrBefore(endOfPeriod)
+        ? suggestedFrom.format("YYYY-MM-DD")
+        : rentalStart || "";
+    setForm({ rangeFrom: from, rangeTo: rentalEnd || "", note: "" });
     setOpen(true);
   };
   const cancel = () => {
