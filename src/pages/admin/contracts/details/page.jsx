@@ -273,20 +273,23 @@ const ContractDetail = () => {
       />
 
       <Form noValidate onSubmit={formik.handleSubmit}>
-        <fieldset className="contract-page__fieldset" disabled={locked}>
         <div className="contract-page__grid">
           {/* ---------- LEFT ---------- */}
           <div className="contract-page__col">
-            <VehicleSection
-              formik={formik}
-              locationNames={locationNames}
-              vehicleOptions={vehicleOptions}
-              selectedCar={selectedCar}
-              isCreate={isCreate}
-              showNoAvailable={!availableCars.length}
-              extensions={extensions}
-            />
-            {!isCreate && <KbsSection formik={formik} />}
+            <fieldset className="contract-page__fieldset" disabled={locked}>
+              <VehicleSection
+                formik={formik}
+                locationNames={locationNames}
+                vehicleOptions={vehicleOptions}
+                selectedCar={selectedCar}
+                isCreate={isCreate}
+                showNoAvailable={!availableCars.length}
+                extensions={extensions}
+              />
+              {!isCreate && <KbsSection formik={formik} />}
+            </fieldset>
+            {/* HGS check-ins stay usable after the contract closes — the toll
+                query itself often only comes in a few days after drop-off. */}
             {!isCreate && (
               <HgsSection formik={formik} contractId={contractId} billableDays={billableDays} />
             )}
@@ -315,10 +318,10 @@ const ContractDetail = () => {
               collected={collected}
               recordLabels={recordLabels}
               money={money}
+              locked={locked}
             />
           </div>
         </div>
-        </fieldset>
 
         <ContractActions
           isCreate={isCreate}

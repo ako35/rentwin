@@ -33,7 +33,7 @@ const ContractRightCard = ({
   customers, customer, invoices, extensions, vehicleChanges,
   refreshCustomers, onRequestNewCustomer, onInvoicesChange, loadData, loadPayments,
   selectedCar, billableDays, pricing, collected,
-  recordLabels, money,
+  recordLabels, money, locked = false,
 }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
@@ -49,40 +49,45 @@ const ContractRightCard = ({
           <Nav.Item><Nav.Link eventKey="invoice">{c("topTabs.invoice")}</Nav.Link></Nav.Item>
         </Nav>
 
-        {topTab === "customer" && (
-          isCreate ? (
-            <CustomerPanel
-              formik={formik}
-              customers={customers}
-              refreshCustomers={refreshCustomers}
-              onRequestNewCustomer={onRequestNewCustomer}
-              resetKey={navKey}
+        {/* Customer / Drivers follow the contract's own lock (they're core
+            contract terms); Invoice stays usable after closing — invoices are
+            often raised only once the rental has already ended. */}
+        <fieldset className="contract-page__fieldset" disabled={topTab !== "invoice" && locked}>
+          {topTab === "customer" && (
+            isCreate ? (
+              <CustomerPanel
+                formik={formik}
+                customers={customers}
+                refreshCustomers={refreshCustomers}
+                onRequestNewCustomer={onRequestNewCustomer}
+                resetKey={navKey}
+                money={money}
+              />
+            ) : (
+              <CustomerSummary customer={customer} userId={formik.values.userId} money={money} />
+            )
+          )}
+
+          {topTab === "drivers" && (
+            <DriversTab
+              isCreate={isCreate}
+              contractId={contractId}
+              recordLabels={recordLabels}
+            />
+          )}
+
+          {topTab === "invoice" && (
+            <InvoiceTab
+              isCreate={isCreate}
+              contractId={contractId}
+              invoices={invoices}
+              onInvoicesChange={onInvoicesChange}
+              total={pricing.total}
+              vatRate={formik.values.vatRate === "" ? 20 : formik.values.vatRate}
               money={money}
             />
-          ) : (
-            <CustomerSummary customer={customer} userId={formik.values.userId} money={money} />
-          )
-        )}
-
-        {topTab === "drivers" && (
-          <DriversTab
-            isCreate={isCreate}
-            contractId={contractId}
-            recordLabels={recordLabels}
-          />
-        )}
-
-        {topTab === "invoice" && (
-          <InvoiceTab
-            isCreate={isCreate}
-            contractId={contractId}
-            invoices={invoices}
-            onInvoicesChange={onInvoicesChange}
-            total={pricing.total}
-            vatRate={formik.values.vatRate === "" ? 20 : formik.values.vatRate}
-            money={money}
-          />
-        )}
+          )}
+        </fieldset>
       </Panel>
 
       <Panel title={c("panels.actions")}>
@@ -97,7 +102,7 @@ const ContractRightCard = ({
           ))}
         </Nav>
 
-        <div className="contract-page__sub-content">
+        <fieldset className="contract-page__fieldset contract-page__sub-content" disabled={locked}>
           {subTab === "summary" && (
             <SummaryTab formik={formik} selectedCar={selectedCar} billableDays={billableDays} />
           )}
@@ -151,7 +156,7 @@ const ContractRightCard = ({
               onChanged={loadData}
             />
           )}
-        </div>
+        </fieldset>
       </Panel>
 
       <div className="contract-page__panel contract-page__panel--pricing">
