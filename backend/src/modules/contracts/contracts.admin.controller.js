@@ -6,6 +6,7 @@ const {
   serializeVehicle,
   serializeHgsPendingRow,
   serializeInvoicePendingRow,
+  serializeKbsPendingRow,
 } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
@@ -507,6 +508,26 @@ const getInvoicePendingContracts = asyncHandler(async (req, res) => {
   res.json(contracts.map(serializeInvoicePendingRow));
 });
 
+// Contracts never reported to KABİS (Kimlik Bildirme Sistemi) — open or
+// already closed, but not cancelled (a cancelled rental never happened, so
+// there's nothing to report). Filing is meant to happen around pickup, so
+// this surfaces both states rather than gating on status: "DONE" like the
+// HGS/invoice panels — oldest pick-up first, the longest-outstanding ones.
+const getKbsPendingContracts = asyncHandler(async (req, res) => {
+  const { branchId } = req.query;
+  const contracts = await prisma.contract.findMany({
+    where: {
+      status: { not: "CANCELLED" },
+      kbsNotifiedAt: null,
+      ...(branchId ? { car: { branchId } } : {}),
+    },
+    orderBy: [{ pickUpTime: "asc" }],
+    include: { car: { include: { branch: true } }, user: true },
+  });
+
+  res.json(contracts.map(serializeKbsPendingRow));
+});
+
 module.exports = {
   getContractsByPage,
   getContractsByUser,
@@ -517,6 +538,7 @@ module.exports = {
   getAdminSchedule,
   getHgsPendingContracts,
   getInvoicePendingContracts,
+  getKbsPendingContracts,
   returnContract,
   cancelContract,
   reopenContract,

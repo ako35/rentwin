@@ -1093,6 +1093,9 @@
     "invoicePending": "Fatura Bekleyen",
     "invoicePendingHead": "Faturası kesilmemiş kapalı kontratlar",
     "invoicePendingNone": "Faturası bekleyen kapalı kontrat yok",
+    "kbsPending": "KABİS Bekleyen",
+    "kbsPendingHead": "KABİS'e bildirilmemiş kontratlar",
+    "kbsPendingNone": "KABİS bildirimi bekleyen kontrat yok",
     "dueWithin": "{{days}} gün içinde / süresi geçmiş",
     "dueWithinKm": "son {{km}} km kala",
     "daysLeft": "{{days}} gün kaldı",
@@ -1105,7 +1108,9 @@
       "plate": "Plaka",
       "contractNo": "Kontrat No",
       "customer": "Müşteri",
-      "closedAt": "Kapanış Tarihi"
+      "closedAt": "Kapanış Tarihi",
+      "pickUpDate": "Alış Tarihi",
+      "status": "Durum"
     }
   },
   "footer": {

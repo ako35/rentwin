@@ -10,6 +10,7 @@ const {
   getAdminSchedule,
   getHgsPendingContracts,
   getInvoicePendingContracts,
+  getKbsPendingContracts,
   returnContract,
   cancelContract,
   reopenContract,
@@ -37,6 +38,7 @@ router.get(
   requireAdmin,
   getInvoicePendingContracts
 );
+router.get("/contracts/admin/kbs-pending/auth", authenticate, requireAdmin, getKbsPendingContracts);
 router.get("/contracts/admin/all/auth", authenticate, requireAdmin, getContractsByPage);
 router.get("/contracts/admin/by-user/:userId/auth", authenticate, requireAdmin, getContractsByUser);
 router.get(

@@ -158,6 +158,40 @@
                 white-space: nowrap;
             }
         }
+
+        // KABİS panel: Kontrat No | Plaka | Müşteri | Alış Tarihi | Durum —
+        // one extra column vs. the HGS/invoice table, so it gets its own widths.
+        &--kbs {
+            th:nth-child(1),
+            td:nth-child(1) { width: 18%; }
+            th:nth-child(2),
+            td:nth-child(2) { width: 16%; overflow: visible; text-overflow: clip; white-space: nowrap; }
+            th:nth-child(3),
+            td:nth-child(3) { width: 34%; }
+            th:nth-child(4),
+            td:nth-child(4) { width: 16%; }
+            th:nth-child(5),
+            td:nth-child(5) { width: 16%; }
+
+            td:nth-child(3) {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+    }
+
+    &__status {
+        display: inline-block;
+        padding: 0.08rem 0.5rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        background: v.$color3;
+        color: v.$color5;
+
+        &--created { background: #d6e6fb; color: #1b5aa8; }
+        &--done { background: #d6f2df; color: #1c7a3e; }
     }
 
     &__rowlink {

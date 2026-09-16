@@ -2,7 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { GiCarWheel, GiMechanicGarage } from "react-icons/gi";
-import { BsShieldCheck, BsShield, BsReceipt, BsSignpost2, BsFileEarmarkText } from "react-icons/bs";
+import {
+  BsShieldCheck,
+  BsShield,
+  BsReceipt,
+  BsSignpost2,
+  BsFileEarmarkText,
+  BsPersonBadge,
+} from "react-icons/bs";
 import { utils } from "../../../utils";
 import { constants } from "../../../constants";
 import "./maintenance-alert-bar.scss";
@@ -17,6 +24,7 @@ const CATEGORIES = [
 
 const HGS_KEY = "hgsPending";
 const INVOICE_KEY = "invoicePending";
+const KBS_KEY = "kbsPending";
 
 // Maps an alert category to the vehicle-detail record tab it belongs to —
 // Sigorta and Kasko are both entries on the vehicle form's single "insurance"
@@ -60,14 +68,51 @@ const ClosedContractsTable = ({ rows, onRowClick }) => {
   );
 };
 
-const MaintenanceAlertBar = ({ alerts, hgsPending = [], invoicePending = [] }) => {
+// KABİS Bekleyen: unlike the HGS/invoice panels this mixes open and closed
+// contracts (filing is meant to happen around pickup, not just at return), so
+// its rows carry their own status badge instead of a single "closed at" date.
+const KbsPendingTable = ({ rows, onRowClick }) => {
+  const { t } = useTranslation("admin");
+  const { t: tCommon } = useTranslation("common");
+  return (
+    <table className="maintenance-alert-bar__table maintenance-alert-bar__table--kbs">
+      <thead>
+        <tr>
+          <th>{t("alertBar.col.contractNo")}</th>
+          <th>{t("alertBar.col.plate")}</th>
+          <th>{t("alertBar.col.customer")}</th>
+          <th>{t("alertBar.col.pickUpDate")}</th>
+          <th>{t("alertBar.col.status")}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr key={row.id} className="maintenance-alert-bar__rowlink" onClick={() => onRowClick(row)}>
+            <td>{row.contractNo || "—"}</td>
+            <td className="maintenance-alert-bar__plate">{row.car?.licensePlate || "—"}</td>
+            <td title={custName(row.user)}>{custName(row.user)}</td>
+            <td>{utils.functions.getDate(row.pickUpTime)}</td>
+            <td>
+              <span className={`maintenance-alert-bar__status maintenance-alert-bar__status--${(row.status || "").toLowerCase()}`}>
+                {tCommon(`options.contractStatus.${row.status}`)}
+              </span>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+const MaintenanceAlertBar = ({ alerts, hgsPending = [], invoicePending = [], kbsPending = [] }) => {
   const { t, i18n } = useTranslation("admin");
   const navigate = useNavigate();
   const [open, setOpen] = useState(null);
 
   const categories = alerts?.categories || {};
 
-  const activeList = open && open !== HGS_KEY && open !== INVOICE_KEY ? categories[open] || [] : [];
+  const activeList =
+    open && open !== HGS_KEY && open !== INVOICE_KEY && open !== KBS_KEY ? categories[open] || [] : [];
 
   const goToContract = (row) => navigate(`${constants.routes.adminContracts}/${row.id}`);
 
@@ -123,10 +168,22 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [], invoicePending = [] }) =
           >
             <BsFileEarmarkText /> {t("alertBar.invoicePending")} ({invoicePending.length})
           </button>
+
+          <button
+            type="button"
+            className={
+              "maintenance-alert-bar__tab" +
+              (kbsPending.length ? " maintenance-alert-bar__tab--due maintenance-alert-bar__tab--overdue" : "") +
+              (open === KBS_KEY ? " maintenance-alert-bar__tab--active" : "")
+            }
+            onClick={() => setOpen(open === KBS_KEY ? null : KBS_KEY)}
+          >
+            <BsPersonBadge /> {t("alertBar.kbsPending")} ({kbsPending.length})
+          </button>
         </div>
       </div>
 
-      {open && open !== HGS_KEY && open !== INVOICE_KEY && (
+      {open && open !== HGS_KEY && open !== INVOICE_KEY && open !== KBS_KEY && (
         <div className="maintenance-alert-bar__panel">
           <div className="maintenance-alert-bar__panel-head">
             {t(`alertBar.${open}`)} — {t("alertBar.dueWithin", { days: alerts?.windowDays?.[open] ?? 30 })}
@@ -198,6 +255,17 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [], invoicePending = [] }) =
             <div className="maintenance-alert-bar__empty">{t("alertBar.invoicePendingNone")}</div>
           ) : (
             <ClosedContractsTable rows={invoicePending} onRowClick={goToContract} />
+          )}
+        </div>
+      )}
+
+      {open === KBS_KEY && (
+        <div className="maintenance-alert-bar__panel">
+          <div className="maintenance-alert-bar__panel-head">{t("alertBar.kbsPendingHead")}</div>
+          {kbsPending.length === 0 ? (
+            <div className="maintenance-alert-bar__empty">{t("alertBar.kbsPendingNone")}</div>
+          ) : (
+            <KbsPendingTable rows={kbsPending} onRowClick={goToContract} />
           )}
         </div>
       )}

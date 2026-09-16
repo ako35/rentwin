@@ -20,19 +20,22 @@ const AdminDashboard = () => {
   const [expiryAlerts, setExpiryAlerts] = useState(null);
   const [hgsPending, setHgsPending] = useState([]);
   const [invoicePending, setInvoicePending] = useState([]);
+  const [kbsPending, setKbsPending] = useState([]);
 
   const loadData = async () => {
     try {
-      const [stats, alerts, hgs, invoices] = await Promise.all([
+      const [stats, alerts, hgs, invoices, kbs] = await Promise.all([
         services.vehicle.getFleetStats(branchId),
         services.vehicle.getExpiryAlerts(branchId),
         services.contract.getHgsPendingContracts({ branchId }).catch(() => []),
         services.contract.getInvoicePendingContracts({ branchId }).catch(() => []),
+        services.contract.getKbsPendingContracts({ branchId }).catch(() => []),
       ]);
       setFleetStats(stats);
       setExpiryAlerts(alerts);
       setHgsPending(Array.isArray(hgs) ? hgs : []);
       setInvoicePending(Array.isArray(invoices) ? invoices : []);
+      setKbsPending(Array.isArray(kbs) ? kbs : []);
     } catch (error) {
       console.log(error);
     } finally {
@@ -71,7 +74,12 @@ const AdminDashboard = () => {
             </Col>
           </Row>
 
-          <MaintenanceAlertBar alerts={expiryAlerts} hgsPending={hgsPending} invoicePending={invoicePending} />
+          <MaintenanceAlertBar
+            alerts={expiryAlerts}
+            hgsPending={hgsPending}
+            invoicePending={invoicePending}
+            kbsPending={kbsPending}
+          />
 
           <Row className="gy-2">
             <Col xl={6}>

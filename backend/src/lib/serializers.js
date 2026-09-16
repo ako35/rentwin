@@ -81,6 +81,15 @@ const serializeInvoicePendingRow = (contract) => ({
   returnedAt: contract.returnedAt || null,
 });
 
+// Admin dashboard "KABİS pending" bar: a contract (open or already closed,
+// but not cancelled) that was never reported to KABİS. Surfaced across both
+// states — filing is meant to happen around pickup, so an open contract
+// missing it is the more urgent case, not just closed ones.
+const serializeKbsPendingRow = (contract) => ({
+  ...serializeScheduleRow(contract),
+  returnedAt: contract.returnedAt || null,
+});
+
 module.exports = {
   serializeUser,
   serializeVehicle,
@@ -90,4 +99,5 @@ module.exports = {
   serializeScheduleRow,
   serializeHgsPendingRow,
   serializeInvoicePendingRow,
+  serializeKbsPendingRow,
 };

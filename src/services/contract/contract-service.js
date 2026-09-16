@@ -189,6 +189,15 @@ export const getInvoicePendingContracts = async ({ branchId } = {}) => {
   return response.data;
 };
 
+// Admin dashboard alert bar: contracts (open or closed) never reported to KABİS.
+export const getKbsPendingContracts = async ({ branchId } = {}) => {
+  const response = await axios.get(
+    `${API_URL}/contracts/admin/kbs-pending/auth${branchId ? `?branchId=${branchId}` : ""}`,
+    services.authHeader()
+  );
+  return response.data;
+};
+
 export const downloadContractReports = async () => {
   const token = services.encryptedLocalStorage.getItem("rentwintoken");
   const response = await axios.get(`${API_URL}/excel/download/contracts`, {
