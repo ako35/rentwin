@@ -404,6 +404,16 @@ const returnContract = asyncHandler(async (req, res) => {
   if (returnFuelEighths < 0 || returnFuelEighths > 8) {
     throw new HttpError(400, "Yakıt göstergesi 0-8 aralığında olmalıdır.");
   }
+  // The operator picks the actual hand-back moment (defaults to "now" on the
+  // modal, but stays editable for a return processed after the fact) — this
+  // is what the HGS period and every other "kiralanan gün sayısı" downstream
+  // of returnedAt reads, so a silent server-side `new Date()` here used to
+  // make that day count drift from when the car actually came back.
+  const returnedAt = req.body?.returnedAt ? parseFrontendDateTime(req.body.returnedAt) : new Date();
+  if (!returnedAt) throw new HttpError(400, "Teslim tarihi geçersiz.");
+  if (returnedAt < existing.pickUpTime) {
+    throw new HttpError(400, "Teslim tarihi alış tarihinden önce olamaz.");
+  }
   const charges = sanitizeReturnCharges(req.body?.charges);
 
   await prisma.$transaction(async (tx) => {
@@ -415,7 +425,7 @@ const returnContract = asyncHandler(async (req, res) => {
         status: "DONE",
         returnKm,
         returnFuelEighths,
-        returnedAt: new Date(),
+        returnedAt,
         ...(needsRelease && releaseKbs
           ? { kbsReleasedAt: new Date(), kbsReleasedBy: kbsStamp(req.user) }
           : {}),

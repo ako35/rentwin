@@ -493,6 +493,11 @@
       "returnModal": {
         "title": "Araç Teslim Alma",
         "intro": "Teslim km ve yakıt bilgisini girin; km aşımı ve eksik yakıt otomatik hesaplanıp ekstra olarak yansıtılır.",
+        "returnedAt": "Teslim Tarihi ve Saati",
+        "returnDate": "Teslim Tarihi",
+        "returnTime": "Teslim Saati",
+        "returnedAtRequired": "Teslim tarihi ve saati girilmelidir.",
+        "returnedAtBeforePickup": "Teslim tarihi alış tarihinden önce olamaz.",
         "odometer": "Kilometre",
         "fuel": "Yakıt",
         "pickUpKm": "Alış km",

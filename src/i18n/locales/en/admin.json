@@ -493,6 +493,11 @@
       "returnModal": {
         "title": "Vehicle Return",
         "intro": "Enter the return odometer and fuel level; km overage and missing fuel are calculated and added as extras automatically.",
+        "returnedAt": "Return Date & Time",
+        "returnDate": "Return Date",
+        "returnTime": "Return Time",
+        "returnedAtRequired": "Return date and time are required.",
+        "returnedAtBeforePickup": "Return date cannot be before the pick-up date.",
         "odometer": "Odometer",
         "fuel": "Fuel",
         "pickUpKm": "Pick-up km",

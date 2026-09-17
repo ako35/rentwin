@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, Form, Modal, Spinner } from "react-bootstrap";
-import { BsFuelPump, BsSpeedometer2 } from "react-icons/bs";
+import moment from "moment/moment";
+import { BsClock, BsFuelPump, BsSpeedometer2 } from "react-icons/bs";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import { buildFuelEighthsOptions } from "../../../../../utils/fuel-eighths";
@@ -17,6 +18,8 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
   const c = (key, opts) => t(`reservations.contract.returnModal.${key}`, opts);
   const fuelOptions = buildFuelEighthsOptions(t);
 
+  const [returnDate, setReturnDate] = useState("");
+  const [returnTime, setReturnTime] = useState("");
   const [returnKm, setReturnKm] = useState("");
   const [returnFuelEighths, setReturnFuelEighths] = useState("");
   const [kmAmount, setKmAmount] = useState("");
@@ -33,6 +36,12 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
 
   useEffect(() => {
     if (!show) return;
+    // Defaults to the moment the modal is opened — the operator can still
+    // back-date it when the car actually came back earlier (e.g. processed
+    // the next morning). This is what the HGS period and every other "kaç
+    // gün kirada kaldı" reading downstream of returnedAt is based on.
+    setReturnDate(moment().format("YYYY-MM-DD"));
+    setReturnTime(moment().format("HH:mm"));
     setReturnKm(values.returnKm ?? "");
     setReturnFuelEighths(values.returnFuelEighths ?? "");
     setKmIncluded(true);
@@ -71,11 +80,18 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
   const returnKmMissing = returnKm === "";
   const returnFuelMissing = returnFuelEighths === "";
   const returnKmInvalid = !returnKmMissing && Number(returnKm) < pickUpKmNum;
+  const returnDateMissing = !returnDate || !returnTime;
+  const returnBeforePickup =
+    !returnDateMissing &&
+    values.pickUpDate &&
+    moment(`${returnDate} ${returnTime}`).isBefore(
+      moment(`${values.pickUpDate} ${values.pickUpTime || "00:00"}`)
+    );
   const kmLimited = Number.isFinite(overage.allowedKm);
   const hasKmFee = Number(values.kmOverageFee) > 0;
 
   const submit = async () => {
-    if (returnKmMissing || returnFuelMissing || returnKmInvalid) {
+    if (returnKmMissing || returnFuelMissing || returnKmInvalid || returnDateMissing || returnBeforePickup) {
       setAttempted(true);
       return;
     }
@@ -104,6 +120,7 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
       await services.contract.returnContract(contractId, {
         returnKm: returnKm === "" ? null : Number(returnKm),
         returnFuelEighths: returnFuelEighths === "" ? null : Number(returnFuelEighths),
+        returnedAt: utils.functions.combineDateAndTime(returnDate, returnTime),
         releaseKbs: kbsBlocked && releaseKbs,
         charges,
       });
@@ -130,6 +147,35 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
       </Modal.Header>
       <Modal.Body className="return-modal">
         <p className="return-modal__intro">{c("intro")}</p>
+
+        <section className="return-modal__block">
+          <h6>
+            <BsClock /> {c("returnedAt")}
+          </h6>
+          <div className="return-modal__grid">
+            <Form.Group>
+              <Form.Label>{c("returnDate")}</Form.Label>
+              <Form.Control
+                type="date"
+                value={returnDate}
+                onChange={(e) => setReturnDate(e.target.value)}
+                isInvalid={attempted && (returnDateMissing || returnBeforePickup)}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>{c("returnTime")}</Form.Label>
+              <Form.Control
+                type="time"
+                value={returnTime}
+                onChange={(e) => setReturnTime(e.target.value)}
+                isInvalid={attempted && (returnDateMissing || returnBeforePickup)}
+              />
+              <Form.Control.Feedback type="invalid">
+                {returnDateMissing ? c("returnedAtRequired") : c("returnedAtBeforePickup")}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </div>
+        </section>
 
         <section className="return-modal__block">
           <h6>
