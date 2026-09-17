@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Form } from "react-bootstrap";
 import { BsShieldCheck, BsShieldExclamation, BsShieldFillCheck, BsBoxArrowRight } from "react-icons/bs";
 import moment from "moment/moment";
+import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import { kbsStatus } from "../contract-helpers";
 import "./kbs-section.scss";
@@ -10,9 +12,21 @@ import "./kbs-section.scss";
 // filing (giriş) then release (çıkış). Both are saved with the contract on
 // "Kaydet"; the acting admin's name is stamped server-side on each transition.
 // A filed-but-not-released contract cannot be closed (see page.jsx return flow).
+// The operator runs two parallel KABİS portals (Setting.kabisSystem1Name /
+// kabisSystem2Name) and picks which one a given rental was actually filed
+// under — stored as a name snapshot on the contract (kbsSystem).
 const KbsSection = ({ formik }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.kbs.${key}`);
+
+  const [systemNames, setSystemNames] = useState(["", ""]);
+
+  useEffect(() => {
+    services.settings
+      .getSettings()
+      .then((s) => setSystemNames([s?.kabisSystem1Name || "Sistem 1", s?.kabisSystem2Name || "Sistem 2"]))
+      .catch(() => {});
+  }, []);
 
   const reportedAt = formik.values.kbsNotifiedAt || "";
   const releasedAt = formik.values.kbsReleasedAt || "";
@@ -21,10 +35,14 @@ const KbsSection = ({ formik }) => {
 
   const toggleReport = (checked) => {
     formik.setFieldValue("kbsNotifiedAt", checked ? moment().format("YYYY-MM-DD") : "");
+    if (checked && !formik.values.kbsSystem) {
+      formik.setFieldValue("kbsSystem", systemNames[0]);
+    }
     if (!checked) {
       formik.setFieldValue("kbsNotifiedBy", "");
       formik.setFieldValue("kbsReleasedAt", "");
       formik.setFieldValue("kbsReleasedBy", "");
+      formik.setFieldValue("kbsSystem", "");
     }
   };
 
@@ -65,15 +83,30 @@ const KbsSection = ({ formik }) => {
         <p className="contract-page__kbs-hint">{c("hint")}</p>
       ) : (
         <div className="contract-page__kbs-track">
-          <label className="contract-page__kbs-date">
-            <span>{c("dateLabel")}</span>
-            <Form.Control
-              type="date"
-              value={reportedAt}
-              disabled={released}
-              onChange={(e) => formik.setFieldValue("kbsNotifiedAt", e.target.value)}
-            />
-          </label>
+          <div className="contract-page__kbs-fields">
+            <label className="contract-page__kbs-date">
+              <span>{c("dateLabel")}</span>
+              <Form.Control
+                type="date"
+                value={reportedAt}
+                disabled={released}
+                onChange={(e) => formik.setFieldValue("kbsNotifiedAt", e.target.value)}
+              />
+            </label>
+
+            <label className="contract-page__kbs-date">
+              <span>{c("systemLabel")}</span>
+              <Form.Select
+                value={formik.values.kbsSystem || ""}
+                disabled={released}
+                onChange={(e) => formik.setFieldValue("kbsSystem", e.target.value)}
+              >
+                {systemNames.filter(Boolean).map((name) => (
+                  <option key={name} value={name}>{name}</option>
+                ))}
+              </Form.Select>
+            </label>
+          </div>
 
           {status === "reported" && (
             <button type="button" className="contract-page__kbs-release" onClick={release}>

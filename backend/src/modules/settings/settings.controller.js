@@ -9,6 +9,8 @@ const EMPTY = {
   defaultMonthlyKmLimit: null,
   defaultKmOverageFee: null,
   defaultFuelFeePerEighth: null,
+  kabisSystem1Name: "Sistem 1",
+  kabisSystem2Name: "Sistem 2",
 };
 
 // A non-empty form value to a finite number, else null.
@@ -16,6 +18,12 @@ const num = (value) => {
   if (value === "" || value === null || value === undefined) return null;
   const n = Number(value);
   return Number.isFinite(n) && n >= 0 ? n : null;
+};
+
+// A non-empty form value trimmed, else the fallback (these columns are NOT NULL).
+const str = (value, fallback) => {
+  const s = (value ?? "").toString().trim();
+  return s || fallback;
 };
 
 // The app-wide settings row (created lazily). Also read directly by
@@ -33,6 +41,8 @@ const updateSettings = asyncHandler(async (req, res) => {
     defaultMonthlyKmLimit: num(req.body.defaultMonthlyKmLimit),
     defaultKmOverageFee: num(req.body.defaultKmOverageFee),
     defaultFuelFeePerEighth: num(req.body.defaultFuelFeePerEighth),
+    kabisSystem1Name: str(req.body.kabisSystem1Name, EMPTY.kabisSystem1Name),
+    kabisSystem2Name: str(req.body.kabisSystem2Name, EMPTY.kabisSystem2Name),
   };
   const saved = await prisma.setting.upsert({
     where: { id: SINGLETON_ID },

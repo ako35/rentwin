@@ -21,7 +21,7 @@ export const EMPTY_CONTRACT = {
   dailyKmLimit: 300, monthlyKmLimit: "", kmOverageFee: "", fuelFeePerEighth: "",
   vatRate: 20,
   referenceUserId: "",
-  kbsNotifiedAt: "", kbsNotifiedBy: "", kbsReleasedAt: "", kbsReleasedBy: "",
+  kbsNotifiedAt: "", kbsNotifiedBy: "", kbsReleasedAt: "", kbsReleasedBy: "", kbsSystem: "",
   hgsStatus: "",
 };
 
@@ -260,6 +260,7 @@ export const buildContractDto = (values) => ({
   referenceUserId: values.referenceUserId || null,
   kbsNotifiedAt: values.kbsNotifiedAt || null,
   kbsReleasedAt: values.kbsReleasedAt || null,
+  kbsSystem: values.kbsSystem || "",
   // hgsStatus is derived from the HGS check log server-side — not sent from here.
 });
 
@@ -291,6 +292,7 @@ export const contractToFormValues = (r) => ({
   kbsNotifiedBy: r.kbsNotifiedBy || "",
   kbsReleasedAt: r.kbsReleasedAt || "",
   kbsReleasedBy: r.kbsReleasedBy || "",
+  kbsSystem: r.kbsSystem || "",
   hgsStatus: r.hgsStatus || "",
 });
 

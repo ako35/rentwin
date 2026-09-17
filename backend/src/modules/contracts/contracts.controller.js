@@ -43,6 +43,7 @@ const updateContract = asyncHandler(async (req, res) => {
       contractFields.kbsNotifiedBy = null;
       contractFields.kbsReleasedAt = null;
       contractFields.kbsReleasedBy = null;
+      contractFields.kbsSystem = null;
     }
   }
   if ("kbsReleasedAt" in contractFields) {

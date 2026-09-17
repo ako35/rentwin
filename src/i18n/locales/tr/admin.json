@@ -701,6 +701,7 @@
         "statusPending": "Bekliyor",
         "statusReleased": "Çıkış Yapıldı",
         "dateLabel": "Bildirim tarihi",
+        "systemLabel": "KABİS sistemi",
         "hint": "Bu kiralama henüz KABİS'e (Kimlik Bildirme Sistemi) bildirilmedi.",
         "releaseAction": "KABİS'ten Düş",
         "releaseConfirmTitle": "KABİS kaydını düş",
@@ -1067,6 +1068,12 @@
       "defaultMonthlyKmLimit": "Aylık KM Limiti",
       "defaultKmOverageFee": "KM Aşım Bedeli",
       "defaultFuelFeePerEighth": "Eksik Yakıt Bedeli"
+    },
+    "kabisSystems": {
+      "title": "KABİS Sistemleri",
+      "hint": "İki ayrı KABİS (Kimlik Bildirme Sistemi) portalı kullanıyorsanız buradan adlandırın; kontrat ekranında bildirim yapılırken hangisinin kullanıldığı bu isimlerden seçilir.",
+      "kabisSystem1Name": "1. Sistem Adı",
+      "kabisSystem2Name": "2. Sistem Adı"
     }
   },
   "topNav": {

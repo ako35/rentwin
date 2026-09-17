@@ -2,7 +2,7 @@ const prisma = require("../../lib/prisma");
 const { hoursBetween, round2 } = require("../../lib/dates");
 
 // Free-text contract fields (empty string -> null).
-const CONTRACT_NOTE_FIELDS = ["customerNote", "adminNote", "referenceNo", "flightNo"];
+const CONTRACT_NOTE_FIELDS = ["customerNote", "adminNote", "referenceNo", "flightNo", "kbsSystem"];
 
 const CONTRACT_NO_PREFIX = "K";
 

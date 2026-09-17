@@ -701,6 +701,7 @@
         "statusPending": "Pending",
         "statusReleased": "Released",
         "dateLabel": "Filing date",
+        "systemLabel": "KABİS system",
         "hint": "This rental has not been filed in KABİS (identity notification system) yet.",
         "releaseAction": "Release from KABİS",
         "releaseConfirmTitle": "Release the KABİS record",
@@ -1067,6 +1068,12 @@
       "defaultMonthlyKmLimit": "Monthly KM Limit",
       "defaultKmOverageFee": "KM Overage Fee",
       "defaultFuelFeePerEighth": "Missing Fuel Fee"
+    },
+    "kabisSystems": {
+      "title": "KABİS Systems",
+      "hint": "If you use two separate KABİS (identity notification system) portals, name them here; the contract screen lets you pick which one was used when filing.",
+      "kabisSystem1Name": "1st System Name",
+      "kabisSystem2Name": "2nd System Name"
     }
   },
   "topNav": {

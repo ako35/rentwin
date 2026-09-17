@@ -21,8 +21,12 @@ const FIELDS = [
   { name: "defaultFuelFeePerEighth", suffix: "₺ / (1/8)", type: "money" },
 ];
 
-const toForm = (data) =>
-  FIELDS.reduce((acc, f) => ({ ...acc, [f.name]: data?.[f.name] == null ? "" : String(data[f.name]) }), {});
+const TEXT_FIELDS = ["kabisSystem1Name", "kabisSystem2Name"];
+
+const toForm = (data) => ({
+  ...FIELDS.reduce((acc, f) => ({ ...acc, [f.name]: data?.[f.name] == null ? "" : String(data[f.name]) }), {}),
+  ...TEXT_FIELDS.reduce((acc, name) => ({ ...acc, [name]: data?.[name] || "" }), {}),
+});
 
 const AdminSettingsPage = () => {
   const { t } = useTranslation("admin");
@@ -118,13 +122,37 @@ const AdminSettingsPage = () => {
             </Form.Group>
           ))}
         </div>
+      </section>
 
-        <div className="admin-settings__actions">
-          <Button type="button" disabled={saving} onClick={save}>
-            {saving && <Spinner animation="border" size="sm" />} {c("save")}
-          </Button>
+      <section className="admin-settings__card">
+        <div className="admin-settings__card-head">
+          <h3>{c("kabisSystems.title")}</h3>
+          <p>{c("kabisSystems.hint")}</p>
+        </div>
+
+        <div
+          className="admin-settings__grid"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !saving) {
+              e.preventDefault();
+              save();
+            }
+          }}
+        >
+          {TEXT_FIELDS.map((name) => (
+            <Form.Group key={name} className="admin-settings__field">
+              <Form.Label>{c(`kabisSystems.${name}`)}</Form.Label>
+              <Form.Control type="text" value={form[name]} onChange={setV(name)} />
+            </Form.Group>
+          ))}
         </div>
       </section>
+
+      <div className="admin-settings__actions">
+        <Button type="button" disabled={saving} onClick={save}>
+          {saving && <Spinner animation="border" size="sm" />} {c("save")}
+        </Button>
+      </div>
     </div>
   );
 };
