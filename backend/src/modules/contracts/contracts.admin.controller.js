@@ -11,7 +11,7 @@ const {
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 const { ALLOWED_SORT_FIELDS } = require("./contracts.shared");
-const { nextContractNo, num } = require("./contract-fields");
+const { nextContractNo, num, hgsRangesCoverPeriod } = require("./contract-fields");
 const { recomputeContractFinancials } = require("./contract-financials");
 const { round2 } = require("../../lib/dates");
 const { kbsStamp, kbsBlocksClose } = require("./kbs");
@@ -500,22 +500,51 @@ const getHgsPendingContracts = asyncHandler(async (req, res) => {
   res.json(contracts.map(serializeHgsPendingRow));
 });
 
-// Closed contracts that have never had an invoice raised against them — same
-// gate as the HGS panel (only once the car is actually back, status DONE),
-// oldest-closed first so the longest-outstanding ones sit at the top.
+// Contracts missing an invoice that covers the days actually rented:
+//   - closed (DONE) contracts with zero Invoice rows at all, same as before.
+//   - still-open MONTHLY contracts (not cancelled) whose logged invoice
+//     periods don't reach today yet — a long-running corporate rental used
+//     to hide from this panel entirely until it was finally returned, which
+//     could be months away. DAILY contracts are invoiced once at return, so
+//     an open one isn't "missing" an invoice yet — that's exactly the first
+//     bullet's job once it closes.
+// Coverage is the same union-of-ranges test the HGS panel runs against its
+// check log, run here against Invoice.periodFrom/periodTo instead.
 const getInvoicePendingContracts = asyncHandler(async (req, res) => {
   const { branchId } = req.query;
-  const contracts = await prisma.contract.findMany({
-    where: {
-      status: "DONE",
-      invoices: { none: {} },
-      ...(branchId ? { car: { branchId } } : {}),
-    },
-    orderBy: [{ returnedAt: "asc" }, { dropOffTime: "asc" }],
-    include: { car: { include: { branch: true } }, user: true },
+  const branchWhere = branchId ? { car: { branchId } } : {};
+  const rowInclude = { car: { include: { branch: true } }, user: true };
+
+  const [closedNoInvoice, openMonthly] = await Promise.all([
+    prisma.contract.findMany({
+      where: { status: "DONE", invoices: { none: {} }, ...branchWhere },
+      include: rowInclude,
+    }),
+    prisma.contract.findMany({
+      where: { status: { notIn: ["CANCELLED", "DONE"] }, rentalType: "MONTHLY", ...branchWhere },
+      include: { ...rowInclude, invoices: { select: { periodFrom: true, periodTo: true } } },
+    }),
+  ]);
+
+  const now = new Date();
+  const openPending = openMonthly.filter((c) => {
+    // periodFrom/periodTo are optional on Invoice (an ad-hoc one may carry
+    // neither) — drop those before the coverage check, since isoDay(null)
+    // resolves to the epoch rather than "no claim" and would otherwise poison
+    // the whole union with a bogus 1970 interval that breaks the real ones.
+    const dated = c.invoices.filter((i) => i.periodFrom && i.periodTo);
+    return !hgsRangesCoverPeriod(
+      dated.map((i) => ({ rangeFrom: i.periodFrom, rangeTo: i.periodTo })),
+      c.pickUpTime,
+      now
+    );
   });
 
-  res.json(contracts.map(serializeInvoicePendingRow));
+  const rows = [...closedNoInvoice, ...openPending].sort(
+    (a, b) => new Date(a.returnedAt || a.pickUpTime) - new Date(b.returnedAt || b.pickUpTime)
+  );
+
+  res.json(rows.map(serializeInvoicePendingRow));
 });
 
 // Contracts never reported to KABİS (Kimlik Bildirme Sistemi) — open or

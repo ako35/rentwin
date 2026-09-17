@@ -40,8 +40,8 @@ const VEHICLE_TAB_BY_CATEGORY = {
 const custName = (u) =>
   (u?.companyTitle || `${u?.firstName || ""} ${u?.lastName || ""}`.trim() || "—");
 
-// HGS Kontrolü and Fatura Bekleyen are the same row shape (closed contracts
-// that still need something done) — one shared table for both.
+// HGS Kontrolü: only ever closed contracts (the check only makes sense once
+// the rental is actually over), so a single "closed at" date column is enough.
 const ClosedContractsTable = ({ rows, onRowClick }) => {
   const { t } = useTranslation("admin");
   return (
@@ -68,10 +68,11 @@ const ClosedContractsTable = ({ rows, onRowClick }) => {
   );
 };
 
-// KABİS Bekleyen: unlike the HGS/invoice panels this mixes open and closed
-// contracts (filing is meant to happen around pickup, not just at return), so
-// its rows carry their own status badge instead of a single "closed at" date.
-const KbsPendingTable = ({ rows, onRowClick }) => {
+// KABİS Bekleyen and Fatura Bekleyen (open MONTHLY leg) both mix open and
+// closed contracts — filing/invoicing is due before the rental is over, not
+// only once it's returned — so their rows carry their own status badge
+// instead of a single "closed at" date. Shared table for both.
+const MixedStatusTable = ({ rows, onRowClick }) => {
   const { t } = useTranslation("admin");
   const { t: tCommon } = useTranslation("common");
   return (
@@ -247,7 +248,7 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [], invoicePending = [], kbs
           {invoicePending.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.invoicePendingNone")}</div>
           ) : (
-            <ClosedContractsTable rows={invoicePending} onRowClick={goToContract} />
+            <MixedStatusTable rows={invoicePending} onRowClick={goToContract} />
           )}
         </div>
       )}
@@ -258,7 +259,7 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [], invoicePending = [], kbs
           {kbsPending.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.kbsPendingNone")}</div>
           ) : (
-            <KbsPendingTable rows={kbsPending} onRowClick={goToContract} />
+            <MixedStatusTable rows={kbsPending} onRowClick={goToContract} />
           )}
         </div>
       )}
