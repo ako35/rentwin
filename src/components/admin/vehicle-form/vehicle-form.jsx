@@ -49,6 +49,13 @@ const VehicleForm = ({
             {formik.values.licensePlate || t("vehicles.form.licensePlate")}
           </span>
           <span className="vehicle-form__name">{title}</span>
+          {mode === "edit" && vehicle?.status && (
+            <span
+              className={`vehicle-form__status vehicle-form__status--${vehicle.status.toLowerCase().replace(/_/g, "-")}`}
+            >
+              {t(`vehicleStatus.${vehicle.status}`)}
+            </span>
+          )}
         </div>
         {mode === "edit" && vehicle && (
           <div className="vehicle-form__meta">

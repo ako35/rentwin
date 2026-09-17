@@ -39,6 +39,22 @@ $breakpointxl: 1200px;
     color: v.$color5;
   }
 
+  &__status {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    color: #fff;
+    background-color: v.$color5_3;
+
+    &--available { background-color: #1b7a43; }
+    &--rented { background-color: #c98a1f; }
+    &--out-of-service { background-color: #b93a3a; }
+    &--sold { background-color: #6b7280; }
+  }
+
   &__meta {
     @include m.flexbox(column, center, flex-end, 0.1rem);
     font-size: 0.78rem;

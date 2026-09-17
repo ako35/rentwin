@@ -44,7 +44,8 @@ const getVehicleByIdAdmin = asyncHandler(async (req, res) => {
     loadModelImageMap(),
   ]);
   if (!vehicle) throw new HttpError(404, "Vehicle not found.");
-  res.json(serializeVehicle(vehicle, modelImages));
+  const rentedIds = await getRentedVehicleIds([vehicle.id]);
+  res.json({ ...serializeVehicle(vehicle, modelImages), status: getVehicleStatus(vehicle, rentedIds) });
 });
 
 const getAllVehicles = asyncHandler(async (req, res) => {
@@ -327,7 +328,7 @@ const markVehicleSold = asyncHandler(async (req, res) => {
     data: { soldAt, saleNote },
     include: IMAGES_AND_BRANCH_INCLUDE,
   });
-  res.json(serializeVehicle(vehicle, await loadModelImageMap()));
+  res.json({ ...serializeVehicle(vehicle, await loadModelImageMap()), status: getVehicleStatus(vehicle, new Set()) });
 });
 
 const unmarkVehicleSold = asyncHandler(async (req, res) => {
@@ -339,7 +340,8 @@ const unmarkVehicleSold = asyncHandler(async (req, res) => {
     data: { soldAt: null, saleNote: null },
     include: IMAGES_AND_BRANCH_INCLUDE,
   });
-  res.json(serializeVehicle(vehicle, await loadModelImageMap()));
+  const rentedIds = await getRentedVehicleIds([vehicle.id]);
+  res.json({ ...serializeVehicle(vehicle, await loadModelImageMap()), status: getVehicleStatus(vehicle, rentedIds) });
 });
 
 const deleteVehicle = asyncHandler(async (req, res) => {
