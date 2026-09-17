@@ -41,6 +41,7 @@ const InvoiceTab = ({
 
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [attempted, setAttempted] = useState(false);
 
   if (isCreate) return <SaveFirstHint />;
 
@@ -54,6 +55,7 @@ const InvoiceTab = ({
   // newest-first) instead of the rental start — still just a default, the
   // admin can change either date freely.
   const openAdd = () => {
+    setAttempted(false);
     const lastInvoice = list[0];
     setForm({
       ...emptyForm(),
@@ -67,7 +69,8 @@ const InvoiceTab = ({
       customerTitle: defaultCustomerTitle || "",
     });
   };
-  const openEdit = (inv) =>
+  const openEdit = (inv) => {
+    setAttempted(false);
     setForm({
       id: inv.id,
       number: inv.number || "",
@@ -79,10 +82,17 @@ const InvoiceTab = ({
       taxNo: inv.taxNo || "",
       note: inv.note || "",
     });
+  };
   const close = () => setForm(null);
+
+  const numberMissing = !(form?.number || "").trim();
 
   const save = async () => {
     if (saving) return;
+    if (numberMissing) {
+      setAttempted(true);
+      return;
+    }
     setSaving(true);
     try {
       const gross = form.grossAmount !== "" ? Number(form.grossAmount) : undefined;
@@ -99,7 +109,7 @@ const InvoiceTab = ({
         });
       } else {
         await services.contract.createInvoice(contractId, {
-          number: form.number.trim() || undefined,
+          number: form.number.trim(),
           issuedAt: form.issuedAt || undefined,
           periodFrom: form.periodFrom || undefined,
           periodTo: form.periodTo || undefined,
@@ -113,8 +123,13 @@ const InvoiceTab = ({
       onInvoicesChange?.();
       utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
     } catch (err) {
+      const code = err?.response?.data?.code;
       utils.functions.swalToast(
-        err?.response?.data?.code === "INVOICE_NUMBER_TAKEN" ? c("invoice.numberTaken") : rc("error"),
+        code === "INVOICE_NUMBER_TAKEN"
+          ? c("invoice.numberTaken")
+          : code === "INVOICE_NUMBER_REQUIRED"
+          ? c("invoice.numberRequired")
+          : rc("error"),
         "error"
       );
     } finally {
@@ -207,8 +222,15 @@ const InvoiceTab = ({
           </div>
           <div className="contract-page__inv-fields">
             <Form.Group>
-              <Form.Label>{c("invoice.number")}</Form.Label>
-              <Form.Control value={form.number} onChange={set("number")} placeholder={c("invoice.numberAuto")} />
+              <Form.Label>{`* ${c("invoice.number")}`}</Form.Label>
+              <Form.Control
+                value={form.number}
+                onChange={set("number")}
+                placeholder={c("invoice.numberPlaceholder")}
+                isInvalid={attempted && numberMissing}
+                autoFocus
+              />
+              <Form.Control.Feedback type="invalid">{c("invoice.numberRequired")}</Form.Control.Feedback>
             </Form.Group>
             <Form.Group>
               <Form.Label>{c("invoice.issuedAt")}</Form.Label>

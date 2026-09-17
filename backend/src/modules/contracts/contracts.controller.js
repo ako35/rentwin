@@ -298,14 +298,6 @@ const splitVat = (gross, rate) => {
   return { netAmount: net, taxAmount: round2(gross - net), grossAmount: round2(gross) };
 };
 
-const nextInvoiceNumber = async () => {
-  const year = new Date().getFullYear();
-  const countThisYear = await prisma.invoice.count({
-    where: { createdAt: { gte: new Date(`${year}-01-01T00:00:00Z`) } },
-  });
-  return `RW-${year}-${String(countThisYear + 1).padStart(5, "0")}`;
-};
-
 const parseIssuedAt = (value) => {
   const d = value ? new Date(value) : new Date();
   if (Number.isNaN(d.getTime())) throw new HttpError(400, "Invalid invoice date.");
@@ -329,8 +321,10 @@ const P2002 = (err) => {
 };
 
 // A contract can carry several invoices (partial billing, corrections, extra
-// charges). Each row's number is globally unique; a blank number auto-assigns
-// RW-YYYY-NNNNN. Amounts are entered VAT-inclusive.
+// charges). Each row's number is globally unique and must be typed in by the
+// operator — it's the real, sequential number on the paper/e-Fatura the
+// accountant issues, so a silently auto-assigned RW-YYYY-NNNNN would just be
+// wrong. Amounts are entered VAT-inclusive.
 const listInvoices = asyncHandler(async (req, res) => {
   const contract = await prisma.contract.findUnique({ where: { id: req.params.id }, select: { id: true } });
   if (!contract) throw new HttpError(404, "Contract not found.");
@@ -359,7 +353,8 @@ const createInvoice = asyncHandler(async (req, res) => {
   });
   if (!contract) throw new HttpError(404, "Contract not found.");
 
-  const number = (req.body.number || "").trim() || (await nextInvoiceNumber());
+  const number = (req.body.number || "").trim();
+  if (!number) throw new HttpError(400, "Fatura numarası girilmelidir.", "INVOICE_NUMBER_REQUIRED");
   const issuedAt = parseIssuedAt(req.body.issuedAt);
   const periodFrom = parsePeriodDate(req.body.periodFrom);
   const periodTo = parsePeriodDate(req.body.periodTo);
