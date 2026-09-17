@@ -418,19 +418,22 @@ const returnContract = asyncHandler(async (req, res) => {
   }
   const charges = sanitizeReturnCharges(req.body?.charges);
 
-  // The operator may hand back a car on a date that doesn't match the
-  // contracted drop-off (frontend warns and re-confirms before ever sending
-  // this) — the contract's own dropOffTime should reflect reality, but that
-  // sync must never silently re-price the rental. A zero-amount extension
-  // row freezes recomputeContractFinancials's base window at the drop-off
-  // that was in effect before this return, exactly like a real (paid)
-  // extension does for its own base window — dropOffTime moves, totalPrice
-  // doesn't, unless the operator adds a charge of their own.
+  // Early return only: the operator may hand the car back before the
+  // contracted drop-off date (frontend warns and re-confirms before ever
+  // sending this) — the contract's own dropOffTime should reflect reality,
+  // but that sync must never silently *reduce* the rental price the
+  // customer already agreed to. A zero-amount extension row freezes
+  // recomputeContractFinancials's base window at the drop-off that was in
+  // effect before this return, exactly like a real (paid) extension does
+  // for its own base window — dropOffTime moves in, totalPrice doesn't.
+  // A LATE return is deliberately NOT synced here — that's the operator's
+  // own call via the Uzatma tab (a real, priced extension), not an
+  // automatic side effect of closing the contract.
   // Compared at day precision, not exact timestamp — a return processed a
   // few minutes off the scheduled time (the normal case) shouldn't trigger
-  // this; only an actually different calendar date should.
+  // this; only an actually earlier calendar date should.
   const isoDay = (d) => d.toISOString().slice(0, 10);
-  const dropOffChanged = isoDay(returnedAt) !== isoDay(existing.dropOffTime);
+  const isEarlyReturn = isoDay(returnedAt) < isoDay(existing.dropOffTime);
 
   await prisma.$transaction(async (tx) => {
     // Update first — takes a row lock so a duplicate/concurrent return blocks
@@ -442,13 +445,13 @@ const returnContract = asyncHandler(async (req, res) => {
         returnKm,
         returnFuelEighths,
         returnedAt,
-        dropOffTime: returnedAt,
+        ...(isEarlyReturn ? { dropOffTime: returnedAt } : {}),
         ...(needsRelease && releaseKbs
           ? { kbsReleasedAt: new Date(), kbsReleasedBy: kbsStamp(req.user) }
           : {}),
       },
     });
-    if (dropOffChanged) {
+    if (isEarlyReturn) {
       const { months, days } = rentalTerm(existing.dropOffTime, returnedAt);
       await tx.contractExtension.create({
         data: {
@@ -459,7 +462,7 @@ const returnContract = asyncHandler(async (req, res) => {
           months,
           extraAmount: 0,
           extraAmountNet: 0,
-          note: "Teslimde bırakış tarihi güncellendi (tutar etkilenmedi).",
+          note: "Erken teslim: bırakış tarihi güncellendi, tutar etkilenmedi.",
         },
       });
     }
