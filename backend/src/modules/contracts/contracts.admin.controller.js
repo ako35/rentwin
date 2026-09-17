@@ -11,7 +11,7 @@ const {
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 const { ALLOWED_SORT_FIELDS } = require("./contracts.shared");
-const { nextContractNo, num, hgsRangesCoverPeriod } = require("./contract-fields");
+const { nextContractNo, num, hgsRangesCoverPeriod, rentalTerm } = require("./contract-fields");
 const { recomputeContractFinancials } = require("./contract-financials");
 const { round2 } = require("../../lib/dates");
 const { kbsStamp, kbsBlocksClose } = require("./kbs");
@@ -418,6 +418,20 @@ const returnContract = asyncHandler(async (req, res) => {
   }
   const charges = sanitizeReturnCharges(req.body?.charges);
 
+  // The operator may hand back a car on a date that doesn't match the
+  // contracted drop-off (frontend warns and re-confirms before ever sending
+  // this) — the contract's own dropOffTime should reflect reality, but that
+  // sync must never silently re-price the rental. A zero-amount extension
+  // row freezes recomputeContractFinancials's base window at the drop-off
+  // that was in effect before this return, exactly like a real (paid)
+  // extension does for its own base window — dropOffTime moves, totalPrice
+  // doesn't, unless the operator adds a charge of their own.
+  // Compared at day precision, not exact timestamp — a return processed a
+  // few minutes off the scheduled time (the normal case) shouldn't trigger
+  // this; only an actually different calendar date should.
+  const isoDay = (d) => d.toISOString().slice(0, 10);
+  const dropOffChanged = isoDay(returnedAt) !== isoDay(existing.dropOffTime);
+
   await prisma.$transaction(async (tx) => {
     // Update first — takes a row lock so a duplicate/concurrent return blocks
     // until this one commits, then replays the replace cleanly.
@@ -428,11 +442,27 @@ const returnContract = asyncHandler(async (req, res) => {
         returnKm,
         returnFuelEighths,
         returnedAt,
+        dropOffTime: returnedAt,
         ...(needsRelease && releaseKbs
           ? { kbsReleasedAt: new Date(), kbsReleasedBy: kbsStamp(req.user) }
           : {}),
       },
     });
+    if (dropOffChanged) {
+      const { months, days } = rentalTerm(existing.dropOffTime, returnedAt);
+      await tx.contractExtension.create({
+        data: {
+          contractId: existing.id,
+          previousDropOff: existing.dropOffTime,
+          newDropOff: returnedAt,
+          extraDays: days,
+          months,
+          extraAmount: 0,
+          extraAmountNet: 0,
+          note: "Teslimde bırakış tarihi güncellendi (tutar etkilenmedi).",
+        },
+      });
+    }
     // Replace only this flow's own rows — manual + HGS charges are left alone.
     await tx.contractReturnCharge.deleteMany({
       where: { contractId: existing.id, source: "RETURN" },

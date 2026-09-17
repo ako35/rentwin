@@ -499,6 +499,8 @@
         "returnTime": "Teslim Saati",
         "returnedAtRequired": "Teslim tarihi ve saati girilmelidir.",
         "returnedAtBeforePickup": "Teslim tarihi alış tarihinden önce olamaz.",
+        "dropOffMismatchTitle": "Bırakış tarihinden farklı bir tarih girdiniz",
+        "dropOffMismatchText": "Kontratın bırakış tarihi {{date}} olarak güncellenecek. Fiyat/bakiye hesaplamaları etkilenmeyecek, mevcut tutar aynı kalacak. Yine de teslim alınsın mı?",
         "odometer": "Kilometre",
         "fuel": "Yakıt",
         "pickUpKm": "Alış km",

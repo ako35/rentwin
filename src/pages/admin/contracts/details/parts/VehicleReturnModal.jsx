@@ -87,6 +87,15 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
     moment(`${returnDate} ${returnTime}`).isBefore(
       moment(`${values.pickUpDate} ${values.pickUpTime || "00:00"}`)
     );
+  // The contracted drop-off (Bırakış Tarihi) and the actual hand-back date
+  // can legitimately differ (early or late return) — if they do, confirm
+  // before syncing dropOffTime to it. Compared at day precision (both are
+  // plain YYYY-MM-DD strings) — a return processed a few minutes off the
+  // scheduled time shouldn't warn, only an actually different date should.
+  // The backend freezes billing at the pre-sync window (a zero-amount
+  // extension row, same trick a real paid extension uses) so this alone
+  // never moves totalPrice.
+  const dropOffDiffers = !returnDateMissing && values.dropOffDate && returnDate !== values.dropOffDate;
   const kmLimited = Number.isFinite(overage.allowedKm);
   const hasKmFee = Number(values.kmOverageFee) > 0;
 
@@ -94,6 +103,13 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
     if (returnKmMissing || returnFuelMissing || returnKmInvalid || returnDateMissing || returnBeforePickup) {
       setAttempted(true);
       return;
+    }
+    if (dropOffDiffers) {
+      const result = await utils.functions.swalQuestion(
+        c("dropOffMismatchTitle"),
+        c("dropOffMismatchText", { date: moment(`${returnDate} ${returnTime}`).format("DD.MM.YYYY HH:mm") })
+      );
+      if (!result.isConfirmed) return;
     }
     setSaving(true);
     setErrorCode(null);
