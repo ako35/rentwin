@@ -134,6 +134,12 @@
       "SemiAutomatic": "Semi-Automatic",
       "Automatic": "Automatic"
     },
+    "vehicleBodyTypes": {
+      "BINEK": "Passenger car (Sedan / Hatchback)",
+      "SUV": "SUV",
+      "PANELVAN_MINIBUS": "Panel Van / Minibus",
+      "KAMYONET": "Pickup / Double Cab"
+    },
     "roles": {
       "Customer": "Customer",
       "Administrator": "Administrator"

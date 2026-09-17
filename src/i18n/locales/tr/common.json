@@ -134,6 +134,12 @@
       "SemiAutomatic": "Yarı Otomatik",
       "Automatic": "Otomatik"
     },
+    "vehicleBodyTypes": {
+      "BINEK": "Binek (Sedan / Hatchback)",
+      "SUV": "SUV",
+      "PANELVAN_MINIBUS": "Panelvan / Minibüs",
+      "KAMYONET": "Kamyonet / Çift Kabin"
+    },
     "roles": {
       "Customer": "Müşteri",
       "Administrator": "Yönetici"

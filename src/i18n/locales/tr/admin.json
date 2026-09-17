@@ -164,6 +164,7 @@
       "plateTakenWarning": "Bu plaka ile kayıtlı bir araç zaten var. Farklı bir plaka girin.",
       "transmission": "Vites",
       "fuelType": "Yakıt Tipi",
+      "bodyType": "Gövde Tipi",
       "modelYear": "Model Yılı",
       "chassisNo": "Şasi No",
       "engineNo": "Motor No",

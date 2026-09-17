@@ -79,6 +79,7 @@ export const adminNewVehicleFormInitialValues = {
     licensePlate: "",
     transmission: constants.transmissionTypes[0].value,
     fuelType: constants.fuelTypes[0].value,
+    bodyType: constants.vehicleBodyTypes[0].value,
     outOfService: false,
     branchId: "",
     modelYear: "",

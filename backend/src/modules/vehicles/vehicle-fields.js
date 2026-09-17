@@ -6,6 +6,7 @@ const VEHICLE_FIELDS = [
   "licensePlate",
   "transmission",
   "fuelType",
+  "bodyType",
   "outOfService",
   "branchId",
   "nextMaintenanceDate",

@@ -200,6 +200,15 @@ const transmissionTypes = [
   },
 ];
 
+// Drives which four-view line drawing prints on the Araç Teslim/İade Tutanağı
+// (see VehicleDiagram.jsx) — must match the Prisma VehicleBodyType enum.
+const vehicleBodyTypes = [
+  { id: 1, name: "BINEK", value: "BINEK" },
+  { id: 2, name: "SUV", value: "SUV" },
+  { id: 3, name: "PANELVAN_MINIBUS", value: "PANELVAN_MINIBUS" },
+  { id: 4, name: "KAMYONET", value: "KAMYONET" },
+];
+
 export const constants = {
   fuelTypes,
   errors,
@@ -213,5 +222,6 @@ export const constants = {
   routes,
   taxInstallments,
   transmissionTypes,
+  vehicleBodyTypes,
   website,
 };

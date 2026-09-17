@@ -164,6 +164,7 @@
       "plateTakenWarning": "A vehicle with this licence plate already exists. Enter a different plate.",
       "transmission": "Transmission",
       "fuelType": "Fuel Type",
+      "bodyType": "Body Type",
       "modelYear": "Model Year",
       "chassisNo": "Chassis No",
       "engineNo": "Engine No",

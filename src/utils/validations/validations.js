@@ -296,5 +296,7 @@ export const adminVehicleFormValidationSchema = Yup.object({
     transmission: Yup.string()
         .required(t("adminVehicle.transmissionRequired")),
     fuelType: Yup.string()
-        .required(t("adminVehicle.fuelTypeRequired"))
+        .required(t("adminVehicle.fuelTypeRequired")),
+    bodyType: Yup.string()
+        .required(t("adminVehicle.bodyTypeRequired"))
 });

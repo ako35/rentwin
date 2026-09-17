@@ -158,6 +158,7 @@
     "transmissionRequired": "Select a transmission type",
     "airConditioningRequired": "Please select whether the vehicle has air conditioning or not",
     "fuelTypeRequired": "Select a fuel type",
+    "bodyTypeRequired": "Select a body type",
     "ageRequired": "Enter the vehicle age",
     "pricePerHourRequired": "Enter the price per hour"
   },

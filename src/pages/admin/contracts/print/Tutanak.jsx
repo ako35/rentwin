@@ -97,7 +97,7 @@ const Tutanak = ({ data, p }) => {
 
       <section className="tut-diagram">
         <h3>{k("damageTitle")}</h3>
-        <VehicleDiagram />
+        <VehicleDiagram bodyType={data.bodyType} />
       </section>
 
       <section className="tut-equip">

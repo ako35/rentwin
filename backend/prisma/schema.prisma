@@ -29,6 +29,15 @@ enum FuelType {
   Hydrogen
 }
 
+// Picks which four-view line drawing prints on the Araç Teslim/İade Tutanağı
+// (see frontend VehicleDiagram.jsx) — not used for pricing/search.
+enum VehicleBodyType {
+  BINEK // sedan / hatchback — the default, existing generic diagram
+  SUV
+  PANELVAN_MINIBUS
+  KAMYONET
+}
+
 enum ContractStatus {
   CREATED
   CANCELLED
@@ -151,6 +160,7 @@ model Vehicle {
   licensePlate         String               @unique
   transmission         Transmission
   fuelType             FuelType
+  bodyType             VehicleBodyType      @default(BINEK)
   outOfService         Boolean              @default(false)
   builtIn              Boolean              @default(false)
   soldAt               DateTime? // set = vehicle sold and retired from the fleet; auto-purged 5 years later

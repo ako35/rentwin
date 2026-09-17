@@ -158,6 +158,7 @@
     "transmissionRequired": "Bir vites tipi seçin",
     "airConditioningRequired": "Lütfen aracın klimalı olup olmadığını seçin",
     "fuelTypeRequired": "Bir yakıt tipi seçin",
+    "bodyTypeRequired": "Bir gövde tipi seçin",
     "ageRequired": "Aracın yaşını girin",
     "pricePerHourRequired": "Saatlik fiyatı girin"
   },

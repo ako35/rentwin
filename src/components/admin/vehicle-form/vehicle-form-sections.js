@@ -33,6 +33,13 @@ export const buildVehicleSections = ({ branches, brandOptions, modelOptions, t, 
           type: "select",
           itemsArr: withNames(constants.fuelTypes, (i) => tCommon(`options.fuelTypes.${i.value}`)),
         },
+        {
+          name: "bodyType",
+          type: "select",
+          itemsArr: withNames(constants.vehicleBodyTypes, (i) =>
+            tCommon(`options.vehicleBodyTypes.${i.value}`)
+          ),
+        },
       ],
     },
     {

@@ -107,6 +107,7 @@ const ContractPrintPage = () => {
       fuelType: car.fuelType ? tc(`options.fuelTypes.${car.fuelType}`) : "—",
       color: car.color || "—",
       chassisNo: car.chassisNo || "—",
+      bodyType: car.bodyType || "BINEK",
       pickUp: fmtDateTime(c.pickUpTime),
       dropOff: fmtDateTime(c.dropOffTime),
       pickUpLocation: c.pickUpLocation || "—",
