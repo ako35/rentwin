@@ -101,6 +101,16 @@ const PricingBlock = ({ formik, pricing, billableDays, collected, money }) => {
           />
         )}
 
+        {/* A zero-amount extension only ever comes from an early return (see
+            returnContract's isEarlyReturn branch) — the base rental above is
+            still priced off the ORIGINAL pick-up/drop-off window, not the
+            shorter one now shown elsewhere on this screen, because the
+            operator asked for early returns to never auto-discount. Spell
+            that out here so the day-count mismatch doesn't read as a bug. */}
+        {pricing.extCount > 0 && pricing.extTotal === 0 && !isMonthly && pricing.days !== billableDays && (
+          <p className="pricing__hint">{c("earlyReturnFrozenHint", { days: pricing.days })}</p>
+        )}
+
         {/* Read-only — the sum of the itemised charges on the "Dönüş Ekstra" tab
             (km overage, missing fuel, one-way fee, HGS, damage …). */}
         <AmountRow label={c("extrasTotal")} value={money(pricing.extras)} />

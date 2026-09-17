@@ -582,6 +582,7 @@
       "periodVat": "+ KDV (%{{rate}})",
       "periodGross": "Kiralama Tutarı",
       "extensionsLine": "Uzatmalar (+{{n}})",
+      "earlyReturnFrozenHint": "Erken teslim: fiyat orijinal {{days}} günlük kiralama süresi üzerinden sabit tutuldu, gerçek kullanım süresine göre otomatik düşmez.",
       "day": "Gün",
       "extrasTotal": "Ekstra Tutar (TL)",
       "oneWayFee": "Tek Yön Ücreti (TL)",

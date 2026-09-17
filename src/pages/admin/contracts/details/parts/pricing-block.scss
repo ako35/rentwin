@@ -80,6 +80,12 @@
       }
     }
 
+    &__hint {
+      margin: -0.1rem 0 0.4rem;
+      font-size: 0.7rem;
+      color: v.$color5_4;
+    }
+
     &__amount {
       font-weight: 700;
       color: v.$color5;

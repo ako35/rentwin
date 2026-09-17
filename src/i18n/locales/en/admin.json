@@ -582,6 +582,7 @@
       "periodVat": "+ VAT ({{rate}}%)",
       "periodGross": "Rental Amount",
       "extensionsLine": "Extensions (+{{n}})",
+      "earlyReturnFrozenHint": "Early return: price is fixed to the original {{days}}-day rental period, it does not auto-discount to the actual time used.",
       "day": "days",
       "extrasTotal": "Extras Amount (TL)",
       "oneWayFee": "One-way Fee (TL)",
