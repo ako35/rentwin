@@ -876,6 +876,20 @@
     "customer": "Müşteri",
     "admin": "Yönetici",
     "builtInWarning": "Yerleşik hesaplar silinemez veya güncellenemez.",
+    "tabs": {
+      "info": "Bilgiler",
+      "contracts": "Kiralamalar"
+    },
+    "contractsTab": {
+      "title": "Kiralama Geçmişi",
+      "contractNo": "Kontrat No",
+      "vehicle": "Araç",
+      "pickUpDate": "Alış",
+      "dropOffDate": "Teslim",
+      "amount": "Tutar",
+      "status": "Durum",
+      "empty": "Bu müşteriye ait kontrat bulunmuyor."
+    },
     "documentScan": {
       "buttonIndividual": "Ehliyet / Kimlikten Doldur",
       "buttonCorporate": "Kaşe / Vergi Levhasından Doldur",

@@ -876,6 +876,20 @@
     "customer": "Customer",
     "admin": "Admin",
     "builtInWarning": "Built-in accounts cannot ve deleted or updated.",
+    "tabs": {
+      "info": "Info",
+      "contracts": "Rentals"
+    },
+    "contractsTab": {
+      "title": "Rental History",
+      "contractNo": "Contract No",
+      "vehicle": "Vehicle",
+      "pickUpDate": "Pick-up",
+      "dropOffDate": "Drop-off",
+      "amount": "Amount",
+      "status": "Status",
+      "empty": "No contracts for this customer yet."
+    },
     "documentScan": {
       "buttonIndividual": "Fill from Licence / ID",
       "buttonCorporate": "Fill from Stamp / Tax Registration",

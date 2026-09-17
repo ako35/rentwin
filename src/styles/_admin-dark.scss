@@ -196,6 +196,10 @@
       &__doc-scan span,
       &__topbar { color: var(--rw-ink-muted); }
       &__ledger-link { color: #6ea8fe; }
+      &__tabs.nav-tabs {
+        border-bottom-color: var(--rw-line);
+        .nav-link:not(.active) { color: var(--rw-ink-muted); }
+      }
     }
 
     /* contract detail: sticky action bar + top ribbon */

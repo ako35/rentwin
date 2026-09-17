@@ -26,6 +26,26 @@
     margin-bottom: 0.6rem;
   }
 
+  &__tabs.nav-tabs {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid v.$color3;
+
+    .nav-link {
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: v.$color5_2;
+      font-weight: 600;
+
+      &:hover { border-bottom-color: v.$color2_4; }
+
+      &.active {
+        background-color: transparent;
+        color: v.$color1;
+        border-bottom-color: v.$color1;
+      }
+    }
+  }
+
   &__ledger-link {
     font-size: 0.82rem;
     font-weight: 600;
