@@ -286,6 +286,13 @@
       color: var(--rw-ink);
     }
 
+    /* the ARAÇLAR tile's Kirada/Müsait links need their own hover tint — the
+       blanket rule above (higher specificity, no :hover requirement) would
+       otherwise always win and hide the light-mode green hover feedback. */
+    .admin-layout .vehicle-stats-panel__item--link:hover {
+      background-color: rgba(62, 184, 70, 0.18);
+    }
+
     /* maintenance alert bar tabs: due/overdue/active carry semantic color
        (red = pending item, green = open) that the blanket "raised strip"
        treatment above would otherwise flatten to plain ink — same specificity
@@ -704,6 +711,33 @@
     .admin-layout .ghost-btn {
       color: var(--rw-ink-soft);
       &:hover { background-color: var(--rw-inset); color: var(--rw-ink); }
+    }
+
+    /* ---- vehicle status board (Kirada / Boşta) --------------------- */
+    .admin-layout .status-board {
+      &__panel {
+        background-color: var(--rw-panel);
+        border-color: var(--rw-line);
+        box-shadow: var(--rw-shadow);
+      }
+      &__head { border-bottom-color: var(--rw-line); }
+      &__count, &__specs, &__hint { color: var(--rw-ink-muted); }
+      &__search {
+        background-color: var(--rw-inset);
+        border-color: var(--rw-line);
+        svg { color: var(--rw-ink-muted); }
+        input { color: var(--rw-ink); }
+      }
+      &__table {
+        thead th {
+          background-color: var(--rw-panel-2);
+          color: var(--rw-ink-muted);
+          border-bottom-color: var(--rw-line);
+        }
+        tbody td { color: var(--rw-ink); border-bottom-color: var(--rw-line); }
+      }
+      &__row:hover td { background-color: var(--rw-hover); }
+      &__empty { color: var(--rw-ink-muted); }
     }
 
     /* ---- SweetAlert2 (own colours, not Bootstrap) ----------------- */

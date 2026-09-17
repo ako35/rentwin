@@ -14,7 +14,7 @@ const {
   unmarkVehicleSold,
   deleteVehicle,
 } = require("./vehicles.controller");
-const { getFleetStats, getExpiryAlerts } = require("./vehicles.dashboard.controller");
+const { getFleetStats, getExpiryAlerts, getFleetStatusBoard } = require("./vehicles.dashboard.controller");
 const { extractRegistration, extractInsurance } = require("./vehicles.ai.controller");
 
 const router = Router();
@@ -34,6 +34,7 @@ router.get("/car/visitors/:id", getVehicleById);
 router.get("/car/admin/pages/auth", authenticate, requireAdmin, getVehiclesByPageAdmin);
 router.get("/car/admin/fleet-stats/auth", authenticate, requireAdmin, getFleetStats);
 router.get("/car/admin/expiry-alerts/auth", authenticate, requireAdmin, getExpiryAlerts);
+router.get("/car/admin/fleet-status-board/auth", authenticate, requireAdmin, getFleetStatusBoard);
 router.post(
   "/car/admin/extract-registration/auth",
   authenticate,

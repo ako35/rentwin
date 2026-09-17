@@ -27,6 +27,23 @@
     "available": "Müsait",
     "outOfService": "Servis Dışı"
   },
+  "vehicleStatusBoard": {
+    "title": "Araç Durum Tablosu",
+    "rented": "Kirada",
+    "available": "Boşta",
+    "searchPlaceholder": "Ara…",
+    "plate": "Plaka",
+    "vehicle": "Marka / Model",
+    "dropOff": "Bırakış Tarihi",
+    "customer": "Müşteri",
+    "branch": "Şube",
+    "specs": "Vites / Yakıt",
+    "nearestReservation": "En Yakın Rezervasyon",
+    "noReservation": "—",
+    "noRented": "Kirada araç yok.",
+    "noAvailable": "Boşta araç yok.",
+    "rowHint": "Kontrat için Kirada satırına, araç sayfası için Boşta satırına tıklayın."
+  },
   "scheduleTable": {
     "windows": {
       "today": "Bugün",
@@ -1058,6 +1075,7 @@
     "vehicleList": "Araç Listesi",
     "addVehicle": "Yeni Araç",
     "vehicleModelImages": "Model Görselleri",
+    "vehicleStatusBoard": "Araç Durum Tablosu",
     "extras": "Ekstralar",
     "reservations": "Rezervasyon",
     "contracts": "Kontrat",

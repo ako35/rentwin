@@ -109,6 +109,13 @@ export const getExpiryAlerts = async (branchId) => {
   );
   return response.data;
 };
+export const getFleetStatusBoard = async (branchId) => {
+  const response = await axios.get(
+    `${API_URL}/car/admin/fleet-status-board/auth${branchId ? `?branchId=${branchId}` : ""}`,
+    services.authHeader()
+  );
+  return response.data;
+};
 export const extractRegistration = async (file) => {
   const formData = new FormData();
   formData.append("file", file);

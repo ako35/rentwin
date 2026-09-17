@@ -34,6 +34,17 @@
         background-color: v.$color3_5;
     }
 
+    &__item--link {
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.12s ease, transform 0.12s ease;
+
+        &:hover {
+            background-color: v.$color1_5;
+            transform: translateY(-1px);
+        }
+    }
+
     &__icon {
         font-size: 1.15rem;
         color: v.$color2;

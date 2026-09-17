@@ -1,0 +1,145 @@
+@use '../../../../styles/variables' as v;
+@use '../../../../styles/mixins' as m;
+
+.status-board {
+  &__title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: v.$color5;
+    margin: 0 0 1rem;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+
+    @media (max-width: 1100px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__panel {
+    background-color: #fff;
+    border: 1px solid v.$color3;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+  }
+
+  &__head {
+    @include m.flexbox(row, space-between, center, 1rem);
+    flex-wrap: wrap;
+    padding: 0.9rem 1.1rem;
+    border-bottom: 1px solid v.$color3;
+
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+  }
+
+  &__panel--rented &__head h3 { color: v.$color1; }
+  &__panel--available &__head h3 { color: #d98c2b; }
+
+  &__count {
+    font-weight: 600;
+    color: v.$color5_3;
+    font-size: 0.85rem;
+  }
+
+  &__search {
+    @include m.flexbox(row, flex-start, center, 0.4rem);
+    background-color: v.$color4;
+    border: 1px solid v.$color3;
+    border-radius: 8px;
+    padding: 0.3rem 0.6rem;
+    min-width: 190px;
+
+    svg {
+      color: v.$color5_4;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 0.82rem;
+      color: v.$color5;
+      width: 100%;
+    }
+  }
+
+  &__table-wrap {
+    max-height: 560px;
+    overflow-y: auto;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+
+    thead th {
+      position: sticky;
+      top: 0;
+      text-align: left;
+      padding: 0.55rem 0.9rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: v.$color5_3;
+      background-color: v.$color4;
+      border-bottom: 1px solid v.$color3;
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 0.55rem 0.9rem;
+      color: v.$color5;
+      border-bottom: 1px solid v.$color3;
+      white-space: nowrap;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  &__row {
+    cursor: pointer;
+    transition: background-color 0.12s ease;
+  }
+  &__row:hover td {
+    background-color: v.$color4;
+  }
+
+  &__plate {
+    font-weight: 700;
+    color: v.$color1;
+    letter-spacing: 0.3px;
+  }
+
+  &__specs {
+    color: v.$color5_3;
+  }
+
+  &__empty {
+    text-align: center;
+    color: v.$color5_3;
+    padding: 1.75rem 0 !important;
+    white-space: normal;
+  }
+
+  &__hint {
+    margin-top: 0.9rem;
+    font-size: 0.78rem;
+    color: v.$color5_4;
+    text-align: center;
+  }
+}

@@ -219,4 +219,101 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { getFleetStats, getExpiryAlerts };
+// Two lightweight lists (dashboard "Kirada"/"Müsait" tiles drill into this):
+// every in-service, unsold vehicle split into rented (with its active
+// contract's drop-off + renter) and available (with its nearest upcoming
+// reservation, if any). Out-of-service vehicles appear in neither — same
+// split getFleetStats already counts by, so the two screens agree.
+const custName = (u) => (u?.companyTitle || `${u?.firstName || ""} ${u?.lastName || ""}`.trim() || null);
+
+const getFleetStatusBoard = asyncHandler(async (req, res) => {
+  const { branchId } = req.query;
+  const vehicles = await prisma.vehicle.findMany({
+    where: { soldAt: null, outOfService: false, ...(branchId ? { branchId } : {}) },
+    select: {
+      id: true,
+      licensePlate: true,
+      brand: true,
+      model: true,
+      transmission: true,
+      fuelType: true,
+      branch: { select: { code: true, name: true } },
+    },
+    orderBy: { licensePlate: "asc" },
+  });
+
+  const rentedIds = await getRentedVehicleIds(vehicles.map((v) => v.id));
+  const rentedVehicles = vehicles.filter((v) => rentedIds.has(v.id));
+  const availableVehicles = vehicles.filter((v) => !rentedIds.has(v.id));
+
+  // The one active contract per rented vehicle — same window getRentedVehicleIds
+  // itself matched against, so this is guaranteed to find exactly it.
+  const activeContracts = rentedVehicles.length
+    ? await prisma.contract.findMany({
+        where: {
+          carId: { in: rentedVehicles.map((v) => v.id) },
+          status: { notIn: ["CANCELLED", "DONE"] },
+          pickUpTime: { lte: new Date() },
+        },
+        select: {
+          id: true,
+          carId: true,
+          dropOffTime: true,
+          user: { select: { firstName: true, lastName: true, companyTitle: true } },
+        },
+        orderBy: { pickUpTime: "desc" },
+      })
+    : [];
+  const contractByCarId = new Map();
+  for (const c of activeContracts) {
+    if (!contractByCarId.has(c.carId)) contractByCarId.set(c.carId, c);
+  }
+
+  const rented = rentedVehicles.map((v) => {
+    const c = contractByCarId.get(v.id);
+    return {
+      id: v.id,
+      licensePlate: v.licensePlate,
+      brand: v.brand,
+      model: v.model,
+      transmission: v.transmission,
+      fuelType: v.fuelType,
+      branchCode: v.branch?.code || null,
+      contractId: c?.id || null,
+      dropOffTime: c?.dropOffTime || null,
+      customerName: c ? custName(c.user) : null,
+    };
+  });
+
+  // Nearest upcoming (not-yet-started) reservation per available vehicle.
+  const upcoming = availableVehicles.length
+    ? await prisma.reservation.findMany({
+        where: {
+          carId: { in: availableVehicles.map((v) => v.id) },
+          status: { in: ["PENDING", "CONFIRMED"] },
+          pickUpTime: { gte: new Date() },
+        },
+        select: { carId: true, pickUpTime: true },
+        orderBy: { pickUpTime: "asc" },
+      })
+    : [];
+  const nearestByCarId = new Map();
+  for (const r of upcoming) {
+    if (!nearestByCarId.has(r.carId)) nearestByCarId.set(r.carId, r.pickUpTime);
+  }
+
+  const available = availableVehicles.map((v) => ({
+    id: v.id,
+    licensePlate: v.licensePlate,
+    brand: v.brand,
+    model: v.model,
+    transmission: v.transmission,
+    fuelType: v.fuelType,
+    branchCode: v.branch?.code || null,
+    nearestReservation: nearestByCarId.get(v.id) || null,
+  }));
+
+  res.json({ rented, available });
+});
+
+module.exports = { getFleetStats, getExpiryAlerts, getFleetStatusBoard };

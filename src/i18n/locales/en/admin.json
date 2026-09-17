@@ -27,6 +27,23 @@
     "available": "Available",
     "outOfService": "Out of Service"
   },
+  "vehicleStatusBoard": {
+    "title": "Vehicle Status Board",
+    "rented": "Rented",
+    "available": "Available",
+    "searchPlaceholder": "Search…",
+    "plate": "Plate",
+    "vehicle": "Make / Model",
+    "dropOff": "Drop-off Date",
+    "customer": "Customer",
+    "branch": "Branch",
+    "specs": "Transmission / Fuel",
+    "nearestReservation": "Nearest Reservation",
+    "noReservation": "—",
+    "noRented": "No rented vehicles.",
+    "noAvailable": "No available vehicles.",
+    "rowHint": "Click a Rented row for its contract, an Available row for the vehicle page."
+  },
   "scheduleTable": {
     "windows": {
       "today": "Today",
@@ -1058,6 +1075,7 @@
     "vehicleList": "Vehicle List",
     "addVehicle": "New Vehicle",
     "vehicleModelImages": "Model Images",
+    "vehicleStatusBoard": "Vehicle Status Board",
     "extras": "Extras",
     "reservations": "Reservation",
     "contracts": "Contract",
