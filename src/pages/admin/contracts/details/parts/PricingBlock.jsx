@@ -101,12 +101,13 @@ const PricingBlock = ({ formik, pricing, billableDays, collected, money }) => {
           />
         )}
 
-        {/* A zero-amount extension only ever comes from an early return (see
-            returnContract's isEarlyReturn branch) — the base rental above is
-            still priced off the ORIGINAL pick-up/drop-off window, not the
-            shorter one now shown elsewhere on this screen, because the
-            operator asked for early returns to never auto-discount. Spell
-            that out here so the day-count mismatch doesn't read as a bug. */}
+        {/* LEGACY (2026-09-17): a short-lived version of the early-return flow
+            used to stamp a zero-amount extension that froze the base rental
+            at the originally reserved window instead of the shorter actual
+            one. That's been reversed — new early returns re-price off the
+            real drop-off directly — but any contract still carrying one of
+            these rows (until it's deleted from the Uzatma tab) needs this
+            explained, or the day-count mismatch reads as a bug. */}
         {pricing.extCount > 0 && pricing.extTotal === 0 && !isMonthly && pricing.days !== billableDays && (
           <p className="pricing__hint">{c("earlyReturnFrozenHint", { days: pricing.days })}</p>
         )}

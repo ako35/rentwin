@@ -518,7 +518,7 @@
         "returnedAtRequired": "Teslim tarihi ve saati girilmelidir.",
         "returnedAtBeforePickup": "Teslim tarihi alış tarihinden önce olamaz.",
         "earlyReturnTitle": "Planlanan bırakış tarihinden önce teslim alıyorsunuz",
-        "earlyReturnText": "Kontratın bırakış tarihi {{date}} olarak güncellenecek. Fiyat/bakiye hesaplamaları etkilenmeyecek, mevcut tutar aynı kalacak. Yine de teslim alınsın mı?",
+        "earlyReturnText": "Kontratın bırakış tarihi {{date}} olarak güncellenecek ve kira tutarı gerçekte kullanılan süreye göre yeniden hesaplanacak (azalacak). Yine de teslim alınsın mı?",
         "odometer": "Kilometre",
         "fuel": "Yakıt",
         "pickUpKm": "Alış km",

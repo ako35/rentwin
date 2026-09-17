@@ -518,7 +518,7 @@
         "returnedAtRequired": "Return date and time are required.",
         "returnedAtBeforePickup": "Return date cannot be before the pick-up date.",
         "earlyReturnTitle": "You're taking delivery before the planned drop-off date",
-        "earlyReturnText": "The contract's drop-off date will be updated to {{date}}. Pricing/balance won't be affected — the current amount stays the same. Take delivery anyway?",
+        "earlyReturnText": "The contract's drop-off date will be updated to {{date}} and the rental price will be recalculated for the time actually used (it will go down). Take delivery anyway?",
         "odometer": "Odometer",
         "fuel": "Fuel",
         "pickUpKm": "Pick-up km",

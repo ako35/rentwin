@@ -11,7 +11,7 @@ const {
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 const { ALLOWED_SORT_FIELDS } = require("./contracts.shared");
-const { nextContractNo, num, hgsRangesCoverPeriod, rentalTerm } = require("./contract-fields");
+const { nextContractNo, num, hgsRangesCoverPeriod } = require("./contract-fields");
 const { recomputeContractFinancials } = require("./contract-financials");
 const { round2 } = require("../../lib/dates");
 const { kbsStamp, kbsBlocksClose } = require("./kbs");
@@ -420,12 +420,10 @@ const returnContract = asyncHandler(async (req, res) => {
 
   // Early return only: the operator may hand the car back before the
   // contracted drop-off date (frontend warns and re-confirms before ever
-  // sending this) — the contract's own dropOffTime should reflect reality,
-  // but that sync must never silently *reduce* the rental price the
-  // customer already agreed to. A zero-amount extension row freezes
-  // recomputeContractFinancials's base window at the drop-off that was in
-  // effect before this return, exactly like a real (paid) extension does
-  // for its own base window — dropOffTime moves in, totalPrice doesn't.
+  // sending this) — dropOffTime syncs to the actual hand-back moment, and
+  // (no extension row is created) recomputeContractFinancials then simply
+  // re-prices the base rental off that shorter, real window — the customer
+  // is billed for the days actually used, not the originally reserved span.
   // A LATE return is deliberately NOT synced here — that's the operator's
   // own call via the Uzatma tab (a real, priced extension), not an
   // automatic side effect of closing the contract.
@@ -451,21 +449,6 @@ const returnContract = asyncHandler(async (req, res) => {
           : {}),
       },
     });
-    if (isEarlyReturn) {
-      const { months, days } = rentalTerm(existing.dropOffTime, returnedAt);
-      await tx.contractExtension.create({
-        data: {
-          contractId: existing.id,
-          previousDropOff: existing.dropOffTime,
-          newDropOff: returnedAt,
-          extraDays: days,
-          months,
-          extraAmount: 0,
-          extraAmountNet: 0,
-          note: "Erken teslim: bırakış tarihi güncellendi, tutar etkilenmedi.",
-        },
-      });
-    }
     // Replace only this flow's own rows — manual + HGS charges are left alone.
     await tx.contractReturnCharge.deleteMany({
       where: { contractId: existing.id, source: "RETURN" },

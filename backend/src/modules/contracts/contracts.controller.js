@@ -177,6 +177,14 @@ const extendContract = asyncHandler(async (req, res) => {
   res.json(serializeContract(updated));
 });
 
+// A short-lived early-return feature (2026-09-17) used to stamp a zero-amount
+// extension with this exact note to freeze the base price at the originally
+// reserved window. That's since been reversed — early returns now re-price
+// off the real drop-off directly — but any row it already left behind must
+// NOT roll dropOffTime back to the stale reservation on delete (see below).
+// Safe to remove this special case once no such rows are left in the DB.
+const LEGACY_EARLY_RETURN_SYNC_NOTE = "Erken teslim: bırakış tarihi güncellendi, tutar etkilenmedi.";
+
 // Undo an extension: drop the row, roll the drop-off back to the latest
 // remaining extension (or the deleted one's previousDropOff if it was the last),
 // and re-total. Any extension can be removed.
@@ -190,6 +198,7 @@ const deleteExtension = asyncHandler(async (req, res) => {
   const target = contract.extensions.find((e) => e.id === extensionId);
   if (!target) throw new HttpError(404, "Extension not found.");
 
+  const isLegacyEarlyReturnSync = target.extraAmount === 0 && target.note === LEGACY_EARLY_RETURN_SYNC_NOTE;
   const remaining = contract.extensions.filter((e) => e.id !== extensionId);
   const newDropOff = remaining.length
     ? remaining.reduce((max, e) => (e.newDropOff > max ? e.newDropOff : max), remaining[0].newDropOff)
@@ -197,7 +206,12 @@ const deleteExtension = asyncHandler(async (req, res) => {
 
   await prisma.$transaction(async (tx) => {
     await tx.contractExtension.delete({ where: { id: extensionId } });
-    await tx.contract.update({ where: { id }, data: { dropOffTime: newDropOff } });
+    // The legacy sync row never represented a real extension — dropOffTime is
+    // already the correct actual return time, so leave it untouched and just
+    // let the recompute below re-price off it directly.
+    if (!isLegacyEarlyReturnSync) {
+      await tx.contract.update({ where: { id }, data: { dropOffTime: newDropOff } });
+    }
     await recomputeContractFinancials(id, tx);
   });
 
