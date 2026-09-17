@@ -77,18 +77,29 @@
   &__table-wrap {
     max-height: 560px;
     overflow-y: auto;
+    // The table itself never scrolls sideways — long cells (Müşteri, Marka /
+    // Model) ellipsize instead, so the whole panel stays inside its column.
+    overflow-x: hidden;
   }
 
   &__table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     font-size: 0.82rem;
+
+    thead th,
+    tbody td {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
     thead th {
       position: sticky;
       top: 0;
       text-align: left;
-      padding: 0.55rem 0.9rem;
+      padding: 0.55rem 0.7rem;
       font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
@@ -96,18 +107,35 @@
       color: v.$color5_3;
       background-color: v.$color4;
       border-bottom: 1px solid v.$color3;
-      white-space: nowrap;
     }
 
     tbody td {
-      padding: 0.55rem 0.9rem;
+      padding: 0.55rem 0.7rem;
       color: v.$color5;
       border-bottom: 1px solid v.$color3;
-      white-space: nowrap;
     }
 
     tbody tr:last-child td {
       border-bottom: none;
+    }
+
+    // Kirada: Plaka | Marka/Model | Bırakış | Müşteri | Şube | Vites-Yakıt
+    &--rented {
+      th:nth-child(1), td:nth-child(1) { width: 13%; }
+      th:nth-child(2), td:nth-child(2) { width: 19%; }
+      th:nth-child(3), td:nth-child(3) { width: 13%; }
+      th:nth-child(4), td:nth-child(4) { width: 32%; }
+      th:nth-child(5), td:nth-child(5) { width: 9%; }
+      th:nth-child(6), td:nth-child(6) { width: 14%; }
+    }
+
+    // Boşta: Plaka | Marka/Model | En Yakın Rez | Şube | Vites-Yakıt
+    &--available {
+      th:nth-child(1), td:nth-child(1) { width: 16%; }
+      th:nth-child(2), td:nth-child(2) { width: 26%; }
+      th:nth-child(3), td:nth-child(3) { width: 20%; }
+      th:nth-child(4), td:nth-child(4) { width: 12%; }
+      th:nth-child(5), td:nth-child(5) { width: 26%; }
     }
   }
 

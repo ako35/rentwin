@@ -103,7 +103,7 @@ const AdminVehicleStatusBoardPage = () => {
             </div>
           </div>
           <div className="status-board__table-wrap">
-            <table className="status-board__table">
+            <table className="status-board__table status-board__table--rented">
               <thead>
                 <tr>
                   <th>{b("plate")}</th>
@@ -123,7 +123,7 @@ const AdminVehicleStatusBoardPage = () => {
                 {rentedRows.map((row) => (
                   <tr key={row.id} onClick={() => goToContract(row)} className="status-board__row">
                     <td className="status-board__plate">{row.licensePlate}</td>
-                    <td>{vehicleLabel(row) || "—"}</td>
+                    <td title={vehicleLabel(row)}>{vehicleLabel(row) || "—"}</td>
                     <td>{row.dropOffTime ? utils.functions.getDateUTC(row.dropOffTime) : "—"}</td>
                     <td title={row.customerName || ""}>{row.customerName || "—"}</td>
                     <td>{row.branchCode || "—"}</td>
@@ -151,7 +151,7 @@ const AdminVehicleStatusBoardPage = () => {
             </div>
           </div>
           <div className="status-board__table-wrap">
-            <table className="status-board__table">
+            <table className="status-board__table status-board__table--available">
               <thead>
                 <tr>
                   <th>{b("plate")}</th>
@@ -170,7 +170,7 @@ const AdminVehicleStatusBoardPage = () => {
                 {availableRows.map((row) => (
                   <tr key={row.id} onClick={() => goToVehicle(row)} className="status-board__row">
                     <td className="status-board__plate">{row.licensePlate}</td>
-                    <td>{vehicleLabel(row) || "—"}</td>
+                    <td title={vehicleLabel(row)}>{vehicleLabel(row) || "—"}</td>
                     <td>
                       {row.nearestReservation ? utils.functions.getDateUTC(row.nearestReservation) : b("noReservation")}
                     </td>

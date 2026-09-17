@@ -1,3 +1,4 @@
+const dayjs = require("dayjs");
 const prisma = require("../../lib/prisma");
 const asyncHandler = require("../../middleware/async-handler");
 const { getRentedVehicleIds } = require("./vehicles.shared");
@@ -247,13 +248,18 @@ const getFleetStatusBoard = asyncHandler(async (req, res) => {
   const availableVehicles = vehicles.filter((v) => !rentedIds.has(v.id));
 
   // The one active contract per rented vehicle — same window getRentedVehicleIds
-  // itself matched against, so this is guaranteed to find exactly it.
+  // itself matched against (pickUpTime through the end of *today*, not just
+  // "now" — a contract starting later today already counts as rented), so
+  // this is guaranteed to find exactly it. Using a narrower `new Date()` cutoff
+  // here used to miss those same-day-not-yet-started contracts, leaving the
+  // row's drop-off/customer blank even though the tile correctly counted the
+  // car as rented.
   const activeContracts = rentedVehicles.length
     ? await prisma.contract.findMany({
         where: {
           carId: { in: rentedVehicles.map((v) => v.id) },
           status: { notIn: ["CANCELLED", "DONE"] },
-          pickUpTime: { lte: new Date() },
+          pickUpTime: { lte: dayjs().endOf("day").toDate() },
         },
         select: {
           id: true,
