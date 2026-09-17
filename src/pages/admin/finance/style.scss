@@ -138,7 +138,11 @@
   &__note { color: v.$color5_3; }
   &__opening td { background-color: v.$color3_5; font-weight: 600; color: v.$color5_3; }
   &__empty { text-align: center; color: v.$color5_3; padding: 2rem 0 !important; }
-  &__act { width: 4.5rem; white-space: nowrap; text-align: right; }
+  &__act {
+    @include m.flexbox(row, flex-end, center, 0.15rem);
+    width: 1%;
+    white-space: nowrap;
+  }
 }
 
 .ledger-badge {
