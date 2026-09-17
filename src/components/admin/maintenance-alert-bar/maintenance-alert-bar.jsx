@@ -122,20 +122,13 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [], invoicePending = [], kbs
         <div className="maintenance-alert-bar__tabs">
           {CATEGORIES.map(({ key, icon }) => {
             const list = categories[key] || [];
-            const overdue = list.some(
-              (item) =>
-                item.missing ||
-                (item.daysLeft != null && item.daysLeft < 0) ||
-                (item.kmLeft != null && item.kmLeft < 0)
-            );
             return (
               <button
                 key={key}
                 type="button"
                 className={
                   "maintenance-alert-bar__tab" +
-                  (list.length ? " maintenance-alert-bar__tab--due" : "") +
-                  (overdue ? " maintenance-alert-bar__tab--overdue" : "") +
+                  (list.length ? " maintenance-alert-bar__tab--due maintenance-alert-bar__tab--overdue" : "") +
                   (open === key ? " maintenance-alert-bar__tab--active" : "")
                 }
                 onClick={() => setOpen(open === key ? null : key)}

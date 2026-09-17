@@ -161,6 +161,12 @@
       &__charge { border-top-color: var(--rw-line); }
     }
 
+    /* cari (ledger) entry modal ("Tahsilat / Ödeme Al" / "Hizmet / Masraf
+       Yansıt"): same story as .return-modal above — its SCSS hard-codes
+       $color5_3 (near-black) for the field labels. Portalled at <body>, so
+       scoped bare. */
+    .finance-modal .form-label { color: var(--rw-ink-muted); }
+
     /* ---- customer form (new / edit customer + contract quick-add modal) ---
        scoped bare (not under .admin-layout) so the portalled modal variant
        is covered too; data-theme is only ever "dark" on an admin route. */
@@ -237,6 +243,14 @@
       box-shadow: var(--rw-shadow);
     }
 
+    /* dashboard gauges: the SVG value text + 0/100 scale hard-code $color5 /
+       $color5_3 (near-black) fill/color, invisible on the dark panel — SVG
+       fill doesn't inherit from the panel's `color` override above. */
+    .admin-layout .gauge-chart {
+      &__value { fill: var(--rw-ink); }
+      &__scale { color: var(--rw-ink-muted); }
+    }
+
     /* disabled fields inside the contract card read as wells */
     .admin-layout :is(
       .contract-page .contract-card .form-control:disabled,
@@ -261,12 +275,34 @@
       .ledger-table tfoot td,
       .branch-table thead th,
       .contract-list__filters,
-      .customer-list__filters,
-      .maintenance-alert-bar__tab
+      .customer-list__filters
     ) {
       background-color: var(--rw-panel-2);
       border-color: var(--rw-line);
       color: var(--rw-ink);
+    }
+
+    /* maintenance alert bar tabs: due/overdue/active carry semantic color
+       (red = pending item, green = open) that the blanket "raised strip"
+       treatment above would otherwise flatten to plain ink — same specificity
+       as the light-mode --due/--overdue/--active modifiers, so restyle each
+       state explicitly here instead of relying on source order to win. */
+    .admin-layout .maintenance-alert-bar__tab {
+      background-color: var(--rw-panel-2);
+      border-color: var(--rw-line);
+      color: var(--rw-ink);
+
+      &--overdue {
+        background-color: rgba(225, 29, 72, 0.16);
+        border-color: rgba(225, 29, 72, 0.45);
+        color: #fda4af;
+      }
+
+      &--active {
+        background-color: #1f6f31;
+        border-color: #1f6f31;
+        color: #eafff0;
+      }
     }
 
     /* list pages: filter strip + wrapper borders */
@@ -566,8 +602,7 @@
       .vehicle-stats-panel__value,
       .contract-page__ro strong,
       .model-image-card__title strong,
-      .maintenance-alert-bar__days,
-      .maintenance-alert-bar__tab
+      .maintenance-alert-bar__days
     ) { color: var(--rw-ink); }
 
     .admin-layout :is(
