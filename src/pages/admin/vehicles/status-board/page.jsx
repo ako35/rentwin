@@ -110,14 +110,13 @@ const AdminVehicleStatusBoardPage = () => {
                   <th>{b("vehicle")}</th>
                   <th>{b("dropOff")}</th>
                   <th>{b("customer")}</th>
-                  <th>{b("branch")}</th>
                   <th>{b("specs")}</th>
                 </tr>
               </thead>
               <tbody>
                 {rentedRows.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="status-board__empty">{b("noRented")}</td>
+                    <td colSpan={5} className="status-board__empty">{b("noRented")}</td>
                   </tr>
                 )}
                 {rentedRows.map((row) => (
@@ -126,7 +125,6 @@ const AdminVehicleStatusBoardPage = () => {
                     <td title={vehicleLabel(row)}>{vehicleLabel(row) || "—"}</td>
                     <td>{row.dropOffTime ? utils.functions.getDateUTC(row.dropOffTime) : "—"}</td>
                     <td title={row.customerName || ""}>{row.customerName || "—"}</td>
-                    <td>{row.branchCode || "—"}</td>
                     <td className="status-board__specs">{specs(row).filter(Boolean).join(" · ") || "—"}</td>
                   </tr>
                 ))}
@@ -157,14 +155,13 @@ const AdminVehicleStatusBoardPage = () => {
                   <th>{b("plate")}</th>
                   <th>{b("vehicle")}</th>
                   <th>{b("nearestReservation")}</th>
-                  <th>{b("branch")}</th>
                   <th>{b("specs")}</th>
                 </tr>
               </thead>
               <tbody>
                 {availableRows.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="status-board__empty">{b("noAvailable")}</td>
+                    <td colSpan={4} className="status-board__empty">{b("noAvailable")}</td>
                   </tr>
                 )}
                 {availableRows.map((row) => (
@@ -174,7 +171,6 @@ const AdminVehicleStatusBoardPage = () => {
                     <td>
                       {row.nearestReservation ? utils.functions.getDateUTC(row.nearestReservation) : b("noReservation")}
                     </td>
-                    <td>{row.branchCode || "—"}</td>
                     <td className="status-board__specs">{specs(row).filter(Boolean).join(" · ") || "—"}</td>
                   </tr>
                 ))}
