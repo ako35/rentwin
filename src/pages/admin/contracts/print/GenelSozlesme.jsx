@@ -90,7 +90,6 @@ const GenelSozlesme = ({ data, p }) => {
             <thead>
               <tr>
                 <th>{s("driversName")}</th>
-                <th>{s("driversNationalId")}</th>
                 <th>{s("driversPhone")}</th>
               </tr>
             </thead>
@@ -98,7 +97,6 @@ const GenelSozlesme = ({ data, p }) => {
               {data.drivers.map((d, i) => (
                 <tr key={i}>
                   <td>{d.name}</td>
-                  <td>{d.nationalId}</td>
                   <td>{d.phone}</td>
                 </tr>
               ))}

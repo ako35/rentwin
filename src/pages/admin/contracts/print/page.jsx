@@ -137,7 +137,6 @@ const ContractPrintPage = () => {
       dailyPrice: money(c.dailyPrice),
       drivers: (c.drivers || []).map((d) => ({
         name: `${d.firstName || ""} ${d.lastName || ""}`.trim() || "—",
-        nationalId: d.nationalId || "—",
         phone: d.phone || "—",
       })),
     };
