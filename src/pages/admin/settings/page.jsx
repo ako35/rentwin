@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
-import { BsCircleHalf, BsSun, BsMoonStars } from "react-icons/bs";
+import { BsCircleHalf, BsSun, BsMoonStars, BsTrash } from "react-icons/bs";
 import { Loading } from "../../../components";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
@@ -21,12 +21,8 @@ const FIELDS = [
   { name: "defaultFuelFeePerEighth", suffix: "₺ / (1/8)", type: "money" },
 ];
 
-const TEXT_FIELDS = ["kabisSystem1Name", "kabisSystem2Name"];
-
-const toForm = (data) => ({
-  ...FIELDS.reduce((acc, f) => ({ ...acc, [f.name]: data?.[f.name] == null ? "" : String(data[f.name]) }), {}),
-  ...TEXT_FIELDS.reduce((acc, name) => ({ ...acc, [name]: data?.[name] || "" }), {}),
-});
+const toForm = (data) =>
+  FIELDS.reduce((acc, f) => ({ ...acc, [f.name]: data?.[f.name] == null ? "" : String(data[f.name]) }), {});
 
 const AdminSettingsPage = () => {
   const { t } = useTranslation("admin");
@@ -37,12 +33,22 @@ const AdminSettingsPage = () => {
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState(toForm(null));
 
+  const [kabisSystems, setKabisSystems] = useState([]);
+  const [kabisName, setKabisName] = useState("");
+  const [kabisAdding, setKabisAdding] = useState(false);
+  const [kabisRemovingId, setKabisRemovingId] = useState(null);
+
+  const loadKabisSystems = () =>
+    services.kabisSystem
+      .getKabisSystems()
+      .then(setKabisSystems)
+      .catch(() => {});
+
   useEffect(() => {
-    services.settings
-      .getSettings()
-      .then((data) => setForm(toForm(data)))
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    Promise.all([
+      services.settings.getSettings().then((data) => setForm(toForm(data))).catch(() => {}),
+      loadKabisSystems(),
+    ]).finally(() => setLoading(false));
   }, []);
 
   const setV = (name) => (e) => setForm((f) => ({ ...f, [name]: e.target.value }));
@@ -58,6 +64,43 @@ const AdminSettingsPage = () => {
     } finally {
       setSaving(false);
     }
+  };
+
+  const addKabisSystem = async () => {
+    const name = kabisName.trim();
+    if (!name) return;
+    setKabisAdding(true);
+    try {
+      await services.kabisSystem.addKabisSystem({ name });
+      setKabisName("");
+      await loadKabisSystems();
+    } catch (error) {
+      utils.functions.swalToast(
+        error?.response?.data?.code === "KABIS_SYSTEM_NAME_TAKEN"
+          ? c("kabisSystems.duplicate")
+          : c("kabisSystems.addError"),
+        "error"
+      );
+    } finally {
+      setKabisAdding(false);
+    }
+  };
+
+  const removeKabisSystem = (system) => {
+    utils.functions
+      .swalQuestion(c("kabisSystems.deleteConfirmTitle"), "", { danger: true })
+      .then(async (result) => {
+        if (!result.isConfirmed) return;
+        setKabisRemovingId(system.id);
+        try {
+          await services.kabisSystem.deleteKabisSystem(system.id);
+          await loadKabisSystems();
+        } catch {
+          utils.functions.swalToast(c("kabisSystems.deleteError"), "error");
+        } finally {
+          setKabisRemovingId(null);
+        }
+      });
   };
 
   if (loading) return <Loading height={320} />;
@@ -130,22 +173,45 @@ const AdminSettingsPage = () => {
           <p>{c("kabisSystems.hint")}</p>
         </div>
 
-        <div
-          className="admin-settings__grid"
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !saving) {
-              e.preventDefault();
-              save();
-            }
-          }}
-        >
-          {TEXT_FIELDS.map((name) => (
-            <Form.Group key={name} className="admin-settings__field">
-              <Form.Label>{c(`kabisSystems.${name}`)}</Form.Label>
-              <Form.Control type="text" value={form[name]} onChange={setV(name)} />
-            </Form.Group>
-          ))}
+        <div className="admin-settings__kabis-add">
+          <Form.Control
+            type="text"
+            value={kabisName}
+            placeholder={c("kabisSystems.namePlaceholder")}
+            onChange={(e) => setKabisName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !kabisAdding) {
+                e.preventDefault();
+                addKabisSystem();
+              }
+            }}
+          />
+          <Button type="button" size="sm" disabled={kabisAdding || !kabisName.trim()} onClick={addKabisSystem}>
+            {kabisAdding && <Spinner animation="border" size="sm" />} {c("kabisSystems.add")}
+          </Button>
         </div>
+
+        {kabisSystems.length === 0 ? (
+          <p className="admin-settings__kabis-empty">{c("kabisSystems.empty")}</p>
+        ) : (
+          <ul className="admin-settings__kabis-list">
+            {kabisSystems.map((system) => (
+              <li key={system.id}>
+                <span>{system.name}</span>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline-danger"
+                  disabled={kabisRemovingId === system.id}
+                  onClick={() => removeKabisSystem(system)}
+                  title={c("kabisSystems.delete")}
+                >
+                  {kabisRemovingId === system.id ? <Spinner animation="border" size="sm" /> : <BsTrash />}
+                </Button>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <div className="admin-settings__actions">

@@ -56,6 +56,11 @@ const VehicleForm = ({
               {t(`vehicleStatus.${vehicle.status}`)}
             </span>
           )}
+          {mode === "edit" && vehicle?.kbsSystem && (
+            <span className="vehicle-form__kbs-badge">
+              {t("vehicles.form.kbsSystemBadge", { system: vehicle.kbsSystem })}
+            </span>
+          )}
         </div>
         {mode === "edit" && vehicle && (
           <div className="vehicle-form__meta">

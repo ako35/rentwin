@@ -55,6 +55,18 @@ $breakpointxl: 1200px;
     &--sold { background-color: #6b7280; }
   }
 
+  &__kbs-badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    color: v.$color1;
+    background-color: v.$color1-5;
+    border: 1px solid v.$color1-4;
+  }
+
   &__meta {
     @include m.flexbox(column, center, flex-end, 0.1rem);
     font-size: 0.78rem;

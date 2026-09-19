@@ -12,21 +12,31 @@ import "./kbs-section.scss";
 // filing (giriş) then release (çıkış). Both are saved with the contract on
 // "Kaydet"; the acting admin's name is stamped server-side on each transition.
 // A filed-but-not-released contract cannot be closed (see page.jsx return flow).
-// The operator runs two parallel KABİS portals (Setting.kabisSystem1Name /
-// kabisSystem2Name) and picks which one a given rental was actually filed
-// under — stored as a name snapshot on the contract (kbsSystem).
+// The operator manages an open-ended list of KABİS portals from Ayarlar
+// (see admin/settings/page.jsx) and picks which one a given rental was
+// actually filed under — stored as a name snapshot on the contract
+// (kbsSystem), so renaming/deleting a portal later never touches past rows.
 const KbsSection = ({ formik }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.kbs.${key}`);
 
-  const [systemNames, setSystemNames] = useState(["", ""]);
+  const [systemNames, setSystemNames] = useState([]);
 
   useEffect(() => {
-    services.settings
-      .getSettings()
-      .then((s) => setSystemNames([s?.kabisSystem1Name || "Sistem 1", s?.kabisSystem2Name || "Sistem 2"]))
+    services.kabisSystem
+      .getKabisSystems()
+      .then((rows) => setSystemNames((rows || []).map((r) => r.name)))
       .catch(() => {});
   }, []);
+
+  // The contract may already carry a system name that's since been renamed
+  // or deleted from Ayarlar — keep it selectable so a save never silently
+  // swaps it for whatever the dropdown's first live option happens to be.
+  const currentSystem = formik.values.kbsSystem;
+  const systemOptions =
+    currentSystem && !systemNames.includes(currentSystem)
+      ? [...systemNames, currentSystem]
+      : systemNames;
 
   const reportedAt = formik.values.kbsNotifiedAt || "";
   const releasedAt = formik.values.kbsReleasedAt || "";
@@ -36,7 +46,7 @@ const KbsSection = ({ formik }) => {
   const toggleReport = (checked) => {
     formik.setFieldValue("kbsNotifiedAt", checked ? moment().format("YYYY-MM-DD") : "");
     if (checked && !formik.values.kbsSystem) {
-      formik.setFieldValue("kbsSystem", systemNames[0]);
+      formik.setFieldValue("kbsSystem", systemNames[0] || "");
     }
     if (!checked) {
       formik.setFieldValue("kbsNotifiedBy", "");
@@ -101,7 +111,8 @@ const KbsSection = ({ formik }) => {
                 disabled={released}
                 onChange={(e) => formik.setFieldValue("kbsSystem", e.target.value)}
               >
-                {systemNames.filter(Boolean).map((name) => (
+                {systemOptions.length === 0 && <option value="">{c("noSystemsOption")}</option>}
+                {systemOptions.filter(Boolean).map((name) => (
                   <option key={name} value={name}>{name}</option>
                 ))}
               </Form.Select>

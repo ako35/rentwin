@@ -165,6 +165,7 @@
       "transmission": "Vites",
       "fuelType": "Yakıt Tipi",
       "bodyType": "Gövde Tipi",
+      "kbsSystemBadge": "KABİS: {{system}}",
       "modelYear": "Model Yılı",
       "chassisNo": "Şasi No",
       "engineNo": "Motor No",
@@ -703,6 +704,7 @@
         "statusReleased": "Çıkış Yapıldı",
         "dateLabel": "Bildirim tarihi",
         "systemLabel": "KABİS sistemi",
+        "noSystemsOption": "Ayarlar'da KABİS sistemi tanımlı değil",
         "hint": "Bu kiralama henüz KABİS'e (Kimlik Bildirme Sistemi) bildirilmedi.",
         "releaseAction": "KABİS'ten Düş",
         "releaseConfirmTitle": "KABİS kaydını düş",
@@ -1072,9 +1074,15 @@
     },
     "kabisSystems": {
       "title": "KABİS Sistemleri",
-      "hint": "İki ayrı KABİS (Kimlik Bildirme Sistemi) portalı kullanıyorsanız buradan adlandırın; kontrat ekranında bildirim yapılırken hangisinin kullanıldığı bu isimlerden seçilir.",
-      "kabisSystem1Name": "1. Sistem Adı",
-      "kabisSystem2Name": "2. Sistem Adı"
+      "hint": "Kullandığınız KABİS (Kimlik Bildirme Sistemi) portallarını buradan ekleyip silin; kontrat ekranında bildirim yapılırken hangisinin kullanıldığı bu listeden seçilir.",
+      "namePlaceholder": "Sistem adı",
+      "add": "Ekle",
+      "empty": "Henüz KABİS sistemi eklenmedi.",
+      "delete": "Sil",
+      "deleteConfirmTitle": "Bu KABİS sistemini silmek istediğinize emin misiniz?",
+      "duplicate": "Bu isimde bir KABİS sistemi zaten var.",
+      "addError": "KABİS sistemi eklenirken bir hata oluştu.",
+      "deleteError": "KABİS sistemi silinirken bir hata oluştu."
     }
   },
   "topNav": {

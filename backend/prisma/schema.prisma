@@ -643,9 +643,17 @@ model Setting {
   defaultMonthlyKmLimit   Int?
   defaultKmOverageFee     Float?
   defaultFuelFeePerEighth Float?
-  kabisSystem1Name        String   @default("Sistem 1") // display names for the two KABİS portals the operator files rentals under
-  kabisSystem2Name        String   @default("Sistem 2")
   updatedAt               DateTime @updatedAt
+}
+
+// Operator-managed list of KABİS (Kimlik Bildirme Sistemi) portals — add/
+// delete from Ayarlar, no fixed count. Referenced by name (not FK) from
+// Contract.kbsSystem, a snapshot taken when the rental was filed, so
+// renaming or deleting an entry here never touches past contracts.
+model KabisSystem {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
 }
 
 // Informational counter for the shared Gemini vision free-tier quota —

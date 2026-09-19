@@ -165,6 +165,7 @@
       "transmission": "Transmission",
       "fuelType": "Fuel Type",
       "bodyType": "Body Type",
+      "kbsSystemBadge": "KABİS: {{system}}",
       "modelYear": "Model Year",
       "chassisNo": "Chassis No",
       "engineNo": "Engine No",
@@ -703,6 +704,7 @@
         "statusReleased": "Released",
         "dateLabel": "Filing date",
         "systemLabel": "KABİS system",
+        "noSystemsOption": "No KABİS system configured in Settings",
         "hint": "This rental has not been filed in KABİS (identity notification system) yet.",
         "releaseAction": "Release from KABİS",
         "releaseConfirmTitle": "Release the KABİS record",
@@ -1072,9 +1074,15 @@
     },
     "kabisSystems": {
       "title": "KABİS Systems",
-      "hint": "If you use two separate KABİS (identity notification system) portals, name them here; the contract screen lets you pick which one was used when filing.",
-      "kabisSystem1Name": "1st System Name",
-      "kabisSystem2Name": "2nd System Name"
+      "hint": "Add or remove the KABİS (identity notification system) portals you use; the contract screen lets you pick which one was used when filing.",
+      "namePlaceholder": "System name",
+      "add": "Add",
+      "empty": "No KABİS system added yet.",
+      "delete": "Delete",
+      "deleteConfirmTitle": "Are you sure you want to delete this KABİS system?",
+      "duplicate": "A KABİS system with this name already exists.",
+      "addError": "There was an error adding the KABİS system.",
+      "deleteError": "There was an error deleting the KABİS system."
     }
   },
   "topNav": {

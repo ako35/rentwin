@@ -635,6 +635,7 @@
       .admin-settings__card-head p,
       .admin-settings__field .form-label,
       .admin-settings__input span,
+      .admin-settings__kabis-empty,
       .contract-page__ro span,
       .contract-page__ro-sub,
       .schedule-table__empty td,
@@ -738,6 +739,14 @@
       }
       &__row:hover td { background-color: var(--rw-hover); }
       &__empty { color: var(--rw-ink-muted); }
+    }
+
+    /* ---- KABİS system list (Ayarlar) ------------------------------- */
+    .admin-layout .admin-settings__kabis-list li {
+      background-color: var(--rw-inset);
+      border-color: var(--rw-line);
+
+      span { color: var(--rw-ink); }
     }
 
     /* ---- SweetAlert2 (own colours, not Bootstrap) ----------------- */
