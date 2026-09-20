@@ -112,7 +112,7 @@
     border-top: 1px solid v.$color3_5;
   }
 
-  &__kabis-add {
+  &__list-actions {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 0.9rem;
@@ -120,13 +120,13 @@
     .form-control { max-width: 280px; }
   }
 
-  &__kabis-empty {
+  &__list-empty {
     margin: 0;
     font-size: 0.82rem;
     color: v.$color5_4;
   }
 
-  &__kabis-list {
+  &__list {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -150,5 +150,11 @@
         color: v.$color5;
       }
     }
+  }
+
+  &__list-sub {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: v.$color5_4;
   }
 }

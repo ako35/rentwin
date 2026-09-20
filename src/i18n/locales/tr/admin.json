@@ -1083,6 +1083,26 @@
       "duplicate": "Bu isimde bir KABİS sistemi zaten var.",
       "addError": "KABİS sistemi eklenirken bir hata oluştu.",
       "deleteError": "KABİS sistemi silinirken bir hata oluştu."
+    },
+    "admins": {
+      "title": "Yönetici Hesapları",
+      "hint": "Yönetim paneline giriş yapabilecek kişileri buradan ekleyip silin.",
+      "firstName": "Ad",
+      "lastName": "Soyad",
+      "email": "E-posta",
+      "phoneNumber": "Telefon",
+      "password": "Şifre",
+      "passwordPlaceholder": "En az 8 karakter",
+      "add": "Yönetici Ekle",
+      "empty": "Henüz başka bir yönetici hesabı yok.",
+      "delete": "Sil",
+      "cannotDeleteSelf": "Kendi hesabınızı buradan silemezsiniz.",
+      "deleteConfirmTitle": "Bu yönetici hesabını silmek istediğinize emin misiniz?",
+      "deleteConfirmText": "{{name}} artık yönetim paneline giriş yapamayacak.",
+      "addSuccess": "Yönetici hesabı oluşturuldu.",
+      "emailExists": "Bu e-posta ile kayıtlı bir hesap zaten var.",
+      "addError": "Yönetici hesabı oluşturulurken bir hata oluştu.",
+      "deleteError": "Yönetici hesabı silinirken bir hata oluştu."
     }
   },
   "topNav": {

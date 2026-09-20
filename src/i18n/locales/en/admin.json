@@ -1083,6 +1083,26 @@
       "duplicate": "A KABİS system with this name already exists.",
       "addError": "There was an error adding the KABİS system.",
       "deleteError": "There was an error deleting the KABİS system."
+    },
+    "admins": {
+      "title": "Administrator Accounts",
+      "hint": "Add or remove people who can sign in to the admin panel.",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phoneNumber": "Phone",
+      "password": "Password",
+      "passwordPlaceholder": "At least 8 characters",
+      "add": "Add Administrator",
+      "empty": "No other administrator account yet.",
+      "delete": "Delete",
+      "cannotDeleteSelf": "You can't delete your own account from here.",
+      "deleteConfirmTitle": "Are you sure you want to delete this administrator account?",
+      "deleteConfirmText": "{{name}} will no longer be able to sign in to the admin panel.",
+      "addSuccess": "Administrator account created.",
+      "emailExists": "An account with this email already exists.",
+      "addError": "There was an error creating the administrator account.",
+      "deleteError": "There was an error deleting the administrator account."
     }
   },
   "topNav": {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { BsCircleHalf, BsSun, BsMoonStars, BsTrash } from "react-icons/bs";
 import { Loading } from "../../../components";
@@ -7,6 +8,8 @@ import { services } from "../../../services";
 import { utils } from "../../../utils";
 import { useAdminTheme } from "../../../hooks/use-admin-theme";
 import "./style.scss";
+
+const EMPTY_ADMIN = { firstName: "", lastName: "", email: "", phoneNumber: "", password: "" };
 
 const THEME_OPTIONS = [
   { value: "system", icon: BsCircleHalf },
@@ -28,6 +31,7 @@ const AdminSettingsPage = () => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`settings.${key}`);
   const { choice, setChoice } = useAdminTheme();
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -38,16 +42,28 @@ const AdminSettingsPage = () => {
   const [kabisAdding, setKabisAdding] = useState(false);
   const [kabisRemovingId, setKabisRemovingId] = useState(null);
 
+  const [admins, setAdmins] = useState([]);
+  const [adminForm, setAdminForm] = useState(EMPTY_ADMIN);
+  const [adminAdding, setAdminAdding] = useState(false);
+  const [adminRemovingId, setAdminRemovingId] = useState(null);
+
   const loadKabisSystems = () =>
     services.kabisSystem
       .getKabisSystems()
       .then(setKabisSystems)
       .catch(() => {});
 
+  const loadAdmins = () =>
+    services.user
+      .getUsersByPage(0, 100, "firstName", "ASC", { role: "Administrator" })
+      .then((list) => setAdmins(list?.content || []))
+      .catch(() => {});
+
   useEffect(() => {
     Promise.all([
       services.settings.getSettings().then((data) => setForm(toForm(data))).catch(() => {}),
       loadKabisSystems(),
+      loadAdmins(),
     ]).finally(() => setLoading(false));
   }, []);
 
@@ -99,6 +115,52 @@ const AdminSettingsPage = () => {
           utils.functions.swalToast(c("kabisSystems.deleteError"), "error");
         } finally {
           setKabisRemovingId(null);
+        }
+      });
+  };
+
+  const setAdminField = (name) => (e) => setAdminForm((f) => ({ ...f, [name]: e.target.value }));
+  const adminFormValid =
+    adminForm.firstName.trim() && adminForm.lastName.trim() && adminForm.email.trim() && adminForm.password.length >= 8;
+
+  const addAdmin = async () => {
+    if (!adminFormValid) return;
+    setAdminAdding(true);
+    try {
+      await services.user.createUserAdmin({
+        firstName: adminForm.firstName.trim(),
+        lastName: adminForm.lastName.trim(),
+        email: adminForm.email.trim(),
+        phoneNumber: adminForm.phoneNumber.trim(),
+        password: adminForm.password,
+        roles: ["Administrator"],
+      });
+      setAdminForm(EMPTY_ADMIN);
+      await loadAdmins();
+      utils.functions.swalToast(c("admins.addSuccess"), "success");
+    } catch (error) {
+      utils.functions.swalToast(
+        error?.response?.status === 409 ? c("admins.emailExists") : c("admins.addError"),
+        "error"
+      );
+    } finally {
+      setAdminAdding(false);
+    }
+  };
+
+  const removeAdmin = (admin) => {
+    utils.functions
+      .swalQuestion(c("admins.deleteConfirmTitle"), c("admins.deleteConfirmText", { name: `${admin.firstName} ${admin.lastName}` }), { danger: true })
+      .then(async (result) => {
+        if (!result.isConfirmed) return;
+        setAdminRemovingId(admin.id);
+        try {
+          await services.user.deleteUser(admin.id);
+          await loadAdmins();
+        } catch {
+          utils.functions.swalToast(c("admins.deleteError"), "error");
+        } finally {
+          setAdminRemovingId(null);
         }
       });
   };
@@ -173,7 +235,7 @@ const AdminSettingsPage = () => {
           <p>{c("kabisSystems.hint")}</p>
         </div>
 
-        <div className="admin-settings__kabis-add">
+        <div className="admin-settings__list-actions">
           <Form.Control
             type="text"
             value={kabisName}
@@ -192,9 +254,9 @@ const AdminSettingsPage = () => {
         </div>
 
         {kabisSystems.length === 0 ? (
-          <p className="admin-settings__kabis-empty">{c("kabisSystems.empty")}</p>
+          <p className="admin-settings__list-empty">{c("kabisSystems.empty")}</p>
         ) : (
-          <ul className="admin-settings__kabis-list">
+          <ul className="admin-settings__list">
             {kabisSystems.map((system) => (
               <li key={system.id}>
                 <span>{system.name}</span>
@@ -210,6 +272,85 @@ const AdminSettingsPage = () => {
                 </Button>
               </li>
             ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="admin-settings__card">
+        <div className="admin-settings__card-head">
+          <h3>{c("admins.title")}</h3>
+          <p>{c("admins.hint")}</p>
+        </div>
+
+        <div
+          className="admin-settings__grid"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && adminFormValid && !adminAdding) {
+              e.preventDefault();
+              addAdmin();
+            }
+          }}
+        >
+          <Form.Group className="admin-settings__field">
+            <Form.Label>{c("admins.firstName")}</Form.Label>
+            <Form.Control type="text" value={adminForm.firstName} onChange={setAdminField("firstName")} />
+          </Form.Group>
+          <Form.Group className="admin-settings__field">
+            <Form.Label>{c("admins.lastName")}</Form.Label>
+            <Form.Control type="text" value={adminForm.lastName} onChange={setAdminField("lastName")} />
+          </Form.Group>
+          <Form.Group className="admin-settings__field">
+            <Form.Label>{c("admins.email")}</Form.Label>
+            <Form.Control type="email" value={adminForm.email} onChange={setAdminField("email")} />
+          </Form.Group>
+          <Form.Group className="admin-settings__field">
+            <Form.Label>{c("admins.phoneNumber")}</Form.Label>
+            <Form.Control type="text" value={adminForm.phoneNumber} onChange={setAdminField("phoneNumber")} />
+          </Form.Group>
+          <Form.Group className="admin-settings__field">
+            <Form.Label>{c("admins.password")}</Form.Label>
+            <Form.Control
+              type="password"
+              autoComplete="new-password"
+              value={adminForm.password}
+              onChange={setAdminField("password")}
+              placeholder={c("admins.passwordPlaceholder")}
+            />
+          </Form.Group>
+        </div>
+
+        <div className="admin-settings__list-actions">
+          <Button type="button" size="sm" disabled={adminAdding || !adminFormValid} onClick={addAdmin}>
+            {adminAdding && <Spinner animation="border" size="sm" />} {c("admins.add")}
+          </Button>
+        </div>
+
+        {admins.length === 0 ? (
+          <p className="admin-settings__list-empty">{c("admins.empty")}</p>
+        ) : (
+          <ul className="admin-settings__list">
+            {admins.map((admin) => {
+              const isSelf = admin.id === currentUser?.id;
+              const locked = admin.builtIn || isSelf;
+              return (
+                <li key={admin.id}>
+                  <span>
+                    {admin.firstName} {admin.lastName}
+                    <span className="admin-settings__list-sub"> · {admin.email}</span>
+                  </span>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline-danger"
+                    disabled={locked || adminRemovingId === admin.id}
+                    onClick={() => removeAdmin(admin)}
+                    title={isSelf ? c("admins.cannotDeleteSelf") : c("admins.delete")}
+                  >
+                    {adminRemovingId === admin.id ? <Spinner animation="border" size="sm" /> : <BsTrash />}
+                  </Button>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>
