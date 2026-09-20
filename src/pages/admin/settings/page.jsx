@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 import { Button, Form, Spinner } from "react-bootstrap";
-import { BsCircleHalf, BsSun, BsMoonStars, BsTrash } from "react-icons/bs";
+import { BsCircleHalf, BsSun, BsMoonStars, BsTrash, BsPalette, BsCashCoin, BsShieldCheck, BsPeopleFill } from "react-icons/bs";
 import { Loading } from "../../../components";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
@@ -24,6 +25,15 @@ const FIELDS = [
   { name: "defaultFuelFeePerEighth", suffix: "₺ / (1/8)", type: "money" },
 ];
 
+// Left-nav sections — each maps 1:1 to a settings.<key>.title translation.
+const SECTIONS = [
+  { key: "appearance", icon: BsPalette },
+  { key: "contractDefaults", icon: BsCashCoin },
+  { key: "kabisSystems", icon: BsShieldCheck },
+  { key: "admins", icon: BsPeopleFill },
+];
+const SECTION_KEYS = SECTIONS.map((s) => s.key);
+
 const toForm = (data) =>
   FIELDS.reduce((acc, f) => ({ ...acc, [f.name]: data?.[f.name] == null ? "" : String(data[f.name]) }), {});
 
@@ -32,6 +42,10 @@ const AdminSettingsPage = () => {
   const c = (key) => t(`settings.${key}`);
   const { choice, setChoice } = useAdminTheme();
   const { user: currentUser } = useSelector((state) => state.auth);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requestedSection = searchParams.get("section");
+  const activeSection = SECTION_KEYS.includes(requestedSection) ? requestedSection : "appearance";
+  const goToSection = (key) => setSearchParams({ section: key });
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -150,7 +164,11 @@ const AdminSettingsPage = () => {
 
   const removeAdmin = (admin) => {
     utils.functions
-      .swalQuestion(c("admins.deleteConfirmTitle"), c("admins.deleteConfirmText", { name: `${admin.firstName} ${admin.lastName}` }), { danger: true })
+      .swalQuestion(
+        c("admins.deleteConfirmTitle"),
+        c("admins.deleteConfirmText", { name: `${admin.firstName} ${admin.lastName}` }),
+        { danger: true }
+      )
       .then(async (result) => {
         if (!result.isConfirmed) return;
         setAdminRemovingId(admin.id);
@@ -173,192 +191,217 @@ const AdminSettingsPage = () => {
         <h2>{c("pageTitle")}</h2>
       </header>
 
-      <section className="admin-settings__card">
-        <div className="admin-settings__card-head">
-          <h3>{c("appearance.title")}</h3>
-          <p>{c("appearance.hint")}</p>
-        </div>
-
-        <div className="admin-settings__theme" role="group" aria-label={c("appearance.title")}>
-          {THEME_OPTIONS.map(({ value, icon: Icon }) => (
+      <div className="admin-settings__body">
+        <nav className="admin-settings__nav" aria-label={c("pageTitle")}>
+          {SECTIONS.map(({ key, icon: Icon }) => (
             <button
-              key={value}
+              key={key}
               type="button"
-              className={`admin-settings__theme-option${choice === value ? " is-active" : ""}`}
-              aria-pressed={choice === value}
-              onClick={() => setChoice(value)}
+              className={`admin-settings__nav-item${activeSection === key ? " is-active" : ""}`}
+              onClick={() => goToSection(key)}
             >
-              <Icon />
-              {c(`appearance.${value}`)}
+              <Icon /> {c(`${key}.title`)}
             </button>
           ))}
-        </div>
-      </section>
+        </nav>
 
-      <section className="admin-settings__card">
-        <div className="admin-settings__card-head">
-          <h3>{c("contractDefaults.title")}</h3>
-          <p>{c("contractDefaults.hint")}</p>
-        </div>
-
-        <div
-          className="admin-settings__grid"
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !saving) {
-              e.preventDefault();
-              save();
-            }
-          }}
-        >
-          {FIELDS.map((f) => (
-            <Form.Group key={f.name} className="admin-settings__field">
-              <Form.Label>{c(`contractDefaults.${f.name}`)}</Form.Label>
-              <div className="admin-settings__input">
-                <Form.Control
-                  type="number"
-                  min="0"
-                  step={f.type === "money" ? "0.01" : "1"}
-                  value={form[f.name]}
-                  onChange={setV(f.name)}
-                  placeholder={c("empty")}
-                />
-                <span>{f.suffix}</span>
+        <div className="admin-settings__content">
+          {activeSection === "appearance" && (
+            <section className="admin-settings__card">
+              <div className="admin-settings__card-head">
+                <h3>{c("appearance.title")}</h3>
+                <p>{c("appearance.hint")}</p>
               </div>
-            </Form.Group>
-          ))}
-        </div>
-      </section>
 
-      <section className="admin-settings__card">
-        <div className="admin-settings__card-head">
-          <h3>{c("kabisSystems.title")}</h3>
-          <p>{c("kabisSystems.hint")}</p>
-        </div>
-
-        <div className="admin-settings__list-actions">
-          <Form.Control
-            type="text"
-            value={kabisName}
-            placeholder={c("kabisSystems.namePlaceholder")}
-            onChange={(e) => setKabisName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !kabisAdding) {
-                e.preventDefault();
-                addKabisSystem();
-              }
-            }}
-          />
-          <Button type="button" size="sm" disabled={kabisAdding || !kabisName.trim()} onClick={addKabisSystem}>
-            {kabisAdding && <Spinner animation="border" size="sm" />} {c("kabisSystems.add")}
-          </Button>
-        </div>
-
-        {kabisSystems.length === 0 ? (
-          <p className="admin-settings__list-empty">{c("kabisSystems.empty")}</p>
-        ) : (
-          <ul className="admin-settings__list">
-            {kabisSystems.map((system) => (
-              <li key={system.id}>
-                <span>{system.name}</span>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline-danger"
-                  disabled={kabisRemovingId === system.id}
-                  onClick={() => removeKabisSystem(system)}
-                  title={c("kabisSystems.delete")}
-                >
-                  {kabisRemovingId === system.id ? <Spinner animation="border" size="sm" /> : <BsTrash />}
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <section className="admin-settings__card">
-        <div className="admin-settings__card-head">
-          <h3>{c("admins.title")}</h3>
-          <p>{c("admins.hint")}</p>
-        </div>
-
-        <div
-          className="admin-settings__grid"
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && adminFormValid && !adminAdding) {
-              e.preventDefault();
-              addAdmin();
-            }
-          }}
-        >
-          <Form.Group className="admin-settings__field">
-            <Form.Label>{c("admins.firstName")}</Form.Label>
-            <Form.Control type="text" value={adminForm.firstName} onChange={setAdminField("firstName")} />
-          </Form.Group>
-          <Form.Group className="admin-settings__field">
-            <Form.Label>{c("admins.lastName")}</Form.Label>
-            <Form.Control type="text" value={adminForm.lastName} onChange={setAdminField("lastName")} />
-          </Form.Group>
-          <Form.Group className="admin-settings__field">
-            <Form.Label>{c("admins.email")}</Form.Label>
-            <Form.Control type="email" value={adminForm.email} onChange={setAdminField("email")} />
-          </Form.Group>
-          <Form.Group className="admin-settings__field">
-            <Form.Label>{c("admins.phoneNumber")}</Form.Label>
-            <Form.Control type="text" value={adminForm.phoneNumber} onChange={setAdminField("phoneNumber")} />
-          </Form.Group>
-          <Form.Group className="admin-settings__field">
-            <Form.Label>{c("admins.password")}</Form.Label>
-            <Form.Control
-              type="password"
-              autoComplete="new-password"
-              value={adminForm.password}
-              onChange={setAdminField("password")}
-              placeholder={c("admins.passwordPlaceholder")}
-            />
-          </Form.Group>
-        </div>
-
-        <div className="admin-settings__list-actions">
-          <Button type="button" size="sm" disabled={adminAdding || !adminFormValid} onClick={addAdmin}>
-            {adminAdding && <Spinner animation="border" size="sm" />} {c("admins.add")}
-          </Button>
-        </div>
-
-        {admins.length === 0 ? (
-          <p className="admin-settings__list-empty">{c("admins.empty")}</p>
-        ) : (
-          <ul className="admin-settings__list">
-            {admins.map((admin) => {
-              const isSelf = admin.id === currentUser?.id;
-              const locked = admin.builtIn || isSelf;
-              return (
-                <li key={admin.id}>
-                  <span>
-                    {admin.firstName} {admin.lastName}
-                    <span className="admin-settings__list-sub"> · {admin.email}</span>
-                  </span>
-                  <Button
+              <div className="admin-settings__theme" role="group" aria-label={c("appearance.title")}>
+                {THEME_OPTIONS.map(({ value, icon: Icon }) => (
+                  <button
+                    key={value}
                     type="button"
-                    size="sm"
-                    variant="outline-danger"
-                    disabled={locked || adminRemovingId === admin.id}
-                    onClick={() => removeAdmin(admin)}
-                    title={isSelf ? c("admins.cannotDeleteSelf") : c("admins.delete")}
+                    className={`admin-settings__theme-option${choice === value ? " is-active" : ""}`}
+                    aria-pressed={choice === value}
+                    onClick={() => setChoice(value)}
                   >
-                    {adminRemovingId === admin.id ? <Spinner animation="border" size="sm" /> : <BsTrash />}
-                  </Button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
+                    <Icon />
+                    {c(`appearance.${value}`)}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
 
-      <div className="admin-settings__actions">
-        <Button type="button" disabled={saving} onClick={save}>
-          {saving && <Spinner animation="border" size="sm" />} {c("save")}
-        </Button>
+          {activeSection === "contractDefaults" && (
+            <section className="admin-settings__card">
+              <div className="admin-settings__card-head">
+                <h3>{c("contractDefaults.title")}</h3>
+                <p>{c("contractDefaults.hint")}</p>
+              </div>
+
+              <div
+                className="admin-settings__grid"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !saving) {
+                    e.preventDefault();
+                    save();
+                  }
+                }}
+              >
+                {FIELDS.map((f) => (
+                  <Form.Group key={f.name} className="admin-settings__field">
+                    <Form.Label>{c(`contractDefaults.${f.name}`)}</Form.Label>
+                    <div className="admin-settings__input">
+                      <Form.Control
+                        type="number"
+                        min="0"
+                        step={f.type === "money" ? "0.01" : "1"}
+                        value={form[f.name]}
+                        onChange={setV(f.name)}
+                        placeholder={c("empty")}
+                      />
+                      <span>{f.suffix}</span>
+                    </div>
+                  </Form.Group>
+                ))}
+              </div>
+
+              <div className="admin-settings__actions">
+                <Button type="button" disabled={saving} onClick={save}>
+                  {saving && <Spinner animation="border" size="sm" />} {c("save")}
+                </Button>
+              </div>
+            </section>
+          )}
+
+          {activeSection === "kabisSystems" && (
+            <section className="admin-settings__card">
+              <div className="admin-settings__card-head">
+                <h3>{c("kabisSystems.title")}</h3>
+                <p>{c("kabisSystems.hint")}</p>
+              </div>
+
+              <div className="admin-settings__list-actions">
+                <Form.Control
+                  type="text"
+                  value={kabisName}
+                  placeholder={c("kabisSystems.namePlaceholder")}
+                  onChange={(e) => setKabisName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !kabisAdding) {
+                      e.preventDefault();
+                      addKabisSystem();
+                    }
+                  }}
+                />
+                <Button type="button" size="sm" disabled={kabisAdding || !kabisName.trim()} onClick={addKabisSystem}>
+                  {kabisAdding && <Spinner animation="border" size="sm" />} {c("kabisSystems.add")}
+                </Button>
+              </div>
+
+              {kabisSystems.length === 0 ? (
+                <p className="admin-settings__list-empty">{c("kabisSystems.empty")}</p>
+              ) : (
+                <ul className="admin-settings__list">
+                  {kabisSystems.map((system) => (
+                    <li key={system.id}>
+                      <span>{system.name}</span>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline-danger"
+                        disabled={kabisRemovingId === system.id}
+                        onClick={() => removeKabisSystem(system)}
+                        title={c("kabisSystems.delete")}
+                      >
+                        {kabisRemovingId === system.id ? <Spinner animation="border" size="sm" /> : <BsTrash />}
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          )}
+
+          {activeSection === "admins" && (
+            <section className="admin-settings__card">
+              <div className="admin-settings__card-head">
+                <h3>{c("admins.title")}</h3>
+                <p>{c("admins.hint")}</p>
+              </div>
+
+              <div
+                className="admin-settings__grid"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && adminFormValid && !adminAdding) {
+                    e.preventDefault();
+                    addAdmin();
+                  }
+                }}
+              >
+                <Form.Group className="admin-settings__field">
+                  <Form.Label>{c("admins.firstName")}</Form.Label>
+                  <Form.Control type="text" value={adminForm.firstName} onChange={setAdminField("firstName")} />
+                </Form.Group>
+                <Form.Group className="admin-settings__field">
+                  <Form.Label>{c("admins.lastName")}</Form.Label>
+                  <Form.Control type="text" value={adminForm.lastName} onChange={setAdminField("lastName")} />
+                </Form.Group>
+                <Form.Group className="admin-settings__field">
+                  <Form.Label>{c("admins.email")}</Form.Label>
+                  <Form.Control type="email" value={adminForm.email} onChange={setAdminField("email")} />
+                </Form.Group>
+                <Form.Group className="admin-settings__field">
+                  <Form.Label>{c("admins.phoneNumber")}</Form.Label>
+                  <Form.Control type="text" value={adminForm.phoneNumber} onChange={setAdminField("phoneNumber")} />
+                </Form.Group>
+                <Form.Group className="admin-settings__field">
+                  <Form.Label>{c("admins.password")}</Form.Label>
+                  <Form.Control
+                    type="password"
+                    autoComplete="new-password"
+                    value={adminForm.password}
+                    onChange={setAdminField("password")}
+                    placeholder={c("admins.passwordPlaceholder")}
+                  />
+                </Form.Group>
+              </div>
+
+              <div className="admin-settings__list-actions">
+                <Button type="button" size="sm" disabled={adminAdding || !adminFormValid} onClick={addAdmin}>
+                  {adminAdding && <Spinner animation="border" size="sm" />} {c("admins.add")}
+                </Button>
+              </div>
+
+              {admins.length === 0 ? (
+                <p className="admin-settings__list-empty">{c("admins.empty")}</p>
+              ) : (
+                <ul className="admin-settings__list">
+                  {admins.map((admin) => {
+                    const isSelf = admin.id === currentUser?.id;
+                    const locked = admin.builtIn || isSelf;
+                    return (
+                      <li key={admin.id}>
+                        <span>
+                          {admin.firstName} {admin.lastName}
+                          <span className="admin-settings__list-sub"> · {admin.email}</span>
+                        </span>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline-danger"
+                          disabled={locked || adminRemovingId === admin.id}
+                          onClick={() => removeAdmin(admin)}
+                          title={isSelf ? c("admins.cannotDeleteSelf") : c("admins.delete")}
+                        >
+                          {adminRemovingId === admin.id ? <Spinner animation="border" size="sm" /> : <BsTrash />}
+                        </Button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </section>
+          )}
+        </div>
       </div>
     </div>
   );

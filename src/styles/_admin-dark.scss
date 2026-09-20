@@ -233,6 +233,7 @@
       .stat-card,
       .model-image-card,
       .admin-settings__card,
+      .admin-settings__nav,
       .contract-page .contract-card,
       .contract-page__panel,
       .contract-records__form,
@@ -749,6 +750,18 @@
       > span { color: var(--rw-ink); }
     }
     .admin-layout .admin-settings__list li .admin-settings__list-sub { color: var(--rw-ink-muted); }
+
+    /* ---- Ayarlar left-nav ------------------------------------------- */
+    .admin-layout .admin-settings__nav-item {
+      color: var(--rw-ink-muted);
+
+      &:hover { background-color: var(--rw-inset); color: var(--rw-ink); }
+
+      &.is-active {
+        background-color: rgba(62, 184, 70, 0.16);
+        color: #6fd979;
+      }
+    }
 
     /* ---- SweetAlert2 (own colours, not Bootstrap) ----------------- */
     .swal2-popup {
