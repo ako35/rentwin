@@ -232,8 +232,6 @@
       .admin-campaigns-page__panel,
       .stat-card,
       .model-image-card,
-      .admin-settings__card,
-      .admin-settings__nav,
       .contract-page .contract-card,
       .contract-page__panel,
       .contract-records__form,
@@ -751,7 +749,10 @@
     }
     .admin-layout .admin-settings__list li .admin-settings__list-sub { color: var(--rw-ink-muted); }
 
-    /* ---- Ayarlar left-nav ------------------------------------------- */
+    /* ---- Ayarlar left-nav (now a flush sidebar, no card chrome) ----- */
+    .admin-layout .admin-settings__nav { border-right-color: var(--rw-line); }
+    .admin-layout .admin-settings__card-head h3 { color: var(--rw-ink-strong); }
+
     .admin-layout .admin-settings__nav-item {
       color: var(--rw-ink-muted);
 
@@ -759,7 +760,12 @@
 
       &.is-active {
         background-color: rgba(62, 184, 70, 0.16);
+        border-left-color: #3eb846;
         color: #6fd979;
+      }
+
+      @media (max-width: 768px) {
+        &.is-active { border-bottom-color: #3eb846; }
       }
     }
 
