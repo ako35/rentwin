@@ -211,6 +211,10 @@
     .form-control { max-width: 280px; }
   }
 
+  &__grid + &__list-actions {
+    margin-top: 1.1rem;
+  }
+
   &__list-empty {
     margin: 0;
     font-size: 0.82rem;
