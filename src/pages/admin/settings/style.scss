@@ -36,8 +36,10 @@
     padding: 0.25rem 1.5rem 2rem 0;
     border-right: 1px solid v.$color3;
     position: sticky;
-    top: 1rem;
-    height: calc(100vh - 2rem);
+    // --admin-header-h is published by AdminLayout: the pinned top menu would
+    // otherwise sit on top of this sidebar's first entries.
+    top: calc(var(--admin-header-h, 0px) + 1rem);
+    height: calc(100vh - var(--admin-header-h, 0px) - 2rem);
     overflow-y: auto;
 
     @media (max-width: 768px) {

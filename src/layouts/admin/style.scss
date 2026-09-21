@@ -8,6 +8,26 @@
     // cards, panels and tables read as raised and the page stops glaring.
     background-color: v.$surface-sunken;
 
+    // Top menu + branch/announcement bar stay pinned while the page scrolls.
+    // 1035: above page content and the contract action bar (1030), below
+    // modals (1055) and their backdrop (1050).
+    .admin-layout__header {
+        position: sticky;
+        top: 0;
+        z-index: 1035;
+
+        // A phone-width menu opened in full can be taller than the screen —
+        // and a pinned header can't scroll away — so let the open menu scroll
+        // inside itself. Desktop (>= lg) keeps overflow visible so the
+        // dropdown menus aren't clipped.
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                max-height: 60vh;
+                overflow-y: auto;
+            }
+        }
+    }
+
     .admin-layout__content {
         padding: 1rem 1.15rem;
         flex: 1;
