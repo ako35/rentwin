@@ -713,6 +713,15 @@
         "releasedDate": "Çıkış tarihi",
         "releaseUndo": "Çıkışı geri al"
       },
+      "signature": {
+        "title": "İmza Takibi",
+        "statusLabel": "Sözleşme imzalandı",
+        "statusSigned": "İmzalandı",
+        "statusPending": "İmzalanmadı",
+        "dateLabel": "İmza tarihi",
+        "hint": "Bu sözleşme henüz imzalanmadı.",
+        "stamp": "{{name}} · {{date}}"
+      },
       "print": {
         "menu": "Yazdır",
         "close": "Kapat",

@@ -60,7 +60,7 @@ const pickContractFields = (body) => {
   // hgsStatus is not accepted from the form — it is derived from the HGS check
   // log (see contract-records.syncHgsStatus).
   // Date fields — "" / null clears them.
-  ["kbsNotifiedAt", "kbsReleasedAt"].forEach((field) => {
+  ["kbsNotifiedAt", "kbsReleasedAt", "signedAt"].forEach((field) => {
     if (field in body) {
       const raw = body[field];
       const parsed = raw ? new Date(raw) : null;

@@ -713,6 +713,15 @@
         "releasedDate": "Release date",
         "releaseUndo": "Undo release"
       },
+      "signature": {
+        "title": "Signature Tracking",
+        "statusLabel": "Contract signed",
+        "statusSigned": "Signed",
+        "statusPending": "Not signed",
+        "dateLabel": "Signed date",
+        "hint": "This contract has not been signed yet.",
+        "stamp": "{{name}} · {{date}}"
+      },
       "print": {
         "menu": "Print",
         "close": "Close",

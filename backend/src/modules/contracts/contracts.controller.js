@@ -46,6 +46,16 @@ const updateContract = asyncHandler(async (req, res) => {
     }
   }
 
+  // Sözleşme imzası: stamp the acting admin on the null -> set transition,
+  // clear it again if the box is unchecked.
+  if ("signedAt" in contractFields) {
+    if (contractFields.signedAt && !existing.signedAt) {
+      contractFields.signedBy = kbsStamp(req.user);
+    } else if (!contractFields.signedAt) {
+      contractFields.signedBy = null;
+    }
+  }
+
   // KABİS filing / release: stamp the acting admin on each null -> set
   // transition; a release needs a filing; clearing the filing clears the release.
   if ("kbsNotifiedAt" in contractFields) {

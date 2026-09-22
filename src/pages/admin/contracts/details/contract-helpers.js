@@ -23,6 +23,7 @@ export const EMPTY_CONTRACT = {
   referenceUserId: "",
   kbsNotifiedAt: "", kbsNotifiedBy: "", kbsReleasedAt: "", kbsReleasedBy: "", kbsSystem: "",
   hgsStatus: "",
+  signedAt: "", signedBy: "",
 };
 
 // Derived KABİS state from the contract form values.
@@ -261,6 +262,7 @@ export const buildContractDto = (values) => ({
   kbsNotifiedAt: values.kbsNotifiedAt || null,
   kbsReleasedAt: values.kbsReleasedAt || null,
   kbsSystem: values.kbsSystem || "",
+  signedAt: values.signedAt || null,
   // hgsStatus is derived from the HGS check log server-side — not sent from here.
 });
 
@@ -295,6 +297,8 @@ export const contractToFormValues = (r) => ({
   kbsReleasedBy: r.kbsReleasedBy || "",
   kbsSystem: r.kbsSystem || "",
   hgsStatus: r.hgsStatus || "",
+  signedAt: r.signedAt ? utils.functions.getDate(r.signedAt) : "",
+  signedBy: r.signedBy || "",
 });
 
 // <select> options for the vehicle picker; create mode gets a leading blank row.

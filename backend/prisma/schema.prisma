@@ -363,6 +363,8 @@ model Contract {
   adminNote         String?
   adminNoteAt       DateTime? // when adminNote was last written/changed, stamped server-side
   adminNoteBy       String? // display name of the admin who last wrote it
+  signedAt          DateTime? // date the customer signed the printed contract; null = not yet signed
+  signedBy          String? // display name of the admin who marked it signed, stamped on the null -> set transition
   referenceNo       String?
   flightNo          String?
   pickUpKm          Int? // odometer at hand-over (prefilled from the vehicle, editable)

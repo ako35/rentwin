@@ -12,6 +12,7 @@ import { useContractData } from "./use-contract-data";
 import ContractRibbon from "./parts/ContractRibbon";
 import VehicleSection from "./parts/VehicleSection";
 import KbsSection from "./parts/KbsSection";
+import SignatureSection from "./parts/SignatureSection";
 import HgsSection from "./parts/HgsSection";
 import ContractRightCard from "./parts/ContractRightCard";
 import ContractActions from "./parts/ContractActions";
@@ -287,6 +288,7 @@ const ContractDetail = () => {
                 extensions={extensions}
               />
               {!isCreate && <KbsSection formik={formik} />}
+              {!isCreate && <SignatureSection formik={formik} />}
             </fieldset>
             {/* HGS check-ins stay usable after the contract closes — the toll
                 query itself often only comes in a few days after drop-off. */}

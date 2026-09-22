@@ -461,6 +461,7 @@
        Bootstrap's dark inheritance never reaches — re-tone it explicitly. */
     .admin-layout :is(
       .contract-page__kbs-row .form-check-label,
+      .contract-page__sign-row .form-check-label,
       .contract-page__hgs-period strong,
       .contract-page__hgs-range
     ) { color: var(--rw-ink); }
@@ -470,6 +471,9 @@
       .contract-page__kbs-hint,
       .contract-page__kbs-undo,
       .contract-page__kbs-stamp,
+      .contract-page__sign-row,
+      .contract-page__sign-date span,
+      .contract-page__sign-hint,
       .contract-page__hgs-period span,
       .contract-page__hgs-auto,
       .contract-page__hgs-meta,
@@ -539,6 +543,7 @@
     /* contract badges: light-ground → dark-ground */
     .admin-layout {
       .contract-page__kbs-badge.is-pending,
+      .contract-page__sign-badge.is-pending,
       .contract-page__hgs-auto.is-partial {
         background-color: rgba(245, 158, 11, 0.16);
         color: #fcd34d;
