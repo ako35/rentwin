@@ -11,7 +11,7 @@ export const fetchCustomers = () =>
 
 // Blank contract form — the shape formik is initialised with.
 export const EMPTY_CONTRACT = {
-  pickUpLocation: "", dropOffLocation: "", pickUpDate: "", pickUpTime: "",
+  pickUpLocation: "Aliağa", dropOffLocation: "Aliağa", pickUpDate: "", pickUpTime: "",
   dropOffDate: "", dropOffTime: "", carId: "", status: "", userId: "",
   contractNo: "", customerNote: "", adminNote: "", adminNoteAt: "", adminNoteBy: "", flightNo: "",
   pickUpKm: "", pickUpFuelEighths: "",
