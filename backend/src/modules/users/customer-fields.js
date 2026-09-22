@@ -4,7 +4,15 @@ const { ledgerBalances } = require("../../lib/ledger");
 
 // customerCode is auto-assigned on create and never editable afterwards, so it
 // is deliberately absent here.
-const CUSTOMER_STRING_FIELDS = ["companyTitle", "taxOffice", "nationalId", "city", "district", "notes"];
+const CUSTOMER_STRING_FIELDS = [
+  "companyTitle",
+  "taxOffice",
+  "nationalId",
+  "authorizedNationalId",
+  "city",
+  "district",
+  "notes",
+];
 
 const CUSTOMER_CODE_PREFIX = "M";
 const CUSTOMER_CODE_PAD = 5;
@@ -53,6 +61,18 @@ const assertNationalId = async (body, currentId) => {
   }
 };
 
+// Kurumsal müşteride şirketin VKN'sinden (nationalId) ayrı olarak, yetkili
+// kişinin kendi 11 haneli T.C. kimlik numarası da zorunlu. Bireysel müşteride
+// bu alanın karşılığı yok — kontrol edilmez.
+const assertAuthorizedNationalId = (body) => {
+  if (body.customerType !== "Kurumsal") return;
+  const value = (body.authorizedNationalId == null ? "" : String(body.authorizedNationalId)).trim();
+  if (!value) throw new HttpError(400, "Yetkili kişinin T.C. kimlik numarası zorunludur.");
+  if (!/^\d{11}$/.test(value)) {
+    throw new HttpError(400, "Yetkili kişinin T.C. kimlik numarası tam olarak 11 haneli ve yalnızca rakamlardan oluşmalıdır.");
+  }
+};
+
 // debit / credit / balance for a set of customers. Contract grand totals and
 // contract payments are mirrored into the current-account ledger (see
 // lib/ledger.js), so the ledger is the single source of truth — this is now a
@@ -64,5 +84,6 @@ module.exports = {
   nextCustomerCode,
   applyCustomerFields,
   assertNationalId,
+  assertAuthorizedNationalId,
   customerTotals,
 };

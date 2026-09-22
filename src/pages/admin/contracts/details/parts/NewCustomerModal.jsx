@@ -89,6 +89,7 @@ const NewCustomerModal = ({ show, onHide, onCreated }) => {
     ? [
         { name: "firstName", label: `* ${t("users.form.corpContactFirst")}` },
         { name: "lastName", label: `* ${t("users.form.corpContactLast")}` },
+        { name: "authorizedNationalId", label: `* ${t("users.form.corpContactNationalId")}` },
         { ...phone, label: `* ${t("users.form.corpPhone")}` },
         { name: "email", label: `* ${t("users.form.email")}`, type: "email" },
       ]

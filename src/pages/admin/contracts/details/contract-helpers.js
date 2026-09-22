@@ -39,7 +39,7 @@ export const kbsStatus = (v) => {
 // Blank "Yeni Müşteri" quick-add form.
 export const EMPTY_NEW_CUST = {
   customerType: "Bireysel", companyTitle: "", taxOffice: "",
-  firstName: "", lastName: "", nationalId: "",
+  firstName: "", lastName: "", nationalId: "", authorizedNationalId: "",
   email: "", phoneNumber: "", address: "", city: "", district: "",
 };
 

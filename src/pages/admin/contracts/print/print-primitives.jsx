@@ -43,6 +43,7 @@ export const PartiesBlock = ({ data, p }) => (
       <Field label={p("idNo")} value={data.idNo} />
       <Field label={p("phone")} value={data.phone} />
       {data.contactPerson && <Field label={p("contactPerson")} value={data.contactPerson} />}
+      {data.contactPersonId && <Field label={p("contactPersonId")} value={data.contactPersonId} />}
       {data.taxOffice && <Field label={p("taxOffice")} value={data.taxOffice} />}
       <Field label={p("address")} value={data.address} wide />
     </div>

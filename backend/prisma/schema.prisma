@@ -114,6 +114,7 @@ model User {
   companyTitle       String?
   taxOffice          String?
   nationalId         String?
+  authorizedNationalId String? // Kurumsal only: the authorized (contact) person's own T.C. kimlik no, distinct from the company's VKN in nationalId
   city               String?
   district           String?
   active             Boolean       @default(true)

@@ -565,6 +565,7 @@
       "taxOffice": "Vergi Dairesi",
       "taxNo": "Vergi No",
       "authorizedPerson": "Yetkili Kişi",
+      "authorizedPersonTc": "Yetkili TC Kimlik No",
       "pricingGroups": {
         "service": "Hizmet Kalemleri",
         "limits": "Limitler",
@@ -739,6 +740,7 @@
         "idNo": "TC / Vergi No",
         "phone": "Telefon",
         "contactPerson": "Yetkili Kişi",
+        "contactPersonId": "Yetkili TC No",
         "taxOffice": "Vergi Dairesi",
         "address": "Adres",
         "vehicleTitle": "Araç Bilgileri",
@@ -961,6 +963,7 @@
       "corpContactFirst": "Kurum Yetkili Kişi Adı",
       "corpContactLast": "Kurum Yetkili Kişi Soyadı",
       "corpTaxNo": "Kurum Vergi Numarası",
+      "corpContactNationalId": "Yetkili Kişi TC Kimlik No",
       "corpPhone": "İrtibat Telefonu",
       "groups": {
         "identity": "Kimlik Bilgileri",

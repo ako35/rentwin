@@ -17,6 +17,7 @@ const CustomerSummary = ({ customer, userId, money }) => {
   if (isCorp) {
     rows.push([c("corporateTitle"), customer?.companyTitle]);
     rows.push([c("authorizedPerson"), customer ? `${customer.firstName} ${customer.lastName}`.trim() : ""]);
+    rows.push([c("authorizedPersonTc"), customer?.authorizedNationalId]);
     rows.push([c("taxOffice"), customer?.taxOffice]);
     rows.push([c("taxNo"), customer?.nationalId]);
   } else {

@@ -122,6 +122,8 @@
     "tcInvalid": "National ID must be exactly 11 digits",
     "taxNoRequired": "Tax number is required",
     "taxNoInvalid": "Tax number must be exactly 10 digits",
+    "authorizedTcRequired": "The authorized person's national ID is required",
+    "authorizedTcInvalid": "The authorized person's national ID must be exactly 11 digits",
     "lastNameMin": "Last name must be at least 2 characters",
     "lastNameMax": "Last name must be at most 50 characters",
     "lastNameRequired": "Please enter your last name",

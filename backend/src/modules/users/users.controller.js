@@ -8,6 +8,7 @@ const {
   nextCustomerCode,
   applyCustomerFields,
   assertNationalId,
+  assertAuthorizedNationalId,
   customerTotals,
 } = require("./customer-fields");
 
@@ -116,6 +117,7 @@ const createUserAdmin = asyncHandler(async (req, res) => {
   }
 
   await assertNationalId(req.body);
+  assertAuthorizedNationalId(req.body);
 
   // Email is intentionally not unique for admin-created customers: the same
   // address may belong to several customer records.
@@ -163,6 +165,12 @@ const updateUserAdmin = asyncHandler(async (req, res) => {
       { customerType: req.body.customerType ?? target.customerType, nationalId: req.body.nationalId ?? target.nationalId },
       target.id
     );
+  }
+  if ("authorizedNationalId" in req.body || "customerType" in req.body) {
+    assertAuthorizedNationalId({
+      customerType: req.body.customerType ?? target.customerType,
+      authorizedNationalId: req.body.authorizedNationalId ?? target.authorizedNationalId,
+    });
   }
 
   const data = {

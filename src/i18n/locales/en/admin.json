@@ -565,6 +565,7 @@
       "taxOffice": "Tax Office",
       "taxNo": "Tax No",
       "authorizedPerson": "Authorized Person",
+      "authorizedPersonTc": "Authorized Person's National ID",
       "pricingGroups": {
         "service": "Service Items",
         "limits": "Limits",
@@ -739,6 +740,7 @@
         "idNo": "ID / Tax No",
         "phone": "Phone",
         "contactPerson": "Contact Person",
+        "contactPersonId": "Contact's National ID",
         "taxOffice": "Tax Office",
         "address": "Address",
         "vehicleTitle": "Vehicle Details",
@@ -961,6 +963,7 @@
       "corpContactFirst": "Company Contact First Name",
       "corpContactLast": "Company Contact Last Name",
       "corpTaxNo": "Company Tax Number",
+      "corpContactNationalId": "Authorized Person's National ID",
       "corpPhone": "Contact Phone",
       "groups": {
         "identity": "Identity",

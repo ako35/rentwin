@@ -18,7 +18,7 @@ const { routes } = constants;
 const EMPTY = {
   customerType: "Bireysel",
   companyTitle: "", taxOffice: "",
-  firstName: "", lastName: "", nationalId: "",
+  firstName: "", lastName: "", nationalId: "", authorizedNationalId: "",
   email: "", phoneNumber: "",
   address: "", city: "", district: "",
   active: true, notes: "", roles: [], builtIn: false,
@@ -88,6 +88,7 @@ const AdminUserDetailsPage = () => {
         companyTitle: u.companyTitle || "",
         taxOffice: u.taxOffice || "",
         nationalId: u.nationalId || "",
+        authorizedNationalId: u.authorizedNationalId || "",
         city: u.city || "",
         district: u.district || "",
         notes: u.notes || "",
@@ -147,6 +148,7 @@ const AdminUserDetailsPage = () => {
     ? [
         { name: "firstName", label: `* ${t("users.form.corpContactFirst")}` },
         { name: "lastName", label: `* ${t("users.form.corpContactLast")}` },
+        { name: "authorizedNationalId", label: `* ${t("users.form.corpContactNationalId")}` },
         { ...phone, label: `* ${t("users.form.corpPhone")}` },
         { name: "email", label: `* ${t("users.form.email")}`, type: "email" },
       ]

@@ -78,6 +78,7 @@ const GenelSozlesme = ({ data, p }) => {
             <strong>{p("idNo")}:</strong> {data.idNo}
             {data.taxOffice ? ` · ${p("taxOffice")}: ${data.taxOffice}` : ""}
             {data.contactPerson ? ` · ${p("contactPerson")}: ${data.contactPerson}` : ""}
+            {data.contactPersonId ? ` · ${p("contactPersonId")}: ${data.contactPersonId}` : ""}
           </p>
         </div>
       </section>

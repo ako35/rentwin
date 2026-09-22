@@ -17,7 +17,7 @@ const { routes } = constants;
 const EMPTY = {
   customerType: "Bireysel",
   companyTitle: "", taxOffice: "",
-  firstName: "", lastName: "", nationalId: "",
+  firstName: "", lastName: "", nationalId: "", authorizedNationalId: "",
   email: "", phoneNumber: "",
   address: "", city: "", district: "",
 };
@@ -96,6 +96,7 @@ const AdminNewCustomerPage = () => {
     ? [
         { name: "firstName", label: `* ${t("users.form.corpContactFirst")}` },
         { name: "lastName", label: `* ${t("users.form.corpContactLast")}` },
+        { name: "authorizedNationalId", label: `* ${t("users.form.corpContactNationalId")}` },
         { ...phone, label: `* ${t("users.form.corpPhone")}` },
         { name: "email", label: `* ${t("users.form.email")}`, type: "email" },
       ]

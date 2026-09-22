@@ -100,6 +100,7 @@ const ContractPrintPage = () => {
       phone: cust.phoneNumber || "—",
       address: [cust.address, cust.district, cust.city].filter(Boolean).join(" / ") || "—",
       contactPerson: isCorp ? `${cust.firstName || ""} ${cust.lastName || ""}`.trim() : "",
+      contactPersonId: isCorp ? cust.authorizedNationalId || "" : "",
       carName: `${car.brand || ""} ${car.model || ""}`.trim() || "—",
       plate: car.licensePlate || "—",
       modelYear: car.modelYear || "—",
