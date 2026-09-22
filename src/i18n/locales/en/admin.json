@@ -629,6 +629,7 @@
       "referenceNo": "Reference No",
       "customerNote": "Customer Note",
       "adminNote": "Admin Note",
+      "adminNoteStamp": "{{name}} · {{date}}",
       "route": "Route",
       "currentVehicle": "Current Vehicle",
       "contractNo": "Agreement No",

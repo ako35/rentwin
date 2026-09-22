@@ -629,6 +629,7 @@
       "referenceNo": "Referans No",
       "customerNote": "Müşteri Notu",
       "adminNote": "Yönetici Notu",
+      "adminNoteStamp": "{{name}} · {{date}}",
       "route": "Güzergah",
       "currentVehicle": "Geçerli Araç",
       "contractNo": "Sözleşme No",

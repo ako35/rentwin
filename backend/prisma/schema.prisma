@@ -361,6 +361,8 @@ model Contract {
   reservation       Reservation?        @relation("ContractFromReservation", fields: [reservationId], references: [id], onDelete: SetNull)
   customerNote      String?
   adminNote         String?
+  adminNoteAt       DateTime? // when adminNote was last written/changed, stamped server-side
+  adminNoteBy       String? // display name of the admin who last wrote it
   referenceNo       String?
   flightNo          String?
   pickUpKm          Int? // odometer at hand-over (prefilled from the vehicle, editable)

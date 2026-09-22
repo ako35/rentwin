@@ -33,6 +33,19 @@ const updateContract = asyncHandler(async (req, res) => {
 
   const contractFields = pickContractFields(req.body);
 
+  // Yönetici Notu: stamp who wrote it and when, but only on an actual content
+  // change — this endpoint saves the whole form on every "Kaydet", so a naive
+  // always-stamp would bump the timestamp even when the note text didn't move.
+  if ("adminNote" in contractFields) {
+    if (contractFields.adminNote && contractFields.adminNote !== existing.adminNote) {
+      contractFields.adminNoteAt = new Date();
+      contractFields.adminNoteBy = kbsStamp(req.user);
+    } else if (!contractFields.adminNote) {
+      contractFields.adminNoteAt = null;
+      contractFields.adminNoteBy = null;
+    }
+  }
+
   // KABİS filing / release: stamp the acting admin on each null -> set
   // transition; a release needs a filing; clearing the filing clears the release.
   if ("kbsNotifiedAt" in contractFields) {

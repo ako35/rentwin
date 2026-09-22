@@ -89,6 +89,12 @@
     color: v.$color5_3;
   }
 
+  // Caption under the Yönetici Notu textarea — pulled up into the field's
+  // own bottom margin so it reads as part of it, not a separate row.
+  &__admin-note-stamp {
+    margin-top: -0.6rem;
+  }
+
   &__ro-end {
     @include m.flexbox(row, flex-end, center, 0.5rem);
     white-space: nowrap;

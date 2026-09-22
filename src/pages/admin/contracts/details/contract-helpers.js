@@ -13,7 +13,7 @@ export const fetchCustomers = () =>
 export const EMPTY_CONTRACT = {
   pickUpLocation: "", dropOffLocation: "", pickUpDate: "", pickUpTime: "",
   dropOffDate: "", dropOffTime: "", carId: "", status: "", userId: "",
-  contractNo: "", customerNote: "", adminNote: "", flightNo: "",
+  contractNo: "", customerNote: "", adminNote: "", adminNoteAt: "", adminNoteBy: "", flightNo: "",
   pickUpKm: "", pickUpFuelEighths: "",
   returnKm: "", returnFuelEighths: "", returnedAt: "",
   rentalType: "DAILY", dailyPrice: "", monthlyPrice: "", returnExtraAmount: "",
@@ -272,6 +272,7 @@ export const contractToFormValues = (r) => ({
   dropOffDate: utils.functions.getDateUTC(r.dropOffTime),
   dropOffTime: utils.functions.getTimeUTC(r.dropOffTime),
   customerNote: r.customerNote || "", adminNote: r.adminNote || "",
+  adminNoteAt: r.adminNoteAt || "", adminNoteBy: r.adminNoteBy || "",
   contractNo: r.contractNo || "", flightNo: r.flightNo || "",
   pickUpKm: r.pickUpKm ?? "",
   pickUpFuelEighths: r.pickUpFuelEighths != null ? String(r.pickUpFuelEighths) : "",

@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import moment from "moment/moment";
 import { CustomForm } from "../../../../../components";
 import RoRow from "./RoRow";
 
@@ -23,6 +24,14 @@ const SummaryTab = ({ formik, selectedCar, billableDays }) => {
         })})`}
       />
       <CustomForm formik={formik} name="adminNote" label={c("adminNote")} type="textarea" rows={2} />
+      {v.adminNoteAt && (
+        <span className="contract-page__ro-sub contract-page__admin-note-stamp">
+          {c("adminNoteStamp", {
+            name: v.adminNoteBy || "—",
+            date: moment(v.adminNoteAt).format("DD.MM.YYYY HH:mm"),
+          })}
+        </span>
+      )}
     </>
   );
 };
