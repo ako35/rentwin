@@ -7,6 +7,7 @@ const {
   serializeHgsPendingRow,
   serializeInvoicePendingRow,
   serializeKbsPendingRow,
+  serializeSignPendingRow,
 } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
@@ -585,6 +586,25 @@ const getKbsPendingContracts = asyncHandler(async (req, res) => {
   res.json(contracts.map(serializeKbsPendingRow));
 });
 
+// Contracts whose printed contract hasn't been marked signed yet — open or
+// already closed, but not cancelled. Same rationale as the KABİS pending
+// panel: signing is meant to happen around pickup, so an open contract
+// missing it is the more urgent case, not just closed ones.
+const getSignPendingContracts = asyncHandler(async (req, res) => {
+  const { branchId } = req.query;
+  const contracts = await prisma.contract.findMany({
+    where: {
+      status: { not: "CANCELLED" },
+      signedAt: null,
+      ...(branchId ? { car: { branchId } } : {}),
+    },
+    orderBy: [{ pickUpTime: "asc" }],
+    include: { car: { include: { branch: true } }, user: true },
+  });
+
+  res.json(contracts.map(serializeSignPendingRow));
+});
+
 module.exports = {
   getContractsByPage,
   getContractsByUser,
@@ -596,6 +616,7 @@ module.exports = {
   getHgsPendingContracts,
   getInvoicePendingContracts,
   getKbsPendingContracts,
+  getSignPendingContracts,
   returnContract,
   cancelContract,
   reopenContract,

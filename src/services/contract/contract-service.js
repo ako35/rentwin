@@ -198,6 +198,15 @@ export const getKbsPendingContracts = async ({ branchId } = {}) => {
   return response.data;
 };
 
+// Admin dashboard alert bar: contracts (open or closed) not yet marked signed.
+export const getSignPendingContracts = async ({ branchId } = {}) => {
+  const response = await axios.get(
+    `${API_URL}/contracts/admin/sign-pending/auth${branchId ? `?branchId=${branchId}` : ""}`,
+    services.authHeader()
+  );
+  return response.data;
+};
+
 export const downloadContractReports = async () => {
   const token = services.encryptedLocalStorage.getItem("rentwintoken");
   const response = await axios.get(`${API_URL}/excel/download/contracts`, {

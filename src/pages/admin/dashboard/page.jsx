@@ -21,21 +21,24 @@ const AdminDashboard = () => {
   const [hgsPending, setHgsPending] = useState([]);
   const [invoicePending, setInvoicePending] = useState([]);
   const [kbsPending, setKbsPending] = useState([]);
+  const [signPending, setSignPending] = useState([]);
 
   const loadData = async () => {
     try {
-      const [stats, alerts, hgs, invoices, kbs] = await Promise.all([
+      const [stats, alerts, hgs, invoices, kbs, sign] = await Promise.all([
         services.vehicle.getFleetStats(branchId),
         services.vehicle.getExpiryAlerts(branchId),
         services.contract.getHgsPendingContracts({ branchId }).catch(() => []),
         services.contract.getInvoicePendingContracts({ branchId }).catch(() => []),
         services.contract.getKbsPendingContracts({ branchId }).catch(() => []),
+        services.contract.getSignPendingContracts({ branchId }).catch(() => []),
       ]);
       setFleetStats(stats);
       setExpiryAlerts(alerts);
       setHgsPending(Array.isArray(hgs) ? hgs : []);
       setInvoicePending(Array.isArray(invoices) ? invoices : []);
       setKbsPending(Array.isArray(kbs) ? kbs : []);
+      setSignPending(Array.isArray(sign) ? sign : []);
     } catch (error) {
       console.log(error);
     } finally {
@@ -79,6 +82,7 @@ const AdminDashboard = () => {
             hgsPending={hgsPending}
             invoicePending={invoicePending}
             kbsPending={kbsPending}
+            signPending={signPending}
           />
 
           <Row className="gy-2">

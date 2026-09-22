@@ -90,6 +90,14 @@ const serializeKbsPendingRow = (contract) => ({
   returnedAt: contract.returnedAt || null,
 });
 
+// Admin dashboard "signature pending" bar: a contract (open or already
+// closed, but not cancelled) whose printed contract hasn't been marked
+// signed yet — same shape/rationale as the KABİS pending row.
+const serializeSignPendingRow = (contract) => ({
+  ...serializeScheduleRow(contract),
+  returnedAt: contract.returnedAt || null,
+});
+
 module.exports = {
   serializeUser,
   serializeVehicle,
@@ -100,4 +108,5 @@ module.exports = {
   serializeHgsPendingRow,
   serializeInvoicePendingRow,
   serializeKbsPendingRow,
+  serializeSignPendingRow,
 };

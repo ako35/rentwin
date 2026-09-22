@@ -9,6 +9,7 @@ import {
   BsSignpost2,
   BsFileEarmarkText,
   BsPersonBadge,
+  BsPen,
 } from "react-icons/bs";
 import { utils } from "../../../utils";
 import { constants } from "../../../constants";
@@ -25,6 +26,7 @@ const CATEGORIES = [
 const HGS_KEY = "hgsPending";
 const INVOICE_KEY = "invoicePending";
 const KBS_KEY = "kbsPending";
+const SIGN_KEY = "signPending";
 
 // Maps an alert category to the vehicle-detail record tab it belongs to —
 // Sigorta and Kasko are both entries on the vehicle form's single "insurance"
@@ -105,15 +107,21 @@ const MixedStatusTable = ({ rows, onRowClick }) => {
   );
 };
 
-const MaintenanceAlertBar = ({ alerts, hgsPending = [], invoicePending = [], kbsPending = [] }) => {
+const MaintenanceAlertBar = ({
+  alerts,
+  hgsPending = [],
+  invoicePending = [],
+  kbsPending = [],
+  signPending = [],
+}) => {
   const { t, i18n } = useTranslation("admin");
   const navigate = useNavigate();
   const [open, setOpen] = useState(null);
 
   const categories = alerts?.categories || {};
+  const isSpecialTab = (key) => key === HGS_KEY || key === INVOICE_KEY || key === KBS_KEY || key === SIGN_KEY;
 
-  const activeList =
-    open && open !== HGS_KEY && open !== INVOICE_KEY && open !== KBS_KEY ? categories[open] || [] : [];
+  const activeList = open && !isSpecialTab(open) ? categories[open] || [] : [];
 
   const goToContract = (row) => navigate(`${constants.routes.adminContracts}/${row.id}`);
 
@@ -174,10 +182,22 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [], invoicePending = [], kbs
           >
             <BsPersonBadge /> {t("alertBar.kbsPending")} ({kbsPending.length})
           </button>
+
+          <button
+            type="button"
+            className={
+              "maintenance-alert-bar__tab" +
+              (signPending.length ? " maintenance-alert-bar__tab--due maintenance-alert-bar__tab--overdue" : "") +
+              (open === SIGN_KEY ? " maintenance-alert-bar__tab--active" : "")
+            }
+            onClick={() => setOpen(open === SIGN_KEY ? null : SIGN_KEY)}
+          >
+            <BsPen /> {t("alertBar.signPending")} ({signPending.length})
+          </button>
         </div>
       </div>
 
-      {open && open !== HGS_KEY && open !== INVOICE_KEY && open !== KBS_KEY && (
+      {open && !isSpecialTab(open) && (
         <div className="maintenance-alert-bar__panel">
           <div className="maintenance-alert-bar__panel-head">
             {t(`alertBar.${open}`)} — {t("alertBar.dueWithin", { days: alerts?.windowDays?.[open] ?? 30 })}
@@ -260,6 +280,17 @@ const MaintenanceAlertBar = ({ alerts, hgsPending = [], invoicePending = [], kbs
             <div className="maintenance-alert-bar__empty">{t("alertBar.kbsPendingNone")}</div>
           ) : (
             <MixedStatusTable rows={kbsPending} onRowClick={goToContract} />
+          )}
+        </div>
+      )}
+
+      {open === SIGN_KEY && (
+        <div className="maintenance-alert-bar__panel">
+          <div className="maintenance-alert-bar__panel-head">{t("alertBar.signPendingHead")}</div>
+          {signPending.length === 0 ? (
+            <div className="maintenance-alert-bar__empty">{t("alertBar.signPendingNone")}</div>
+          ) : (
+            <MixedStatusTable rows={signPending} onRowClick={goToContract} />
           )}
         </div>
       )}
