@@ -2,6 +2,17 @@
 @use '../../../../styles/mixins' as m;
 
 .status-board {
+  // Stretch down to the bottom of the viewport so the panels below can flex
+  // to fill it, instead of stopping at a fixed height with blank space
+  // under them. A plain block child's height:100% won't resolve against
+  // admin-layout__content (its height only comes from flex-grow, which
+  // percentage resolution doesn't treat as definite) — same reason the
+  // settings sidebar anchors off the viewport instead. --admin-header-h is
+  // published by AdminLayout; 2rem matches admin-layout__content's padding.
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--admin-header-h, 0px) - 2rem);
+
   &__title {
     font-size: 1.3rem;
     font-weight: 600;
@@ -10,10 +21,12 @@
   }
 
   &__grid {
+    flex: 1;
+    min-height: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-    align-items: start;
+    align-items: stretch;
 
     @media (max-width: 1100px) {
       grid-template-columns: 1fr;
@@ -21,6 +34,9 @@
   }
 
   &__panel {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
     background-color: #fff;
     border: 1px solid v.$color3;
     border-radius: 16px;
@@ -75,7 +91,8 @@
   }
 
   &__table-wrap {
-    max-height: 560px;
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
     // The table itself never scrolls sideways — long cells (Müşteri, Marka /
     // Model) ellipsize instead, so the whole panel stays inside its column.
