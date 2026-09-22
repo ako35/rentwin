@@ -257,10 +257,13 @@
     /* disabled fields inside the contract card read as wells */
     .admin-layout :is(
       .contract-page .contract-card .form-control:disabled,
-      .contract-page .contract-card .form-select:disabled
+      .contract-page .contract-card .form-select:disabled,
+      .contract-page__ro-field strong
     ) {
       background-color: var(--rw-inset);
       border-color: var(--rw-line);
+      color: var(--rw-ink-muted);
+      -webkit-text-fill-color: var(--rw-ink-muted);
     }
     /* .vehicle-form__section is a semantic grouping, not a surface — it has no
        padding / radius, so tinting it just boxes the labels in tight against a
@@ -474,6 +477,7 @@
       .contract-page__sign-row,
       .contract-page__sign-date span,
       .contract-page__sign-hint,
+      .contract-page__ro-field span,
       .contract-page__hgs-period span,
       .contract-page__hgs-auto,
       .contract-page__hgs-meta,

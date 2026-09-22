@@ -616,6 +616,8 @@
       "vehiclePageLinkTitle": "Araç detayını aç",
       "pickUpKm": "Alış KM",
       "pickUpFuelLevel": "Alış Yakıt / Şarj",
+      "returnKmLabel": "Teslim KM",
+      "returnFuelLevelLabel": "Teslim Yakıt / Şarj",
       "class": "Sınıf / Model",
       "fuelTransmission": "Yakıt / Vites",
       "plate": "Plaka",

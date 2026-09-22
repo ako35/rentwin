@@ -136,6 +136,26 @@ const VehicleSection = ({
         <CustomForm formik={formik} name="pickUpKm" label={c("pickUpKm")} type="number" />
         <CustomForm formik={formik} name="pickUpFuelEighths" label={c("pickUpFuelLevel")} type="select" itemsArr={fuelOptions} />
       </div>
+
+      {/* Set once, by "Araç Teslim Al" (VehicleReturnModal) — read-only here so
+          it always reads next to the hand-over figures above, but "Kaydet"
+          never overwrites it (see buildContractDto). */}
+      {formik.values.returnedAt && (
+        <div className="contract-page__pair contract-page__pair--even">
+          <div className="contract-page__ro-field">
+            <span>{c("returnKmLabel")}</span>
+            <strong>{formik.values.returnKm || formik.values.returnKm === 0 ? `${formik.values.returnKm} km` : "—"}</strong>
+          </div>
+          <div className="contract-page__ro-field">
+            <span>{c("returnFuelLevelLabel")}</span>
+            <strong>
+              {formik.values.returnFuelEighths === "" || formik.values.returnFuelEighths == null
+                ? "—"
+                : `${formik.values.returnFuelEighths}/8`}
+            </strong>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

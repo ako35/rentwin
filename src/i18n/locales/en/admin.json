@@ -616,6 +616,8 @@
       "vehiclePageLinkTitle": "Open vehicle details",
       "pickUpKm": "Pick-up Odometer",
       "pickUpFuelLevel": "Pick-up Fuel / Charge",
+      "returnKmLabel": "Return Odometer",
+      "returnFuelLevelLabel": "Return Fuel / Charge",
       "class": "Class / Model",
       "fuelTransmission": "Fuel / Transmission",
       "plate": "Plate",
