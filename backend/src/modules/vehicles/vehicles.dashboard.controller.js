@@ -2,6 +2,7 @@ const dayjs = require("dayjs");
 const prisma = require("../../lib/prisma");
 const asyncHandler = require("../../middleware/async-handler");
 const { getRentedVehicleIds } = require("./vehicles.shared");
+const { readSettings } = require("../settings/settings.controller");
 
 // Vehicles due for maintenance/inspection within this many days count toward
 // the dashboard's "Bakım"/"Muayene" alert badges.
@@ -51,20 +52,38 @@ const getFleetStats = asyncHandler(async (req, res) => {
 
 // Sigorta/Kasko/MTV/Muayene are hard legal deadlines, so the dashboard flags
 // them tighter than Bakım (which is just a scheduling reminder, kept at 30).
-const EXPIRY_WINDOW_DAYS = 15;
+// Each is independently overridable from Ayarlar > Uyarı Süreleri — this is
+// only the fallback when an operator hasn't set one.
+const DEFAULT_EXPIRY_WINDOW_DAYS = 15;
 const MAINTENANCE_WINDOW_DAYS = 30;
 // Vehicles within this many km of their planned service (odometer + interval)
 // also count as "due soon", alongside the date-based check above.
 const MAINTENANCE_WINDOW_KM = 1000;
 
+const thresholdInDays = (days) => {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d;
+};
+
 const getExpiryAlerts = asyncHandler(async (req, res) => {
   const { branchId } = req.query;
   const vehicleWhere = { soldAt: null, ...(branchId ? { branchId } : {}) };
   const now = new Date();
-  const threshold = new Date();
-  threshold.setDate(threshold.getDate() + EXPIRY_WINDOW_DAYS);
-  const maintenanceThreshold = new Date();
-  maintenanceThreshold.setDate(maintenanceThreshold.getDate() + MAINTENANCE_WINDOW_DAYS);
+  const settings = await readSettings();
+  const windowDaysFor = {
+    inspection: settings.alertWindowInspectionDays ?? DEFAULT_EXPIRY_WINDOW_DAYS,
+    insurance: settings.alertWindowInsuranceDays ?? DEFAULT_EXPIRY_WINDOW_DAYS,
+    kasko: settings.alertWindowKaskoDays ?? DEFAULT_EXPIRY_WINDOW_DAYS,
+    tax: settings.alertWindowTaxDays ?? DEFAULT_EXPIRY_WINDOW_DAYS,
+  };
+  const thresholds = {
+    inspection: thresholdInDays(windowDaysFor.inspection),
+    insurance: thresholdInDays(windowDaysFor.insurance),
+    kasko: thresholdInDays(windowDaysFor.kasko),
+    tax: thresholdInDays(windowDaysFor.tax),
+  };
+  const maintenanceThreshold = thresholdInDays(MAINTENANCE_WINDOW_DAYS);
 
   const carSelect = { select: { id: true, licensePlate: true, brand: true, model: true } };
 
@@ -140,8 +159,8 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
   const categories = { insurance: [], kasko: [], tax: [], inspection: [], maintenance: [] };
 
   for (const row of insuranceLatest) {
-    if (new Date(row.endDate) <= threshold) {
-      const bucket = row.type === "Kasko" ? "kasko" : "insurance";
+    const bucket = row.type === "Kasko" ? "kasko" : "insurance";
+    if (new Date(row.endDate) <= thresholds[bucket]) {
       categories[bucket].push(toItem(row.vehicle, row.endDate));
     }
   }
@@ -150,7 +169,7 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
 
   const inspectionsWithDate = inspections.filter((r) => r.expiryDate);
   for (const row of latestPerVehicle(inspectionsWithDate, "expiryDate")) {
-    if (new Date(row.expiryDate) <= threshold) {
+    if (new Date(row.expiryDate) <= thresholds.inspection) {
       categories.inspection.push(toItem(row.vehicle, row.expiryDate));
     }
   }
@@ -186,7 +205,7 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
   const unpaidTaxes = taxes.filter((r) => r.paidDate == null && r.dueDate);
   const taxByVehicle = new Map();
   for (const row of unpaidTaxes) {
-    if (new Date(row.dueDate) > threshold) continue;
+    if (new Date(row.dueDate) > thresholds.tax) continue;
     const current = taxByVehicle.get(row.vehicleId);
     if (!current || new Date(row.dueDate) < new Date(current.dueDate)) taxByVehicle.set(row.vehicleId, row);
   }
@@ -207,10 +226,10 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
 
   res.json({
     windowDays: {
-      insurance: EXPIRY_WINDOW_DAYS,
-      kasko: EXPIRY_WINDOW_DAYS,
-      tax: EXPIRY_WINDOW_DAYS,
-      inspection: EXPIRY_WINDOW_DAYS,
+      insurance: windowDaysFor.insurance,
+      kasko: windowDaysFor.kasko,
+      tax: windowDaysFor.tax,
+      inspection: windowDaysFor.inspection,
       maintenance: MAINTENANCE_WINDOW_DAYS,
     },
     windowKm: {

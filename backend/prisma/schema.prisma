@@ -643,12 +643,18 @@ model Review {
 
 // App-wide settings. Single row, id fixed to "singleton" — always upserted.
 model Setting {
-  id                      String   @id @default("singleton")
-  defaultDailyKmLimit     Int?
-  defaultMonthlyKmLimit   Int?
-  defaultKmOverageFee     Float?
-  defaultFuelFeePerEighth Float?
-  updatedAt               DateTime @updatedAt
+  id                        String   @id @default("singleton")
+  defaultDailyKmLimit       Int?
+  defaultMonthlyKmLimit     Int?
+  defaultKmOverageFee       Float?
+  defaultFuelFeePerEighth   Float?
+  // Dashboard "yaklaşan/süresi geçmiş" alert panel window, per category — null
+  // means "use the 15-day default" (see vehicles.dashboard.controller.js).
+  alertWindowInspectionDays Int?
+  alertWindowInsuranceDays  Int?
+  alertWindowKaskoDays      Int?
+  alertWindowTaxDays        Int?
+  updatedAt                 DateTime @updatedAt
 }
 
 // Operator-managed list of KABİS (Kimlik Bildirme Sistemi) portals — add/

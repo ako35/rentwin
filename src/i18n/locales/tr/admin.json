@@ -1087,6 +1087,15 @@
       "defaultKmOverageFee": "KM Aşım Bedeli",
       "defaultFuelFeePerEighth": "Eksik Yakıt Bedeli"
     },
+    "alertWindows": {
+      "title": "Uyarı Süreleri",
+      "hint": "Panoda Sigorta/Kasko/MTV/Muayene için \"yaklaşan / süresi geçmiş\" uyarısının kaç gün öncesinden başlayacağını buradan ayarlayın. Boş bırakılan alan 15 gün varsayılanını kullanır.",
+      "suffix": "gün",
+      "alertWindowInspectionDays": "Muayene / Egzoz",
+      "alertWindowInsuranceDays": "Trafik Sigortası",
+      "alertWindowKaskoDays": "Kasko",
+      "alertWindowTaxDays": "MTV"
+    },
     "kabisSystems": {
       "title": "KABİS Sistemleri",
       "hint": "Kullandığınız KABİS (Kimlik Bildirme Sistemi) portallarını buradan ekleyip silin; kontrat ekranında bildirim yapılırken hangisinin kullanıldığı bu listeden seçilir.",
@@ -1102,23 +1111,30 @@
     "admins": {
       "title": "Yönetici Hesapları",
       "hint": "Yönetim paneline giriş yapabilecek kişileri buradan ekleyip silin.",
+      "editHint": "Yönetici bilgilerini güncelleyin. Şifre alanını boş bırakırsanız mevcut şifre değişmez.",
       "firstName": "Ad",
       "lastName": "Soyad",
       "email": "E-posta",
       "phoneNumber": "Telefon",
       "password": "Şifre",
       "passwordPlaceholder": "En az 8 karakter",
+      "passwordEditPlaceholder": "Değiştirmek için yeni şifre girin",
       "showPassword": "Şifreyi göster",
       "hidePassword": "Şifreyi gizle",
       "add": "Yönetici Ekle",
+      "edit": "Düzenle",
+      "cancel": "İptal",
+      "cannotEditBuiltIn": "Bu hesap düzenlenemez.",
       "empty": "Henüz başka bir yönetici hesabı yok.",
       "delete": "Sil",
       "cannotDeleteSelf": "Kendi hesabınızı buradan silemezsiniz.",
       "deleteConfirmTitle": "Bu yönetici hesabını silmek istediğinize emin misiniz?",
       "deleteConfirmText": "{{name}} artık yönetim paneline giriş yapamayacak.",
       "addSuccess": "Yönetici hesabı oluşturuldu.",
+      "editSuccess": "Yönetici hesabı güncellendi.",
       "emailExists": "Bu e-posta ile kayıtlı bir hesap zaten var.",
       "addError": "Yönetici hesabı oluşturulurken bir hata oluştu.",
+      "editError": "Yönetici hesabı güncellenirken bir hata oluştu.",
       "deleteError": "Yönetici hesabı silinirken bir hata oluştu."
     }
   },

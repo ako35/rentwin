@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { Button, Form, InputGroup, Spinner } from "react-bootstrap";
-import { BsCircleHalf, BsSun, BsMoonStars, BsTrash, BsPalette, BsCashCoin, BsShieldCheck, BsPeopleFill } from "react-icons/bs";
+import { BsCircleHalf, BsSun, BsMoonStars, BsTrash, BsPencil, BsPalette, BsCashCoin, BsShieldCheck, BsPeopleFill, BsBell } from "react-icons/bs";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Loading } from "../../../components";
 import { services } from "../../../services";
@@ -26,17 +26,29 @@ const FIELDS = [
   { name: "defaultFuelFeePerEighth", suffix: "₺ / (1/8)", type: "money" },
 ];
 
+// Dashboard's "yaklaşan/süresi geçmiş" alert panel window, per category —
+// blank falls back to the 15-day default (see vehicles.dashboard.controller.js).
+const ALERT_WINDOW_DEFAULT_DAYS = "15";
+const ALERT_FIELDS = [
+  { name: "alertWindowInspectionDays" },
+  { name: "alertWindowInsuranceDays" },
+  { name: "alertWindowKaskoDays" },
+  { name: "alertWindowTaxDays" },
+];
+
 // Left-nav sections — each maps 1:1 to a settings.<key>.title translation.
 const SECTIONS = [
   { key: "appearance", icon: BsPalette },
   { key: "contractDefaults", icon: BsCashCoin },
+  { key: "alertWindows", icon: BsBell },
   { key: "kabisSystems", icon: BsShieldCheck },
   { key: "admins", icon: BsPeopleFill },
 ];
 const SECTION_KEYS = SECTIONS.map((s) => s.key);
 
+const ALL_FORM_FIELDS = [...FIELDS, ...ALERT_FIELDS];
 const toForm = (data) =>
-  FIELDS.reduce((acc, f) => ({ ...acc, [f.name]: data?.[f.name] == null ? "" : String(data[f.name]) }), {});
+  ALL_FORM_FIELDS.reduce((acc, f) => ({ ...acc, [f.name]: data?.[f.name] == null ? "" : String(data[f.name]) }), {});
 
 const AdminSettingsPage = () => {
   const { t } = useTranslation("admin");
@@ -59,6 +71,7 @@ const AdminSettingsPage = () => {
 
   const [admins, setAdmins] = useState([]);
   const [adminForm, setAdminForm] = useState(EMPTY_ADMIN);
+  const [editingAdminId, setEditingAdminId] = useState(null);
   const [adminAdding, setAdminAdding] = useState(false);
   const [adminRemovingId, setAdminRemovingId] = useState(null);
   const [showAdminPassword, setShowAdminPassword] = useState(false);
@@ -136,28 +149,61 @@ const AdminSettingsPage = () => {
   };
 
   const setAdminField = (name) => (e) => setAdminForm((f) => ({ ...f, [name]: e.target.value }));
+  const isEditingAdmin = editingAdminId != null;
+  // Password is mandatory to create a login, but optional on edit — leaving
+  // it blank keeps the account's current password.
   const adminFormValid =
-    adminForm.firstName.trim() && adminForm.lastName.trim() && adminForm.email.trim() && adminForm.password.length >= 8;
+    adminForm.firstName.trim() &&
+    adminForm.lastName.trim() &&
+    adminForm.email.trim() &&
+    (isEditingAdmin ? adminForm.password.length === 0 || adminForm.password.length >= 8 : adminForm.password.length >= 8);
 
-  const addAdmin = async () => {
+  const startEditAdmin = (admin) => {
+    setEditingAdminId(admin.id);
+    setAdminForm({
+      firstName: admin.firstName || "",
+      lastName: admin.lastName || "",
+      email: admin.email || "",
+      phoneNumber: admin.phoneNumber || "",
+      password: "",
+    });
+    setShowAdminPassword(false);
+  };
+
+  const cancelEditAdmin = () => {
+    setEditingAdminId(null);
+    setAdminForm(EMPTY_ADMIN);
+    setShowAdminPassword(false);
+  };
+
+  const saveAdmin = async () => {
     if (!adminFormValid) return;
     setAdminAdding(true);
     try {
-      await services.user.createUserAdmin({
+      const payload = {
         firstName: adminForm.firstName.trim(),
         lastName: adminForm.lastName.trim(),
         email: adminForm.email.trim(),
         phoneNumber: adminForm.phoneNumber.trim(),
-        password: adminForm.password,
-        roles: ["Administrator"],
-      });
+      };
+      if (isEditingAdmin) {
+        if (adminForm.password) payload.password = adminForm.password;
+        await services.user.updateUserAdmin(editingAdminId, payload);
+      } else {
+        payload.password = adminForm.password;
+        payload.roles = ["Administrator"];
+        await services.user.createUserAdmin(payload);
+      }
       setAdminForm(EMPTY_ADMIN);
+      setEditingAdminId(null);
       setShowAdminPassword(false);
       await loadAdmins();
-      utils.functions.swalToast(c("admins.addSuccess"), "success");
+      utils.functions.swalToast(c(isEditingAdmin ? "admins.editSuccess" : "admins.addSuccess"), "success");
     } catch (error) {
       utils.functions.swalToast(
-        error?.response?.status === 409 ? c("admins.emailExists") : c("admins.addError"),
+        error?.response?.status === 409
+          ? c("admins.emailExists")
+          : c(isEditingAdmin ? "admins.editError" : "admins.addError"),
         "error"
       );
     } finally {
@@ -275,6 +321,48 @@ const AdminSettingsPage = () => {
             </section>
           )}
 
+          {activeSection === "alertWindows" && (
+            <section className="admin-settings__card">
+              <div className="admin-settings__card-head">
+                <h3>{c("alertWindows.title")}</h3>
+                <p>{c("alertWindows.hint")}</p>
+              </div>
+
+              <div
+                className="admin-settings__grid"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !saving) {
+                    e.preventDefault();
+                    save();
+                  }
+                }}
+              >
+                {ALERT_FIELDS.map((f) => (
+                  <Form.Group key={f.name} className="admin-settings__field">
+                    <Form.Label>{c(`alertWindows.${f.name}`)}</Form.Label>
+                    <div className="admin-settings__input">
+                      <Form.Control
+                        type="number"
+                        min="1"
+                        step="1"
+                        value={form[f.name]}
+                        onChange={setV(f.name)}
+                        placeholder={ALERT_WINDOW_DEFAULT_DAYS}
+                      />
+                      <span>{c("alertWindows.suffix")}</span>
+                    </div>
+                  </Form.Group>
+                ))}
+              </div>
+
+              <div className="admin-settings__actions">
+                <Button type="button" disabled={saving} onClick={save}>
+                  {saving && <Spinner animation="border" size="sm" />} {c("save")}
+                </Button>
+              </div>
+            </section>
+          )}
+
           {activeSection === "kabisSystems" && (
             <section className="admin-settings__card">
               <div className="admin-settings__card-head">
@@ -328,7 +416,7 @@ const AdminSettingsPage = () => {
             <section className="admin-settings__card">
               <div className="admin-settings__card-head">
                 <h3>{c("admins.title")}</h3>
-                <p>{c("admins.hint")}</p>
+                <p>{c(isEditingAdmin ? "admins.editHint" : "admins.hint")}</p>
               </div>
 
               <div
@@ -336,7 +424,7 @@ const AdminSettingsPage = () => {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && adminFormValid && !adminAdding) {
                     e.preventDefault();
-                    addAdmin();
+                    saveAdmin();
                   }
                 }}
               >
@@ -364,7 +452,7 @@ const AdminSettingsPage = () => {
                       autoComplete="new-password"
                       value={adminForm.password}
                       onChange={setAdminField("password")}
-                      placeholder={c("admins.passwordPlaceholder")}
+                      placeholder={c(isEditingAdmin ? "admins.passwordEditPlaceholder" : "admins.passwordPlaceholder")}
                     />
                     <InputGroup.Text
                       role="button"
@@ -379,9 +467,14 @@ const AdminSettingsPage = () => {
               </div>
 
               <div className="admin-settings__list-actions">
-                <Button type="button" size="sm" disabled={adminAdding || !adminFormValid} onClick={addAdmin}>
-                  {adminAdding && <Spinner animation="border" size="sm" />} {c("admins.add")}
+                <Button type="button" size="sm" disabled={adminAdding || !adminFormValid} onClick={saveAdmin}>
+                  {adminAdding && <Spinner animation="border" size="sm" />} {c(isEditingAdmin ? "save" : "admins.add")}
                 </Button>
+                {isEditingAdmin && (
+                  <Button type="button" size="sm" variant="outline-secondary" disabled={adminAdding} onClick={cancelEditAdmin}>
+                    {c("admins.cancel")}
+                  </Button>
+                )}
               </div>
 
               {admins.length === 0 ? (
@@ -392,21 +485,34 @@ const AdminSettingsPage = () => {
                     const isSelf = admin.id === currentUser?.id;
                     const locked = admin.builtIn || isSelf;
                     return (
-                      <li key={admin.id}>
+                      <li key={admin.id} className={editingAdminId === admin.id ? "is-editing" : ""}>
                         <span>
                           {admin.firstName} {admin.lastName}
                           <span className="admin-settings__list-sub"> · {admin.email}</span>
+                          {admin.phoneNumber ? <span className="admin-settings__list-sub"> · {admin.phoneNumber}</span> : null}
                         </span>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline-danger"
-                          disabled={locked || adminRemovingId === admin.id}
-                          onClick={() => removeAdmin(admin)}
-                          title={isSelf ? c("admins.cannotDeleteSelf") : c("admins.delete")}
-                        >
-                          {adminRemovingId === admin.id ? <Spinner animation="border" size="sm" /> : <BsTrash />}
-                        </Button>
+                        <span className="admin-settings__list-actions-group">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline-secondary"
+                            disabled={admin.builtIn || adminAdding}
+                            onClick={() => startEditAdmin(admin)}
+                            title={admin.builtIn ? c("admins.cannotEditBuiltIn") : c("admins.edit")}
+                          >
+                            <BsPencil />
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline-danger"
+                            disabled={locked || adminRemovingId === admin.id}
+                            onClick={() => removeAdmin(admin)}
+                            title={isSelf ? c("admins.cannotDeleteSelf") : c("admins.delete")}
+                          >
+                            {adminRemovingId === admin.id ? <Spinner animation="border" size="sm" /> : <BsTrash />}
+                          </Button>
+                        </span>
                       </li>
                     );
                   })}

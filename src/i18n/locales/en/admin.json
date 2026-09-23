@@ -1087,6 +1087,15 @@
       "defaultKmOverageFee": "KM Overage Fee",
       "defaultFuelFeePerEighth": "Missing Fuel Fee"
     },
+    "alertWindows": {
+      "title": "Alert Windows",
+      "hint": "Set how many days ahead the dashboard's \"upcoming / overdue\" alert for Insurance/Kasko/MTV/Inspection should start warning. A field left blank uses the 15-day default.",
+      "suffix": "days",
+      "alertWindowInspectionDays": "Inspection / Emissions",
+      "alertWindowInsuranceDays": "Traffic Insurance",
+      "alertWindowKaskoDays": "Kasko",
+      "alertWindowTaxDays": "Vehicle Tax (MTV)"
+    },
     "kabisSystems": {
       "title": "KABİS Systems",
       "hint": "Add or remove the KABİS (identity notification system) portals you use; the contract screen lets you pick which one was used when filing.",
@@ -1102,23 +1111,30 @@
     "admins": {
       "title": "Administrator Accounts",
       "hint": "Add or remove people who can sign in to the admin panel.",
+      "editHint": "Update this administrator's info. Leave the password blank to keep the current one.",
       "firstName": "First Name",
       "lastName": "Last Name",
       "email": "Email",
       "phoneNumber": "Phone",
       "password": "Password",
       "passwordPlaceholder": "At least 8 characters",
+      "passwordEditPlaceholder": "Enter a new password to change it",
       "showPassword": "Show password",
       "hidePassword": "Hide password",
       "add": "Add Administrator",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "cannotEditBuiltIn": "This account can't be edited.",
       "empty": "No other administrator account yet.",
       "delete": "Delete",
       "cannotDeleteSelf": "You can't delete your own account from here.",
       "deleteConfirmTitle": "Are you sure you want to delete this administrator account?",
       "deleteConfirmText": "{{name}} will no longer be able to sign in to the admin panel.",
       "addSuccess": "Administrator account created.",
+      "editSuccess": "Administrator account updated.",
       "emailExists": "An account with this email already exists.",
       "addError": "There was an error creating the administrator account.",
+      "editError": "There was an error updating the administrator account.",
       "deleteError": "There was an error deleting the administrator account."
     }
   },
