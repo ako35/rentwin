@@ -45,26 +45,13 @@ const getVehicleByIdAdmin = asyncHandler(async (req, res) => {
     loadModelImageMap(),
   ]);
   if (!vehicle) throw new HttpError(404, "Vehicle not found.");
-  const [rentedIds, kbsContract, activeContractId] = await Promise.all([
+  const [rentedIds, activeContractId] = await Promise.all([
     getRentedVehicleIds([vehicle.id]),
-    // Which KABİS portal the car is currently filed under, if any — the open
-    // contract's own kbsSystem (set when it was filed, cleared on release).
-    prisma.contract.findFirst({
-      where: {
-        carId: vehicle.id,
-        status: { notIn: ["CANCELLED", "DONE"] },
-        kbsNotifiedAt: { not: null },
-        kbsReleasedAt: null,
-      },
-      orderBy: { pickUpTime: "desc" },
-      select: { kbsSystem: true },
-    }),
     getActiveRentalContractId(vehicle.id),
   ]);
   res.json({
     ...serializeVehicle(vehicle, modelImages),
     status: getVehicleStatus(vehicle, rentedIds),
-    kbsSystem: kbsContract?.kbsSystem || null,
     activeContractId,
   });
 });

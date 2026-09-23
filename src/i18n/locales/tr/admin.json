@@ -165,7 +165,6 @@
       "transmission": "Vites",
       "fuelType": "Yakıt Tipi",
       "bodyType": "Gövde Tipi",
-      "kbsSystemBadge": "KABİS: {{system}}",
       "goToContract": "Kontrata git",
       "modelYear": "Model Yılı",
       "chassisNo": "Şasi No",
