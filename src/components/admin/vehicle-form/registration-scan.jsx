@@ -6,9 +6,9 @@ import { utils } from "../../../utils";
 import { useAiVisionUsage } from "../../../hooks/use-ai-vision-usage";
 
 // "Ruhsattan Doldur": admin picks a photo of the registration certificate,
-// Gemini reads it server-side and we hand the extracted fields back up so the
+// Claude reads it server-side and we hand the extracted fields back up so the
 // caller can prefill the form — the admin still reviews/corrects before saving.
-// Gemini returns 200 + documentDetected:false (wrong/unreadable document) or,
+// Claude returns 200 + documentDetected:false (wrong/unreadable document) or,
 // more rarely, documentDetected:true with every specific field still null (a
 // genuine ruhsat it just couldn't read anything off) — either way there is
 // nothing to prefill. Without this check the UI showed "success" and silently

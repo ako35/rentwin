@@ -6,7 +6,7 @@ import { utils } from "../../../utils";
 import { useAiVisionUsage } from "../../../hooks/use-ai-vision-usage";
 
 // "Poliçeden Doldur": admin picks a photo/PDF of a trafik sigortası or kasko
-// poliçesi, Gemini reads it server-side and we hand {type, company, policyNo,
+// poliçesi, Claude reads it server-side and we hand {type, company, policyNo,
 // startDate, endDate, premium} back up so the caller can prefill the
 // Sigorta/Kasko add-record form — the admin still reviews/corrects before
 // saving. Same "nothing extracted" guard as Ruhsattan/Belgeden Doldur: a 200

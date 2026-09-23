@@ -1,9 +1,9 @@
 const HttpError = require("../../lib/http-error");
 const asyncHandler = require("../../middleware/async-handler");
-const { extractVehicleRegistration, extractVehicleInsurance } = require("../../lib/gemini");
+const { extractVehicleRegistration, extractVehicleInsurance } = require("../../lib/claude");
 
 // "Ruhsattan Doldur": admin uploads a photo of the registration certificate,
-// Gemini reads it and returns the fields as a prefill payload — nothing is
+// Claude reads it and returns the fields as a prefill payload — nothing is
 // persisted here, the frontend just drops the result into the vehicle form.
 const extractRegistration = asyncHandler(async (req, res) => {
   if (!req.file) throw new HttpError(400, "Görsel yüklenmedi.");
@@ -25,7 +25,7 @@ const extractRegistration = asyncHandler(async (req, res) => {
 });
 
 // "Poliçeden Doldur": same pattern, for the Sigorta/Kasko tab's add-record
-// form — reads a trafik sigortası / kasko poliçesi photo or PDF into
+// form — Claude reads a trafik sigortası / kasko poliçesi photo or PDF into
 // {type, company, policyNo, startDate, endDate, premium}.
 const extractInsurance = asyncHandler(async (req, res) => {
   if (!req.file) throw new HttpError(400, "Görsel yüklenmedi.");

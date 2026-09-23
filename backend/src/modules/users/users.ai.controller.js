@@ -1,10 +1,10 @@
 const HttpError = require("../../lib/http-error");
 const asyncHandler = require("../../middleware/async-handler");
-const { extractCustomerDocument } = require("../../lib/gemini");
+const { extractCustomerDocument } = require("../../lib/claude");
 
 // "Belgeden Doldur": admin uploads a photo of a customer document — a driving
 // licence / ID for an individual, a company stamp / tax registration for a
-// corporate customer — Gemini reads it and returns the fields as a prefill
+// corporate customer — Claude reads it and returns the fields as a prefill
 // payload. Nothing is persisted; the frontend drops the result into the form.
 const extractDocument = asyncHandler(async (req, res) => {
   if (!req.file) throw new HttpError(400, "Görsel yüklenmedi.");

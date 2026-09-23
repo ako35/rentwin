@@ -1,4 +1,4 @@
-// Drop the fields Gemini read off a customer document into the form. Only
+// Drop the fields Claude read off a customer document into the form. Only
 // non-empty values are written, so a partly-read document never blanks a field
 // the operator already filled. Phone numbers are normalised to the 10-digit
 // form the masked input expects.
