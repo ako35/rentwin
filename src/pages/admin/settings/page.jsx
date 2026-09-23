@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { Button, Form, Spinner } from "react-bootstrap";
+import { Button, Form, InputGroup, Spinner } from "react-bootstrap";
 import { BsCircleHalf, BsSun, BsMoonStars, BsTrash, BsPalette, BsCashCoin, BsShieldCheck, BsPeopleFill } from "react-icons/bs";
+import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Loading } from "../../../components";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
@@ -60,6 +61,7 @@ const AdminSettingsPage = () => {
   const [adminForm, setAdminForm] = useState(EMPTY_ADMIN);
   const [adminAdding, setAdminAdding] = useState(false);
   const [adminRemovingId, setAdminRemovingId] = useState(null);
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
 
   const loadKabisSystems = () =>
     services.kabisSystem
@@ -150,6 +152,7 @@ const AdminSettingsPage = () => {
         roles: ["Administrator"],
       });
       setAdminForm(EMPTY_ADMIN);
+      setShowAdminPassword(false);
       await loadAdmins();
       utils.functions.swalToast(c("admins.addSuccess"), "success");
     } catch (error) {
@@ -355,13 +358,23 @@ const AdminSettingsPage = () => {
                 </Form.Group>
                 <Form.Group className="admin-settings__field">
                   <Form.Label>{c("admins.password")}</Form.Label>
-                  <Form.Control
-                    type="password"
-                    autoComplete="new-password"
-                    value={adminForm.password}
-                    onChange={setAdminField("password")}
-                    placeholder={c("admins.passwordPlaceholder")}
-                  />
+                  <InputGroup>
+                    <Form.Control
+                      type={showAdminPassword ? "text" : "password"}
+                      autoComplete="new-password"
+                      value={adminForm.password}
+                      onChange={setAdminField("password")}
+                      placeholder={c("admins.passwordPlaceholder")}
+                    />
+                    <InputGroup.Text
+                      role="button"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setShowAdminPassword((v) => !v)}
+                      title={c(showAdminPassword ? "admins.hidePassword" : "admins.showPassword")}
+                    >
+                      {showAdminPassword ? <MdOutlineVisibilityOff /> : <MdOutlineVisibility />}
+                    </InputGroup.Text>
+                  </InputGroup>
                 </Form.Group>
               </div>
 

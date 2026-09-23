@@ -1108,6 +1108,8 @@
       "phoneNumber": "Telefon",
       "password": "Şifre",
       "passwordPlaceholder": "En az 8 karakter",
+      "showPassword": "Şifreyi göster",
+      "hidePassword": "Şifreyi gizle",
       "add": "Yönetici Ekle",
       "empty": "Henüz başka bir yönetici hesabı yok.",
       "delete": "Sil",

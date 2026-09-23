@@ -107,17 +107,29 @@ const getUsersByPageAdmin = asyncHandler(async (req, res) => {
 const createUserAdmin = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, phoneNumber, address, zipCode, roles, password, customerType } = req.body;
 
-  const isCorporate = customerType === "Kurumsal";
-  // Kurumsal: all contact fields mandatory. Bireysel: name + email.
-  const requiredFields = isCorporate
-    ? ["companyTitle", "firstName", "lastName", "taxOffice", "phoneNumber", "email", "address", "city", "district"]
-    : ["firstName", "lastName", "email"];
-  if (requiredFields.some((f) => !String(req.body[f] || "").trim())) {
-    throw new HttpError(400, "Lütfen tüm zorunlu alanları doldurun.");
-  }
+  // A plain "Yönetici Ekle" account (Ayarlar > Yönetici Hesapları) is a login
+  // for the admin panel, not a rental customer — none of the CRM identity
+  // fields (TC/VKN, unvan, adres…) apply to it, so it skips that validation
+  // entirely rather than being asked for a TC kimlik numarası it has no use for.
+  const isAdminOnly = Array.isArray(roles) && roles.includes("Administrator");
 
-  await assertNationalId(req.body);
-  assertAuthorizedNationalId(req.body);
+  if (isAdminOnly) {
+    if (!String(firstName || "").trim() || !String(lastName || "").trim() || !String(email || "").trim()) {
+      throw new HttpError(400, "Lütfen tüm zorunlu alanları doldurun.");
+    }
+  } else {
+    const isCorporate = customerType === "Kurumsal";
+    // Kurumsal: all contact fields mandatory. Bireysel: name + email.
+    const requiredFields = isCorporate
+      ? ["companyTitle", "firstName", "lastName", "taxOffice", "phoneNumber", "email", "address", "city", "district"]
+      : ["firstName", "lastName", "email"];
+    if (requiredFields.some((f) => !String(req.body[f] || "").trim())) {
+      throw new HttpError(400, "Lütfen tüm zorunlu alanları doldurun.");
+    }
+
+    await assertNationalId(req.body);
+    assertAuthorizedNationalId(req.body);
+  }
 
   // Email is intentionally not unique for admin-created customers: the same
   // address may belong to several customer records.
