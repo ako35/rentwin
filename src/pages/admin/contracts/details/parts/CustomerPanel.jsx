@@ -50,7 +50,7 @@ const CustomerPanel = ({ formik, customers, refreshCustomers, onRequestNewCustom
             ↻ {c("refresh")}
           </button>
           {"  "}
-          <button type="button" className="contract-page__link" onClick={onRequestNewCustomer}>
+          <button type="button" className="contract-page__link" onClick={() => onRequestNewCustomer("userId")}>
             + {c("newCustomerBtn")}
           </button>
         </span>
@@ -78,7 +78,7 @@ const CustomerPanel = ({ formik, customers, refreshCustomers, onRequestNewCustom
             }, 150)
           }
           emptyContent={
-            <li className="contract-page__typeahead-add" onMouseDown={onRequestNewCustomer}>
+            <li className="contract-page__typeahead-add" onMouseDown={() => onRequestNewCustomer("userId")}>
               + {c("customerNotFoundAdd")}
             </li>
           }
@@ -92,6 +92,7 @@ const CustomerPanel = ({ formik, customers, refreshCustomers, onRequestNewCustom
         customers={customers}
         excludeUserId={userId}
         resetKey={resetKey}
+        onRequestNewCustomer={() => onRequestNewCustomer("referenceUserId")}
       />
     </>
   );

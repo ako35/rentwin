@@ -8,7 +8,7 @@ import "./reference-cari-field.scss";
 
 // Per-contract "Referans Cari" row: pick another customer whose account this
 // contract's total is billed to. Sits inside the customer edit panel.
-const ReferenceCariField = ({ formik, customers, excludeUserId, initialRefCust, resetKey }) => {
+const ReferenceCariField = ({ formik, customers, excludeUserId, initialRefCust, resetKey, onRequestNewCustomer }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
 
@@ -54,7 +54,15 @@ const ReferenceCariField = ({ formik, customers, excludeUserId, initialRefCust, 
               onPick={pick}
               placeholder={c("referenceCariSearch")}
               onBlur={() => setTimeout(() => setOpen(false), 150)}
-              emptyContent={<li className="text-muted">{c("referenceCariNoMatch")}</li>}
+              emptyContent={
+                onRequestNewCustomer ? (
+                  <li className="contract-page__typeahead-add" onMouseDown={onRequestNewCustomer}>
+                    + {c("referenceCariNotFoundAdd")}
+                  </li>
+                ) : (
+                  <li className="text-muted">{c("referenceCariNoMatch")}</li>
+                )
+              }
             />
           ) : referenceUserId ? (
             <span className="contract-page__ref-value">

@@ -30,8 +30,9 @@ const GenelSozlesme = ({ data, p }) => {
   const s = (key, opts) => t(`reservations.contract.print.sozlesme.${key}`, opts);
 
   // A contract created before lessorCompany existed keeps printing the old
-  // combined RENTWİN çatı markası identity — only one that picked a specific
-  // company gets that company's own legal name + the singular note.
+  // combined two-company identity — only one that picked a specific company
+  // gets that company's own legal name + the singular note. The body text
+  // never names either company by brand; it only ever says "KİRALAYAN".
   const singleLessor = data.lessorCompany ? website.lessorCompanies[data.lessorCompany] : null;
   const lessorName = singleLessor ? singleLessor.legalName : website.legalName;
   const lessorNameShort = singleLessor ? singleLessor.legalNameShort : website.legalNameShort;

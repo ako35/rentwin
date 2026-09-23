@@ -86,6 +86,7 @@ const ContractRightCard = ({
                   customers={customers}
                   excludeUserId={formik.values.userId}
                   resetKey={navKey}
+                  onRequestNewCustomer={() => onRequestNewCustomer("referenceUserId")}
                 />
               </>
             )

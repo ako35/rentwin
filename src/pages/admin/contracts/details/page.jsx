@@ -42,6 +42,7 @@ const ContractDetail = () => {
   const [updating, setUpdating] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [newCustModal, setNewCustModal] = useState(false);
+  const [newCustTarget, setNewCustTarget] = useState("userId");
   const [returnModal, setReturnModal] = useState(false);
 
   const {
@@ -194,11 +195,14 @@ const ContractDetail = () => {
     services.contract.reopenContract, "reopenConfirmTitle", "reopenConfirmText", "reopenedSuccess"
   );
 
-  const openNewCust = () => setNewCustModal(true);
+  const openNewCust = (target = "userId") => {
+    setNewCustTarget(target);
+    setNewCustModal(true);
+  };
 
   const handleNewCustomerCreated = async (created) => {
     setCustomers(await fetchCustomers().catch(() => []));
-    formik.setFieldValue("userId", created.id);
+    formik.setFieldValue(newCustTarget, created.id);
     setNewCustModal(false);
   };
 
