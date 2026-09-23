@@ -18,7 +18,7 @@ export const CompanyHeader = ({ subtitle, data, p }) => (
     <div>
       <div className="cprint-head__brand">{website.name}</div>
       <div className="cprint-head__meta">
-        {website.address} · {website.phone} · {website.email}
+        {website.legalAddress} · {website.phone} · {website.email}
       </div>
     </div>
     <div className="cprint-head__doc">

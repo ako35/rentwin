@@ -23,7 +23,7 @@ const Tutanak = ({ data, p }) => {
         <div>
           <div className="tut-head__brand">{website.name}</div>
           <div className="tut-head__meta">
-            {website.address} · {website.phone} · {website.email}
+            {website.legalAddress} · {website.phone} · {website.email}
           </div>
         </div>
         <div className="tut-head__right">
