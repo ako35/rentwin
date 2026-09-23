@@ -29,6 +29,14 @@ const GenelSozlesme = ({ data, p }) => {
   const { t } = useTranslation("admin");
   const s = (key, opts) => t(`reservations.contract.print.sozlesme.${key}`, opts);
 
+  // A contract created before lessorCompany existed keeps printing the old
+  // combined RENTWİN çatı markası identity — only one that picked a specific
+  // company gets that company's own legal name + the singular note.
+  const singleLessor = data.lessorCompany ? website.lessorCompanies[data.lessorCompany] : null;
+  const lessorName = singleLessor ? singleLessor.legalName : website.legalName;
+  const lessorNameShort = singleLessor ? singleLessor.legalNameShort : website.legalNameShort;
+  const lessorNoteKey = singleLessor ? "lessorNoteSingle" : "lessorNote";
+
   const kmLimitText = data.kmUnlimited
     ? s("kmUnlimited")
     : [
@@ -59,9 +67,9 @@ const GenelSozlesme = ({ data, p }) => {
         <div className="cprint-legal__party">
           <div className="cprint-legal__party-label">{s("lessorTitle")}</div>
           <p>
-            <strong>{s("lessorLabel")}:</strong> {website.legalName}
+            <strong>{s("lessorLabel")}:</strong> {lessorName}
           </p>
-          <p className="cprint-legal__muted">{s("lessorNote")}</p>
+          <p className="cprint-legal__muted">{s(lessorNoteKey)}</p>
           <p>
             <strong>{s("addrLabel")}:</strong> {website.legalAddress}
           </p>
@@ -153,7 +161,7 @@ const GenelSozlesme = ({ data, p }) => {
       <section className="cprint-sign">
         <div>
           <span>{s("signLessor")}</span>
-          <span className="cprint-legal__sign-name">{website.legalNameShort}</span>
+          <span className="cprint-legal__sign-name">{lessorNameShort}</span>
           <div className="cprint-sign__line" />
           <span className="cprint-legal__sign-foot">{s("signStamp")}</span>
         </div>

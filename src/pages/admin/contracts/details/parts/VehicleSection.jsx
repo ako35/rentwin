@@ -67,6 +67,16 @@ const VehicleSection = ({
         )}
       </h3>
 
+      <CustomForm
+        formik={formik} name="lessorCompany" label={`* ${c("lessorCompany")}`}
+        type="select"
+        itemsArr={[
+          { id: "__none", value: "", name: c("lessorCompanySelect") },
+          { id: "SAIR", value: "SAIR", name: c("lessorCompanySAIR") },
+          { id: "MOVILO", value: "MOVILO", name: c("lessorCompanyMOVILO") },
+        ]}
+      />
+
       <div className="contract-page__rentgroups">
         <div className="contract-page__rentgroup">
           <span className="contract-page__rentgroup-cap">{c("pickUpGroup")}</span>

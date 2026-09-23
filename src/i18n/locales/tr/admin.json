@@ -374,6 +374,10 @@
     "contract": {
       "title": "Kontrat",
       "leftTitle": "Alış / Bırakış ve Araç Bilgileri",
+      "lessorCompany": "Kiralayan Şirket",
+      "lessorCompanySelect": "— Seçiniz —",
+      "lessorCompanySAIR": "ŞAİR TURİZM",
+      "lessorCompanyMOVILO": "MOVİLO ULAŞIM",
       "tabs": { "customer": "Müşteri", "drivers": "Sürücüler", "extras": "Ekstralar", "payments": "Tahsilat", "extension": "Uzatma", "invoice": "Fatura", "summary": "Özet" },
       "customer": "Müşteri",
       "extension": {
@@ -770,6 +774,7 @@
           "lesseeLabel": "Ünvanı / Adı Soyadı",
           "addrLabel": "Adresi",
           "lessorNote": "İşbu sözleşmede RENTWİN çatı markasını ve grubunu temsil eden şirketler olup, bundan böyle kısaca \"RENTWİN\" veya \"KİRALAYAN\" olarak anılacaktır.",
+          "lessorNoteSingle": "İşbu sözleşmede RENTWİN ticari markası altında faaliyet göstermekte olup, bundan böyle kısaca \"RENTWİN\" veya \"KİRALAYAN\" olarak anılacaktır.",
           "driversHeading": "EK SÜRÜCÜ(LER)",
           "driversName": "Ad Soyad",
           "driversNationalId": "TC No",

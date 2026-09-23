@@ -374,6 +374,10 @@
     "contract": {
       "title": "Contract",
       "leftTitle": "Pick-up / Drop-off and Vehicle Details",
+      "lessorCompany": "Contracting Company",
+      "lessorCompanySelect": "— Select —",
+      "lessorCompanySAIR": "ŞAİR TURİZM",
+      "lessorCompanyMOVILO": "MOVİLO ULAŞIM",
       "tabs": { "customer": "Customer", "drivers": "Drivers", "extras": "Extras", "payments": "Payments", "extension": "Extension", "invoice": "Invoice", "summary": "Summary" },
       "customer": "Customer",
       "extension": {
@@ -770,6 +774,7 @@
           "lesseeLabel": "Legal name / Full name",
           "addrLabel": "Address",
           "lessorNote": "These are the companies representing the RENTWİN umbrella brand and group under this agreement, hereinafter referred to as \"RENTWİN\" or \"LESSOR\".",
+          "lessorNoteSingle": "This company operates under the RENTWİN trade name under this agreement, hereinafter referred to as \"RENTWİN\" or \"LESSOR\".",
           "driversHeading": "ADDITIONAL DRIVER(S)",
           "driversName": "Full Name",
           "driversNationalId": "National ID",

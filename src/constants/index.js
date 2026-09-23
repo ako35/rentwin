@@ -175,12 +175,28 @@ const website = {
   sameAs: [rentwinMapsUrl],
 };
 
-// Full legal identity of the lessor for printed contracts — the two companies
-// that operate under the RENTWİN umbrella brand.
+// Legacy combined legal identity — kept only so a contract created before
+// lessorCompany existed (Contract.lessorCompany === null) keeps printing
+// exactly what it always did. New/edited contracts print one specific
+// company via website.lessorCompanies below instead.
 website.legalName =
   "MOVİLO ULAŞIM TEKNOLOJİ ANONİM ŞİRKETİ ve ŞAİR TURİZM OTO KİRALAMA NAKLİYAT İLETİŞİM İNŞAAT TAAHHÜT SANAYİ VE TİCARET LİMİTED ŞİRKETİ";
 website.legalNameShort = "MOVİLO ULAŞIM TEKNOLOJİ A.Ş. & ŞAİR TURİZM OTO KİRALAMA LTD. ŞTİ.";
 website.legalAddress = "Atatürk Mah. 356 Sk. No: 16/31 Aliağa / İzmir";
+
+// The two companies that can individually issue a contract under the RENTWİN
+// trade name (Contract.lessorCompany) — same registered office address as
+// the combined identity above.
+website.lessorCompanies = {
+  SAIR: {
+    legalName: "ŞAİR TURİZM OTO KİRALAMA NAKLİYAT İLETİŞİM İNŞAAT TAAHHÜT SANAYİ VE TİCARET LİMİTED ŞİRKETİ",
+    legalNameShort: "ŞAİR TURİZM OTO KİRALAMA LTD. ŞTİ.",
+  },
+  MOVILO: {
+    legalName: "MOVİLO ULAŞIM TEKNOLOJİ ANONİM ŞİRKETİ",
+    legalNameShort: "MOVİLO ULAŞIM TEKNOLOJİ A.Ş.",
+  },
+};
 
 const transmissionTypes = [
   {

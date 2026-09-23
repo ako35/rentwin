@@ -47,12 +47,18 @@ const Ek1Form = ({ data, p }) => {
         ? e("rentDaily", { v: data.dailyPrice })
         : e("manualFill");
 
+  // Same legacy-fallback rule as GenelSozlesme: no lessorCompany on the
+  // contract (created before it existed) keeps the old combined identity.
+  const singleLessor = data.lessorCompany ? website.lessorCompanies[data.lessorCompany] : null;
+  const lessorName = singleLessor ? singleLessor.legalName : website.legalName;
+  const lessorNameShort = singleLessor ? singleLessor.legalNameShort : website.legalNameShort;
+
   return (
     <div className="cprint-legal">
       <CompanyHeader subtitle={e("title")} data={data} p={p} />
 
       <section className="cprint-block">
-        <p>{e("intro1", { lessor: website.legalName, lessee: data.customerName })}</p>
+        <p>{e("intro1", { lessor: lessorName, lessee: data.customerName })}</p>
         <p>{e("intro2")}</p>
       </section>
 
@@ -103,7 +109,7 @@ const Ek1Form = ({ data, p }) => {
       <section className="cprint-sign">
         <div>
           <span>{e("signLessor")}</span>
-          <span className="cprint-legal__sign-name">{website.legalNameShort}</span>
+          <span className="cprint-legal__sign-name">{lessorNameShort}</span>
           <div className="cprint-sign__line" />
           <span className="cprint-legal__sign-foot">{e("signStamp")}</span>
         </div>

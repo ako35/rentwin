@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Nav } from "react-bootstrap";
 import moment from "moment/moment";
-import { custLabel } from "../contract-helpers";
+import { custLabel, isInvoicePending } from "../contract-helpers";
 import CustomerPanel from "./CustomerPanel";
 import CustomerSummary from "./CustomerSummary";
 import ReferenceCariField from "./ReferenceCariField";
@@ -49,6 +49,7 @@ const ContractRightCard = ({
     customers.find((u) => u.id === formik.values.referenceUserId) || customer;
   const defaultInvoiceTitle = billToCustomer ? custLabel(billToCustomer) : "";
   const vatRate = formik.values.vatRate === "" ? 20 : formik.values.vatRate;
+  const invoicePending = !isCreate && isInvoicePending(formik.values, invoices);
 
   return (
     <section className="contract-card contract-card--right">
@@ -56,7 +57,11 @@ const ContractRightCard = ({
         <Nav variant="tabs" activeKey={topTab} onSelect={(k) => k && setTopTab(k)} className="mb-3">
           <Nav.Item><Nav.Link eventKey="customer">{c("topTabs.customer")}</Nav.Link></Nav.Item>
           <Nav.Item><Nav.Link eventKey="drivers">{c("topTabs.drivers")}</Nav.Link></Nav.Item>
-          <Nav.Item><Nav.Link eventKey="invoice">{c("topTabs.invoice")}</Nav.Link></Nav.Item>
+          <Nav.Item>
+            <Nav.Link eventKey="invoice" className={invoicePending ? "contract-page__navlink--pending" : ""}>
+              {c("topTabs.invoice")}
+            </Nav.Link>
+          </Nav.Item>
         </Nav>
 
         {/* Customer / Drivers follow the contract's own lock (they're core

@@ -121,6 +121,7 @@ const ContractPrintPage = () => {
       contractDate: fmtDate(c.pickUpTime),
       pickUpDate: fmtDate(c.pickUpTime),
       dropOffDate: fmtDate(c.dropOffTime),
+      lessorCompany: c.lessorCompany || null,
       rentalDays,
       fullTerm,
       rentalType: c.rentalType || "DAILY",

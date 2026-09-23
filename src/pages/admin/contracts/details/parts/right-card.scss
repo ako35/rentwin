@@ -76,5 +76,16 @@
     min-height: 40px;
   }
 
+  // "Fatura" top-tab flagged when the contract is missing an invoice it
+  // should already have (see contract-helpers.isInvoicePending) — a plain
+  // color cue on the tab itself, no separate badge needed.
+  &__navlink--pending {
+    color: v.$danger;
+
+    &.active {
+      color: v.$danger;
+    }
+  }
+
   &__top-content { margin-bottom: 0.5rem; }
 }

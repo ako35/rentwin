@@ -148,7 +148,8 @@
     "dropOffTimeRequired": "Bırakış saatini girin",
     "carRequired": "Bir araç seçin",
     "customerRequired": "Müşteri seçilmelidir.",
-    "statusRequired": "Bir durum seçin"
+    "statusRequired": "Bir durum seçin",
+    "lessorCompanyRequired": "Sözleşmenin hangi şirket üzerinden düzenleneceğini seçin"
   },
   "adminVehicle": {
     "brandRequired": "Araç markasını girin",

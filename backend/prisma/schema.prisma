@@ -44,6 +44,13 @@ enum ContractStatus {
   DONE
 }
 
+// Which of the two companies operating under the RENTWİN trade name issues a
+// given contract — see Contract.lessorCompany.
+enum LessorCompany {
+  SAIR
+  MOVILO
+}
+
 enum ReservationStatus {
   PENDING
   CONFIRMED
@@ -366,6 +373,7 @@ model Contract {
   adminNoteBy       String? // display name of the admin who last wrote it
   signedAt          DateTime? // date the customer signed the printed contract; null = not yet signed
   signedBy          String? // display name of the admin who marked it signed, stamped on the null -> set transition
+  lessorCompany     LessorCompany? // which company (under the RENTWİN trade name) issues this contract; null = legacy contract printed under the old combined RENTWİN çatı markası wording
   referenceNo       String?
   flightNo          String?
   pickUpKm          Int? // odometer at hand-over (prefilled from the vehicle, editable)

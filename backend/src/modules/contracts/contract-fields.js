@@ -57,6 +57,9 @@ const pickContractFields = (body) => {
   });
   if ("unlimitedKm" in body) data.unlimitedKm = Boolean(body.unlimitedKm);
   if ("rentalType" in body) data.rentalType = body.rentalType === "MONTHLY" ? "MONTHLY" : "DAILY";
+  if ("lessorCompany" in body) {
+    data.lessorCompany = ["SAIR", "MOVILO"].includes(body.lessorCompany) ? body.lessorCompany : null;
+  }
   // hgsStatus is not accepted from the form — it is derived from the HGS check
   // log (see contract-records.syncHgsStatus).
   // Date fields — "" / null clears them.
