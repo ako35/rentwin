@@ -80,20 +80,20 @@
     }
 
     &__chip {
-        border: 1.5px solid v.$color1;
+        border: 1.5px solid v.$warning;
         border-radius: 6px;
         padding: 0.3rem 0.65rem;
         font-size: 0.82rem;
         font-weight: 700;
         letter-spacing: 0.3px;
         text-transform: uppercase;
-        color: v.$color1;
+        color: v.$warning;
         background-color: var(--rw-panel);
         cursor: pointer;
         transition: background-color 0.12s ease, color 0.12s ease;
 
         &:hover {
-            background-color: v.$color1;
+            background-color: v.$warning;
             color: #fff;
         }
 
