@@ -180,7 +180,7 @@ const website = {
 website.legalName =
   "MOVİLO ULAŞIM TEKNOLOJİ ANONİM ŞİRKETİ ve ŞAİR TURİZM OTO KİRALAMA NAKLİYAT İLETİŞİM İNŞAAT TAAHHÜT SANAYİ VE TİCARET LİMİTED ŞİRKETİ";
 website.legalNameShort = "MOVİLO ULAŞIM TEKNOLOJİ A.Ş. & ŞAİR TURİZM OTO KİRALAMA LTD. ŞTİ.";
-website.legalAddress = "Kültür Mah. 260 Sk. No: 3 E Aliağa / İzmir";
+website.legalAddress = "Atatürk Mah. 356 Sk. No: 16/31 Aliağa / İzmir";
 
 const transmissionTypes = [
   {
