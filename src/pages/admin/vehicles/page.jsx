@@ -141,23 +141,6 @@ const AdminVehiclesPage = () => {
         </Button>
       </ButtonGroup>
       <div className="admin-vehicle-page__toolbar">
-        <div className="admin-vehicle-page__view-toggle">
-          <button
-            type="button"
-            className={showSold ? "" : "is-active"}
-            onClick={() => switchView(false)}
-          >
-            {t("vehicles.filterActive")}
-          </button>
-          <button
-            type="button"
-            className={showSold ? "is-active" : ""}
-            onClick={() => switchView(true)}
-          >
-            {t("vehicles.filterSold")}
-          </button>
-        </div>
-
         <div className="admin-vehicle-page__search">
           <BsSearch className="admin-vehicle-page__search-icon" />
           <input
@@ -176,6 +159,23 @@ const AdminVehiclesPage = () => {
               <BsXLg />
             </button>
           )}
+        </div>
+
+        <div className="admin-vehicle-page__view-toggle">
+          <button
+            type="button"
+            className={showSold ? "" : "is-active"}
+            onClick={() => switchView(false)}
+          >
+            {t("vehicles.filterActive")}
+          </button>
+          <button
+            type="button"
+            className={showSold ? "is-active" : ""}
+            onClick={() => switchView(true)}
+          >
+            {t("vehicles.filterSold")}
+          </button>
         </div>
       </div>
 

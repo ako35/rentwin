@@ -41,10 +41,27 @@ const getVehicleStatus = (vehicle, rentedIds) => {
   return "AVAILABLE";
 };
 
+// The single contract making a vehicle currently RENTED (see getRentedVehicleIds
+// above for the exact same open/started condition) — lets the vehicle detail
+// screen link its "Kirada" badge straight to that contract. Only ever one such
+// contract can exist per vehicle (checkAvailability blocks a clashing second one).
+const getActiveRentalContractId = async (vehicleId) => {
+  const contract = await prisma.contract.findFirst({
+    where: {
+      carId: vehicleId,
+      status: { notIn: ["CANCELLED", "DONE"] },
+      pickUpTime: { lte: dayjs().endOf("day").toDate() },
+    },
+    select: { id: true },
+  });
+  return contract?.id || null;
+};
+
 module.exports = {
   ALLOWED_SORT_FIELDS,
   IMAGES_AND_BRANCH_INCLUDE,
   loadModelImageMap,
   getRentedVehicleIds,
   getVehicleStatus,
+  getActiveRentalContractId,
 };

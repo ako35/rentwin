@@ -53,6 +53,17 @@ $breakpointxl: 1200px;
     &--rented { background-color: #c98a1f; }
     &--out-of-service { background-color: #b93a3a; }
     &--sold { background-color: #6b7280; }
+
+    // "Kirada" is the one status backed by a live contract — make that
+    // explicit and clickable straight through to it.
+    &--link {
+      text-decoration: none;
+      cursor: pointer;
+      transition: filter 0.12s ease;
+
+      &:hover,
+      &:focus-visible { filter: brightness(1.12); color: #fff; }
+    }
   }
 
   &__kbs-badge {

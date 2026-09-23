@@ -12,6 +12,7 @@ const {
   loadModelImageMap,
   getRentedVehicleIds,
   getVehicleStatus,
+  getActiveRentalContractId,
 } = require("./vehicles.shared");
 const { pickVehicleFields } = require("./vehicle-fields");
 
@@ -44,7 +45,7 @@ const getVehicleByIdAdmin = asyncHandler(async (req, res) => {
     loadModelImageMap(),
   ]);
   if (!vehicle) throw new HttpError(404, "Vehicle not found.");
-  const [rentedIds, kbsContract] = await Promise.all([
+  const [rentedIds, kbsContract, activeContractId] = await Promise.all([
     getRentedVehicleIds([vehicle.id]),
     // Which KABİS portal the car is currently filed under, if any — the open
     // contract's own kbsSystem (set when it was filed, cleared on release).
@@ -58,11 +59,13 @@ const getVehicleByIdAdmin = asyncHandler(async (req, res) => {
       orderBy: { pickUpTime: "desc" },
       select: { kbsSystem: true },
     }),
+    getActiveRentalContractId(vehicle.id),
   ]);
   res.json({
     ...serializeVehicle(vehicle, modelImages),
     status: getVehicleStatus(vehicle, rentedIds),
     kbsSystem: kbsContract?.kbsSystem || null,
+    activeContractId,
   });
 });
 

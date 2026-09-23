@@ -166,6 +166,7 @@
       "fuelType": "Fuel Type",
       "bodyType": "Body Type",
       "kbsSystemBadge": "KABİS: {{system}}",
+      "goToContract": "Go to contract",
       "modelYear": "Model Year",
       "chassisNo": "Chassis No",
       "engineNo": "Engine No",

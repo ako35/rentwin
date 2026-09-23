@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Alert, Nav } from "react-bootstrap";
 import { utils } from "../../../utils";
+import { constants } from "../../../constants";
 import RecordsPanel from "./records-panel";
 import { RECORD_CONFIGS } from "./record-configs";
 import { buildVehicleSections } from "./vehicle-form-sections";
@@ -50,11 +51,21 @@ const VehicleForm = ({
           </span>
           <span className="vehicle-form__name">{title}</span>
           {mode === "edit" && vehicle?.status && (
-            <span
-              className={`vehicle-form__status vehicle-form__status--${vehicle.status.toLowerCase().replace(/_/g, "-")}`}
-            >
-              {t(`vehicleStatus.${vehicle.status}`)}
-            </span>
+            vehicle.status === "RENTED" && vehicle.activeContractId ? (
+              <Link
+                to={`${constants.routes.adminContracts}/${vehicle.activeContractId}`}
+                className="vehicle-form__status vehicle-form__status--rented vehicle-form__status--link"
+                title={t("vehicles.form.goToContract")}
+              >
+                {t(`vehicleStatus.${vehicle.status}`)}
+              </Link>
+            ) : (
+              <span
+                className={`vehicle-form__status vehicle-form__status--${vehicle.status.toLowerCase().replace(/_/g, "-")}`}
+              >
+                {t(`vehicleStatus.${vehicle.status}`)}
+              </span>
+            )
           )}
           {mode === "edit" && vehicle?.kbsSystem && (
             <span className="vehicle-form__kbs-badge">
