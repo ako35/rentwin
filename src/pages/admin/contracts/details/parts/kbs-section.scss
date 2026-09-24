@@ -76,16 +76,20 @@
     align-items: center;
     justify-content: center;
     padding: 0 0.6rem;
-    border: 1px solid v.$color3;
+    // var(--rw-line)/var(--rw-ink-soft), not v.$color3/v.$color5_3: those are
+    // light-mode-only tones with no dark-theme override, so the icon read as
+    // near-invisible once the panel's own background moved to dark (same
+    // recurring root cause fixed elsewhere — see reference-cari-field.scss).
+    border: 1px solid var(--rw-line);
     border-left: 0;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
     background-color: transparent;
-    color: v.$color5_3;
+    color: var(--rw-ink-soft);
     cursor: pointer;
     transition: color 0.15s ease, background-color 0.15s ease;
 
-    &:hover:not(:disabled) { color: v.$color1; background-color: v.$color4; }
+    &:hover:not(:disabled) { color: v.$color1; background-color: var(--rw-hover); }
     &:disabled { cursor: not-allowed; opacity: 0.5; }
   }
 
