@@ -711,6 +711,7 @@
         "statusPending": "Pending",
         "statusReleased": "Released",
         "dateLabel": "Filing date",
+        "datePlaceholder": "DD.MM.YYYY",
         "systemLabel": "KABİS system",
         "noSystemsOption": "No KABİS system configured in Settings",
         "hint": "This rental has not been filed in KABİS (identity notification system) yet.",

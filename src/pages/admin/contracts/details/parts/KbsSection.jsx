@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Form } from "react-bootstrap";
+import ReactInputMask from "react-input-mask-next";
 import { BsShieldCheck, BsShieldExclamation, BsShieldFillCheck, BsBoxArrowRight } from "react-icons/bs";
 import moment from "moment/moment";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import { kbsStatus } from "../contract-helpers";
 import "./kbs-section.scss";
+
+const DATE_DISPLAY = "DD.MM.YYYY";
+const DATE_STORE = "YYYY-MM-DD";
 
 // Left card: KABİS (Kimlik Bildirme Sistemi) lifecycle for this rental —
 // filing (giriş) then release (çıkış). Both are saved with the contract on
@@ -42,6 +46,25 @@ const KbsSection = ({ formik }) => {
   const releasedAt = formik.values.kbsReleasedAt || "";
   const status = kbsStatus(formik.values);
   const released = status === "released";
+
+  // The date is typed by hand (GG.AA.YYYY) rather than picked from the native
+  // <input type="date"> widget, whose click target for typing vs. opening the
+  // calendar popup is unreliable across browsers. Local display state only
+  // pushes into formik (as YYYY-MM-DD) once a full, valid date is typed.
+  const [dateInput, setDateInput] = useState(
+    reportedAt ? moment(reportedAt, DATE_STORE).format(DATE_DISPLAY) : ""
+  );
+  useEffect(() => {
+    setDateInput(reportedAt ? moment(reportedAt, DATE_STORE).format(DATE_DISPLAY) : "");
+  }, [reportedAt]);
+
+  const handleDateInput = (e) => {
+    const raw = e.target.value;
+    setDateInput(raw);
+    if (raw.replace(/[^0-9]/g, "").length !== 8) return;
+    const parsed = moment(raw, DATE_DISPLAY, true);
+    if (parsed.isValid()) formik.setFieldValue("kbsNotifiedAt", parsed.format(DATE_STORE));
+  };
 
   const toggleReport = (checked) => {
     formik.setFieldValue("kbsNotifiedAt", checked ? moment().format("YYYY-MM-DD") : "");
@@ -97,10 +120,13 @@ const KbsSection = ({ formik }) => {
             <label className="contract-page__kbs-date">
               <span>{c("dateLabel")}</span>
               <Form.Control
-                type="date"
-                value={reportedAt}
+                as={ReactInputMask}
+                mask="99.99.9999"
+                type="text"
+                placeholder={c("datePlaceholder")}
+                value={dateInput}
                 disabled={released}
-                onChange={(e) => formik.setFieldValue("kbsNotifiedAt", e.target.value)}
+                onChange={handleDateInput}
               />
             </label>
 
