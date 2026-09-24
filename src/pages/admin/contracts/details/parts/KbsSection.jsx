@@ -1,8 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Form } from "react-bootstrap";
 import ReactInputMask from "react-input-mask-next";
-import { BsShieldCheck, BsShieldExclamation, BsShieldFillCheck, BsBoxArrowRight } from "react-icons/bs";
+import {
+  BsShieldCheck,
+  BsShieldExclamation,
+  BsShieldFillCheck,
+  BsBoxArrowRight,
+  BsCalendarEvent,
+} from "react-icons/bs";
 import moment from "moment/moment";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
@@ -66,6 +72,18 @@ const KbsSection = ({ formik }) => {
     if (parsed.isValid()) formik.setFieldValue("kbsNotifiedAt", parsed.format(DATE_STORE));
   };
 
+  // A hidden native <input type="date"> backs the calendar-icon button —
+  // its own picker UI does the actual day-grid picking, and its onChange
+  // (already YYYY-MM-DD) writes straight to formik; the masked text above
+  // re-syncs from `reportedAt` via the effect above.
+  const nativeDateRef = useRef(null);
+  const openPicker = () => {
+    const el = nativeDateRef.current;
+    if (!el || released) return;
+    if (typeof el.showPicker === "function") el.showPicker();
+    else el.focus();
+  };
+
   const toggleReport = (checked) => {
     formik.setFieldValue("kbsNotifiedAt", checked ? moment().format("YYYY-MM-DD") : "");
     if (checked && !formik.values.kbsSystem) {
@@ -119,15 +137,36 @@ const KbsSection = ({ formik }) => {
           <div className="contract-page__kbs-fields">
             <label className="contract-page__kbs-date">
               <span>{c("dateLabel")}</span>
-              <Form.Control
-                as={ReactInputMask}
-                mask="99.99.9999"
-                type="text"
-                placeholder={c("datePlaceholder")}
-                value={dateInput}
-                disabled={released}
-                onChange={handleDateInput}
-              />
+              <div className="contract-page__kbs-date-input">
+                <Form.Control
+                  as={ReactInputMask}
+                  mask="99.99.9999"
+                  type="text"
+                  placeholder={c("datePlaceholder")}
+                  value={dateInput}
+                  disabled={released}
+                  onChange={handleDateInput}
+                />
+                <button
+                  type="button"
+                  className="contract-page__kbs-date-pick"
+                  aria-label={c("datePickAria")}
+                  disabled={released}
+                  onClick={openPicker}
+                >
+                  <BsCalendarEvent />
+                </button>
+                <input
+                  ref={nativeDateRef}
+                  type="date"
+                  className="contract-page__kbs-date-native"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  value={reportedAt}
+                  disabled={released}
+                  onChange={(e) => formik.setFieldValue("kbsNotifiedAt", e.target.value)}
+                />
+              </div>
             </label>
 
             <label className="contract-page__kbs-date">

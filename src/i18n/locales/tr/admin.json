@@ -712,6 +712,7 @@
         "statusReleased": "Çıkış Yapıldı",
         "dateLabel": "Bildirim tarihi",
         "datePlaceholder": "GG.AA.YYYY",
+        "datePickAria": "Takvimden tarih seç",
         "systemLabel": "KABİS sistemi",
         "noSystemsOption": "Ayarlar'da KABİS sistemi tanımlı değil",
         "hint": "Bu kiralama henüz KABİS'e (Kimlik Bildirme Sistemi) bildirilmedi.",
