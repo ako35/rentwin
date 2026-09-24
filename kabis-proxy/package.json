@@ -1,0 +1,17 @@
+{
+  "name": "rentwin-kabis-proxy",
+  "private": true,
+  "version": "0.0.0",
+  "type": "commonjs",
+  "description": "Sabit IP'li VPS üzerinde çalışan, Rentwin backend ile EGM'nin KABİS sistemi arasında köprü kuran mikroservis.",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "helmet": "^8.3.0"
+  }
+}

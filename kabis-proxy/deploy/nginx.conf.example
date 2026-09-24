@@ -1,0 +1,22 @@
+# /etc/nginx/sites-available/kabis-proxy — sonra:
+#   sudo ln -s /etc/nginx/sites-available/kabis-proxy /etc/nginx/sites-enabled/
+#   sudo certbot --nginx -d kabis.rentwin.com.tr   (TLS için)
+#   sudo nginx -t && sudo systemctl reload nginx
+#
+# Vercel backend'in bu servise TLS üzerinden, sabit bir alan adı ile
+# ulaşması için: DNS'te "kabis.rentwin.com.tr" (ya da tercih ettiğiniz
+# subdomain) A kaydını bu VPS'in IP'sine yönlendirin.
+
+server {
+    listen 80;
+    server_name kabis.rentwin.com.tr;
+
+    location / {
+        proxy_pass http://127.0.0.1:4100;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
