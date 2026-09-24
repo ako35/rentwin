@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useOutletContext, useSearchParams } from "react-router-dom";
+import { useOutletContext, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BsSearch } from "react-icons/bs";
 import { services } from "../../../../services";
 import { utils } from "../../../../utils";
 import { constants } from "../../../../constants";
-import { Loading } from "../../../../components";
+import { Loading, RowLink } from "../../../../components";
 import "./style.scss";
 
 const { routes } = constants;
@@ -26,7 +26,6 @@ const AdminVehicleStatusBoardPage = () => {
   const { t: tCommon } = useTranslation("common");
   const { branchId } = useOutletContext() || {};
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const b = (key) => t(`vehicleStatusBoard.${key}`);
 
   const [loading, setLoading] = useState(true);
@@ -77,9 +76,6 @@ const AdminVehicleStatusBoardPage = () => {
     [board.available, availableSearch]
   );
 
-  const goToContract = (row) => row.contractId && navigate(`${routes.adminContracts}/${row.contractId}`);
-  const goToVehicle = (row) => navigate(`${routes.adminVehicles}/${row.id}`);
-
   if (loading) return <Loading height={500} />;
 
   return (
@@ -120,8 +116,13 @@ const AdminVehicleStatusBoardPage = () => {
                   </tr>
                 )}
                 {rentedRows.map((row) => (
-                  <tr key={row.id} onClick={() => goToContract(row)} className="status-board__row">
-                    <td className="status-board__plate">{row.licensePlate}</td>
+                  <tr key={row.id} className="status-board__row row-link-host">
+                    <td className="status-board__plate">
+                      {row.contractId && (
+                        <RowLink to={`${routes.adminContracts}/${row.contractId}`} label={row.customerName} />
+                      )}
+                      {row.licensePlate}
+                    </td>
                     <td title={vehicleLabel(row)}>{vehicleLabel(row) || "—"}</td>
                     <td>{row.dropOffTime ? utils.functions.getDateUTC(row.dropOffTime) : "—"}</td>
                     <td title={row.customerName || ""}>{row.customerName || "—"}</td>
@@ -165,8 +166,11 @@ const AdminVehicleStatusBoardPage = () => {
                   </tr>
                 )}
                 {availableRows.map((row) => (
-                  <tr key={row.id} onClick={() => goToVehicle(row)} className="status-board__row">
-                    <td className="status-board__plate">{row.licensePlate}</td>
+                  <tr key={row.id} className="status-board__row row-link-host">
+                    <td className="status-board__plate">
+                      <RowLink to={`${routes.adminVehicles}/${row.id}`} label={row.licensePlate} />
+                      {row.licensePlate}
+                    </td>
                     <td title={vehicleLabel(row)}>{vehicleLabel(row) || "—"}</td>
                     <td>
                       {row.nearestReservation ? utils.functions.getDateUTC(row.nearestReservation) : b("noReservation")}

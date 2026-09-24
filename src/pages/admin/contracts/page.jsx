@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner, Table } from "react-bootstrap";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
-import { Loading } from "../../../components";
+import { Loading, RowLink } from "../../../components";
 import { constants } from "../../../constants";
 import "./style.scss";
 
@@ -175,8 +175,11 @@ const AdminContractsPage = () => {
               {rows.map((r) => {
                 const balance = (r.collected || 0) - (r.totalPrice || 0);
                 return (
-                  <tr key={r.id} onClick={() => navigate(`${routes.adminContracts}/${r.id}`)}>
-                    <td>{utils.functions.getDateUTC(r.pickUpTime)}</td>
+                  <tr key={r.id} className="row-link-host">
+                    <td>
+                      <RowLink to={`${routes.adminContracts}/${r.id}`} label={r.customerName} />
+                      {utils.functions.getDateUTC(r.pickUpTime)}
+                    </td>
                     <td>{utils.functions.getTimeUTC(r.pickUpTime)}</td>
                     <td>{utils.functions.getDateUTC(r.dropOffTime)}</td>
                     <td>{utils.functions.getTimeUTC(r.dropOffTime)}</td>

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner, Table } from "react-bootstrap";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
-import { Loading } from "../../../components";
+import { Loading, RowLink } from "../../../components";
 import { constants } from "../../../constants";
 import "./style.scss";
 
@@ -146,8 +146,9 @@ const AdminUsersPage = () => {
                 </tr>
               )}
               {rows.map((r) => (
-                <tr key={r.id} onClick={() => navigate(`${routes.adminUsers}/${r.id}`)}>
+                <tr key={r.id} className="row-link-host">
                   <td className="text-center">
+                    <RowLink to={`${routes.adminUsers}/${r.id}`} label={r.companyTitle || r.firstName} />
                     <span className={r.active === false ? "customer-list__off" : "customer-list__on"}>
                       {r.active === false ? "✕" : "✓"}
                     </span>

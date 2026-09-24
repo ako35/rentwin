@@ -1,0 +1,16 @@
+@use '../../../styles/variables' as v;
+
+// Add alongside a <tr>'s existing className wherever it hosts a RowLink.
+.row-link-host {
+  position: relative;
+}
+
+.row-link {
+  position: absolute;
+  inset: 0;
+
+  &:focus-visible {
+    outline: 2px solid v.$color1;
+    outline-offset: -2px;
+  }
+}

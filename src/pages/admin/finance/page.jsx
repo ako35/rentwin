@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Table } from "react-bootstrap";
 import { services } from "../../../services";
 import { constants } from "../../../constants";
-import { Loading } from "../../../components";
+import { Loading, RowLink } from "../../../components";
 import { formatMoney } from "../contracts/details/contract-helpers";
 import "./style.scss";
 
@@ -13,7 +12,6 @@ const { routes } = constants;
 const AdminFinancePage = () => {
   const { t } = useTranslation("admin");
   const { i18n } = useTranslation("common");
-  const navigate = useNavigate();
   const f = (key) => t(`finance.${key}`);
   const money = (v) => formatMoney(v, i18n.language);
 
@@ -102,8 +100,9 @@ const AdminFinancePage = () => {
                 </tr>
               )}
               {visible.map((r) => (
-                <tr key={r.id} onClick={() => navigate(`${routes.adminFinance}/cari/${r.id}`)} className="finance-page__row">
+                <tr key={r.id} className="finance-page__row row-link-host">
                   <td>
+                    <RowLink to={`${routes.adminFinance}/cari/${r.id}`} label={r.companyTitle || r.firstName} />
                     <span className="ledger-code">{r.customerCode || "—"}</span>
                   </td>
                   <td className="finance-page__name">{(r.companyTitle || `${r.firstName} ${r.lastName}`).trim() || "—"}</td>

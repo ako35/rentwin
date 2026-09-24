@@ -4,6 +4,7 @@ import AdminFooter from './admin/footer/footer'
 import AdminTopNav from './admin/top-nav/top-nav'
 import ContractRecords from './admin/contract-records/contract-records'
 import MaintenanceAlertBar from './admin/maintenance-alert-bar/maintenance-alert-bar'
+import RowLink from './admin/row-link/row-link'
 import ScheduleTable from './admin/schedule-table/schedule-table'
 import TableRow from './admin/table-row/table-row'
 import VehicleForm from './admin/vehicle-form/vehicle-form'
@@ -67,6 +68,7 @@ export{
     AdminTopNav,
     ContractRecords,
     MaintenanceAlertBar,
+    RowLink,
     ScheduleTable,
     TableRow,
     VehicleForm,

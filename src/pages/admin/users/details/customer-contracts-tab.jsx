@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Table } from "react-bootstrap";
 import { services } from "../../../../services";
 import { utils } from "../../../../utils";
 import { constants } from "../../../../constants";
-import { Loading } from "../../../../components";
+import { Loading, RowLink } from "../../../../components";
 
 const { routes } = constants;
 
@@ -16,7 +15,6 @@ const { routes } = constants;
 const CustomerContractsTab = ({ userId }) => {
   const { t } = useTranslation("admin");
   const { t: tCommon, i18n } = useTranslation("common");
-  const navigate = useNavigate();
 
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -65,12 +63,11 @@ const CustomerContractsTab = ({ userId }) => {
             </tr>
           )}
           {rows.map((r) => (
-            <tr
-              key={r.id}
-              className="vehicle-records-panel__row--clickable"
-              onClick={() => navigate(`${routes.adminContracts}/${r.id}`)}
-            >
-              <td>{r.contractNo || "—"}</td>
+            <tr key={r.id} className="vehicle-records-panel__row--clickable row-link-host">
+              <td>
+                <RowLink to={`${routes.adminContracts}/${r.id}`} label={r.contractNo} />
+                {r.contractNo || "—"}
+              </td>
               <td>{[r.vehicle, r.plate].filter(Boolean).join(" — ") || "—"}</td>
               <td>{utils.functions.getDateUTC(r.pickUpTime)}</td>
               <td>{utils.functions.getDateUTC(r.returnedAt || r.dropOffTime)}</td>
