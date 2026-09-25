@@ -43,7 +43,9 @@ const fmtRange = (from, to) => {
   return `${f} – ${tt}`;
 };
 
-const ReturnExtraTab = ({ isCreate, contractId, onChange, money, rentalStart, rentalEnd, vatRate = 20 }) => {
+const ReturnExtraTab = ({
+  isCreate, contractId, contractStatus, onChange, money, rentalStart, rentalEnd, vatRate = 20,
+}) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.returnCharges.${key}`, opts);
   const rc = (key) => t(`reservations.contract.records.${key}`);
@@ -68,10 +70,13 @@ const ReturnExtraTab = ({ isCreate, contractId, onChange, money, rentalStart, re
     }
   };
 
+  // Also reloads on a contract status change — closing/reopening/cancelling
+  // rewrites this list server-side (auto km/fuel return charges) without this
+  // tab remounting, so a stale row would otherwise linger until manual reload.
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contractId]);
+  }, [contractId, contractStatus]);
 
   const total = useMemo(
     () => rows.reduce((s, r) => s + lineGross(r, vatRate), 0),

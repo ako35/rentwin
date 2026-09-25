@@ -152,6 +152,7 @@ const ContractRightCard = ({
             <ReturnExtraTab
               isCreate={isCreate}
               contractId={contractId}
+              contractStatus={formik.values.status}
               onChange={loadData}
               money={money}
               rentalStart={formik.values.pickUpDate}
