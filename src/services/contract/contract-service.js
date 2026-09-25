@@ -198,6 +198,17 @@ export const getKbsPendingContracts = async ({ branchId } = {}) => {
   return response.data;
 };
 
+// Admin dashboard alert bar: contracts closed while still filed in KABİS
+// without a release — closing no longer requires the release, so this is
+// what tracks the ones left open for someone to release later.
+export const getKbsReleasePendingContracts = async ({ branchId } = {}) => {
+  const response = await axios.get(
+    `${API_URL}/contracts/admin/kbs-release-pending/auth${branchId ? `?branchId=${branchId}` : ""}`,
+    services.authHeader()
+  );
+  return response.data;
+};
+
 // Admin dashboard alert bar: contracts (open or closed) not yet marked signed.
 export const getSignPendingContracts = async ({ branchId } = {}) => {
   const response = await axios.get(

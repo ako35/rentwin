@@ -98,6 +98,14 @@ const serializeSignPendingRow = (contract) => ({
   returnedAt: contract.returnedAt || null,
 });
 
+// Admin dashboard "KABİS release pending" bar: a contract already closed
+// (DONE) but still filed in KABİS without a release — closing no longer
+// requires the release, so this is what tracks the ones left open.
+const serializeKbsReleasePendingRow = (contract) => ({
+  ...serializeScheduleRow(contract),
+  returnedAt: contract.returnedAt || null,
+});
+
 module.exports = {
   serializeUser,
   serializeVehicle,
@@ -108,5 +116,6 @@ module.exports = {
   serializeHgsPendingRow,
   serializeInvoicePendingRow,
   serializeKbsPendingRow,
+  serializeKbsReleasePendingRow,
   serializeSignPendingRow,
 };

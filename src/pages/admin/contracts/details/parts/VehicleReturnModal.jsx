@@ -12,7 +12,10 @@ import "./vehicle-return-modal.scss";
 // "Araç Teslim Al" opens this. Operator enters the hand-back odometer + fuel;
 // km overage and missing fuel are auto-priced from the contract's km package /
 // fees, stay editable, and are posted as return-charge extras when the contract
-// is closed. If KABİS still blocks the close, the release checkbox appears here.
+// is closed. If the rental is still filed in KABİS without a release, a
+// checkbox offers releasing it in the same request — optional, not required:
+// closing works either way, and a still-open one keeps surfacing on the
+// dashboard's KABİS-release-pending panel until someone releases it.
 const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, money, onReturned }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.returnModal.${key}`, opts);
@@ -144,7 +147,7 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
       onReturned();
     } catch (err) {
       const code = err?.response?.data?.code;
-      if (code === "KBS_NOT_RELEASED" || code === "RETURN_KM_BELOW_PICKUP") {
+      if (code === "RETURN_KM_BELOW_PICKUP") {
         setErrorCode(code);
       } else {
         utils.functions.swalToast(
@@ -331,7 +334,7 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
           </div>
         </section>
 
-        {(kbsBlocked || errorCode === "KBS_NOT_RELEASED") && (
+        {kbsBlocked && (
           <Alert variant="warning" className="return-modal__kbs">
             {c("kbsWarning")}
             <Form.Check
@@ -352,10 +355,7 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
         <Button variant="outline-secondary" onClick={onHide} disabled={saving}>
           {t("reservations.cancel")}
         </Button>
-        <Button
-          onClick={submit}
-          disabled={saving || returnKmInvalid || (kbsBlocked && !releaseKbs)}
-        >
+        <Button onClick={submit} disabled={saving || returnKmInvalid}>
           {saving && <Spinner animation="border" size="sm" />} {c("submit")}
         </Button>
       </Modal.Footer>

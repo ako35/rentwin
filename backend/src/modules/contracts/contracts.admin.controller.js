@@ -7,6 +7,7 @@ const {
   serializeHgsPendingRow,
   serializeInvoicePendingRow,
   serializeKbsPendingRow,
+  serializeKbsReleasePendingRow,
   serializeSignPendingRow,
 } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
@@ -15,7 +16,7 @@ const { ALLOWED_SORT_FIELDS } = require("./contracts.shared");
 const { nextContractNo, num, hgsRangesCoverPeriod } = require("./contract-fields");
 const { recomputeContractFinancials } = require("./contract-financials");
 const { round2 } = require("../../lib/dates");
-const { kbsStamp, kbsBlocksClose } = require("./kbs");
+const { kbsStamp, kbsNeedsRelease } = require("./kbs");
 const { syncContractDebit, voidContractLedger, restoreContractLedger } = require("../../lib/ledger");
 const { getBusyVehicleIds } = require("../../lib/availability");
 const { loadModelImageMap } = require("../vehicles/vehicles.shared");
@@ -369,8 +370,10 @@ const sanitizeReturnCharges = (raw) => {
 // charges?: [{category, description, amount, quantity}] }. Records the hand-back
 // odometer/fuel, replaces this flow's own auto-generated return charges with the
 // operator-confirmed set, recomputes the contract financials + ledger, and
-// closes the contract — all atomically. A rental still filed in KABİS must be
-// released first (releaseKbs: true chains the release).
+// closes the contract — all atomically. KABİS release is optional here
+// (releaseKbs: true chains it into the same request) — a rental still filed
+// but not released no longer blocks the close; it just keeps showing up on
+// getKbsReleasePendingContracts until someone releases it.
 const returnContract = asyncHandler(async (req, res) => {
   const existing = await prisma.contract.findUnique({ where: { id: req.params.id } });
   if (!existing) throw new HttpError(404, "Contract not found.");
@@ -378,15 +381,8 @@ const returnContract = asyncHandler(async (req, res) => {
     throw new HttpError(409, "İptal edilmiş kontrat teslim alınamaz.");
   }
 
-  const needsRelease = kbsBlocksClose(existing);
+  const needsRelease = kbsNeedsRelease(existing);
   const releaseKbs = req.body?.releaseKbs === true;
-  if (needsRelease && !releaseKbs) {
-    throw new HttpError(
-      409,
-      "Kontrat kapatılmadan önce KABİS kaydı düşülmelidir.",
-      "KBS_NOT_RELEASED"
-    );
-  }
 
   const returnKm = num(req.body?.returnKm);
   const returnFuelEighths = num(req.body?.returnFuelEighths);
@@ -586,6 +582,26 @@ const getKbsPendingContracts = asyncHandler(async (req, res) => {
   res.json(contracts.map(serializeKbsPendingRow));
 });
 
+// Contracts closed (DONE) while still filed in KABİS and never released —
+// closing no longer requires the release (see returnContract), so this is
+// now the only place that surfaces them for someone to go release later.
+// Oldest-closed first, the longest-outstanding ones.
+const getKbsReleasePendingContracts = asyncHandler(async (req, res) => {
+  const { branchId } = req.query;
+  const contracts = await prisma.contract.findMany({
+    where: {
+      status: "DONE",
+      kbsNotifiedAt: { not: null },
+      kbsReleasedAt: null,
+      ...(branchId ? { car: { branchId } } : {}),
+    },
+    orderBy: [{ returnedAt: "asc" }, { dropOffTime: "asc" }],
+    include: { car: { include: { branch: true } }, user: true },
+  });
+
+  res.json(contracts.map(serializeKbsReleasePendingRow));
+});
+
 // Contracts whose printed contract hasn't been marked signed yet — open or
 // already closed, but not cancelled. Same rationale as the KABİS pending
 // panel: signing is meant to happen around pickup, so an open contract
@@ -616,6 +632,7 @@ module.exports = {
   getHgsPendingContracts,
   getInvoicePendingContracts,
   getKbsPendingContracts,
+  getKbsReleasePendingContracts,
   getSignPendingContracts,
   returnContract,
   cancelContract,

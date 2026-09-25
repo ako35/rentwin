@@ -29,7 +29,8 @@ export const EMPTY_CONTRACT = {
 
 // Derived KABİS state from the contract form values.
 // pending  — not filed
-// reported — filed, not yet released (blocks contract close)
+// reported — filed, not yet released (no longer blocks contract close —
+//            the return modal just offers releasing it in the same request)
 // released — filed and released (çıkış bildirimi yapıldı)
 export const kbsStatus = (v) => {
   if (v.kbsReleasedAt) return "released";
