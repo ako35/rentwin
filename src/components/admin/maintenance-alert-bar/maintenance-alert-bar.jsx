@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { GiCarWheel, GiMechanicGarage } from "react-icons/gi";
 import {
@@ -14,6 +14,7 @@ import {
 } from "react-icons/bs";
 import { utils } from "../../../utils";
 import { constants } from "../../../constants";
+import RowLink from "../row-link/row-link";
 import "./maintenance-alert-bar.scss";
 
 const CATEGORIES = [
@@ -46,7 +47,7 @@ const custName = (u) =>
 
 // HGS Kontrolü: only ever closed contracts (the check only makes sense once
 // the rental is actually over), so a single "closed at" date column is enough.
-const ClosedContractsTable = ({ rows, onRowClick }) => {
+const ClosedContractsTable = ({ rows }) => {
   const { t } = useTranslation("admin");
   return (
     <table className="maintenance-alert-bar__table maintenance-alert-bar__table--hgs">
@@ -60,8 +61,11 @@ const ClosedContractsTable = ({ rows, onRowClick }) => {
       </thead>
       <tbody>
         {rows.map((row) => (
-          <tr key={row.id} className="maintenance-alert-bar__rowlink" onClick={() => onRowClick(row)}>
-            <td>{row.contractNo || "—"}</td>
+          <tr key={row.id} className="maintenance-alert-bar__rowlink row-link-host">
+            <td>
+              <RowLink to={`${constants.routes.adminContracts}/${row.id}`} label={row.contractNo || row.car?.licensePlate} />
+              {row.contractNo || "—"}
+            </td>
             <td className="maintenance-alert-bar__plate">{row.car?.licensePlate || "—"}</td>
             <td title={custName(row.user)}>{custName(row.user)}</td>
             <td>{utils.functions.getDate(row.returnedAt || row.dropOffTime)}</td>
@@ -76,7 +80,7 @@ const ClosedContractsTable = ({ rows, onRowClick }) => {
 // closed contracts — filing/invoicing is due before the rental is over, not
 // only once it's returned — so their rows carry their own status badge
 // instead of a single "closed at" date. Shared table for both.
-const MixedStatusTable = ({ rows, onRowClick }) => {
+const MixedStatusTable = ({ rows }) => {
   const { t } = useTranslation("admin");
   const { t: tCommon } = useTranslation("common");
   return (
@@ -92,8 +96,11 @@ const MixedStatusTable = ({ rows, onRowClick }) => {
       </thead>
       <tbody>
         {rows.map((row) => (
-          <tr key={row.id} className="maintenance-alert-bar__rowlink" onClick={() => onRowClick(row)}>
-            <td>{row.contractNo || "—"}</td>
+          <tr key={row.id} className="maintenance-alert-bar__rowlink row-link-host">
+            <td>
+              <RowLink to={`${constants.routes.adminContracts}/${row.id}`} label={row.contractNo || row.car?.licensePlate} />
+              {row.contractNo || "—"}
+            </td>
             <td className="maintenance-alert-bar__plate">{row.car?.licensePlate || "—"}</td>
             <td title={custName(row.user)}>{custName(row.user)}</td>
             <td>{utils.functions.getDate(row.pickUpTime)}</td>
@@ -118,7 +125,6 @@ const MaintenanceAlertBar = ({
   signPending = [],
 }) => {
   const { t, i18n } = useTranslation("admin");
-  const navigate = useNavigate();
   const [open, setOpen] = useState(null);
 
   const categories = alerts?.categories || {};
@@ -126,8 +132,6 @@ const MaintenanceAlertBar = ({
     key === HGS_KEY || key === INVOICE_KEY || key === KBS_KEY || key === KBS_RELEASE_KEY || key === SIGN_KEY;
 
   const activeList = open && !isSpecialTab(open) ? categories[open] || [] : [];
-
-  const goToContract = (row) => navigate(`${constants.routes.adminContracts}/${row.id}`);
 
   return (
     <div className="maintenance-alert-bar">
@@ -247,19 +251,14 @@ const MaintenanceAlertBar = ({
                 }
                 const statusText = item.missing ? t("alertBar.noRecord") : statusParts.join(" · ");
                 return (
-                  <button
+                  <Link
                     key={item.vehicleId + (item.date || "missing")}
-                    type="button"
+                    to={`${constants.routes.adminVehicles}/${item.vehicleId}?tab=${VEHICLE_TAB_BY_CATEGORY[open]}`}
                     className={"maintenance-alert-bar__chip" + (urgent ? " maintenance-alert-bar__chip--overdue" : "")}
                     title={`${item.name} — ${statusText}`}
-                    onClick={() =>
-                      navigate(
-                        `${constants.routes.adminVehicles}/${item.vehicleId}?tab=${VEHICLE_TAB_BY_CATEGORY[open]}`
-                      )
-                    }
                   >
                     {item.plate}
-                  </button>
+                  </Link>
                 );
               })}
             </div>
@@ -273,7 +272,7 @@ const MaintenanceAlertBar = ({
           {hgsPending.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.hgsNone")}</div>
           ) : (
-            <ClosedContractsTable rows={hgsPending} onRowClick={goToContract} />
+            <ClosedContractsTable rows={hgsPending} />
           )}
         </div>
       )}
@@ -284,7 +283,7 @@ const MaintenanceAlertBar = ({
           {invoicePending.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.invoicePendingNone")}</div>
           ) : (
-            <MixedStatusTable rows={invoicePending} onRowClick={goToContract} />
+            <MixedStatusTable rows={invoicePending} />
           )}
         </div>
       )}
@@ -295,7 +294,7 @@ const MaintenanceAlertBar = ({
           {kbsPending.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.kbsPendingNone")}</div>
           ) : (
-            <MixedStatusTable rows={kbsPending} onRowClick={goToContract} />
+            <MixedStatusTable rows={kbsPending} />
           )}
         </div>
       )}
@@ -306,7 +305,7 @@ const MaintenanceAlertBar = ({
           {kbsReleasePending.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.kbsReleasePendingNone")}</div>
           ) : (
-            <ClosedContractsTable rows={kbsReleasePending} onRowClick={goToContract} />
+            <ClosedContractsTable rows={kbsReleasePending} />
           )}
         </div>
       )}
@@ -317,7 +316,7 @@ const MaintenanceAlertBar = ({
           {signPending.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.signPendingNone")}</div>
           ) : (
-            <MixedStatusTable rows={signPending} onRowClick={goToContract} />
+            <MixedStatusTable rows={signPending} />
           )}
         </div>
       )}
