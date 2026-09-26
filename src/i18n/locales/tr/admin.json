@@ -719,8 +719,10 @@
         "releaseAction": "KABİS'ten Düş",
         "releaseConfirmTitle": "KABİS kaydını düş",
         "releaseConfirmText": "Araç teslim alınmadan KABİS kaydı düşülecek (çıkış bildirimi). Onaylıyor musunuz?",
+        "releaseConfirmTextClosed": "Kontrat kapatılmış olsa da KABİS çıkış bildirimi düşülecek. Onaylıyor musunuz?",
         "releasedDate": "Çıkış tarihi",
-        "releaseUndo": "Çıkışı geri al"
+        "releaseUndo": "Çıkışı geri al",
+        "closedWarning": "Kontrat kapatıldı ancak KABİS çıkış bildirimi henüz yapılmadı. Çıkışı buradan yapabilirsiniz."
       },
       "signature": {
         "title": "İmza Takibi",

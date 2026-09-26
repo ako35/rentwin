@@ -8,6 +8,7 @@ import {
   BsShieldFillCheck,
   BsBoxArrowRight,
   BsCalendarEvent,
+  BsExclamationTriangleFill,
 } from "react-icons/bs";
 import moment from "moment/moment";
 import { services } from "../../../../../services";
@@ -19,18 +20,23 @@ const DATE_DISPLAY = "DD.MM.YYYY";
 const DATE_STORE = "YYYY-MM-DD";
 
 // Left card: KABİS (Kimlik Bildirme Sistemi) lifecycle for this rental —
-// filing (giriş) then release (çıkış). Both are saved with the contract on
-// "Kaydet"; the acting admin's name is stamped server-side on each transition.
-// A filed-but-not-released contract cannot be closed (see page.jsx return flow).
+// filing (giriş) then release (çıkış). Filing/date/system edits are saved
+// with the contract on "Kaydet"; the acting admin's name is stamped
+// server-side on each transition. A filed-but-not-released contract no
+// longer blocks closing the contract (see contract-helpers' kbsStatus) — so
+// the release action (and only that action) stays live even once the
+// contract is closed, `locked` is true, and "Kaydet" itself has disappeared;
+// `onReleaseLocked` patches the release straight through instead.
 // The operator manages an open-ended list of KABİS portals from Ayarlar
 // (see admin/settings/page.jsx) and picks which one a given rental was
 // actually filed under — stored as a name snapshot on the contract
 // (kbsSystem), so renaming/deleting a portal later never touches past rows.
-const KbsSection = ({ formik }) => {
+const KbsSection = ({ formik, locked = false, onReleaseLocked }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.kbs.${key}`);
 
   const [systemNames, setSystemNames] = useState([]);
+  const [releasing, setReleasing] = useState(false);
 
   useEffect(() => {
     services.kabisSystem
@@ -52,6 +58,9 @@ const KbsSection = ({ formik }) => {
   const releasedAt = formik.values.kbsReleasedAt || "";
   const status = kbsStatus(formik.values);
   const released = status === "released";
+  // Filing/date/system stay read-only once the contract is closed — only the
+  // release button below is exempt from `locked`.
+  const fieldsDisabled = released || locked;
 
   // The date is typed by hand (GG.AA.YYYY) rather than picked from the native
   // <input type="date"> widget, whose click target for typing vs. opening the
@@ -79,7 +88,7 @@ const KbsSection = ({ formik }) => {
   const nativeDateRef = useRef(null);
   const openPicker = () => {
     const el = nativeDateRef.current;
-    if (!el || released) return;
+    if (!el || fieldsDisabled) return;
     if (typeof el.showPicker === "function") el.showPicker();
     else el.focus();
   };
@@ -98,8 +107,20 @@ const KbsSection = ({ formik }) => {
   };
 
   const release = async () => {
-    const res = await utils.functions.swalQuestion(c("releaseConfirmTitle"), c("releaseConfirmText"));
+    const res = await utils.functions.swalQuestion(
+      c("releaseConfirmTitle"),
+      locked ? c("releaseConfirmTextClosed") : c("releaseConfirmText")
+    );
     if (!res.isConfirmed) return;
+    if (locked) {
+      setReleasing(true);
+      try {
+        await onReleaseLocked();
+      } finally {
+        setReleasing(false);
+      }
+      return;
+    }
     formik.setFieldValue("kbsReleasedAt", moment().toISOString());
   };
 
@@ -121,7 +142,7 @@ const KbsSection = ({ formik }) => {
           id="kbs-entered"
           label={c("statusLabel")}
           checked={status !== "pending"}
-          disabled={released}
+          disabled={fieldsDisabled}
           onChange={(e) => toggleReport(e.target.checked)}
         />
         <span className={`contract-page__kbs-badge is-${status}`}>
@@ -134,6 +155,12 @@ const KbsSection = ({ formik }) => {
         <p className="contract-page__kbs-hint">{c("hint")}</p>
       ) : (
         <div className="contract-page__kbs-track">
+          {locked && status === "reported" && (
+            <p className="contract-page__kbs-warn">
+              <BsExclamationTriangleFill /> {c("closedWarning")}
+            </p>
+          )}
+
           <div className="contract-page__kbs-fields">
             <label className="contract-page__kbs-date">
               <span>{c("dateLabel")}</span>
@@ -144,14 +171,14 @@ const KbsSection = ({ formik }) => {
                   type="text"
                   placeholder={c("datePlaceholder")}
                   value={dateInput}
-                  disabled={released}
+                  disabled={fieldsDisabled}
                   onChange={handleDateInput}
                 />
                 <button
                   type="button"
                   className="contract-page__kbs-date-pick"
                   aria-label={c("datePickAria")}
-                  disabled={released}
+                  disabled={fieldsDisabled}
                   onClick={openPicker}
                 >
                   <BsCalendarEvent />
@@ -163,7 +190,7 @@ const KbsSection = ({ formik }) => {
                   tabIndex={-1}
                   aria-hidden="true"
                   value={reportedAt}
-                  disabled={released}
+                  disabled={fieldsDisabled}
                   onChange={(e) => formik.setFieldValue("kbsNotifiedAt", e.target.value)}
                 />
               </div>
@@ -173,7 +200,7 @@ const KbsSection = ({ formik }) => {
               <span>{c("systemLabel")}</span>
               <Form.Select
                 value={formik.values.kbsSystem || ""}
-                disabled={released}
+                disabled={fieldsDisabled}
                 onChange={(e) => formik.setFieldValue("kbsSystem", e.target.value)}
               >
                 {systemOptions.length === 0 && <option value="">{c("noSystemsOption")}</option>}
@@ -185,7 +212,12 @@ const KbsSection = ({ formik }) => {
           </div>
 
           {status === "reported" && (
-            <button type="button" className="contract-page__kbs-release" onClick={release}>
+            <button
+              type="button"
+              className="contract-page__kbs-release"
+              disabled={releasing}
+              onClick={release}
+            >
               <BsBoxArrowRight /> {c("releaseAction")}
             </button>
           )}
@@ -195,7 +227,12 @@ const KbsSection = ({ formik }) => {
               <p className="contract-page__kbs-stamp">
                 {c("releasedDate")}: {moment(releasedAt).format("DD.MM.YYYY HH:mm")}
               </p>
-              <button type="button" className="contract-page__kbs-undo" onClick={undoRelease}>
+              <button
+                type="button"
+                className="contract-page__kbs-undo"
+                disabled={locked}
+                onClick={undoRelease}
+              >
                 {c("releaseUndo")}
               </button>
             </div>

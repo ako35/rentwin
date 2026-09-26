@@ -119,6 +119,23 @@
     color: v.$color5_3;
   }
 
+  // Contract already closed, KABİS release still pending — same amber as the
+  // "pending" badge, called out as its own line since the release button
+  // below is the only live control left in the card at that point.
+  &__kbs-warn {
+    @include m.flexbox(row, flex-start, center, 0.45rem);
+    margin: 0 0 0.8rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgba(v.$accent-amber, 0.4);
+    border-radius: 8px;
+    background-color: rgba(v.$accent-amber, 0.12);
+    color: #9a6a00;
+    font-size: 0.8rem;
+    font-weight: 600;
+
+    svg { flex: none; font-size: 0.9rem; color: v.$accent-amber; }
+  }
+
   &__kbs-release {
     @include m.flexbox(row, center, center, 0.4rem);
     margin-top: 0.9rem;

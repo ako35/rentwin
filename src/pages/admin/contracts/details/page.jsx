@@ -195,6 +195,23 @@ const ContractDetail = () => {
     services.contract.reopenContract, "reopenConfirmTitle", "reopenConfirmText", "reopenedSuccess"
   );
 
+  // A closed contract hides "Kaydet" (see ContractActions), so releasing a
+  // still-filed KABİS record after close can't ride the normal form-save —
+  // it patches straight through, same as cancel/reopen/return above.
+  const handleKbsReleaseLocked = async () => {
+    setUpdating(true);
+    try {
+      const dto = buildContractDto({ ...formik.values, kbsReleasedAt: moment().toISOString() });
+      await services.contract.updateContract(formik.values.carId, contractId, dto);
+      utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
+      loadData();
+    } catch {
+      utils.functions.swalToast(t("reservations.toasts.updateError"), "error");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   const openNewCust = (target = "userId") => {
     setNewCustTarget(target);
     setNewCustModal(true);
@@ -291,11 +308,21 @@ const ContractDetail = () => {
                 showNoAvailable={!availableCars.length}
                 extensions={extensions}
               />
-              {!isCreate && <KbsSection formik={formik} />}
-              {!isCreate && <SignatureSection formik={formik} />}
             </fieldset>
-            {/* HGS check-ins stay usable after the contract closes — the toll
-                query itself often only comes in a few days after drop-off. */}
+            {/* KABİS release stays usable after the contract closes — a
+                still-filed rental can be released days later — so this card
+                sits outside the fieldset that locks the rest of the form;
+                `locked` still keeps its own filing fields read-only. */}
+            {!isCreate && (
+              <KbsSection formik={formik} locked={locked} onReleaseLocked={handleKbsReleaseLocked} />
+            )}
+            {!isCreate && (
+              <fieldset className="contract-page__fieldset" disabled={locked}>
+                <SignatureSection formik={formik} />
+              </fieldset>
+            )}
+            {/* HGS check-ins stay usable after the contract closes too — the
+                toll query itself often only comes in a few days after drop-off. */}
             {!isCreate && (
               <HgsSection formik={formik} contractId={contractId} />
             )}

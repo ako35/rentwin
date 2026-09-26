@@ -719,8 +719,10 @@
         "releaseAction": "Release from KABİS",
         "releaseConfirmTitle": "Release the KABİS record",
         "releaseConfirmText": "The KABİS record will be released (exit notification) before the vehicle is returned. Do you confirm?",
+        "releaseConfirmTextClosed": "The contract is already closed, but the KABİS release notification will still be filed. Do you confirm?",
         "releasedDate": "Release date",
-        "releaseUndo": "Undo release"
+        "releaseUndo": "Undo release",
+        "closedWarning": "The contract is closed but the KABİS release notification hasn't been filed yet. You can release it here."
       },
       "signature": {
         "title": "Signature Tracking",
