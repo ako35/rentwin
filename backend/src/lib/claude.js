@@ -54,19 +54,25 @@ Kurallar:
 const INDIVIDUAL_DOC_SCHEMA = z.object({
   documentDetected: z
     .boolean()
-    .describe("Görselde gerçekten bir Türkiye sürücü belgesi (ehliyet) veya T.C. kimlik kartı / nüfus cüzdanı görülüyor mu?"),
+    .describe(
+      "Görselde gerçekten bir Türkiye sürücü belgesi (ehliyet), T.C. kimlik kartı / nüfus cüzdanı, ya da yabancı uyruklu bir müşterinin pasaportu görülüyor mu?"
+    ),
   firstName: z.string().nullable().describe("Adı (verilen ad)"),
   lastName: z.string().nullable().describe("Soyadı"),
-  nationalId: z.string().nullable().describe("T.C. Kimlik No — tam 11 rakam"),
+  nationalId: z
+    .string()
+    .nullable()
+    .describe("T.C. Kimlik No (tam 11 rakam) — belge bir pasaportsa bunun yerine pasaport numarası (harf+rakam)."),
 });
 
-const INDIVIDUAL_DOC_PROMPT = `Bu görüntü bir Türkiye sürücü belgesi (ehliyet) ya da T.C. kimlik kartı / nüfus cüzdanı mı incele.
+const INDIVIDUAL_DOC_PROMPT = `Bu görüntü bir Türkiye sürücü belgesi (ehliyet), T.C. kimlik kartı / nüfus cüzdanı, ya da yabancı uyruklu bir müşterinin pasaportu mu incele.
 Kurallar:
 - Böyle bir belge değilse ya da hiçbir alan güvenle okunamıyorsa documentDetected=false yap ve tüm alanları null bırak. Asla tahmin etme.
 - Belgeyse documentDetected=true yap; yalnızca NET okuduğun alanları doldur, okuyamadığını null bırak.
 - Sürücü belgesinde alanlar numaralıdır: 1=Soyadı, 2=Adı, 4d=T.C. Kimlik No. Kimlik kartında "Soyadı/Surname", "Adı/Given Name(s)", "T.C. Kimlik No / TR Identity No".
-- firstName/lastName: Türkçe, belgede yazıldığı gibi (BÜYÜK HARF olabilir, olduğu gibi bırak).
-- nationalId: yalnızca 11 rakam, boşluksuz.`;
+- Pasaportta (herhangi bir ülke): alt kısımdaki MRZ (makine okunabilir bölge) ve üst bölümdeki "Surname/Soyadı", "Given Names/Adı", "Passport No/Pasaport No" alanlarını kullan.
+- firstName/lastName: belgede yazıldığı gibi (BÜYÜK HARF olabilir, olduğu gibi bırak; pasaportta Latin harfleriyle yazılmış haliyle bırak).
+- nationalId: T.C. kimlik kartı/ehliyetse yalnızca 11 rakam, boşluksuz. Pasaportsa pasaport numarasını olduğu gibi (harf+rakam, boşluksuz) yaz.`;
 
 const CORPORATE_DOC_SCHEMA = z.object({
   documentDetected: z

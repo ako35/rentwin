@@ -191,10 +191,15 @@ export const adminUserDetailsFormValidationSchema = Yup.object({
         then: (s) => s.nullable(),
         otherwise: (s) => s.trim().required(t("adminUser.lastNameRequired")),
     }),
+    // Bireysel: 11 haneli TC kimlik no, ya da yabancı uyruklu müşteriler için
+    // pasaport numarası (harf+rakam karışık, 5-20 karakter) — bkz. customer-fields.js
+    // assertNationalId (backend'de de aynı iki biçim kabul edilir).
     nationalId: Yup.string().when("customerType", {
         is: "Kurumsal",
         then: (s) => s.matches(/^\d{10}$/, t("adminUser.taxNoInvalid")).required(t("adminUser.taxNoRequired")),
-        otherwise: (s) => s.matches(/^\d{11}$/, t("adminUser.tcInvalid")).required(t("adminUser.tcRequired")),
+        otherwise: (s) => s
+            .required(t("adminUser.tcRequired"))
+            .test("tc-or-passport", t("adminUser.tcInvalid"), (value) => !!value && (/^\d{11}$/.test(value) || /^[A-Za-z0-9]{5,20}$/.test(value))),
     }),
     authorizedNationalId: Yup.string().when("customerType", {
         is: "Kurumsal",

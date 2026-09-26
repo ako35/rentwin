@@ -747,7 +747,7 @@
         "lessor": "Kiraya Veren",
         "lessee": "Kiracı",
         "lesseeType": "Kiracı Tipi",
-        "idNo": "TC / Vergi No",
+        "idNo": "TC / Pasaport / Vergi No",
         "phone": "Telefon",
         "contactPerson": "Yetkili Kişi",
         "contactPersonId": "Yetkili TC No",
@@ -939,9 +939,9 @@
       "empty": "Bu müşteriye ait kontrat bulunmuyor."
     },
     "documentScan": {
-      "buttonIndividual": "Ehliyet / Kimlikten Doldur",
+      "buttonIndividual": "Ehliyet / Kimlik / Pasaporttan Doldur",
       "buttonCorporate": "Kaşe / Vergi Levhasından Doldur",
-      "hintIndividual": "Ehliyet veya kimlik fotoğrafı/PDF'i yükleyin, ad-soyad ve T.C. No otomatik dolsun.",
+      "hintIndividual": "Ehliyet, kimlik veya pasaport fotoğrafı/PDF'i yükleyin, ad-soyad ve TC/pasaport no otomatik dolsun.",
       "hintCorporate": "Kaşe veya vergi levhası fotoğrafı/PDF'i yükleyin, unvan, vergi no ve adres otomatik dolsun.",
       "success": "Belge okundu, alanlar dolduruldu. Lütfen kontrol edin.",
       "notDetected": "Görselde beklenen belge tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",

@@ -747,7 +747,7 @@
         "lessor": "Lessor",
         "lessee": "Lessee",
         "lesseeType": "Lessee Type",
-        "idNo": "ID / Tax No",
+        "idNo": "ID / Passport / Tax No",
         "phone": "Phone",
         "contactPerson": "Contact Person",
         "contactPersonId": "Contact's National ID",
@@ -939,9 +939,9 @@
       "empty": "No contracts for this customer yet."
     },
     "documentScan": {
-      "buttonIndividual": "Fill from Licence / ID",
+      "buttonIndividual": "Fill from Licence / ID / Passport",
       "buttonCorporate": "Fill from Stamp / Tax Registration",
-      "hintIndividual": "Upload a photo or PDF of a driving licence or ID to auto-fill name and national ID.",
+      "hintIndividual": "Upload a photo or PDF of a driving licence, ID or passport to auto-fill name and national ID / passport number.",
       "hintCorporate": "Upload a photo or PDF of a company stamp or tax registration to auto-fill title, tax no and address.",
       "success": "Document read — please review the fields.",
       "notDetected": "Couldn't recognize the expected document in the photo, or nothing on it was readable. Try a clearer/brighter photo, or fill in the fields manually.",

@@ -39,17 +39,33 @@ const applyCustomerFields = (body, data) => {
   }
 };
 
-// Bireysel müşteri = 11 haneli TC, Kurumsal müşteri = 10 haneli vergi no.
-// Yalnızca rakam, zorunlu ve her numara tek bir müşteride.
+const TC_ID_RE = /^\d{11}$/;
+const TAX_NO_RE = /^\d{10}$/;
+// Yabancı uyruklu bireysel müşteriler için: harf+rakam karışık pasaport no.
+const PASSPORT_RE = /^[A-Za-z0-9]{5,20}$/;
+
+// Kurumsal müşteri = 10 haneli vergi no (yalnızca rakam). Bireysel müşteri =
+// 11 haneli TC kimlik no, ya da yabancı uyruklu müşteriler için pasaport
+// numarası (harf+rakam, 5-20 karakter) — iki biçim de aynı `nationalId`
+// alanında tutulur, ayrı bir "yabancı" bayrağı yok. Her durumda zorunlu ve her
+// numara tek bir müşteride.
 const assertNationalId = async (body, currentId) => {
   const isCorporate = body.customerType === "Kurumsal";
   const value = (body.nationalId == null ? "" : String(body.nationalId)).trim();
-  const label = isCorporate ? "Vergi numarası" : "TC kimlik numarası";
-  const length = isCorporate ? 10 : 11;
 
-  if (!value) throw new HttpError(400, `${label} zorunludur.`);
-  if (!/^\d+$/.test(value) || value.length !== length) {
-    throw new HttpError(400, `${label} tam olarak ${length} haneli ve yalnızca rakamlardan oluşmalıdır.`);
+  if (isCorporate) {
+    if (!value) throw new HttpError(400, "Vergi numarası zorunludur.");
+    if (!TAX_NO_RE.test(value)) {
+      throw new HttpError(400, "Vergi numarası tam olarak 10 haneli ve yalnızca rakamlardan oluşmalıdır.");
+    }
+  } else {
+    if (!value) throw new HttpError(400, "TC kimlik numarası veya pasaport numarası zorunludur.");
+    if (!TC_ID_RE.test(value) && !PASSPORT_RE.test(value)) {
+      throw new HttpError(
+        400,
+        "TC kimlik numarası 11 haneli olmalı veya geçerli bir pasaport numarası (5-20 harf/rakam) girilmelidir."
+      );
+    }
   }
 
   const clash = await prisma.user.findFirst({
@@ -57,7 +73,7 @@ const assertNationalId = async (body, currentId) => {
     select: { id: true },
   });
   if (clash) {
-    throw new HttpError(409, `Bu ${isCorporate ? "vergi numarası" : "TC numarası"} zaten başka bir müşteride kayıtlı.`);
+    throw new HttpError(409, `Bu ${isCorporate ? "vergi numarası" : "kimlik/pasaport numarası"} zaten başka bir müşteride kayıtlı.`);
   }
 };
 

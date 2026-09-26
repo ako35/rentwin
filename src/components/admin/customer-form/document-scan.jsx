@@ -6,10 +6,11 @@ import { utils } from "../../../utils";
 import { useAiVisionUsage } from "../../../hooks/use-ai-vision-usage";
 
 // "Belgeden Doldur": the admin picks a photo/PDF of a customer document —
-// a driving licence / ID for an individual, a company stamp or tax registration
-// for a corporate customer — Claude reads it server-side and the extracted
-// fields are handed back up to prefill the form. The admin still reviews before
-// saving.
+// a driving licence / ID / passport for an individual (a passport covers a
+// foreign customer, who has no T.C. kimlik no), a company stamp or tax
+// registration for a corporate customer — Claude reads it server-side and the
+// extracted fields are handed back up to prefill the form. The admin still
+// reviews before saving.
 // Claude returns 200 + documentDetected:false (wrong/unreadable document) or,
 // more rarely, documentDetected:true with every specific field still null (a
 // genuine document it just couldn't read anything off) — either way there is

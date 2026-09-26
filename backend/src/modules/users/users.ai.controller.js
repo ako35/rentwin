@@ -23,7 +23,7 @@ const extractDocument = asyncHandler(async (req, res) => {
       422,
       kind === "corporate"
         ? "Görsel bir kaşe / vergi levhası belgesine benzemiyor."
-        : "Görsel bir ehliyet / kimlik belgesine benzemiyor."
+        : "Görsel bir ehliyet / kimlik / pasaport belgesine benzemiyor."
     );
   }
 
