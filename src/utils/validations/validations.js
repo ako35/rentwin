@@ -206,6 +206,11 @@ export const adminUserDetailsFormValidationSchema = Yup.object({
         then: (s) => s.matches(/^\d{11}$/, t("adminUser.authorizedTcInvalid")).required(t("adminUser.authorizedTcRequired")),
         otherwise: (s) => s.nullable(),
     }),
+    // Optional — not every walk-in customer's birth date is on file. If given
+    // it just can't be in the future.
+    birthDate: Yup.string()
+        .nullable()
+        .test("not-future", t("adminUser.birthDateFuture"), (value) => !value || new Date(value) <= new Date()),
 });
 
 // ADMIN CONTRACT DETAIL FORM

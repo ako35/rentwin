@@ -37,6 +37,8 @@ const applyCustomerFields = (body, data) => {
   if ("customerType" in body) {
     data.customerType = body.customerType === "Kurumsal" ? "Kurumsal" : "Bireysel";
   }
+  // Bireysel only — a blank value clears it (e.g. switching a record to Kurumsal).
+  if ("birthDate" in body) data.birthDate = body.birthDate ? new Date(body.birthDate) : null;
 };
 
 const TC_ID_RE = /^\d{11}$/;

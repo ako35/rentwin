@@ -122,6 +122,7 @@ model User {
   taxOffice          String?
   nationalId         String?
   authorizedNationalId String? // Kurumsal only: the authorized (contact) person's own T.C. kimlik no, distinct from the company's VKN in nationalId
+  birthDate          DateTime? // Bireysel only — the customer's own date of birth
   city               String?
   district           String?
   active             Boolean       @default(true)

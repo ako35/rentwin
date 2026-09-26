@@ -18,6 +18,7 @@ const EMPTY = {
   customerType: "Bireysel",
   companyTitle: "", taxOffice: "",
   firstName: "", lastName: "", nationalId: "", authorizedNationalId: "",
+  birthDate: "",
   email: "", phoneNumber: "",
   address: "", city: "", district: "",
 };
@@ -90,6 +91,7 @@ const AdminNewCustomerPage = () => {
         { name: "firstName", label: `* ${t("users.form.firstName")}` },
         { name: "lastName", label: `* ${t("users.form.lastName")}` },
         { name: "nationalId", label: `* ${t("users.form.nationalId")}` },
+        { name: "birthDate", label: t("users.form.birthDate"), type: "date" },
       ];
 
   const contactFields = isCorporate

@@ -42,6 +42,7 @@ export const kbsStatus = (v) => {
 export const EMPTY_NEW_CUST = {
   customerType: "Bireysel", companyTitle: "", taxOffice: "",
   firstName: "", lastName: "", nationalId: "", authorizedNationalId: "",
+  birthDate: "",
   email: "", phoneNumber: "", address: "", city: "", district: "",
 };
 

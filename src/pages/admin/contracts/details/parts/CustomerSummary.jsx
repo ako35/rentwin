@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import moment from "moment/moment";
 import { constants } from "../../../../../constants";
 
 // Edit-mode read-only customer view — mirrors the fields shown in create mode's
@@ -23,6 +24,11 @@ const CustomerSummary = ({ customer, userId, money }) => {
   } else {
     rows.push([c("customerName"), customer ? `${customer.firstName} ${customer.lastName}`.trim() : ""]);
     rows.push([c("custNationalId"), customer?.nationalId]);
+    // moment(undefined) resolves to "now", not "invalid" — only add the row
+    // when there's an actual value to format.
+    if (customer?.birthDate) {
+      rows.push([c("custBirthDate"), moment(customer.birthDate).format("DD.MM.YYYY")]);
+    }
   }
   rows.push([c("customerEmail"), customer?.email]);
   rows.push([c("customerPhone"), customer?.phoneNumber]);

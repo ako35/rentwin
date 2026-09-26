@@ -19,6 +19,7 @@ const EMPTY = {
   customerType: "Bireysel",
   companyTitle: "", taxOffice: "",
   firstName: "", lastName: "", nationalId: "", authorizedNationalId: "",
+  birthDate: "",
   email: "", phoneNumber: "",
   address: "", city: "", district: "",
   active: true, notes: "", roles: [], builtIn: false,
@@ -89,6 +90,7 @@ const AdminUserDetailsPage = () => {
         taxOffice: u.taxOffice || "",
         nationalId: u.nationalId || "",
         authorizedNationalId: u.authorizedNationalId || "",
+        birthDate: u.birthDate ? utils.functions.getDate(u.birthDate) : "",
         city: u.city || "",
         district: u.district || "",
         notes: u.notes || "",
@@ -142,6 +144,7 @@ const AdminUserDetailsPage = () => {
         { name: "firstName", label: `* ${t("users.form.firstName")}` },
         { name: "lastName", label: `* ${t("users.form.lastName")}` },
         { name: "nationalId", label: `* ${t("users.form.nationalId")}` },
+        { name: "birthDate", label: t("users.form.birthDate"), type: "date" },
       ];
 
   const contactFields = isCorporate

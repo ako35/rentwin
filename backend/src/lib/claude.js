@@ -63,16 +63,18 @@ const INDIVIDUAL_DOC_SCHEMA = z.object({
     .string()
     .nullable()
     .describe("T.C. Kimlik No (tam 11 rakam) — belge bir pasaportsa bunun yerine pasaport numarası (harf+rakam)."),
+  birthDate: z.string().nullable().describe("Doğum tarihi, YYYY-MM-DD formatında."),
 });
 
 const INDIVIDUAL_DOC_PROMPT = `Bu görüntü bir Türkiye sürücü belgesi (ehliyet), T.C. kimlik kartı / nüfus cüzdanı, ya da yabancı uyruklu bir müşterinin pasaportu mu incele.
 Kurallar:
 - Böyle bir belge değilse ya da hiçbir alan güvenle okunamıyorsa documentDetected=false yap ve tüm alanları null bırak. Asla tahmin etme.
 - Belgeyse documentDetected=true yap; yalnızca NET okuduğun alanları doldur, okuyamadığını null bırak.
-- Sürücü belgesinde alanlar numaralıdır: 1=Soyadı, 2=Adı, 4d=T.C. Kimlik No. Kimlik kartında "Soyadı/Surname", "Adı/Given Name(s)", "T.C. Kimlik No / TR Identity No".
-- Pasaportta (herhangi bir ülke): alt kısımdaki MRZ (makine okunabilir bölge) ve üst bölümdeki "Surname/Soyadı", "Given Names/Adı", "Passport No/Pasaport No" alanlarını kullan.
+- Sürücü belgesinde alanlar numaralıdır: 1=Soyadı, 2=Adı, 3=Doğum Tarihi, 4d=T.C. Kimlik No. Kimlik kartında "Soyadı/Surname", "Adı/Given Name(s)", "Doğum Tarihi/Date of Birth", "T.C. Kimlik No / TR Identity No".
+- Pasaportta (herhangi bir ülke): alt kısımdaki MRZ (makine okunabilir bölge) ve üst bölümdeki "Surname/Soyadı", "Given Names/Adı", "Date of Birth/Doğum Tarihi", "Passport No/Pasaport No" alanlarını kullan.
 - firstName/lastName: belgede yazıldığı gibi (BÜYÜK HARF olabilir, olduğu gibi bırak; pasaportta Latin harfleriyle yazılmış haliyle bırak).
-- nationalId: T.C. kimlik kartı/ehliyetse yalnızca 11 rakam, boşluksuz. Pasaportsa pasaport numarasını olduğu gibi (harf+rakam, boşluksuz) yaz.`;
+- nationalId: T.C. kimlik kartı/ehliyetse yalnızca 11 rakam, boşluksuz. Pasaportsa pasaport numarasını olduğu gibi (harf+rakam, boşluksuz) yaz.
+- birthDate: YYYY-MM-DD formatında (örn. belgede "12.05.1990" ise "1990-05-12" yaz). Emin değilsen null bırak.`;
 
 const CORPORATE_DOC_SCHEMA = z.object({
   documentDetected: z

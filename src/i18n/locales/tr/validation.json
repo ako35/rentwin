@@ -124,6 +124,7 @@
     "taxNoInvalid": "Vergi numarası 10 haneli ve yalnızca rakam olmalıdır",
     "authorizedTcRequired": "Yetkili kişinin TC kimlik numarası zorunludur",
     "authorizedTcInvalid": "Yetkili kişinin TC kimlik numarası 11 haneli ve yalnızca rakam olmalıdır",
+    "birthDateFuture": "Doğum tarihi gelecekte olamaz",
     "lastNameMin": "Soyad en az 2 karakter olmalıdır",
     "lastNameMax": "Soyad en fazla 50 karakter olmalıdır",
     "lastNameRequired": "Lütfen soyadı girin",
