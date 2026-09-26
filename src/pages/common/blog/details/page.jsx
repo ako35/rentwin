@@ -28,7 +28,11 @@ const BlogDetailPage = () => {
     services.blog
       .getBlogPostBySlug(slug)
       .then((data) => setPost(data))
-      .catch(() => setMissing(true))
+      // Only a real 404 (unknown slug / unpublished draft) means the post is
+      // actually gone — a transient network/server error must not noindex an
+      // otherwise-live post. The "not found" UI below still covers both
+      // cases (it keys off `post` being null), only the SEO signal changes.
+      .catch((error) => setMissing(error?.response?.status === 404))
       .finally(() => setLoading(false));
   }, [slug]);
 

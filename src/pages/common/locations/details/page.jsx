@@ -21,12 +21,13 @@ const LocationDetailPage = () => {
 
   const [loading, setLoading] = useState(true);
   const [locations, setLocations] = useState([]);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
     services.location
       .getLocations()
       .then((data) => setLocations(data || []))
-      .catch(() => setLocations([]))
+      .catch(() => setLoadFailed(true))
       .finally(() => setLoading(false));
   }, []);
 
@@ -35,7 +36,12 @@ const LocationDetailPage = () => {
     [locations, slug]
   );
   const name = location?.name || "";
-  const missing = !loading && !location;
+  // Only a successfully loaded list that just doesn't contain this slug means
+  // the location is actually gone — a failed fetch (which also leaves
+  // `location` unset) must not noindex an otherwise-live page. The "not
+  // found" UI below still covers both cases (it keys off `location` being
+  // unset), only the SEO signal changes.
+  const missing = !loading && !loadFailed && !location;
 
   usePageMeta({
     title: name ? t("detail.seoTitle", { name }) : t("seoTitle"),

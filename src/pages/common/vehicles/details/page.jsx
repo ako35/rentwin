@@ -22,7 +22,14 @@ const API_URL = import.meta.env.VITE_APP_API_URL;
 const VehicleDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [vehicle, setVehicleState] = useState(null);
+  // `notFound` (backend-confirmed: deleted/sold vehicle) drives noindex — a
+  // transient network/server error must never tell search engines a live
+  // listing is gone. `loadFailed` covers both cases for the fallback UI, same
+  // as before this split. (Production Search Console flagged several active
+  // vehicles as noindex-excluded — traced to this catch-all treating any
+  // fetch failure, e.g. a cold-start timeout during a crawl, as "missing".)
   const [notFound, setNotFound] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
   const { vehicleId } = useParams();
   const dispatch = useDispatch();
   const { t } = useTranslation("vehicles");
@@ -47,7 +54,8 @@ const VehicleDetailsPage = () => {
       dispatch(setVehicle(data));
       setVehicleState(data);
     } catch (error) {
-      setNotFound(true);
+      if (error?.response?.status === 404) setNotFound(true);
+      setLoadFailed(true);
     } finally {
       setLoading(false);
     }
@@ -58,7 +66,7 @@ const VehicleDetailsPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (notFound) {
+  if (loadFailed) {
     return (
       <>
         <PageHeader
