@@ -9,10 +9,12 @@ const FaqPage = () => {
   const { t } = useTranslation("faq");
   const { t: tCommon } = useTranslation("common");
 
+  // No explicit `canonical` — the hook derives it from the URL itself, so
+  // /en/sss gets its own canonical instead of pointing back at /sss (that
+  // hardcoded override was wrong for the English page — see privacy-policy).
   usePageMeta({
     title: t("seoTitle"),
     description: t("seoDescription"),
-    canonical: "https://rentwin.com.tr/sss",
   });
 
   const items = t("items", { returnObjects: true });

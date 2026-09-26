@@ -6,10 +6,13 @@ import "./style.scss";
 
 const PrivacyPolicyPage = () => {
   const { t } = useTranslation("common");
+  // No explicit `canonical` — the hook derives it from the URL itself, so
+  // /en/privacy-policy gets its own canonical instead of pointing back at
+  // the Turkish page (this used to be hardcoded to the TR URL, which told
+  // Google the English page was just a duplicate of the Turkish one).
   usePageMeta({
     title: t("privacyPolicy.title"),
     description: t("privacyPolicy.metaDescription"),
-    canonical: "https://rentwin.com.tr/privacy-policy",
   });
 
   const sections = t("privacyPolicy.sections", { returnObjects: true });
