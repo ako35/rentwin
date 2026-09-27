@@ -1,7 +1,7 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const asyncHandler = require("../../middleware/async-handler");
-const { uploadImage, deleteImage } = require("../../lib/blob");
+const { uploadImage, deleteImage } = require("../../lib/storage");
 const { generateVehicleImage } = require("../../lib/gemini");
 const { modelImageKey } = require("../../lib/serializers");
 

@@ -1,6 +1,6 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
-const { deleteImage } = require("../../lib/blob");
+const { deleteImage } = require("../../lib/storage");
 const asyncHandler = require("../../middleware/async-handler");
 
 // Drop the blob + orphan VehicleImage row an image id points at.

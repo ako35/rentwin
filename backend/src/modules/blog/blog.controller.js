@@ -1,6 +1,6 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
-const { deleteImage } = require("../../lib/blob");
+const { deleteImage } = require("../../lib/storage");
 const { slugify } = require("../../lib/site");
 const asyncHandler = require("../../middleware/async-handler");
 
