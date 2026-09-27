@@ -7,6 +7,7 @@ import { utils } from "../../../utils";
 import { dateFieldNames } from "./record-configs";
 import RecordsTableView from "./records-table-view";
 import RecordsTwoPaneView from "./records-two-pane-view";
+import RecordDocumentsModal from "./record-documents-modal";
 
 const RecordsPanel = ({ vehicleId, config }) => {
   const { t } = useTranslation("admin");
@@ -17,6 +18,7 @@ const RecordsPanel = ({ vehicleId, config }) => {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [docsRow, setDocsRow] = useState(null);
 
   const fieldLabel = (name) => t(`vehicles.records.${config.tabKey}.fields.${name}`);
   const dateFields = dateFieldNames(config);
@@ -152,9 +154,21 @@ const RecordsPanel = ({ vehicleId, config }) => {
     showModal, setShowModal, setEditing, toFormValues,
     fieldLabel, formatCell, buildItems,
     openCreate, openEdit, handleDelete,
+    onManageDocuments: setDocsRow,
   };
 
-  return config.twoPane ? <RecordsTwoPaneView {...view} /> : <RecordsTableView {...view} />;
+  return (
+    <>
+      {config.twoPane ? <RecordsTwoPaneView {...view} /> : <RecordsTableView {...view} />}
+      <RecordDocumentsModal
+        show={!!docsRow}
+        onHide={() => setDocsRow(null)}
+        resource={config.resource}
+        record={docsRow}
+        onChanged={loadRows}
+      />
+    </>
+  );
 };
 
 export default RecordsPanel;

@@ -1,5 +1,5 @@
-import { Button, Col, Form, Modal, Row, Spinner, Table } from "react-bootstrap";
-import { BsPencil, BsTrash } from "react-icons/bs";
+import { Badge, Button, Col, Form, Modal, Row, Spinner, Table } from "react-bootstrap";
+import { BsPaperclip, BsPencil, BsTrash } from "react-icons/bs";
 import CustomForm from "../../common/custom-form/custom-form";
 import Loading from "../../common/loading/loading";
 
@@ -7,7 +7,7 @@ import Loading from "../../common/loading/loading";
 // record type except Sigorta/Kasko (which use the two-pane view).
 const RecordsTableView = ({
   config, t, rows, loading, formik, editing, saving, showModal, setShowModal,
-  fieldLabel, formatCell, buildItems, openCreate, openEdit, handleDelete,
+  fieldLabel, formatCell, buildItems, openCreate, openEdit, handleDelete, onManageDocuments,
 }) => {
   const gridFields = config.fields.filter((field) => !field.full);
   const fullFields = config.fields.filter((field) => field.full);
@@ -45,6 +45,17 @@ const RecordsTableView = ({
                   <td key={col.key}>{formatCell(col, row[col.key])}</td>
                 ))}
                 <td className="vehicle-records-panel__actions text-end">
+                  <Button
+                    size="sm"
+                    variant="outline-secondary"
+                    title={t("vehicles.records.manageDocuments")}
+                    onClick={() => onManageDocuments(row)}
+                  >
+                    <BsPaperclip />
+                    {!!row._count?.documents && (
+                      <Badge bg="dark" className="ms-1">{row._count.documents}</Badge>
+                    )}
+                  </Button>
                   <Button size="sm" variant="outline-primary" onClick={() => openEdit(row)}>
                     <BsPencil />
                   </Button>

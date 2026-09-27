@@ -212,6 +212,10 @@
       "saveVehicleFirst": "Bu sekmeyi kullanmak için önce aracı kaydedin.",
       "deleteConfirmTitle": "Bu kaydı silmek istediğinizden emin misiniz?",
       "deleteConfirmText": "Bu işlemi geri alamazsınız!",
+      "manageDocuments": "Belge Ekle",
+      "documentsModal": {
+        "title": "Kayda Bağlı Evraklar"
+      },
       "toasts": {
         "loadError": "Kayıtlar yüklenirken bir hata oluştu.",
         "createSuccess": "Kayıt başarıyla eklendi.",

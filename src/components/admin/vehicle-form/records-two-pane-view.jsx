@@ -8,7 +8,7 @@ import InsuranceScan from "./insurance-scan";
 const RecordsTwoPaneView = ({
   config, t, i18n, rows, loading, formik, editing, saving,
   fieldLabel, formatCell, buildItems, setEditing, toFormValues,
-  handleDelete,
+  handleDelete, onManageDocuments,
 }) => {
   const groupRows = (type) => rows.filter((row) => row[config.typeField] === type);
   const groupTotal = (type) =>
@@ -68,6 +68,10 @@ const RecordsTwoPaneView = ({
                           <td key={col.key}>{formatCell(col, row[col.key])}</td>
                         ))}
                         <td className="records-two-pane__row-actions text-end">
+                          <button type="button" onClick={() => onManageDocuments(row)}>
+                            {t("vehicles.records.manageDocuments")}
+                            {!!row._count?.documents && ` (${row._count.documents})`}
+                          </button>
                           <button type="button" onClick={() => startEdit(row)}>
                             {t("vehicles.records.edit")}
                           </button>

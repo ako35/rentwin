@@ -212,6 +212,10 @@
       "saveVehicleFirst": "Save the vehicle first to use this tab.",
       "deleteConfirmTitle": "Are you sure you want to delete this record?",
       "deleteConfirmText": "You won't be able to revert this action!",
+      "manageDocuments": "Add Document",
+      "documentsModal": {
+        "title": "Documents Attached to This Record"
+      },
       "toasts": {
         "loadError": "There was an error while loading the records.",
         "createSuccess": "Record added successfully.",

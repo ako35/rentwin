@@ -27,3 +27,24 @@ export const deleteVehicleDocument = async (id) => {
   const response = await axios.delete(`${API_URL}/car/admin/documents/${id}/auth`, services.authHeader());
   return response.data;
 };
+
+// resource: "insurances" | "taxes" | "maintenances" | "inspections"
+export const getRecordDocuments = async (resource, recordId) => {
+  const response = await axios.get(
+    `${API_URL}/car/admin/${resource}/${recordId}/documents/auth`,
+    services.authHeader()
+  );
+  return response.data;
+};
+
+export const addRecordDocument = async (resource, recordId, { name, file }) => {
+  const formData = new FormData();
+  if (name) formData.append("name", name);
+  formData.append("file", file);
+  const response = await axios.post(
+    `${API_URL}/car/admin/${resource}/${recordId}/documents/auth`,
+    formData,
+    { headers: { "Content-Type": "multipart/form-data", Authorization: bearer() } }
+  );
+  return response.data;
+};

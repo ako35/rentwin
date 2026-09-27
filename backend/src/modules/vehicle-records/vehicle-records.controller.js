@@ -1,6 +1,7 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const asyncHandler = require("../../middleware/async-handler");
+const { deleteImage } = require("../../lib/storage");
 
 // One generic CRUD surface for the vehicle sub-records shown on the kolayCAR-style
 // tabs (Sigorta/Kasko, MTV, Bakim/Tamir, Muayene/Egzoz). Each entry maps the URL
@@ -8,6 +9,7 @@ const asyncHandler = require("../../middleware/async-handler");
 const RESOURCES = {
   insurances: {
     model: "vehicleInsurance",
+    documentField: "insuranceId",
     fields: ["type", "company", "policyNo", "startDate", "endDate", "premium", "notes"],
     required: ["type", "company", "policyNo", "startDate", "endDate"],
     dateFields: ["startDate", "endDate"],
@@ -16,6 +18,7 @@ const RESOURCES = {
   },
   taxes: {
     model: "vehicleTax",
+    documentField: "taxId",
     fields: ["period", "installment", "amount", "dueDate", "paidDate", "notes"],
     required: ["period", "installment"],
     dateFields: ["dueDate", "paidDate"],
@@ -24,6 +27,7 @@ const RESOURCES = {
   },
   maintenances: {
     model: "vehicleMaintenance",
+    documentField: "maintenanceId",
     fields: ["type", "date", "odometer", "vendor", "description", "cost", "nextDate", "nextOdometer"],
     required: ["date", "description"],
     dateFields: ["date", "nextDate"],
@@ -50,6 +54,7 @@ const RESOURCES = {
   },
   inspections: {
     model: "vehicleInspection",
+    documentField: "inspectionId",
     fields: ["type", "date", "result", "expiryDate", "station", "cost", "notes"],
     required: ["date"],
     dateFields: ["date", "expiryDate"],
@@ -122,6 +127,7 @@ const listRecords = asyncHandler(async (req, res) => {
   const records = await prisma[resource.model].findMany({
     where: { vehicleId },
     orderBy: resource.orderBy,
+    include: { _count: { select: { documents: true } } },
   });
   res.json(records);
 });
@@ -165,6 +171,16 @@ const deleteRecord = asyncHandler(async (req, res) => {
 
   const target = await prisma[resource.model].findUnique({ where: { id } });
   if (!target) throw new HttpError(404, "Record not found.");
+
+  // The record's attached documents (VehicleDocument rows) cascade-delete at
+  // the DB level once the record itself is gone, but that cascade never
+  // touches their R2 objects — remove those first or they'd leak as orphaned
+  // storage every time an admin deletes a record with a document attached.
+  const documents = await prisma.vehicleDocument.findMany({
+    where: { [resource.documentField]: id },
+    select: { pathname: true },
+  });
+  await Promise.all(documents.map((doc) => deleteImage(doc.pathname).catch(() => {})));
 
   await prisma[resource.model].delete({ where: { id } });
   res.json({ message: "Record deleted." });
