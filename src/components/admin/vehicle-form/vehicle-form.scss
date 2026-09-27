@@ -277,6 +277,16 @@ $breakpointxl: 1200px;
   }
 }
 
+.vehicle-documents-tab__upload {
+  @include m.flexbox(row, flex-start, center, 0.75rem);
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+
+  .form-control {
+    max-width: 320px;
+  }
+}
+
 /* Two-pane record layout (Sigorta / Kasko) --------------------------------- */
 .records-two-pane {
   display: grid;

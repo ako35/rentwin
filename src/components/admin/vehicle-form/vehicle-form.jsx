@@ -10,6 +10,7 @@ import { buildVehicleSections } from "./vehicle-form-sections";
 import { useFleetPicklist } from "./use-fleet-picklist";
 import VehicleIdentityTab from "./vehicle-identity-tab";
 import VehicleContractsTab from "./vehicle-contracts-tab";
+import VehicleDocumentsTab from "./vehicle-documents-tab";
 import "./vehicle-form.scss";
 
 const RECORD_TABS = ["insurance", "tax", "maintenance", "inspection"];
@@ -96,6 +97,11 @@ const VehicleForm = ({
         ))}
         {mode === "edit" && (
           <Nav.Item>
+            <Nav.Link eventKey="documents">{t("vehicles.tabs.documents")}</Nav.Link>
+          </Nav.Item>
+        )}
+        {mode === "edit" && (
+          <Nav.Item>
             <Nav.Link eventKey="contracts">{t("vehicles.tabs.contracts")}</Nav.Link>
           </Nav.Item>
         )}
@@ -118,6 +124,8 @@ const VehicleForm = ({
               <RecordsPanel key={key} vehicleId={vehicleId} config={RECORD_CONFIGS[key]} />
             )
         )}
+
+        {tab === "documents" && <VehicleDocumentsTab vehicleId={vehicleId} />}
 
         {tab === "contracts" && <VehicleContractsTab vehicleId={vehicleId} />}
       </div>

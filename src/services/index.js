@@ -12,6 +12,7 @@ import { addVehicle, deleteVehicle, downloadVehicleReports, extractRegistration,
 
 import { addVehicleRecord, deleteVehicleRecord, getVehicleRecords, updateVehicleRecord } from "./vehicle/vehicle-records-service";
 import { deleteModelImage, generateModelImage, listModelImages, uploadModelImage } from "./vehicle/vehicle-model-image-service";
+import { addVehicleDocument, deleteVehicleDocument, getVehicleDocuments } from "./vehicle/vehicle-document-service";
 
 import { addBranch, deleteBranch, getBranches, getPublicBranches, updateBranch } from "./branch/branch-service";
 import { addLocation, deleteLocation, getLocations, updateLocation, uploadLocationImage } from "./location/location-service";
@@ -134,6 +135,10 @@ export const services = {
         addVehicleRecord,
         updateVehicleRecord,
         deleteVehicleRecord,
+        // VEHICLE DOCUMENTS (ruhsat vb. genel evraklar)
+        getVehicleDocuments,
+        addVehicleDocument,
+        deleteVehicleDocument,
     },
     branch: {
         getBranches,

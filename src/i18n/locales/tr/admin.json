@@ -139,6 +139,7 @@
       "tax": "MTV",
       "maintenance": "Bakım / Tamir",
       "inspection": "Muayene / Egzoz",
+      "documents": "Evraklar",
       "contracts": "Kontratlar"
     },
     "contractsTab": {
@@ -150,6 +151,19 @@
       "amount": "Tutar",
       "status": "Durum",
       "empty": "Bu araca ait kontrat bulunmuyor."
+    },
+    "documentsTab": {
+      "title": "Araç Evrakları",
+      "namePlaceholder": "Evrak adı (ör. Ruhsat)",
+      "upload": "Evrak Yükle",
+      "name": "Evrak Adı",
+      "uploadedAt": "Yüklenme Tarihi",
+      "actions": "İşlem",
+      "empty": "Bu araca ait evrak bulunmuyor.",
+      "uploadSuccess": "Evrak yüklendi.",
+      "removeConfirm": "{{name}} evrakı silinsin mi?",
+      "removeSuccess": "Evrak silindi.",
+      "error": "İşlem tamamlanamadı, lütfen tekrar deneyin."
     },
     "sections": {
       "identity": "Araç Bilgileri",

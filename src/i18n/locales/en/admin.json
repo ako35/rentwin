@@ -139,6 +139,7 @@
       "tax": "Road Tax",
       "maintenance": "Maintenance",
       "inspection": "Inspection",
+      "documents": "Documents",
       "contracts": "Contracts"
     },
     "contractsTab": {
@@ -150,6 +151,19 @@
       "amount": "Amount",
       "status": "Status",
       "empty": "No contracts for this vehicle yet."
+    },
+    "documentsTab": {
+      "title": "Vehicle Documents",
+      "namePlaceholder": "Document name (e.g. Registration)",
+      "upload": "Upload Document",
+      "name": "Document Name",
+      "uploadedAt": "Uploaded",
+      "actions": "Actions",
+      "empty": "No documents for this vehicle yet.",
+      "uploadSuccess": "Document uploaded.",
+      "removeConfirm": "Remove document {{name}}?",
+      "removeSuccess": "Document removed.",
+      "error": "Couldn't complete the action, please try again."
     },
     "sections": {
       "identity": "Vehicle Details",

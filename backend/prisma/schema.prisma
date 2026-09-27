@@ -197,6 +197,7 @@ model Vehicle {
   taxes                VehicleTax[]
   maintenances         VehicleMaintenance[]
   inspections          VehicleInspection[]
+  documents            VehicleDocument[]
   createdAt            DateTime             @default(now())
   updatedAt            DateTime             @updatedAt
 }
@@ -259,6 +260,22 @@ model VehicleInspection {
   notes      String?
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
+}
+
+// General-purpose evrak (ruhsat, plaka fotoğrafı vb.) attached to a vehicle —
+// distinct from VehicleImage (fleet catalog photos, shown to customers) and
+// from the per-record scans (insurance/registration extraction), which are
+// read once and discarded. These are kept indefinitely as reference files.
+model VehicleDocument {
+  id        String   @id @default(uuid())
+  vehicleId String
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  name      String
+  blobUrl   String
+  pathname  String
+  mimeType  String?
+  size      Int?
+  createdAt DateTime @default(now())
 }
 
 model Branch {
