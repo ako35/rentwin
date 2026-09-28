@@ -126,4 +126,37 @@
     &:active &__cta {
         transform: translateY(1px);
     }
+
+    // Catalogue list view (/araclar, one card per row instead of a 3-up
+    // grid): image pinned to a fixed-width column on the left, everything
+    // else filling the rest of the row. Below 640px it just falls back to
+    // the plain stacked card above — a skinny row would otherwise squeeze
+    // the image and text too tight to read on a phone.
+    &--list {
+        @media (min-width: 641px) {
+            flex-direction: row;
+        }
+    }
+
+    &--list &__image {
+        @media (min-width: 641px) {
+            width: 280px;
+            height: 170px;
+            flex-shrink: 0;
+            border-bottom: none;
+            border-right: 1px solid v.$color3;
+        }
+    }
+
+    &--list &__body {
+        @media (min-width: 641px) {
+            justify-content: center;
+        }
+    }
+
+    &--list &__foot {
+        @media (min-width: 641px) {
+            margin-top: 0.85rem;
+        }
+    }
 }

@@ -192,7 +192,7 @@ const Vehicles = () => {
             ) : (
               <div className="vehicles__grid">
                 {pagedVehicles.map((item) => (
-                  <VehicleGridCard key={item.id} {...item} />
+                  <VehicleGridCard key={item.id} {...item} listView />
                 ))}
               </div>
             )}

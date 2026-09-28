@@ -12,7 +12,10 @@ const API_URL = import.meta.env.VITE_APP_API_URL;
 // ground, dark bold name, an inline spec row (transmission · fuel · year) and
 // a footer pairing the quote hint with the "Şimdi Kirala" action. The whole
 // card is the link; the action is a styled span, not a nested <button>.
-const VehicleGridCard = (props) => {
+// `listView` (only passed from the /araclar catalogue, one-result-per-row
+// layout) switches the card to image-left/details-right above 640px — the
+// homepage rail keeps the plain stacked card either way.
+const VehicleGridCard = ({ listView, ...props }) => {
   const { t } = useTranslation("vehicles");
   const { t: tCommon } = useTranslation("common");
   const name = [props.brand, props.model].filter(Boolean).join(" ");
@@ -26,7 +29,10 @@ const VehicleGridCard = (props) => {
   const imageId = Array.isArray(props.image) ? props.image[0] : props.image;
 
   return (
-    <AppLink to={`${routes.vehicles}/${props.id}`} className="vehicle-grid-card">
+    <AppLink
+      to={`${routes.vehicles}/${props.id}`}
+      className={`vehicle-grid-card${listView ? " vehicle-grid-card--list" : ""}`}
+    >
       <div className="vehicle-grid-card__image">
         {imageId ? (
           <img
