@@ -777,6 +777,9 @@
         "removeConfirm": "Delete this photo?",
         "removeSuccess": "Photo deleted.",
         "error": "Couldn't complete the action, please try again.",
+        "takenBy": "Taken by: {{name}}",
+        "takenByUnknown": "Taken by: unknown",
+        "takenAt": "on {{date}}",
         "angles": {
           "FRONT": "Front",
           "BACK": "Back",

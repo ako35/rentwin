@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Modal, Spinner } from "react-bootstrap";
 import { BsTrash } from "react-icons/bs";
+import moment from "moment/moment";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import SaveFirstHint from "./SaveFirstHint";
@@ -104,6 +105,13 @@ const PhotosTab = ({ isCreate, contractId }) => {
             </Modal.Header>
             <Modal.Body className="contract-page__photos-preview">
               <img src={preview.blobUrl} alt={c(`angles.${preview.angle}`)} />
+              <p className="contract-page__photos-meta">
+                {preview.takenBy
+                  ? c("takenBy", { name: `${preview.takenBy.firstName} ${preview.takenBy.lastName}`.trim() })
+                  : c("takenByUnknown")}
+                {" · "}
+                {c("takenAt", { date: moment(preview.createdAt).format("DD.MM.YYYY HH:mm") })}
+              </p>
             </Modal.Body>
             <Modal.Footer>
               <button

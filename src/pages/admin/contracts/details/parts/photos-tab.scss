@@ -67,6 +67,12 @@
     }
   }
 
+  &-meta {
+    font-size: 0.78rem;
+    color: v.$color5_3;
+    margin: 0.6rem 0 0;
+  }
+
   &-delete {
     border: none;
     background: none;

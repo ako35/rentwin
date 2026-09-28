@@ -777,6 +777,9 @@
         "removeConfirm": "Bu fotoğraf silinsin mi?",
         "removeSuccess": "Fotoğraf silindi.",
         "error": "İşlem tamamlanamadı, lütfen tekrar deneyin.",
+        "takenBy": "Çeken: {{name}}",
+        "takenByUnknown": "Çeken bilinmiyor",
+        "takenAt": "{{date}} tarihinde",
         "angles": {
           "FRONT": "Ön",
           "BACK": "Arka",
