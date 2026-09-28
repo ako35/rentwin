@@ -1,5 +1,6 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
+const { uploadImage, deleteImage } = require("../../lib/storage");
 const { parseFrontendDateTime, round2 } = require("../../lib/dates");
 const { checkAvailability } = require("../../lib/availability");
 const { serializeContract, serializeUser } = require("../../lib/serializers");
@@ -479,8 +480,40 @@ const updateInvoice = asyncHandler(async (req, res) => {
 const deleteInvoice = asyncHandler(async (req, res) => {
   const invoice = await prisma.invoice.findUnique({ where: { id: req.params.invoiceId } });
   if (!invoice) throw new HttpError(404, "Invoice not found.");
+  if (invoice.pdfPathname) await deleteImage(invoice.pdfPathname).catch(() => {});
   await prisma.invoice.delete({ where: { id: invoice.id } });
   res.json({ ok: true });
+});
+
+// Attaches the actual issued invoice (a PDF, or a scan of a paper one) to its
+// row — replaces any previously uploaded file for the same invoice.
+const uploadInvoicePdf = asyncHandler(async (req, res) => {
+  const invoice = await prisma.invoice.findUnique({ where: { id: req.params.invoiceId } });
+  if (!invoice) throw new HttpError(404, "Invoice not found.");
+  if (!req.file) throw new HttpError(400, "Dosya yüklenmedi.");
+
+  const { blobUrl, pathname } = await uploadImage(req.file, "invoices");
+
+  const updated = await prisma.invoice.update({
+    where: { id: invoice.id },
+    data: { pdfUrl: blobUrl, pdfPathname: pathname },
+  });
+  if (invoice.pdfPathname) await deleteImage(invoice.pdfPathname).catch(() => {});
+
+  res.status(201).json(updated);
+});
+
+const deleteInvoicePdf = asyncHandler(async (req, res) => {
+  const invoice = await prisma.invoice.findUnique({ where: { id: req.params.invoiceId } });
+  if (!invoice) throw new HttpError(404, "Invoice not found.");
+  if (!invoice.pdfPathname) return res.json(invoice);
+
+  await deleteImage(invoice.pdfPathname).catch(() => {});
+  const updated = await prisma.invoice.update({
+    where: { id: invoice.id },
+    data: { pdfUrl: null, pdfPathname: null },
+  });
+  res.json(updated);
 });
 
 module.exports = {
@@ -493,4 +526,6 @@ module.exports = {
   createInvoice,
   updateInvoice,
   deleteInvoice,
+  uploadInvoicePdf,
+  deleteInvoicePdf,
 };

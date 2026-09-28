@@ -150,6 +150,27 @@ export const deleteInvoice = async (invoiceId) => {
   return response.data;
 };
 
+const bearer = () => `Bearer ${services.encryptedLocalStorage.getItem("rentwintoken")}`;
+
+export const uploadInvoicePdf = async (invoiceId, file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  const response = await axios.post(
+    `${API_URL}/contracts/admin/invoices/${invoiceId}/pdf/auth`,
+    formData,
+    { headers: { "Content-Type": "multipart/form-data", Authorization: bearer() } }
+  );
+  return response.data;
+};
+
+export const deleteInvoicePdf = async (invoiceId) => {
+  const response = await axios.delete(
+    `${API_URL}/contracts/admin/invoices/${invoiceId}/pdf/auth`,
+    services.authHeader()
+  );
+  return response.data;
+};
+
 export const getAvailableCars = async ({ pickUpTime, dropOffTime, excludeContractId, excludeReservationId } = {}) => {
   const params = new URLSearchParams({ pickUpTime, dropOffTime });
   if (excludeContractId) params.set("excludeContractId", excludeContractId);

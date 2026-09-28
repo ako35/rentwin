@@ -513,6 +513,8 @@ model Invoice {
   customerTitle String?
   taxNo         String?
   note          String?
+  pdfUrl        String? // the actual issued invoice, scanned/exported as a PDF
+  pdfPathname   String?
   createdAt     DateTime @default(now())
 }
 

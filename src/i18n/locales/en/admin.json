@@ -436,7 +436,13 @@
         "editTitle": "Edit Invoice",
         "deleteConfirm": "Delete this invoice?",
         "deleteConfirmText": "This cannot be undone.",
-        "none": "No invoice has been raised for this contract yet."
+        "none": "No invoice has been raised for this contract yet.",
+        "pdf": "PDF",
+        "pdfUpload": "Upload PDF",
+        "pdfView": "PDF",
+        "pdfRemove": "Remove PDF",
+        "pdfDeleteConfirm": "Remove this invoice's PDF?",
+        "pdfError": "Couldn't complete the PDF action, please try again."
       },
       "extrasFields": {
         "name": "Extra",

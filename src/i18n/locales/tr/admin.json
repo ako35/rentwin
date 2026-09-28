@@ -436,7 +436,13 @@
         "editTitle": "Faturayı Düzenle",
         "deleteConfirm": "Bu faturayı silmek istediğinize emin misiniz?",
         "deleteConfirmText": "Bu işlem geri alınamaz.",
-        "none": "Bu kontrat için henüz fatura kesilmedi."
+        "none": "Bu kontrat için henüz fatura kesilmedi.",
+        "pdf": "PDF",
+        "pdfUpload": "PDF Yükle",
+        "pdfView": "PDF",
+        "pdfRemove": "PDF'i kaldır",
+        "pdfDeleteConfirm": "Bu faturanın PDF'i kaldırılsın mı?",
+        "pdfError": "PDF işlemi tamamlanamadı, lütfen tekrar deneyin."
       },
       "extrasFields": {
         "name": "Ekstra",

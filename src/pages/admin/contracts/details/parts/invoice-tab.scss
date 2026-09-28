@@ -80,5 +80,43 @@
       @include m.flexbox(row, flex-end, center, 0.5rem);
       margin-top: 0.7rem;
     }
+
+    &-pdf {
+      white-space: nowrap;
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: v.$color1;
+
+        &:hover { text-decoration: underline; }
+      }
+
+      button {
+        border: none;
+        background: none;
+        padding: 0;
+        margin-left: 0.45rem;
+        color: #c0392b;
+        vertical-align: middle;
+
+        &:hover { text-decoration: underline; }
+      }
+    }
+
+    &-pdf-upload {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: v.$color5_3;
+      cursor: pointer;
+
+      &:hover { color: v.$color1; text-decoration: underline; }
+    }
   }
 }

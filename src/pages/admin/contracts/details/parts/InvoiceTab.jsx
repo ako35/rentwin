@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner, Table } from "react-bootstrap";
 import moment from "moment/moment";
-import { BsReceipt } from "react-icons/bs";
+import { BsFileEarmarkPdf, BsReceipt, BsTrash, BsUpload } from "react-icons/bs";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import SaveFirstHint from "./SaveFirstHint";
@@ -42,6 +42,7 @@ const InvoiceTab = ({
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
   const [attempted, setAttempted] = useState(false);
+  const [pdfBusyId, setPdfBusyId] = useState(null);
 
   if (isCreate) return <SaveFirstHint />;
 
@@ -152,6 +153,36 @@ const InvoiceTab = ({
       });
   };
 
+  const uploadPdf = async (inv, file) => {
+    if (!file) return;
+    setPdfBusyId(inv.id);
+    try {
+      await services.contract.uploadInvoicePdf(inv.id, file);
+      onInvoicesChange?.();
+    } catch {
+      utils.functions.swalToast(c("invoice.pdfError"), "error");
+    } finally {
+      setPdfBusyId(null);
+    }
+  };
+
+  const removePdf = (inv) => {
+    utils.functions
+      .swalQuestion(c("invoice.pdfDeleteConfirm"), "", { danger: true })
+      .then(async (r) => {
+        if (!r.isConfirmed) return;
+        setPdfBusyId(inv.id);
+        try {
+          await services.contract.deleteInvoicePdf(inv.id);
+          onInvoicesChange?.();
+        } catch {
+          utils.functions.swalToast(c("invoice.pdfError"), "error");
+        } finally {
+          setPdfBusyId(null);
+        }
+      });
+  };
+
   const previewGross = form && form.grossAmount !== "" ? Number(form.grossAmount) || 0 : 0;
   const previewNet = previewGross / (1 + rate / 100);
 
@@ -177,13 +208,14 @@ const InvoiceTab = ({
             <th>{c("invoice.period")}</th>
             <th>{c("invoice.customer")}</th>
             <th className="text-end">{c("invoice.gross")}</th>
+            <th>{c("invoice.pdf")}</th>
             <th className="text-end">{rc("actions")}</th>
           </tr>
         </thead>
         <tbody>
           {list.length === 0 && (
             <tr>
-              <td colSpan={6}>
+              <td colSpan={7}>
                 <div className="contract-records__empty">
                   <BsReceipt />
                   <span>{c("invoice.none")}</span>
@@ -198,6 +230,36 @@ const InvoiceTab = ({
               <td>{fmtPeriod(inv.periodFrom, inv.periodTo)}</td>
               <td>{inv.customerTitle || "—"}</td>
               <td className="text-end">{money(inv.grossAmount)} TL</td>
+              <td className="contract-page__inv-pdf">
+                {pdfBusyId === inv.id ? (
+                  <Spinner animation="border" size="sm" />
+                ) : inv.pdfUrl ? (
+                  <>
+                    <a href={inv.pdfUrl} target="_blank" rel="noreferrer" title={c("invoice.pdfView")}>
+                      <BsFileEarmarkPdf /> {c("invoice.pdfView")}
+                    </a>
+                    <button type="button" onClick={() => removePdf(inv)} title={c("invoice.pdfRemove")}>
+                      <BsTrash />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      id={`invoice-pdf-${inv.id}`}
+                      className="d-none"
+                      onChange={(e) => {
+                        uploadPdf(inv, e.target.files[0]);
+                        e.target.value = "";
+                      }}
+                    />
+                    <label htmlFor={`invoice-pdf-${inv.id}`} className="contract-page__inv-pdf-upload">
+                      <BsUpload /> {c("invoice.pdfUpload")}
+                    </label>
+                  </>
+                )}
+              </td>
               <td className="contract-records__actions text-end">
                 <button type="button" onClick={() => openEdit(inv)}>{rc("edit")}</button>
                 <button type="button" onClick={() => remove(inv)}>{rc("delete")}</button>

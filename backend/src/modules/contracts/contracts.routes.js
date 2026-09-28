@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const authenticate = require("../../middleware/authenticate");
 const requireAdmin = require("../../middleware/require-admin");
+const upload = require("../../middleware/upload");
 const {
   getContractsByPage,
   getContractsByUser,
@@ -28,6 +29,8 @@ const {
   createInvoice,
   updateInvoice,
   deleteInvoice,
+  uploadInvoicePdf,
+  deleteInvoicePdf,
 } = require("./contracts.controller");
 
 const router = Router();
@@ -74,6 +77,19 @@ router.get("/contracts/admin/:id/invoices/auth", authenticate, requireAdmin, lis
 router.post("/contracts/admin/:id/invoice/auth", authenticate, requireAdmin, createInvoice);
 router.put("/contracts/admin/invoices/:invoiceId/auth", authenticate, requireAdmin, updateInvoice);
 router.delete("/contracts/admin/invoices/:invoiceId/auth", authenticate, requireAdmin, deleteInvoice);
+router.post(
+  "/contracts/admin/invoices/:invoiceId/pdf/auth",
+  authenticate,
+  requireAdmin,
+  upload.single("file"),
+  uploadInvoicePdf
+);
+router.delete(
+  "/contracts/admin/invoices/:invoiceId/pdf/auth",
+  authenticate,
+  requireAdmin,
+  deleteInvoicePdf
+);
 router.post("/contracts/admin/:id/return/auth", authenticate, requireAdmin, returnContract);
 router.post("/contracts/admin/:id/cancel/auth", authenticate, requireAdmin, cancelContract);
 router.post("/contracts/admin/:id/reopen/auth", authenticate, requireAdmin, reopenContract);
