@@ -63,6 +63,12 @@
         letter-spacing: 0.03em;
         color: v.$color1;
         margin-bottom: 0.4rem;
+
+        &--sub {
+            margin-top: 0.7rem;
+            padding-top: 0.6rem;
+            border-top: 1px dashed v.$color3;
+        }
     }
 
     &__empty {

@@ -9,7 +9,6 @@ import {
   BsSignpost2,
   BsFileEarmarkText,
   BsPersonBadge,
-  BsPersonBadgeFill,
   BsPen,
 } from "react-icons/bs";
 import { utils } from "../../../utils";
@@ -28,7 +27,6 @@ const CATEGORIES = [
 const HGS_KEY = "hgsPending";
 const INVOICE_KEY = "invoicePending";
 const KBS_KEY = "kbsPending";
-const KBS_RELEASE_KEY = "kbsReleasePending";
 const SIGN_KEY = "signPending";
 
 // Maps an alert category to the vehicle-detail record tab it belongs to —
@@ -129,7 +127,8 @@ const MaintenanceAlertBar = ({
 
   const categories = alerts?.categories || {};
   const isSpecialTab = (key) =>
-    key === HGS_KEY || key === INVOICE_KEY || key === KBS_KEY || key === KBS_RELEASE_KEY || key === SIGN_KEY;
+    key === HGS_KEY || key === INVOICE_KEY || key === KBS_KEY || key === SIGN_KEY;
+  const kbsCount = kbsPending.length + kbsReleasePending.length;
 
   const activeList = open && !isSpecialTab(open) ? categories[open] || [] : [];
 
@@ -183,24 +182,12 @@ const MaintenanceAlertBar = ({
             type="button"
             className={
               "maintenance-alert-bar__tab" +
-              (kbsPending.length ? " maintenance-alert-bar__tab--due maintenance-alert-bar__tab--overdue" : "") +
+              (kbsCount ? " maintenance-alert-bar__tab--due maintenance-alert-bar__tab--overdue" : "") +
               (open === KBS_KEY ? " maintenance-alert-bar__tab--active" : "")
             }
             onClick={() => setOpen(open === KBS_KEY ? null : KBS_KEY)}
           >
-            <BsPersonBadge /> {t("alertBar.kbsPending")} ({kbsPending.length})
-          </button>
-
-          <button
-            type="button"
-            className={
-              "maintenance-alert-bar__tab" +
-              (kbsReleasePending.length ? " maintenance-alert-bar__tab--due maintenance-alert-bar__tab--overdue" : "") +
-              (open === KBS_RELEASE_KEY ? " maintenance-alert-bar__tab--active" : "")
-            }
-            onClick={() => setOpen(open === KBS_RELEASE_KEY ? null : KBS_RELEASE_KEY)}
-          >
-            <BsPersonBadgeFill /> {t("alertBar.kbsReleasePending")} ({kbsReleasePending.length})
+            <BsPersonBadge /> {t("alertBar.kbsPending")} ({kbsCount})
           </button>
 
           <button
@@ -296,12 +283,10 @@ const MaintenanceAlertBar = ({
           ) : (
             <MixedStatusTable rows={kbsPending} />
           )}
-        </div>
-      )}
 
-      {open === KBS_RELEASE_KEY && (
-        <div className="maintenance-alert-bar__panel">
-          <div className="maintenance-alert-bar__panel-head">{t("alertBar.kbsReleasePendingHead")}</div>
+          <div className="maintenance-alert-bar__panel-head maintenance-alert-bar__panel-head--sub">
+            {t("alertBar.kbsReleasePendingHead")}
+          </div>
           {kbsReleasePending.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.kbsReleasePendingNone")}</div>
           ) : (
