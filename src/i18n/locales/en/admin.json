@@ -442,7 +442,9 @@
         "pdfView": "PDF",
         "pdfRemove": "Remove PDF",
         "pdfDeleteConfirm": "Remove this invoice's PDF?",
-        "pdfError": "Couldn't complete the PDF action, please try again."
+        "pdfError": "Couldn't complete the PDF action, please try again.",
+        "pdfFieldLabel": "Invoice File (PDF)",
+        "pdfExisting": "Current file:"
       },
       "extrasFields": {
         "name": "Extra",

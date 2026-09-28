@@ -442,7 +442,9 @@
         "pdfView": "PDF",
         "pdfRemove": "PDF'i kaldır",
         "pdfDeleteConfirm": "Bu faturanın PDF'i kaldırılsın mı?",
-        "pdfError": "PDF işlemi tamamlanamadı, lütfen tekrar deneyin."
+        "pdfError": "PDF işlemi tamamlanamadı, lütfen tekrar deneyin.",
+        "pdfFieldLabel": "Fatura Dosyası (PDF)",
+        "pdfExisting": "Mevcut dosya:"
       },
       "extrasFields": {
         "name": "Ekstra",

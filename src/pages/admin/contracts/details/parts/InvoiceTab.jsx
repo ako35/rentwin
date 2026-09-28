@@ -22,6 +22,8 @@ const emptyForm = () => ({
   customerTitle: "",
   taxNo: "",
   note: "",
+  file: null,
+  existingPdfUrl: null,
 });
 
 const fmtPeriod = (from, to) => {
@@ -82,6 +84,8 @@ const InvoiceTab = ({
       customerTitle: inv.customerTitle || "",
       taxNo: inv.taxNo || "",
       note: inv.note || "",
+      file: null,
+      existingPdfUrl: inv.pdfUrl || null,
     });
   };
   const close = () => setForm(null);
@@ -97,6 +101,7 @@ const InvoiceTab = ({
     setSaving(true);
     try {
       const gross = form.grossAmount !== "" ? Number(form.grossAmount) : undefined;
+      let invoiceId = form.id;
       if (form.id) {
         await services.contract.updateInvoice(form.id, {
           number: form.number.trim(),
@@ -109,7 +114,7 @@ const InvoiceTab = ({
           note: form.note.trim(),
         });
       } else {
-        await services.contract.createInvoice(contractId, {
+        const created = await services.contract.createInvoice(contractId, {
           number: form.number.trim(),
           issuedAt: form.issuedAt || undefined,
           periodFrom: form.periodFrom || undefined,
@@ -119,6 +124,17 @@ const InvoiceTab = ({
           taxNo: form.taxNo.trim() || undefined,
           note: form.note.trim() || undefined,
         });
+        invoiceId = created.id;
+      }
+      // A file picked here is a nice-to-have on top of the invoice fields
+      // themselves — if it fails to upload, the invoice is still saved, so
+      // this gets its own toast rather than aborting the whole save.
+      if (form.file) {
+        try {
+          await services.contract.uploadInvoicePdf(invoiceId, form.file);
+        } catch {
+          utils.functions.swalToast(c("invoice.pdfError"), "error");
+        }
       }
       close();
       onInvoicesChange?.();
@@ -342,6 +358,22 @@ const InvoiceTab = ({
             <Form.Group className="contract-page__inv-note">
               <Form.Label>{c("invoice.note")}</Form.Label>
               <Form.Control value={form.note} onChange={set("note")} />
+            </Form.Group>
+            <Form.Group className="contract-page__inv-note">
+              <Form.Label>{c("invoice.pdfFieldLabel")}</Form.Label>
+              <Form.Control
+                type="file"
+                accept="application/pdf"
+                onChange={(e) => setForm((f) => ({ ...f, file: e.target.files[0] || null }))}
+              />
+              {form.existingPdfUrl && !form.file && (
+                <Form.Text>
+                  {c("invoice.pdfExisting")}{" "}
+                  <a href={form.existingPdfUrl} target="_blank" rel="noreferrer">
+                    {c("invoice.pdfView")}
+                  </a>
+                </Form.Text>
+              )}
             </Form.Group>
           </div>
           {previewGross > 0 && (
