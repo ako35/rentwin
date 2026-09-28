@@ -168,6 +168,16 @@
     letter-spacing: 0.3px;
   }
 
+  // Sits above the row's RowLink overlay (position: absolute, no z-index —
+  // stacks over static content regardless of source order) so a click-drag
+  // over the plate selects its text instead of always triggering the row
+  // navigation. Clicking elsewhere in the row still navigates as normal.
+  &__plate-text {
+    position: relative;
+    z-index: 1;
+    cursor: text;
+  }
+
   &__specs {
     color: v.$color5_3;
   }

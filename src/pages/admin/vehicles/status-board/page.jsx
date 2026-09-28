@@ -121,7 +121,7 @@ const AdminVehicleStatusBoardPage = () => {
                       {row.contractId && (
                         <RowLink to={`${routes.adminContracts}/${row.contractId}`} label={row.customerName} />
                       )}
-                      {row.licensePlate}
+                      <span className="status-board__plate-text">{row.licensePlate}</span>
                     </td>
                     <td title={vehicleLabel(row)}>{vehicleLabel(row) || "—"}</td>
                     <td>{row.dropOffTime ? utils.functions.getDateUTC(row.dropOffTime) : "—"}</td>
@@ -169,7 +169,7 @@ const AdminVehicleStatusBoardPage = () => {
                   <tr key={row.id} className="status-board__row row-link-host">
                     <td className="status-board__plate">
                       <RowLink to={`${routes.adminVehicles}/${row.id}`} label={row.licensePlate} />
-                      {row.licensePlate}
+                      <span className="status-board__plate-text">{row.licensePlate}</span>
                     </td>
                     <td title={vehicleLabel(row)}>{vehicleLabel(row) || "—"}</td>
                     <td>
