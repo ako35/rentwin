@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import moment from "moment/moment";
+import html2canvas from "html2canvas";
 import { services } from "../../../../services";
 import { constants } from "../../../../constants";
 import { Loading } from "../../../../components";
+import { utils } from "../../../../utils";
 import GenelSozlesme from "./GenelSozlesme";
 import Ek1Form from "./Ek1Form";
 import Tutanak from "./Tutanak";
@@ -34,6 +36,8 @@ const ContractPrintPage = () => {
   const { t: tc } = useTranslation("common");
   const p = useCallback((key) => t(`reservations.contract.print.${key}`), [t]);
 
+  const sheetRef = useRef(null);
+  const [downloadingPng, setDownloadingPng] = useState(false);
   const [contract, setContract] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -149,6 +153,25 @@ const ContractPrintPage = () => {
     if (data) document.title = `${p(`${docType}.title`)} — ${data.contractNo}`;
   }, [data, docType, p]);
 
+  // Renders the sheet at 2x for print-quality sharpness, then downloads it as
+  // a single (possibly tall, since the sheet isn't paginated on screen) PNG —
+  // useful for sending the sözleşme somewhere a PDF/print dialog isn't handy.
+  const handleDownloadPng = async () => {
+    if (!sheetRef.current || downloadingPng) return;
+    setDownloadingPng(true);
+    try {
+      const canvas = await html2canvas(sheetRef.current, { scale: 2, useCORS: true, backgroundColor: "#fff" });
+      const link = document.createElement("a");
+      link.download = `${docType}-${data.contractNo}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    } catch (error) {
+      utils.functions.swalToast(p("downloadPngError"), "error");
+    } finally {
+      setDownloadingPng(false);
+    }
+  };
+
   if (!DOC_TYPES.includes(docType)) return <div className="cprint">{p("badType")}</div>;
   if (loading) return <Loading />;
   if (error || !data) return <div className="cprint">{p("loadError")}</div>;
@@ -171,12 +194,15 @@ const ContractPrintPage = () => {
             </button>
           ))}
         </div>
+        <button type="button" disabled={downloadingPng} onClick={handleDownloadPng}>
+          {downloadingPng ? p("downloadingPng") : p("downloadPng")}
+        </button>
         <button type="button" className="cprint__toolbar-print" onClick={() => window.print()}>
           {p("print")}
         </button>
       </div>
 
-      <article className="cprint-sheet">
+      <article className="cprint-sheet" ref={sheetRef}>
         {docType === "tutanak" && <Tutanak data={data} p={p} />}
         {docType === "sozlesme" && <GenelSozlesme data={data} p={p} />}
         {docType === "ek1" && <Ek1Form data={data} p={p} />}
