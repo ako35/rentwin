@@ -766,6 +766,7 @@
         "statusPending": "Not signed",
         "dateLabel": "Signed date",
         "hint": "This contract has not been signed yet.",
+        "hintClosed": "This contract has not been signed yet. You can still mark it signed while it's closed.",
         "stamp": "{{name}} · {{date}}"
       },
       "print": {

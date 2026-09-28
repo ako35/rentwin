@@ -212,6 +212,24 @@ const ContractDetail = () => {
     }
   };
 
+  // Same reasoning as handleKbsReleaseLocked: marking the printed contract as
+  // signed is often done at hand-back, after the car (and the contract) is
+  // already closed — that shouldn't need reopening a finished contract, so
+  // this patches straight through too instead of riding the hidden "Kaydet".
+  const handleSignedLocked = async (signedAt) => {
+    setUpdating(true);
+    try {
+      const dto = buildContractDto({ ...formik.values, signedAt });
+      await services.contract.updateContract(formik.values.carId, contractId, dto);
+      utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
+      loadData();
+    } catch {
+      utils.functions.swalToast(t("reservations.toasts.updateError"), "error");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   const openNewCust = (target = "userId") => {
     setNewCustTarget(target);
     setNewCustModal(true);
@@ -316,10 +334,11 @@ const ContractDetail = () => {
             {!isCreate && (
               <KbsSection formik={formik} locked={locked} onReleaseLocked={handleKbsReleaseLocked} />
             )}
+            {/* Same reasoning as KABİS above: signing is tracked at hand-back
+                as often as at pickup, so this stays usable after the contract
+                closes instead of locking with the rest of the form. */}
             {!isCreate && (
-              <fieldset className="contract-page__fieldset" disabled={locked}>
-                <SignatureSection formik={formik} />
-              </fieldset>
+              <SignatureSection formik={formik} locked={locked} onToggleLocked={handleSignedLocked} />
             )}
             {/* HGS check-ins stay usable after the contract closes too — the
                 toll query itself often only comes in a few days after drop-off. */}

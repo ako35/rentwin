@@ -766,6 +766,7 @@
         "statusPending": "İmzalanmadı",
         "dateLabel": "İmza tarihi",
         "hint": "Bu sözleşme henüz imzalanmadı.",
+        "hintClosed": "Bu sözleşme henüz imzalanmadı. Kontrat kapalı olsa da imzalandı olarak işaretleyebilirsiniz.",
         "stamp": "{{name}} · {{date}}"
       },
       "print": {
