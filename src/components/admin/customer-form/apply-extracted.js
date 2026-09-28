@@ -15,7 +15,13 @@ const DOC_FIELDS = [
   "phoneNumber",
 ];
 
+// A single setValues call (rather than one setFieldValue per field) so formik
+// validates the fully-merged result in one pass — several setFieldValue calls
+// in a row each validate against the pre-loop values, leaving stale
+// "required" errors (and a disabled submit button) for fields a *later* call
+// in the same batch had already filled.
 export const applyExtractedCustomerFields = (formik, fields) => {
+  const patch = {};
   DOC_FIELDS.forEach((key) => {
     let value = fields?.[key];
     if (value === undefined || value === null || value === "") return;
@@ -28,6 +34,7 @@ export const applyExtractedCustomerFields = (formik, fields) => {
     // than feed it a string it can't display.
     if (key === "birthDate" && !/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
     // city must be set before district so the district dropdown has its options.
-    formik.setFieldValue(key, value);
+    patch[key] = value;
   });
+  formik.setValues({ ...formik.values, ...patch });
 };

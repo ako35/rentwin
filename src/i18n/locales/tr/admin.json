@@ -1624,10 +1624,6 @@
     "title": "Yakında",
     "desc": "{{module}} modülü üzerinde çalışıyoruz. Bu bölüm yakında kullanıma açılacak."
   },
-  "aiQuota": {
-    "used": "Bugün {{count}} AI okuma yapıldı",
-    "exhausted": "Bugünkü kota {{at}} istekte doldu — yarın sıfırlanır."
-  },
   "vehicleFilters": {
     "searchPlaceholder": "Plaka, marka, model, şube, vites, yakıt veya durum ara…",
     "clear": "Temizle"

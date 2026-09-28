@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
-import { useAiVisionUsage } from "../../../hooks/use-ai-vision-usage";
 
 // "Ruhsattan Doldur": admin picks a photo of the registration certificate,
 // Claude reads it server-side and we hand the extracted fields back up so the
@@ -23,7 +22,6 @@ const RegistrationScan = ({ onExtracted }) => {
   const { t } = useTranslation("admin");
   const inputRef = useRef();
   const [scanning, setScanning] = useState(false);
-  const { usage, refresh } = useAiVisionUsage();
 
   const tr = (key) => t(`vehicles.registrationScan.${key}`);
 
@@ -61,7 +59,6 @@ const RegistrationScan = ({ onExtracted }) => {
     } finally {
       setScanning(false);
       e.target.value = "";
-      refresh();
     }
   };
 
@@ -80,13 +77,6 @@ const RegistrationScan = ({ onExtracted }) => {
         {scanning && <Spinner animation="border" size="sm" className="me-1" />}
         {t("vehicles.registrationScan.button")}
       </Button>
-      {usage && (
-        <span className={`ms-2 small ${usage.exhaustedAt != null ? "text-danger" : "text-muted"}`}>
-          {usage.exhaustedAt != null
-            ? t("aiQuota.exhausted", { at: usage.exhaustedAt })
-            : t("aiQuota.used", { count: usage.count })}
-        </span>
-      )}
     </Form.Group>
   );
 };

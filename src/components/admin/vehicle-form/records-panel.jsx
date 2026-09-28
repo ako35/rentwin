@@ -19,6 +19,10 @@ const RecordsPanel = ({ vehicleId, config }) => {
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
   const [docsRow, setDocsRow] = useState(null);
+  // Set by "Poliçeden Doldur" (see RecordsTwoPaneView) when the scanned photo/
+  // PDF is still pending a save — attached as the new record's own document
+  // right after create, so the operator never has to upload it a second time.
+  const [pendingScanFile, setPendingScanFile] = useState(null);
 
   const fieldLabel = (name) => t(`vehicles.records.${config.tabKey}.fields.${name}`);
   const dateFields = dateFieldNames(config);
@@ -49,11 +53,19 @@ const RecordsPanel = ({ vehicleId, config }) => {
         await services.vehicle.updateVehicleRecord(config.resource, editing.id, values);
         utils.functions.swalToast(t("vehicles.records.toasts.updateSuccess"), "success");
       } else {
-        await services.vehicle.addVehicleRecord(vehicleId, config.resource, values);
+        const created = await services.vehicle.addVehicleRecord(vehicleId, config.resource, values);
+        if (pendingScanFile) {
+          // Best-effort — the record itself already saved; a failed attach
+          // shouldn't read as the whole save having failed.
+          await services.vehicle
+            .addRecordDocument(config.resource, created.id, { file: pendingScanFile })
+            .catch(() => {});
+        }
         utils.functions.swalToast(t("vehicles.records.toasts.createSuccess"), "success");
       }
       setShowModal(false);
       setEditing(null);
+      setPendingScanFile(null);
       formik.resetForm({ values: config.initialValues });
       loadRows();
     } catch (error) {
@@ -89,12 +101,14 @@ const RecordsPanel = ({ vehicleId, config }) => {
 
   const openCreate = () => {
     setEditing(null);
+    setPendingScanFile(null);
     formik.resetForm({ values: config.initialValues });
     setShowModal(true);
   };
 
   const openEdit = (row) => {
     setEditing(row);
+    setPendingScanFile(null);
     formik.resetForm({ values: toFormValues(row) });
     setShowModal(true);
   };
@@ -155,6 +169,7 @@ const RecordsPanel = ({ vehicleId, config }) => {
     fieldLabel, formatCell, buildItems,
     openCreate, openEdit, handleDelete,
     onManageDocuments: setDocsRow,
+    onScanFile: setPendingScanFile,
   };
 
   return (

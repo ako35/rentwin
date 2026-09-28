@@ -1,6 +1,5 @@
 const prisma = require("../../lib/prisma");
 const asyncHandler = require("../../middleware/async-handler");
-const { getVisionUsage } = require("../../lib/claude");
 
 const SINGLETON_ID = "singleton";
 
@@ -58,10 +57,4 @@ const updateSettings = asyncHandler(async (req, res) => {
   res.json(saved);
 });
 
-// Today's Claude vision-usage counter (shared by "Ruhsattan Doldur" and
-// "Belgeden Doldur" — see lib/claude.js) for the admin UI's usage badge.
-const getAiUsage = asyncHandler(async (req, res) => {
-  res.json(await getVisionUsage());
-});
-
-module.exports = { getSettings, updateSettings, readSettings, getAiUsage };
+module.exports = { getSettings, updateSettings, readSettings };

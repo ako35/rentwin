@@ -3,13 +3,14 @@ import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
-import { useAiVisionUsage } from "../../../hooks/use-ai-vision-usage";
 
 // "Poliçeden Doldur": admin picks a photo/PDF of a trafik sigortası or kasko
 // poliçesi, Claude reads it server-side and we hand {type, company, policyNo,
 // startDate, endDate, premium} back up so the caller can prefill the
 // Sigorta/Kasko add-record form — the admin still reviews/corrects before
-// saving. Same "nothing extracted" guard as Ruhsattan/Belgeden Doldur: a 200
+// saving. The scanned file itself is handed back too (2nd arg) so the caller
+// can also attach it as the record's own document on save, without a second
+// upload. Same "nothing extracted" guard as Ruhsattan/Belgeden Doldur: a 200
 // with every field null reads as silent failure otherwise.
 const hasExtractedFields = (fields) =>
   !!fields &&
@@ -21,7 +22,6 @@ const InsuranceScan = ({ onExtracted }) => {
   const { t } = useTranslation("admin");
   const inputRef = useRef();
   const [scanning, setScanning] = useState(false);
-  const { usage, refresh } = useAiVisionUsage();
 
   const tr = (key) => t(`vehicles.insuranceScan.${key}`);
 
@@ -40,7 +40,7 @@ const InsuranceScan = ({ onExtracted }) => {
         utils.functions.swalToast(tr("notDetected"), "error");
         return;
       }
-      onExtracted(fields);
+      onExtracted(fields, prepared);
       utils.functions.swalToast(tr("success"), "success");
     } catch (error) {
       const status = error?.response?.status;
@@ -57,7 +57,6 @@ const InsuranceScan = ({ onExtracted }) => {
     } finally {
       setScanning(false);
       e.target.value = "";
-      refresh();
     }
   };
 
@@ -76,13 +75,6 @@ const InsuranceScan = ({ onExtracted }) => {
         {scanning && <Spinner animation="border" size="sm" className="me-1" />}
         {tr("button")}
       </Button>
-      {usage && (
-        <span className={`ms-2 small ${usage.exhaustedAt != null ? "text-danger" : "text-muted"}`}>
-          {usage.exhaustedAt != null
-            ? t("aiQuota.exhausted", { at: usage.exhaustedAt })
-            : t("aiQuota.used", { count: usage.count })}
-        </span>
-      )}
     </Form.Group>
   );
 };

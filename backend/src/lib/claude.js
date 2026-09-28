@@ -193,19 +193,6 @@ const recordVisionExhausted = async () => {
   await prisma.aiUsageCounter.update({ where: { id: VISION_USAGE_ID }, data: { exhaustedAt: row.count } });
 };
 
-// Today's usage snapshot for the admin UI. Never throws.
-const getVisionUsage = async () => {
-  const day = istanbulDay();
-  let row;
-  try {
-    row = await prisma.aiUsageCounter.findUnique({ where: { id: VISION_USAGE_ID } });
-  } catch {
-    row = null;
-  }
-  const fresh = row && row.day === day;
-  return { day, count: fresh ? row.count : 0, exhaustedAt: fresh ? row.exhaustedAt : null };
-};
-
 // One vision call: a document photo + a prompt + a Zod schema -> the parsed,
 // schema-validated object. The SDK already retries 429/5xx with backoff
 // (max_retries default 2), so no hand-rolled retry loop is needed here.
@@ -290,5 +277,4 @@ module.exports = {
   extractCustomerDocument,
   extractVehicleInsurance,
   extractInvoiceDocument,
-  getVisionUsage,
 };

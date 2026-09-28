@@ -25,7 +25,7 @@ import { addAnnouncement, deleteAnnouncement, getActiveAnnouncements, getAnnounc
 import { addCampaign, deleteCampaign, getCampaigns, getCampaignsAdmin, updateCampaign, uploadCampaignImage } from "./campaign/campaign-service";
 import { addBlogPost, deleteBlogPost, getBlogPostBySlug, getBlogPosts, getBlogPostsAdmin, updateBlogPost, uploadBlogImage } from "./blog/blog-service";
 import { approveReview, deleteReview, getReviews, getReviewsByPageAdmin, rejectReview, submitReview } from "./review/review-service";
-import { getSettings, updateSettings, getAiUsage } from "./settings/settings-service";
+import { getSettings, updateSettings } from "./settings/settings-service";
 import { getKabisSystems, addKabisSystem, deleteKabisSystem } from "./kabis-system/kabis-system-service";
 
 import { addLedgerEntry, deleteLedgerEntry, getUserLedger, updateLedgerEntry } from "./ledger/ledger-service";
@@ -214,7 +214,6 @@ export const services = {
     settings: {
         getSettings,
         updateSettings,
-        getAiUsage,
     },
     kabisSystem: {
         getKabisSystems,

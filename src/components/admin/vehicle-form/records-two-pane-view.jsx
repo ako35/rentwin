@@ -8,7 +8,7 @@ import InsuranceScan from "./insurance-scan";
 const RecordsTwoPaneView = ({
   config, t, i18n, rows, loading, formik, editing, saving,
   fieldLabel, formatCell, buildItems, setEditing, toFormValues,
-  handleDelete, onManageDocuments,
+  handleDelete, onManageDocuments, onScanFile,
 }) => {
   const groupRows = (type) => rows.filter((row) => row[config.typeField] === type);
   const groupTotal = (type) =>
@@ -17,21 +17,33 @@ const RecordsTwoPaneView = ({
 
   const startEdit = (row) => {
     setEditing(row);
+    onScanFile(null);
     formik.resetForm({ values: toFormValues(row) });
   };
   const cancelEdit = () => {
     setEditing(null);
+    onScanFile(null);
     formik.resetForm({ values: config.initialValues });
   };
 
   // AI-scan field names (type/company/policyNo/startDate/endDate/premium)
   // already match the formik field names 1:1 — no allowlist/translation
-  // needed, just drop in whatever came back non-empty.
-  const handleAiExtracted = (fields) => {
+  // needed, just drop in whatever came back non-empty. A single setValues
+  // call (rather than one setFieldValue per field) so formik validates the
+  // fully-merged result in one pass — several setFieldValue calls in a row
+  // each validate against the pre-loop values, leaving stale "required"
+  // errors (and a disabled "Ekle" button) for fields a *later* call in the
+  // same batch had already filled. The scanned file itself is handed up too,
+  // so the caller can attach it as the record's own document once saved —
+  // sparing the operator from uploading the same poliçe photo twice.
+  const handleAiExtracted = (fields, file) => {
+    const patch = {};
     Object.entries(fields).forEach(([key, value]) => {
       if (value === null || value === undefined || value === "") return;
-      formik.setFieldValue(key, typeof value === "number" ? String(value) : value);
+      patch[key] = typeof value === "number" ? String(value) : value;
     });
+    formik.setValues({ ...formik.values, ...patch });
+    if (file) onScanFile(file);
   };
 
   return (

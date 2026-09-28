@@ -16,13 +16,20 @@ const REGISTRATION_FIELDS = [
 const VehicleIdentityTab = ({ formik, disabled, sections, handleModelPicked, plateTaken }) => {
   const { t } = useTranslation("admin");
 
+  // A single setValues call (rather than one setFieldValue per field) so
+  // formik validates the fully-merged result in one pass — several
+  // setFieldValue calls in a row each validate against the pre-loop values,
+  // leaving stale "required" errors (and a disabled submit button) for
+  // fields a *later* call in the same batch had already filled.
   const handleRegistrationExtracted = (fields) => {
+    const patch = {};
     REGISTRATION_FIELDS.forEach((key) => {
       const value = fields?.[key];
       if (value !== undefined && value !== null && value !== "") {
-        formik.setFieldValue(key, key === "modelYear" ? String(value) : value);
+        patch[key] = key === "modelYear" ? String(value) : value;
       }
     });
+    formik.setValues({ ...formik.values, ...patch });
   };
 
   return (

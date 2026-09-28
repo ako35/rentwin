@@ -1624,10 +1624,6 @@
     "title": "Coming Soon",
     "desc": "We're working on the {{module}} module. This section will be available soon."
   },
-  "aiQuota": {
-    "used": "{{count}} AI reads used today",
-    "exhausted": "Today's quota ran out after {{at}} requests — resets tomorrow."
-  },
   "vehicleFilters": {
     "searchPlaceholder": "Search plate, brand, model, branch, transmission, fuel or status…",
     "clear": "Clear"

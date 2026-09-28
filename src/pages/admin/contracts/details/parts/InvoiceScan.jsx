@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
-import { useAiVisionUsage } from "../../../../../hooks/use-ai-vision-usage";
 
 // "Faturadan Doldur": admin picks a photo/PDF of the issued invoice, Claude
 // reads it server-side and hands back {number, issuedAt, periodFrom,
@@ -21,7 +20,6 @@ const InvoiceScan = ({ onExtracted }) => {
   const { t } = useTranslation("admin");
   const inputRef = useRef();
   const [scanning, setScanning] = useState(false);
-  const { usage, refresh } = useAiVisionUsage();
 
   const tr = (key) => t(`reservations.contract.invoice.scan.${key}`);
 
@@ -57,7 +55,6 @@ const InvoiceScan = ({ onExtracted }) => {
     } finally {
       setScanning(false);
       e.target.value = "";
-      refresh();
     }
   };
 
@@ -76,13 +73,6 @@ const InvoiceScan = ({ onExtracted }) => {
         {scanning && <Spinner animation="border" size="sm" className="me-1" />}
         {tr("button")}
       </Button>
-      {usage && (
-        <span className={`ms-2 small ${usage.exhaustedAt != null ? "text-danger" : "text-muted"}`}>
-          {usage.exhaustedAt != null
-            ? t("aiQuota.exhausted", { at: usage.exhaustedAt })
-            : t("aiQuota.used", { count: usage.count })}
-        </span>
-      )}
     </Form.Group>
   );
 };

@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
-import { useAiVisionUsage } from "../../../hooks/use-ai-vision-usage";
 
 // "Belgeden Doldur": the admin picks a photo/PDF of a customer document —
 // a driving licence / ID / passport for an individual (a passport covers a
@@ -26,7 +25,6 @@ const DocumentScan = ({ customerType, onExtracted }) => {
   const { t } = useTranslation("admin");
   const inputRef = useRef();
   const [scanning, setScanning] = useState(false);
-  const { usage, refresh } = useAiVisionUsage();
 
   const isCorporate = customerType === "Kurumsal";
   const kind = isCorporate ? "corporate" : "individual";
@@ -64,7 +62,6 @@ const DocumentScan = ({ customerType, onExtracted }) => {
     } finally {
       setScanning(false);
       e.target.value = "";
-      refresh();
     }
   };
 
@@ -90,13 +87,6 @@ const DocumentScan = ({ customerType, onExtracted }) => {
         {tr(isCorporate ? "buttonCorporate" : "buttonIndividual")}
       </Button>
       <span className="text-muted">{tr(isCorporate ? "hintCorporate" : "hintIndividual")}</span>
-      {usage && (
-        <span className={`ms-2 small ${usage.exhaustedAt != null ? "text-danger" : "text-muted"}`}>
-          {usage.exhaustedAt != null
-            ? t("aiQuota.exhausted", { at: usage.exhaustedAt })
-            : t("aiQuota.used", { count: usage.count })}
-        </span>
-      )}
     </Form.Group>
   );
 };
