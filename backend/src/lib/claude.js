@@ -212,6 +212,14 @@ const getVisionUsage = async () => {
 const claudeVisionJson = async (buffer, mimeType, prompt, schema) => {
   recordVisionUsage().catch(() => {});
 
+  // Anthropic's "image" content block only accepts jpeg/png/gif/webp — a PDF
+  // (poliçe/fatura is often uploaded as PDF, not a photo) needs the separate
+  // "document" block instead, or the API rejects it with a 400.
+  const fileBlock =
+    mimeType === "application/pdf"
+      ? { type: "document", source: { type: "base64", media_type: "application/pdf", data: buffer.toString("base64") } }
+      : { type: "image", source: { type: "base64", media_type: mimeType, data: buffer.toString("base64") } };
+
   let response;
   try {
     response = await getClient().beta.messages.parse(
@@ -221,10 +229,7 @@ const claudeVisionJson = async (buffer, mimeType, prompt, schema) => {
         messages: [
           {
             role: "user",
-            content: [
-              { type: "image", source: { type: "base64", media_type: mimeType, data: buffer.toString("base64") } },
-              { type: "text", text: prompt },
-            ],
+            content: [fileBlock, { type: "text", text: prompt }],
           },
         ],
         output_format: betaZodOutputFormat(schema),
