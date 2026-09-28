@@ -1,5 +1,6 @@
 import ReactInputMask from "react-input-mask-next";
 import { FloatingLabel, Form } from "react-bootstrap";
+import moment from "moment/moment";
 import { utils } from "../../../utils";
 
 const CustomForm = (props) => {
@@ -57,16 +58,31 @@ const CustomForm = (props) => {
             as: asInput === "ReactInputMask" ? ReactInputMask : asInput,
             mask: mask,
             placeholder: placeholder,
-            type: type,
+            // A native date/time/month input's value can only ever be
+            // selected/copied one day-or-month-or-year(-or-hour) segment at a
+            // time (it's a compound spinner control, not a plain text run) —
+            // no interaction selects the whole thing, and .select() is a
+            // silent no-op on these types. A locked field renders as plain
+            // text instead, so the value is one ordinary selectable/copyable
+            // string and .select() below actually does something.
+            type: lockedAsReadOnly ? "text" : type,
             min: min,
             list: listId
         };
-        // Native date/time/month inputs only reliably open their picker on a
-        // click that lands exactly on the small calendar/clock icon — the
-        // rest of the field just focuses/selects text. A double-click
-        // anywhere on the field opens it explicitly instead, via the same
-        // showPicker() feature-detection KbsSection's date field already uses.
-        if (["date", "time", "month"].includes(type) && !disabled) {
+        if (lockedAsReadOnly && type === "date" && fieldProps.value) {
+            properties.value = moment(fieldProps.value, "YYYY-MM-DD").format("DD.MM.YYYY");
+        }
+        if (lockedAsReadOnly) {
+            // .select() grabs the whole value regardless of internal punctuation
+            // (dots, colons) — unlike a native double-click's word-boundary
+            // selection, which would otherwise only grab one segment.
+            properties.onDoubleClick = (event) => event.currentTarget.select();
+        } else if (["date", "time", "month"].includes(type)) {
+            // Native date/time/month inputs only reliably open their picker on a
+            // click that lands exactly on the small calendar/clock icon — the
+            // rest of the field just focuses/selects text. A double-click
+            // anywhere on the field opens it explicitly instead, via the same
+            // showPicker() feature-detection KbsSection's date field already uses.
             properties.onDoubleClick = (event) => {
                 const el = event.currentTarget;
                 if (typeof el.showPicker === "function") el.showPicker();
