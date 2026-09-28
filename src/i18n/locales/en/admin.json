@@ -445,6 +445,7 @@
         "pdfError": "Couldn't complete the PDF action, please try again.",
         "pdfFieldLabel": "Invoice File (PDF)",
         "pdfExisting": "Current file:",
+        "pdfSelected": "Selected file: {{name}} (will be attached on save)",
         "scan": {
           "button": "Fill from Invoice",
           "hint": "Upload a photo or PDF of the invoice to auto-fill the fields.",

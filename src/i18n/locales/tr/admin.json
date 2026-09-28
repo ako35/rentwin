@@ -445,6 +445,7 @@
         "pdfError": "PDF işlemi tamamlanamadı, lütfen tekrar deneyin.",
         "pdfFieldLabel": "Fatura Dosyası (PDF)",
         "pdfExisting": "Mevcut dosya:",
+        "pdfSelected": "Seçilen dosya: {{name}} (kaydedince eklenecek)",
         "scan": {
           "button": "Faturadan Doldur",
           "hint": "Fatura fotoğrafı ya da PDF'i yükleyin, alanlar otomatik doldurulsun.",

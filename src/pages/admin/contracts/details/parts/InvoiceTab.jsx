@@ -385,6 +385,11 @@ const InvoiceTab = ({
                 accept="application/pdf"
                 onChange={(e) => setForm((f) => ({ ...f, file: e.target.files[0] || null }))}
               />
+              {/* Native file inputs can't be set programmatically, so after
+                  "Faturadan Doldur" attaches the scanned file to form.file the
+                  input itself still shows no filename — this text is the only
+                  visible confirmation that a file is queued to upload on save. */}
+              {form.file && <Form.Text>{c("invoice.pdfSelected", { name: form.file.name })}</Form.Text>}
               {form.existingPdfUrl && !form.file && (
                 <Form.Text>
                   {c("invoice.pdfExisting")}{" "}
