@@ -764,7 +764,6 @@
         "downloadingPng": "Preparing…",
         "downloadPngError": "Couldn't create the PNG, please try again.",
         "contractNo": "Contract No",
-        "date": "Date",
         "badType": "Invalid document type.",
         "loadError": "Could not load the contract.",
         "individual": "Individual",

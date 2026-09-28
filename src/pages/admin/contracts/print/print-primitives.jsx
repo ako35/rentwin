@@ -26,9 +26,6 @@ export const CompanyHeader = ({ subtitle, data, p }) => (
       <div className="cprint-head__no">
         {p("contractNo")}: <strong>{data.contractNo}</strong>
       </div>
-      <div className="cprint-head__date">
-        {p("date")}: {data.today}
-      </div>
     </div>
   </header>
 );

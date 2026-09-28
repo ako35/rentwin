@@ -32,7 +32,6 @@ const Tutanak = ({ data, p }) => {
             <span>
               {p("contractNo")}: <strong>{data.contractNo}</strong>
             </span>
-            <span className="tut-head__date">{data.today}</span>
           </div>
         </div>
       </header>

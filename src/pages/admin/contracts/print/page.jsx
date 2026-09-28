@@ -96,7 +96,6 @@ const ContractPrintPage = () => {
       : `${cust.firstName || ""} ${cust.lastName || ""}`.trim();
     return {
       contractNo: c.contractNo || "—",
-      today: moment().format("DD.MM.YYYY"),
       customerName: customerName || "—",
       customerType: isCorp ? p("corporate") : p("individual"),
       idNo: cust.nationalId || "—",
