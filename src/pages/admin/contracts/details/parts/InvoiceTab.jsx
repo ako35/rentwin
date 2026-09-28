@@ -6,6 +6,7 @@ import { BsFileEarmarkPdf, BsReceipt, BsTrash, BsUpload } from "react-icons/bs";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import SaveFirstHint from "./SaveFirstHint";
+import InvoiceScan from "./InvoiceScan";
 import "./invoice-tab.scss";
 
 // Top tab: the invoices raised against this contract. A contract can carry
@@ -199,6 +200,20 @@ const InvoiceTab = ({
       });
   };
 
+  // Scanned field names (number/issuedAt/periodFrom/periodTo/grossAmount/
+  // customerTitle/taxNo) already match the form's field names 1:1. The same
+  // file that was scanned is also kept as the invoice's PDF once saved.
+  const handleInvoiceExtracted = (fields, file) => {
+    setForm((f) => {
+      const next = { ...f, file };
+      Object.entries(fields).forEach(([key, value]) => {
+        if (value === null || value === undefined || value === "") return;
+        next[key] = typeof value === "number" ? String(value) : value;
+      });
+      return next;
+    });
+  };
+
   const previewGross = form && form.grossAmount !== "" ? Number(form.grossAmount) || 0 : 0;
   const previewNet = previewGross / (1 + rate / 100);
 
@@ -297,6 +312,10 @@ const InvoiceTab = ({
         >
           <div className="contract-page__inv-card-head">
             {form.id ? c("invoice.editTitle") : c("invoice.newTitle")}
+          </div>
+          <div className="contract-page__inv-scan-row">
+            <InvoiceScan onExtracted={handleInvoiceExtracted} />
+            <span className="text-muted">{c("invoice.scan.hint")}</span>
           </div>
           <div className="contract-page__inv-fields">
             <Form.Group>

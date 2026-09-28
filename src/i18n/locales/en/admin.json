@@ -444,7 +444,17 @@
         "pdfDeleteConfirm": "Remove this invoice's PDF?",
         "pdfError": "Couldn't complete the PDF action, please try again.",
         "pdfFieldLabel": "Invoice File (PDF)",
-        "pdfExisting": "Current file:"
+        "pdfExisting": "Current file:",
+        "scan": {
+          "button": "Fill from Invoice",
+          "hint": "Upload a photo or PDF of the invoice to auto-fill the fields.",
+          "success": "Invoice read, fields filled in. Please double-check.",
+          "notDetected": "Couldn't recognize an invoice in the image, or no field could be read reliably. Try a clearer/brighter photo or fill the fields manually.",
+          "error": "Couldn't read the invoice, please fill the fields manually.",
+          "tooLarge": "File too large. Please upload a smaller image (max ~4 MB) or PDF.",
+          "busy": "The AI service is busy right now. Please try again in a few seconds.",
+          "quota": "The AI vision reading quota (daily free limit) is used up. Try again tomorrow or enable billing."
+        }
       },
       "extrasFields": {
         "name": "Extra",

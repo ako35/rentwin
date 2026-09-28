@@ -123,6 +123,42 @@ Kurallar:
 - startDate/endDate: YYYY-MM-DD formatında — "Başlangıç/Bitiş", "Tanzim/Vade Sonu" gibi alanlardan.
 - premium: brüt prim / poliçe toplam tutarı — yalnızca sayı, TL sembolü ve binlik ayırıcı olmadan (örn. 4520.50).`;
 
+const INVOICE_DOC_SCHEMA = z.object({
+  documentDetected: z
+    .boolean()
+    .describe("Görselde gerçekten bir Türkiye satış faturası (e-Fatura / e-Arşiv Fatura) görülüyor mu?"),
+  number: z.string().nullable().describe("Fatura numarası, olduğu gibi (örn. MVL2026000000080)"),
+  issuedAt: z.string().nullable().describe("Fatura düzenleme / tanzim tarihi, YYYY-MM-DD formatında"),
+  periodFrom: z
+    .string()
+    .nullable()
+    .describe("Faturanın kapsadığı hizmet/fatura döneminin başlangıcı — yalnızca faturada AÇIKÇA yazıyorsa, YYYY-MM-DD"),
+  periodTo: z
+    .string()
+    .nullable()
+    .describe("Faturanın kapsadığı hizmet/fatura döneminin bitişi — yalnızca faturada AÇIKÇA yazıyorsa, YYYY-MM-DD"),
+  grossAmount: z.number().nullable().describe("Vergiler dahil ödenecek genel toplam tutar, yalnızca sayı"),
+  customerTitle: z.string().nullable().describe("ALICI (faturanın kesildiği taraf) adı/unvanı — SATICI değil"),
+  taxNo: z
+    .string()
+    .nullable()
+    .describe("ALICI'nın Vergi Kimlik No'su (10 hane) ya da T.C. Kimlik No'su (11 hane) — SATICI'nınki değil"),
+});
+
+const INVOICE_DOC_PROMPT = `Bu görüntü bir Türkiye satış faturası (e-Fatura / e-Arşiv Fatura) mı incele.
+Kurallar:
+- Böyle bir belge değilse ya da hiçbir alan güvenle okunamıyorsa documentDetected=false yap ve tüm alanları null bırak. Asla tahmin etme.
+- Belgeyse documentDetected=true yap; yalnızca NET okuduğun alanları doldur, okuyamadığını null bırak.
+- Faturada iki taraf olur: SATICI (faturayı kesen firma) ve ALICI (fatura kesilen müşteri). customerTitle ve taxNo
+  alanlarını YALNIZCA ALICI bölümünden al — SATICI bilgilerini asla bu alanlara yazma.
+- number: fatura numarası, olduğu gibi.
+- issuedAt: fatura düzenleme/tanzim tarihi, YYYY-MM-DD formatında.
+- periodFrom/periodTo: yalnızca faturada "hizmet dönemi" / "fatura dönemi" gibi bir alan AÇIKÇA yazıyorsa doldur;
+  yoksa ikisini de null bırak — asla fatura tarihinden tahmin etme.
+- grossAmount: vergiler dahil ödenecek genel toplam tutar ("Ödenecek Tutar" / "Vergiler Dahil Toplam Tutar") —
+  yalnızca sayı, TL sembolü ve binlik ayırıcı olmadan (örn. 36000.00).
+- taxNo: ALICI'nın Vergi Kimlik No'su (10 hane) varsa onu, yoksa T.C. Kimlik No'sunu (11 hane) yaz — yalnızca rakamlar.`;
+
 // --- Usage counter (admin UI badge) --------------------------------------
 
 const VISION_USAGE_ID = "vision";
@@ -230,9 +266,13 @@ const extractCustomerDocument = (buffer, mimeType, kind) =>
 const extractVehicleInsurance = (buffer, mimeType) =>
   claudeVisionJson(buffer, mimeType, INSURANCE_PROMPT, INSURANCE_SCHEMA);
 
+const extractInvoiceDocument = (buffer, mimeType) =>
+  claudeVisionJson(buffer, mimeType, INVOICE_DOC_PROMPT, INVOICE_DOC_SCHEMA);
+
 module.exports = {
   extractVehicleRegistration,
   extractCustomerDocument,
   extractVehicleInsurance,
+  extractInvoiceDocument,
   getVisionUsage,
 };

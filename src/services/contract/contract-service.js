@@ -171,6 +171,19 @@ export const deleteInvoicePdf = async (invoiceId) => {
   return response.data;
 };
 
+// "Faturadan Doldur": reads {number, issuedAt, periodFrom, periodTo,
+// grossAmount, customerTitle, taxNo} from a photo/PDF of an issued invoice.
+export const extractInvoice = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  const response = await axios.post(
+    `${API_URL}/contracts/admin/invoice/extract/auth`,
+    formData,
+    { headers: { "Content-Type": "multipart/form-data", Authorization: bearer() } }
+  );
+  return response.data;
+};
+
 export const getAvailableCars = async ({ pickUpTime, dropOffTime, excludeContractId, excludeReservationId } = {}) => {
   const params = new URLSearchParams({ pickUpTime, dropOffTime });
   if (excludeContractId) params.set("excludeContractId", excludeContractId);

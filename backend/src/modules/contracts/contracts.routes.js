@@ -32,6 +32,7 @@ const {
   uploadInvoicePdf,
   deleteInvoicePdf,
 } = require("./contracts.controller");
+const { extractInvoice } = require("./contracts.ai.controller");
 
 const router = Router();
 
@@ -74,6 +75,13 @@ router.delete(
 );
 router.post("/contracts/admin/:id/change-vehicle/auth", authenticate, requireAdmin, changeVehicle);
 router.get("/contracts/admin/:id/invoices/auth", authenticate, requireAdmin, listInvoices);
+router.post(
+  "/contracts/admin/invoice/extract/auth",
+  authenticate,
+  requireAdmin,
+  upload.single("file"),
+  extractInvoice
+);
 router.post("/contracts/admin/:id/invoice/auth", authenticate, requireAdmin, createInvoice);
 router.put("/contracts/admin/invoices/:invoiceId/auth", authenticate, requireAdmin, updateInvoice);
 router.delete("/contracts/admin/invoices/:invoiceId/auth", authenticate, requireAdmin, deleteInvoice);

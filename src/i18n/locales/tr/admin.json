@@ -444,7 +444,17 @@
         "pdfDeleteConfirm": "Bu faturanın PDF'i kaldırılsın mı?",
         "pdfError": "PDF işlemi tamamlanamadı, lütfen tekrar deneyin.",
         "pdfFieldLabel": "Fatura Dosyası (PDF)",
-        "pdfExisting": "Mevcut dosya:"
+        "pdfExisting": "Mevcut dosya:",
+        "scan": {
+          "button": "Faturadan Doldur",
+          "hint": "Fatura fotoğrafı ya da PDF'i yükleyin, alanlar otomatik doldurulsun.",
+          "success": "Fatura okundu, alanlar dolduruldu. Lütfen kontrol edin.",
+          "notDetected": "Görselde bir fatura tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",
+          "error": "Fatura okunamadı, lütfen alanları elle doldurun.",
+          "tooLarge": "Dosya çok büyük. Lütfen daha küçük bir görsel (en fazla ~4 MB) veya PDF yükleyin.",
+          "busy": "Yapay zeka servisi şu an yoğun. Lütfen birkaç saniye sonra tekrar deneyin.",
+          "quota": "Yapay zeka görsel okuma kotası (günlük ücretsiz sınır) doldu. Yarın tekrar deneyin ya da faturalandırmayı açın."
+        }
       },
       "extrasFields": {
         "name": "Ekstra",
