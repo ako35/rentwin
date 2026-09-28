@@ -212,11 +212,12 @@ const ContractDetail = () => {
     }
   };
 
-  // Same reasoning as handleKbsReleaseLocked: marking the printed contract as
-  // signed is often done at hand-back, after the car (and the contract) is
-  // already closed — that shouldn't need reopening a finished contract, so
-  // this patches straight through too instead of riding the hidden "Kaydet".
-  const handleSignedLocked = async (signedAt) => {
+  // Unlike KBS release, this one patches straight through regardless of
+  // `locked`: it's a single, self-contained stamp (not a multi-field edit the
+  // operator might want to review before committing), so there's no reason to
+  // make it depend on remembering to hit "Kaydet" — open or closed, checking
+  // the switch saves immediately.
+  const handleSignedChange = async (signedAt) => {
     setUpdating(true);
     try {
       const dto = buildContractDto({ ...formik.values, signedAt });
@@ -338,7 +339,7 @@ const ContractDetail = () => {
                 as often as at pickup, so this stays usable after the contract
                 closes instead of locking with the rest of the form. */}
             {!isCreate && (
-              <SignatureSection formik={formik} locked={locked} onToggleLocked={handleSignedLocked} />
+              <SignatureSection formik={formik} locked={locked} onChangeSigned={handleSignedChange} />
             )}
             {/* HGS check-ins stay usable after the contract closes too — the
                 toll query itself often only comes in a few days after drop-off. */}

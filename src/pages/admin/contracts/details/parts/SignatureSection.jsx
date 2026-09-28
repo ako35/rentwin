@@ -7,13 +7,13 @@ import "./signature-section.scss";
 
 // Left card: whether the printed contract has actually been signed —
 // KABİS-style, a simple switch that stamps the acting admin + date on the
-// null -> set transition (see contracts.controller.updateContract). Normally
-// saved with the rest of the form on "Kaydet"; once the contract is closed
-// that button disappears (see ContractActions), so `locked` routes the
-// on-transition straight through `onToggleLocked` instead — the operator
-// often only gets the signed paper back at hand-back, after closing the
-// contract, and shouldn't have to reopen it just to record that.
-const SignatureSection = ({ formik, locked = false, onToggleLocked }) => {
+// null -> set transition (see contracts.controller.updateContract). Patches
+// straight through on every change instead of riding the form's "Kaydet" —
+// same reasoning as KbsSection's release: it's a single, self-contained
+// stamp, so there's no reason to make it depend on remembering to hit
+// "Kaydet" (which also disappears entirely once the contract is closed, see
+// ContractActions) — open or closed, checking the switch saves immediately.
+const SignatureSection = ({ formik, locked = false, onChangeSigned }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.signature.${key}`, opts);
 
@@ -21,19 +21,16 @@ const SignatureSection = ({ formik, locked = false, onToggleLocked }) => {
   const signedAt = formik.values.signedAt || "";
   const signed = !!signedAt;
 
-  const toggle = async (checked) => {
-    const value = checked ? moment().format("YYYY-MM-DD") : "";
-    if (locked) {
-      setSaving(true);
-      try {
-        await onToggleLocked(value);
-      } finally {
-        setSaving(false);
-      }
-      return;
+  const patch = async (value) => {
+    setSaving(true);
+    try {
+      await onChangeSigned(value);
+    } finally {
+      setSaving(false);
     }
-    formik.setFieldValue("signedAt", value);
   };
+
+  const toggle = (checked) => patch(checked ? moment().format("YYYY-MM-DD") : "");
 
   return (
     <section className={`contract-card contract-page__sign is-${signed ? "signed" : "pending"}`}>
@@ -64,8 +61,8 @@ const SignatureSection = ({ formik, locked = false, onToggleLocked }) => {
             <Form.Control
               type="date"
               value={signedAt}
-              disabled={locked}
-              onChange={(e) => formik.setFieldValue("signedAt", e.target.value)}
+              disabled={saving || locked}
+              onChange={(e) => patch(e.target.value)}
             />
           </label>
           {formik.values.signedBy && (
