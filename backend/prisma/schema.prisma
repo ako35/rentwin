@@ -133,6 +133,7 @@ model User {
   contracts          Contract[]    @relation("ContractCustomer")
   referenceContracts Contract[]    @relation("ContractReferenceCustomer")
   ledgerEntries      LedgerEntry[] @relation("UserLedger")
+  contractPhotos     ContractPhoto[]
 }
 
 model VehicleImage {
@@ -291,6 +292,47 @@ model VehicleDocument {
   mimeType      String?
   size          Int?
   createdAt     DateTime            @default(now())
+}
+
+enum ContractPhotoStage {
+  PICKUP
+  RETURN
+}
+
+enum ContractPhotoAngle {
+  FRONT
+  BACK
+  LEFT
+  RIGHT
+  DASHBOARD
+  DAMAGE
+  OTHER
+}
+
+// Vehicle-condition photos shot on the mobile app at hand-over (PICKUP) or
+// hand-back (RETURN) — not tied to any specific lifecycle endpoint (pickup
+// has no dedicated action; return's own endpoint doesn't require these), so
+// they can be captured/uploaded any time the contract is open. takenById
+// records which staff member shot it — each field operator has their own
+// Administrator account, so this is a real, useful attribution, not a shared
+// login the field is meaningless for.
+model ContractPhoto {
+  id         String             @id @default(uuid())
+  contractId String
+  contract   Contract           @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  stage      ContractPhotoStage
+  angle      ContractPhotoAngle
+  blobUrl    String
+  pathname   String
+  mimeType   String?
+  size       Int?
+  takenById  String?
+  takenBy    User?              @relation(fields: [takenById], references: [id], onDelete: SetNull)
+  createdAt  DateTime           @default(now())
+
+  @@index([contractId])
+  @@index([contractId, stage])
+  @@index([takenById])
 }
 
 model Branch {
@@ -453,6 +495,7 @@ model Contract {
   vehicleChanges    ContractVehicleChange[]
   invoices          Invoice[]
   ledgerEntries     LedgerEntry[]
+  photos            ContractPhoto[]
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
 }

@@ -14,6 +14,7 @@ const filesRoutes = require("./modules/files/files.routes");
 const reservationsRoutes = require("./modules/reservations/reservations.routes");
 const contractsRoutes = require("./modules/contracts/contracts.routes");
 const contractRecordsRoutes = require("./modules/contract-records/contract-records.routes");
+const contractPhotosRoutes = require("./modules/contract-photos/contract-photos.routes");
 const contactMessagesRoutes = require("./modules/contact-messages/contact-messages.routes");
 const excelRoutes = require("./modules/excel/excel.routes");
 const branchesRoutes = require("./modules/branches/branches.routes");
@@ -88,6 +89,10 @@ api.use(vehicleRecordsRoutes);
 api.use(filesRoutes);
 api.use(reservationsRoutes);
 api.use(contractsRoutes);
+// Mounted before contractRecordsRoutes' generic "/:contractId/:resource/auth"
+// catch-all so the literal "photos" segment is matched here first (same
+// pattern as vehicle-documents vs. vehicle-records).
+api.use(contractPhotosRoutes);
 api.use(contractRecordsRoutes);
 api.use(contactMessagesRoutes);
 api.use(excelRoutes);

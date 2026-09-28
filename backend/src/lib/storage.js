@@ -10,6 +10,7 @@
 // just redirects to their stored blobUrl, e.g. files.controller.js's
 // `display`) keep working unchanged regardless of which provider wrote them.
 const { S3Client, PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { randomUUID } = require("crypto");
 
 const client = new S3Client({
@@ -38,4 +39,17 @@ const uploadImage = async (file, prefix = "vehicles") => {
 const deleteImage = (pathname) =>
   client.send(new DeleteObjectCommand({ Bucket: process.env.R2_BUCKET, Key: pathname }));
 
-module.exports = { uploadImage, deleteImage };
+// Direct-from-client upload (mobile app photo capture): the backend never
+// sees the bytes, it just hands out a short-lived PUT URL straight to R2 —
+// avoids routing potentially several full-resolution photos per contract
+// through a serverless function's request-body limit. Every other upload
+// feature in the app still goes through uploadImage() above; this is
+// additive, not a replacement.
+const getUploadUrl = (pathname, contentType) =>
+  getSignedUrl(
+    client,
+    new PutObjectCommand({ Bucket: process.env.R2_BUCKET, Key: pathname, ContentType: contentType }),
+    { expiresIn: 300 }
+  );
+
+module.exports = { uploadImage, deleteImage, getUploadUrl };

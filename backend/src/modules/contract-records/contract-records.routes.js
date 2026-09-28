@@ -10,7 +10,11 @@ const {
 
 const router = Router();
 
-// :resource is one of drivers | payments | extras.
+// :resource is one of drivers | payments | extras. This module must be
+// mounted AFTER contract-photos.routes.js in app.js — its own literal
+// "photos" 5-segment routes would otherwise be swallowed by the GET/POST
+// catch-all below, which happily (and wrongly) treats "photos" as a
+// :resource value.
 // 4-5 segment paths so they never collide with the 2-3 segment /contracts/admin/... routes.
 router.get("/contracts/admin/:contractId/:resource/auth", authenticate, requireAdmin, listRecords);
 router.post("/contracts/admin/:contractId/:resource/auth", authenticate, requireAdmin, createRecord);
