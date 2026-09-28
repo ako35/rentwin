@@ -55,7 +55,11 @@
 
     // Read-only inputs in the contract card: unmistakably not editable, but the
     // value must still read clearly (slate-200 fill, solid slate-600 text).
+    // `[readonly]` (not just `:disabled`) so a locked date/time field — which
+    // renders readOnly instead of disabled to stay selectable/copyable, see
+    // CustomForm — gets the identical look.
     .form-control:disabled,
+    .form-control[readonly],
     .form-select:disabled {
       background-color: #dde3ec;
       border-style: dashed;

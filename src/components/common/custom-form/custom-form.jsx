@@ -26,10 +26,21 @@ const CustomForm = (props) => {
 
     const fieldProps = formik.getFieldProps(name);
 
+    // A truly `disabled` native input can't have its value selected or
+    // copied at all — no text selection, no right-click copy, nothing. For a
+    // locked date/time/month field that's a real loss (e.g. a contract's
+    // fixed pick-up date the operator wants to copy elsewhere), so those
+    // render as `readOnly` instead: same "can't edit this" outcome, but the
+    // value stays selectable. The disabled *look* is preserved via the
+    // `.form-control[readonly]` rules that mirror `:disabled` (see
+    // contracts details/style.scss and _admin-dark.scss).
+    const lockedAsReadOnly = disabled && ["date", "time", "month"].includes(type);
+
     let properties = {
         ...fieldProps,
         ...utils.functions.validCheck(name, formik),
-        disabled,
+        disabled: lockedAsReadOnly ? false : disabled,
+        readOnly: lockedAsReadOnly,
     };
 
     // Let callers react to a change (e.g. auto-fill a sibling field) without losing formik's handler.

@@ -257,6 +257,7 @@
     /* disabled fields inside the contract card read as wells */
     .admin-layout :is(
       .contract-page .contract-card .form-control:disabled,
+      .contract-page .contract-card .form-control[readonly],
       .contract-page .contract-card .form-select:disabled,
       .contract-page__ro-field strong
     ) {
