@@ -73,8 +73,12 @@ const RegisterPage = () => {
       await utils.functions.swalToast(t("register.successToast"), "success");
       navigate(routes.login);
     } catch (error) {
+      // The backend's "already exists" message is always English — show our
+      // localized copy for that one expected case instead of leaking it.
       utils.functions.swalToast(
-        error?.response?.data?.message || t("errors.generic"),
+        error?.response?.status === 409
+          ? t("errors.emailInUse")
+          : t("errors.generic"),
         "error"
       );
     } finally {

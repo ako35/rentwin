@@ -3,8 +3,8 @@ import { utils } from "../../../../utils";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
-import { CustomForm, KvkkConsent, SectionHeader } from "../../../";
+import { Trans, useTranslation } from "react-i18next";
+import { AppLink, CustomForm, KvkkConsent, SectionHeader } from "../../../";
 import { Alert, Button, Form, InputGroup, Spinner } from "react-bootstrap";
 import { services } from "../../../../services";
 import { constants } from "../../../../constants";
@@ -86,7 +86,11 @@ const BookingForm = () => {
   return (
     <div className="booking-form">
       <SectionHeader title1={t("booking.sectionTitle1")} title2={t("booking.sectionTitle2")} />
-      {!isLoggedIn && <Alert>{t("booking.loginAlert")}</Alert>}
+      {!isLoggedIn && (
+        <Alert>
+          <Trans t={t} i18nKey="booking.loginAlert" components={{ login: <AppLink to={routes.login} /> }} />
+        </Alert>
+      )}
       <Form noValidate onSubmit={formik.handleSubmit}>
         <fieldset disabled={!isLoggedIn}>
           {formItems.slice(0, 2).map((item) => (

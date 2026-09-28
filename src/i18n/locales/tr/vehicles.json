@@ -62,7 +62,7 @@
   "booking": {
     "sectionTitle1": "Şimdi",
     "sectionTitle2": "Rezervasyon Yap",
-    "loginAlert": "Rezervasyon oluşturmak için önce giriş yapın",
+    "loginAlert": "Rezervasyon oluşturmak için önce <login>giriş yapın</login>",
     "pickUpLocation": "Alış Konumu",
     "dropOffLocation": "Bırakış Konumu",
     "selectLocation": "Lokasyon seçin",

@@ -62,7 +62,7 @@
   "booking": {
     "sectionTitle1": "Book",
     "sectionTitle2": "Now",
-    "loginAlert": "Please log in first to create a reservation",
+    "loginAlert": "Please <login>log in</login> first to create a reservation",
     "pickUpLocation": "Pick Up Location",
     "dropOffLocation": "Drop Off Location",
     "selectLocation": "Select location",

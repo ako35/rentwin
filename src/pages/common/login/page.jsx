@@ -44,8 +44,13 @@ const LoginPage = () => {
             );
         } catch (error) {
             dispatch(loginFailure());
+            // The backend's own message (e.g. "Invalid email or password.") is
+            // always English — show our localized copy for the one case we
+            // expect (wrong credentials) instead of leaking it untranslated.
             utils.functions.swalToast(
-                error?.response?.data?.message || t("errors.generic"),
+                error?.response?.status === 401
+                    ? t("errors.invalidCredentials")
+                    : t("errors.generic"),
                 "error"
             );
         } finally {
