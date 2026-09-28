@@ -577,7 +577,6 @@
         "fuelChargeLabel": "Eksik yakıt bedeli",
         "reflect": "Ekstraya yansıt",
         "amount": "Tutar (TL)",
-        "releaseKbsAndClose": "KABİS çıkışını yap ve kapat",
         "returnKmBelowPickup": "Teslim km, alış km'sinden ({{km}}) küçük olamaz.",
         "returnKmRequired": "Teslim km girilmelidir.",
         "returnFuelRequired": "Teslim yakıtı seçilmelidir.",

@@ -16,7 +16,6 @@ const { ALLOWED_SORT_FIELDS } = require("./contracts.shared");
 const { nextContractNo, num, hgsRangesCoverPeriod } = require("./contract-fields");
 const { recomputeContractFinancials } = require("./contract-financials");
 const { round2 } = require("../../lib/dates");
-const { kbsStamp, kbsNeedsRelease } = require("./kbs");
 const { syncContractDebit, voidContractLedger, restoreContractLedger } = require("../../lib/ledger");
 const { getBusyVehicleIds } = require("../../lib/availability");
 const { loadModelImageMap } = require("../vehicles/vehicles.shared");
@@ -366,23 +365,22 @@ const sanitizeReturnCharges = (raw) => {
     .filter((c) => c.amount > 0);
 };
 
-// "Araç Teslim Al" -> DONE. Body: { returnKm?, returnFuelEighths?, releaseKbs?,
+// "Araç Teslim Al" -> DONE. Body: { returnKm?, returnFuelEighths?,
 // charges?: [{category, description, amount, quantity}] }. Records the hand-back
 // odometer/fuel, replaces this flow's own auto-generated return charges with the
 // operator-confirmed set, recomputes the contract financials + ledger, and
-// closes the contract — all atomically. KABİS release is optional here
-// (releaseKbs: true chains it into the same request) — a rental still filed
-// but not released no longer blocks the close; it just keeps showing up on
-// getKbsReleasePendingContracts until someone releases it.
+// closes the contract — all atomically. Never touches KABİS: a rental still
+// filed but not released doesn't block the close, and closing never releases
+// it either — that's a deliberate, separate action only via KbsSection's own
+// release button (see contracts.controller.js's kbsReleasedAt handling), so
+// a filed-but-unreleased contract just keeps showing on
+// getKbsReleasePendingContracts until someone releases it on purpose.
 const returnContract = asyncHandler(async (req, res) => {
   const existing = await prisma.contract.findUnique({ where: { id: req.params.id } });
   if (!existing) throw new HttpError(404, "Contract not found.");
   if (existing.status === "CANCELLED") {
     throw new HttpError(409, "İptal edilmiş kontrat teslim alınamaz.");
   }
-
-  const needsRelease = kbsNeedsRelease(existing);
-  const releaseKbs = req.body?.releaseKbs === true;
 
   const returnKm = num(req.body?.returnKm);
   const returnFuelEighths = num(req.body?.returnFuelEighths);
@@ -441,9 +439,6 @@ const returnContract = asyncHandler(async (req, res) => {
         returnFuelEighths,
         returnedAt,
         ...(isEarlyReturn ? { dropOffTime: returnedAt } : {}),
-        ...(needsRelease && releaseKbs
-          ? { kbsReleasedAt: new Date(), kbsReleasedBy: kbsStamp(req.user) }
-          : {}),
       },
     });
     // Replace only this flow's own rows — manual + HGS charges are left alone.

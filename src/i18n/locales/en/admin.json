@@ -577,7 +577,6 @@
         "fuelChargeLabel": "Missing-fuel charge",
         "reflect": "Add as extra",
         "amount": "Amount (TL)",
-        "releaseKbsAndClose": "Release KABİS and close",
         "returnKmBelowPickup": "Return km cannot be below the pick-up km ({{km}}).",
         "returnKmRequired": "Return km is required.",
         "returnFuelRequired": "Return fuel level is required.",

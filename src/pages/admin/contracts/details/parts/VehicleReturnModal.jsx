@@ -6,16 +6,16 @@ import { BsClock, BsFuelPump, BsSpeedometer2 } from "react-icons/bs";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import { buildFuelEighthsOptions } from "../../../../../utils/fuel-eighths";
-import { computeReturnOverage, kbsStatus } from "../contract-helpers";
+import { computeReturnOverage } from "../contract-helpers";
 import "./vehicle-return-modal.scss";
 
 // "Araç Teslim Al" opens this. Operator enters the hand-back odometer + fuel;
 // km overage and missing fuel are auto-priced from the contract's km package /
 // fees, stay editable, and are posted as return-charge extras when the contract
-// is closed. If the rental is still filed in KABİS without a release, a
-// checkbox offers releasing it in the same request — optional, not required:
-// closing works either way, and a still-open one keeps surfacing on the
-// dashboard's KABİS-release-pending panel until someone releases it.
+// is closed. This never touches KABİS — a rental still filed but not released
+// keeps closing fine and just surfaces on the dashboard's KABİS-release-pending
+// panel; releasing it is a deliberate, separate action only via the KABİS
+// card's own release button (KbsSection), never a side effect of closing.
 const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, money, onReturned }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.returnModal.${key}`, opts);
@@ -29,7 +29,6 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
   const [fuelAmount, setFuelAmount] = useState("");
   const [kmIncluded, setKmIncluded] = useState(true);
   const [fuelIncluded, setFuelIncluded] = useState(true);
-  const [releaseKbs, setReleaseKbs] = useState(false);
   const [saving, setSaving] = useState(false);
   const [errorCode, setErrorCode] = useState(null);
   const [attempted, setAttempted] = useState(false);
@@ -49,7 +48,6 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
     setReturnFuelEighths(values.returnFuelEighths ?? "");
     setKmIncluded(true);
     setFuelIncluded(true);
-    setReleaseKbs(false);
     setSaving(false);
     setErrorCode(null);
     setAttempted(false);
@@ -78,7 +76,6 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
     if (!fuelEdited.current) setFuelAmount(overage.fuelCharge ? String(overage.fuelCharge) : "");
   }, [overage.fuelCharge]);
 
-  const kbsBlocked = kbsStatus(values) === "reported";
   const pickUpKmNum = Number(values.pickUpKm) || 0;
   const returnKmMissing = returnKm === "";
   const returnFuelMissing = returnFuelEighths === "";
@@ -141,7 +138,6 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
         returnKm: returnKm === "" ? null : Number(returnKm),
         returnFuelEighths: returnFuelEighths === "" ? null : Number(returnFuelEighths),
         returnedAt: utils.functions.combineDateAndTime(returnDate, returnTime),
-        releaseKbs: kbsBlocked && releaseKbs,
         charges,
       });
       onReturned();
@@ -334,17 +330,6 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
           </div>
         </section>
 
-        {kbsBlocked && (
-          <Alert variant="warning" className="return-modal__kbs">
-            <Form.Check
-              type="checkbox"
-              id="rm-kbs"
-              label={c("releaseKbsAndClose")}
-              checked={releaseKbs}
-              onChange={(e) => setReleaseKbs(e.target.checked)}
-            />
-          </Alert>
-        )}
         {errorCode === "RETURN_KM_BELOW_PICKUP" && (
           <Alert variant="danger">{c("returnKmBelowPickup", { km: values.pickUpKm })}</Alert>
         )}
