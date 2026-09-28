@@ -74,6 +74,25 @@
           "You may submit your requests under Article 11 of the KVKK in writing to Kültür Mah. 260 Sk. No: 3 E, Aliağa / İzmir, or by e-mail to info@rentwin.com.tr. Your applications are concluded within 30 days at the latest, in accordance with the Communiqué on the Procedures and Principles of Application to the Data Controller.",
           "This policy may be revised from time to time in line with legislative changes and updates to our service processes. The current text is always published on this page."
         ]
+      },
+      {
+        "heading": "7. The Rentwin Saha Mobile App",
+        "paragraphs": [
+          "The \"Rentwin Saha\" mobile app is an internal operations tool used only by Rentwin staff who have been assigned an authorised (Administrator) account, for documenting vehicle condition during pickup/return — it is not aimed at the general customer base and has no self-service sign-up.",
+          "The app processes the following data:"
+        ],
+        "list": [
+          "Staff login credentials — E-mail address and password, used only for authentication via the existing Rentwin admin-panel account; the app does not keep a separate user database.",
+          "Vehicle photos — Camera access is used only at vehicle pickup/return to photograph the vehicle's exterior, odometer and fuel gauge, and any existing damage; photos are linked to the relevant rental contract and uploaded to secure server storage (Cloudflare R2), viewable only by authorised staff.",
+          "The app does not collect location (GPS) data and contains no third-party advertising/analytics SDKs."
+        ]
+      },
+      {
+        "heading": "8. Data Retention and Deletion for Rentwin Saha",
+        "paragraphs": [
+          "Photos are kept for as long as the rental contract they are linked to exists in the system; deleting a contract permanently deletes its linked photos from the server as well. Disabling a staff account does not affect photos already taken with it — they remain tied to the contract record.",
+          "Uninstalling the app also deletes any photos still on the device that had not yet been uploaded to the server."
+        ]
       }
     ]
   },

@@ -74,6 +74,25 @@
           "KVKK'nın 11. maddesi kapsamındaki taleplerinizi; yazılı olarak Kültür Mah. 260 Sk. No: 3 E, Aliağa / İzmir adresine ya da info@rentwin.com.tr e-posta adresine iletebilirsiniz. Başvurularınız, Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca en geç 30 gün içinde sonuçlandırılır.",
           "Bu politika, mevzuattaki değişiklikler ve hizmet süreçlerindeki güncellemeler doğrultusunda zaman zaman revize edilebilir. Güncel metin her zaman bu sayfada yayımlanır."
         ]
+      },
+      {
+        "heading": "7. Rentwin Saha Mobil Uygulaması",
+        "paragraphs": [
+          "\"Rentwin Saha\" mobil uygulaması, yalnızca Rentwin bünyesinde çalışan ve kendisine yetkili (Administrator) hesap tanımlanmış personel tarafından, araç teslim/iade süreçlerinde araç durumunu belgelemek amacıyla kullanılan dahili bir operasyon aracıdır; genel müşteri kitlesine yönelik değildir ve herkesin serbestçe kaydolabileceği bir hesap oluşturma özelliği bulunmaz.",
+          "Uygulama üzerinden aşağıdaki veriler işlenir:"
+        ],
+        "list": [
+          "Personel Giriş Bilgileri — E-posta adresi ve şifre, yalnızca kimlik doğrulama amacıyla, mevcut Rentwin yönetim paneli hesabı üzerinden işlenir; uygulama ayrı bir kullanıcı veritabanı tutmaz.",
+          "Araç Fotoğrafları — Kamera izni yalnızca araç teslim/iade anında aracın dış yüzeyi, kilometre ve yakıt göstergesi ile varsa hasar bölgelerinin fotoğraflanması için kullanılır; fotoğraflar ilgili kiralama sözleşmesiyle ilişkilendirilerek güvenli sunucu depolamasına (Cloudflare R2) aktarılır ve yalnızca yetkili personel tarafından görüntülenebilir.",
+          "Uygulama, konum (GPS) verisi toplamaz ve reklam/analitik amaçlı üçüncü taraf SDK'ları içermez."
+        ]
+      },
+      {
+        "heading": "8. Rentwin Saha Uygulamasında Veri Saklama ve Silme",
+        "paragraphs": [
+          "Fotoğraflar, ilişkili olduğu kiralama sözleşmesi sistemde tutulduğu sürece saklanır; bir sözleşme silindiğinde ona bağlı fotoğraflar da sunucudan kalıcı olarak silinir. Personel hesabının devre dışı bırakılması, o hesapla çekilmiş fotoğrafları etkilemez; fotoğraflar sözleşme kaydına bağlı kalmaya devam eder.",
+          "Uygulamanın kaldırılması (kurulumun silinmesi), cihazda o ana kadar biriken ve henüz sunucuya yüklenmemiş fotoğrafların da silinmesine yol açar."
+        ]
       }
     ]
   },
