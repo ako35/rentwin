@@ -50,6 +50,17 @@ const CustomForm = (props) => {
             min: min,
             list: listId
         };
+        // Native date/time/month inputs only reliably open their picker on a
+        // click that lands exactly on the small calendar/clock icon — the
+        // rest of the field just focuses/selects text. A double-click
+        // anywhere on the field opens it explicitly instead, via the same
+        // showPicker() feature-detection KbsSection's date field already uses.
+        if (["date", "time", "month"].includes(type) && !disabled) {
+            properties.onDoubleClick = (event) => {
+                const el = event.currentTarget;
+                if (typeof el.showPicker === "function") el.showPicker();
+            };
+        }
     } else if (type === "textarea") {
         properties = {
             ...properties,
