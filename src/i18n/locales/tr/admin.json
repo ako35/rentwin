@@ -559,7 +559,6 @@
         "fuelChargeLabel": "Eksik yakıt bedeli",
         "reflect": "Ekstraya yansıt",
         "amount": "Tutar (TL)",
-        "kbsWarning": "Bu kiralama KABİS'te bildirilmiş ama çıkışı yapılmamış. İsterseniz kontratı kapatırken çıkışı da yapabilirsiniz; yapmazsanız kontrat kapansa da KABİS çıkışı bekleyenler panelinden takip edilebilir.",
         "releaseKbsAndClose": "KABİS çıkışını yap ve kapat",
         "returnKmBelowPickup": "Teslim km, alış km'sinden ({{km}}) küçük olamaz.",
         "returnKmRequired": "Teslim km girilmelidir.",

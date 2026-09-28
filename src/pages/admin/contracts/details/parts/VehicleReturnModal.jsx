@@ -336,11 +336,9 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
 
         {kbsBlocked && (
           <Alert variant="warning" className="return-modal__kbs">
-            {c("kbsWarning")}
             <Form.Check
               type="checkbox"
               id="rm-kbs"
-              className="mt-2"
               label={c("releaseKbsAndClose")}
               checked={releaseKbs}
               onChange={(e) => setReleaseKbs(e.target.checked)}

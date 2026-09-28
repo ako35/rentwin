@@ -559,7 +559,6 @@
         "fuelChargeLabel": "Missing-fuel charge",
         "reflect": "Add as extra",
         "amount": "Amount (TL)",
-        "kbsWarning": "This rental is filed in KABİS but not released. You can release it while closing the contract; if you don't, the closed contract can still be tracked on the KABİS-release-pending panel.",
         "releaseKbsAndClose": "Release KABİS and close",
         "returnKmBelowPickup": "Return km cannot be below the pick-up km ({{km}}).",
         "returnKmRequired": "Return km is required.",
