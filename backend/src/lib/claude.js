@@ -232,6 +232,17 @@ const claudeVisionJson = async (buffer, mimeType, prompt, schema) => {
       { timeout: 15000 }
     );
   } catch (err) {
+    // Every non-quota failure surfaces to the admin as the same generic
+    // "servis yoğun" toast, so the real cause (auth, timeout, overloaded,
+    // bad request...) only shows up here in the server logs.
+    console.error(
+      "[claude vision]",
+      err?.name,
+      err?.status,
+      err?.error?.error?.type || err?.error?.type,
+      err?.message
+    );
+
     if (err instanceof Anthropic.RateLimitError) {
       recordVisionExhausted().catch(() => {});
       const e = new Error(
