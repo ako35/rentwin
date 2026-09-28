@@ -8,6 +8,7 @@ import CustomerSummary from "./CustomerSummary";
 import ReferenceCariField from "./ReferenceCariField";
 import DriversTab from "./DriversTab";
 import InvoiceTab from "./InvoiceTab";
+import PhotosTab from "./PhotosTab";
 import SummaryTab from "./SummaryTab";
 import PaymentsTab from "./PaymentsTab";
 import ReturnExtraTab from "./ReturnExtraTab";
@@ -62,12 +63,14 @@ const ContractRightCard = ({
               {c("topTabs.invoice")}
             </Nav.Link>
           </Nav.Item>
+          <Nav.Item><Nav.Link eventKey="photos">{c("topTabs.photos")}</Nav.Link></Nav.Item>
         </Nav>
 
         {/* Customer / Drivers follow the contract's own lock (they're core
-            contract terms); Invoice stays usable after closing — invoices are
-            often raised only once the rental has already ended. */}
-        <fieldset className="contract-page__fieldset" disabled={topTab !== "invoice" && locked}>
+            contract terms); Invoice and Photos stay usable after closing —
+            invoices are often raised, and mobile pickup/return photos often
+            reviewed, only once the rental has already ended. */}
+        <fieldset className="contract-page__fieldset" disabled={!["invoice", "photos"].includes(topTab) && locked}>
           {topTab === "customer" && (
             isCreate ? (
               <CustomerPanel
@@ -116,6 +119,8 @@ const ContractRightCard = ({
               defaultCustomerTitle={defaultInvoiceTitle}
             />
           )}
+
+          {topTab === "photos" && <PhotosTab isCreate={isCreate} contractId={contractId} />}
         </fieldset>
       </Panel>
 

@@ -5,6 +5,7 @@ import { cancelReservation, confirmReservation, convertReservationToContract, cr
 import { cancelContract, changeVehicle, createContract, createInvoice, deleteContract, deleteExtension, deleteInvoice, deleteInvoicePdf, downloadContractReports, extendContract, extractInvoice, getAdminSchedule, getAvailableCars, getContractByIdAdmin, getContractsByPage, getContractsByUser, getContractsByVehicle, getHgsPendingContracts, getInvoicePendingContracts, getInvoices, getKbsPendingContracts, getKbsReleasePendingContracts, getSignPendingContracts, reopenContract, returnContract, updateContract, updateInvoice, uploadInvoicePdf } from "./contract/contract-service";
 
 import { addContractRecord, deleteContractRecord, getContractRecords, updateContractRecord } from "./contract/contract-record-service";
+import { getContractPhotos, deleteContractPhoto } from "./contract/contract-photo-service";
 
 import { createUserAdmin, deleteUser, downloadUserReports, extractCustomerDocument, getUser, getUserAdmin, getUsersByPage, login, register, updatePassword, updateUser, updateUserAdmin } from "./user/user-service";
 
@@ -91,6 +92,8 @@ export const services = {
         addRecord: addContractRecord,
         updateRecord: updateContractRecord,
         deleteRecord: deleteContractRecord,
+        getPhotos: getContractPhotos,
+        deletePhoto: deleteContractPhoto,
     },
     user: {
         // COMMON ENDPOINTS

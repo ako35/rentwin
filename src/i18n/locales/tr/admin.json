@@ -679,7 +679,7 @@
       "createdBy": "Oluşturan",
       "kur": "Kur",
       "kurLine": "Kontrat: {{c}} / Güncel: {{g}}",
-      "topTabs": { "customer": "Müşteri", "drivers": "Sürücüler", "invoice": "Fatura" },
+      "topTabs": { "customer": "Müşteri", "drivers": "Sürücüler", "invoice": "Fatura", "photos": "Fotoğraflar" },
       "panels": { "party": "İlgili Taraf", "actions": "Kontrat İşlemleri" },
       "subTabs": {
         "summary": "Özet",
@@ -768,6 +768,24 @@
         "hint": "Bu sözleşme henüz imzalanmadı.",
         "hintClosed": "Bu sözleşme henüz imzalanmadı. Kontrat kapalı olsa da imzalandı olarak işaretleyebilirsiniz.",
         "stamp": "{{name}} · {{date}}"
+      },
+      "photosTab": {
+        "hint": "Bu fotoğraflar saha ekibinin mobil uygulamadan çektiği teslim/iade fotoğraflarıdır — buradan yalnızca görüntülenip silinebilir.",
+        "pickup": "Teslim",
+        "return": "İade",
+        "empty": "Bu aşama için henüz fotoğraf yüklenmemiş.",
+        "removeConfirm": "Bu fotoğraf silinsin mi?",
+        "removeSuccess": "Fotoğraf silindi.",
+        "error": "İşlem tamamlanamadı, lütfen tekrar deneyin.",
+        "angles": {
+          "FRONT": "Ön",
+          "BACK": "Arka",
+          "LEFT": "Sol Yan",
+          "RIGHT": "Sağ Yan",
+          "DASHBOARD": "Km & Yakıt",
+          "DAMAGE": "Hasar",
+          "OTHER": "Diğer"
+        }
       },
       "print": {
         "menu": "Yazdır",

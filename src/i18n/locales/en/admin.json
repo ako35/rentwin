@@ -679,7 +679,7 @@
       "createdBy": "Created by",
       "kur": "Rate",
       "kurLine": "Contract: {{c}} / Current: {{g}}",
-      "topTabs": { "customer": "Customer", "drivers": "Drivers", "invoice": "Invoice" },
+      "topTabs": { "customer": "Customer", "drivers": "Drivers", "invoice": "Invoice", "photos": "Photos" },
       "panels": { "party": "Party", "actions": "Contract Actions" },
       "subTabs": {
         "summary": "Summary",
@@ -768,6 +768,24 @@
         "hint": "This contract has not been signed yet.",
         "hintClosed": "This contract has not been signed yet. You can still mark it signed while it's closed.",
         "stamp": "{{name}} · {{date}}"
+      },
+      "photosTab": {
+        "hint": "These are the pickup/return photos the field team shot on the mobile app — this view only lets you look through and delete them.",
+        "pickup": "Pickup",
+        "return": "Return",
+        "empty": "No photos uploaded for this stage yet.",
+        "removeConfirm": "Delete this photo?",
+        "removeSuccess": "Photo deleted.",
+        "error": "Couldn't complete the action, please try again.",
+        "angles": {
+          "FRONT": "Front",
+          "BACK": "Back",
+          "LEFT": "Left side",
+          "RIGHT": "Right side",
+          "DASHBOARD": "Odometer & fuel",
+          "DAMAGE": "Damage",
+          "OTHER": "Other"
+        }
       },
       "print": {
         "menu": "Print",
