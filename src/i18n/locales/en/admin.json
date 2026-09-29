@@ -105,9 +105,9 @@
     },
     "inspectionScan": {
       "button": "Fill from Document",
-      "hint": "Upload a photo or PDF of the vehicle inspection report or emission test certificate to auto-fill the fields.",
+      "hint": "Upload a photo or PDF of the vehicle inspection report, emission test certificate, or registration document to auto-fill the fields (a registration document only fills in the Expiry Date).",
       "success": "Document read successfully — please review the fields.",
-      "notDetected": "Couldn't recognize an inspection/emission document in the photo, or nothing on it was readable. Try a clearer/brighter photo, or fill in the fields manually.",
+      "notDetected": "Couldn't recognize an inspection/emission document or registration document in the photo, or nothing on it was readable. Try a clearer/brighter photo, or fill in the fields manually.",
       "error": "Could not read the document, please fill in manually.",
       "tooLarge": "File is too large. Please upload a smaller image (about 4 MB max) or a PDF.",
       "busy": "The AI service is busy right now. Please try again in a few seconds.",
@@ -762,7 +762,6 @@
         "to": "End",
         "note": "Note",
         "notePlaceholder": "Optional — plate, toll point, query reference…",
-        "openPortal": "Open the PTT HGS Portal",
         "amountHint": "To add a toll charge, add an \"HGS / OGS\" extra on the Return Extras tab."
       },
       "kbs": {

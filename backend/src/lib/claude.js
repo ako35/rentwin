@@ -130,31 +130,42 @@ Kurallar:
 const INSPECTION_SCHEMA = z.object({
   documentDetected: z
     .boolean()
-    .describe("Görselde gerçekten bir Türkiye araç muayene (TÜVTÜRK) raporu ya da egzoz emisyon ölçüm belgesi/pulu görülüyor mu?"),
+    .describe(
+      "Görselde gerçekten bir Türkiye araç muayene (TÜVTÜRK) raporu, egzoz emisyon ölçüm belgesi/pulu, YA DA bir motorlu taşıt tescil belgesi (ruhsat) görülüyor mu?"
+    ),
   type: z
     .enum(["Periodic", "Emission"])
     .nullable()
-    .describe("Belge türü — Araç Muayene istasyonu (TÜVTÜRK) raporuysa Periodic, Egzoz Emisyon ölçüm raporu/pulu ise Emission."),
-  date: z.string().nullable().describe("Muayene / ölçüm tarihi, YYYY-MM-DD formatında"),
+    .describe(
+      "Belge türü — Araç Muayene istasyonu (TÜVTÜRK) raporuysa Periodic, Egzoz Emisyon ölçüm raporu/pulu ise Emission. Belge bir ruhsatsa (yalnızca muayene geçerlilik tarihi okunabiliyorsa) da Periodic yaz — ruhsattaki muayene geçerlilik tarihi her zaman periyodik araç muayenesine aittir."
+    ),
+  date: z.string().nullable().describe("Muayene / ölçüm tarihi, YYYY-MM-DD formatında — yalnızca gerçek bir muayene raporunda/pulunda bulunur, ruhsatta yoktur."),
   result: z
     .enum(["Pass", "Fail", "Defective"])
     .nullable()
-    .describe("Sonuç — Uygun/Geçti ise Pass, Elverişsiz/Kaldı ise Fail, Kusurlu/eksiklik var ise Defective."),
-  expiryDate: z.string().nullable().describe("Bir sonraki muayene / geçerlilik tarihi, YYYY-MM-DD formatında"),
-  station: z.string().nullable().describe("Muayene istasyonu / ölçüm merkezi adı"),
-  cost: z.number().nullable().describe("Muayene / ölçüm ücreti (TL), yalnızca sayı"),
+    .describe("Sonuç — Uygun/Geçti ise Pass, Elverişsiz/Kaldı ise Fail, Kusurlu/eksiklik var ise Defective. Ruhsatta bu bilgi yoktur."),
+  expiryDate: z
+    .string()
+    .nullable()
+    .describe(
+      "Bir sonraki muayene / geçerlilik tarihi, YYYY-MM-DD formatında. Ruhsatta bu, sağ bölümde yazan 'Muayene Geçerlilik Tarihi' (ya da 'Fenni Muayene Geçerlilik Tarihi') alanıdır."
+    ),
+  station: z.string().nullable().describe("Muayene istasyonu / ölçüm merkezi adı — ruhsatta bu bilgi yoktur."),
+  cost: z.number().nullable().describe("Muayene / ölçüm ücreti (TL), yalnızca sayı — ruhsatta bu bilgi yoktur."),
 });
 
-const INSPECTION_PROMPT = `Bu görüntü bir Türkiye araç muayene (TÜVTÜRK) raporu ya da egzoz emisyon ölçüm belgesi/pulu mu incele.
+const INSPECTION_PROMPT = `Bu görüntü bir Türkiye araç muayene (TÜVTÜRK) raporu, egzoz emisyon ölçüm belgesi/pulu, ya da bir motorlu taşıt tescil belgesi (ruhsat) mı incele.
 Kurallar:
 - Böyle bir belge değilse ya da hiçbir alan güvenle okunamıyorsa documentDetected=false yap ve tüm alanları null bırak. Asla tahmin etme.
 - Belgeyse documentDetected=true yap; yalnızca NET okuduğun alanları doldur, okuyamadığını null bırak.
-- type: belge "Araç Muayene İstasyonu" / TÜVTÜRK periyodik muayene raporuysa Periodic; "Egzoz Emisyon Ölçüm" raporu/pulu ise Emission.
-- date: muayene / ölçüm tarihi, YYYY-MM-DD formatında.
-- result: "Uygun" / "Geçti" ise Pass; "Elverişsiz" / "Kaldı" ise Fail; kusur/eksiklik belirtilmişse Defective.
-- expiryDate: bir sonraki muayene tarihi / geçerlilik süresi sonu, YYYY-MM-DD formatında.
-- station: muayeneyi/ölçümü yapan istasyon veya merkezin adı.
-- cost: ödenen ücret — yalnızca sayı, TL sembolü ve binlik ayırıcı olmadan (örn. 1250.00).`;
+- Belge bir muayene raporu / egzoz pulu ise:
+  - type: "Araç Muayene İstasyonu" / TÜVTÜRK periyodik muayene raporuysa Periodic; "Egzoz Emisyon Ölçüm" raporu/pulu ise Emission.
+  - date: muayene / ölçüm tarihi, YYYY-MM-DD formatında.
+  - result: "Uygun" / "Geçti" ise Pass; "Elverişsiz" / "Kaldı" ise Fail; kusur/eksiklik belirtilmişse Defective.
+  - expiryDate: bir sonraki muayene tarihi / geçerlilik süresi sonu, YYYY-MM-DD formatında.
+  - station: muayeneyi/ölçümü yapan istasyon veya merkezin adı.
+  - cost: ödenen ücret — yalnızca sayı, TL sembolü ve binlik ayırıcı olmadan (örn. 1250.00).
+- Belge bir Motorlu Taşıt Tescil Belgesi (ruhsat) ise (muayene raporu DEĞİLSE): documentDetected=true yap; type=Periodic yaz; expiryDate'i ruhsatın sağ bölümünde yazan "Muayene Geçerlilik Tarihi" / "Fenni Muayene Geçerlilik Tarihi" alanından YYYY-MM-DD formatında doldur; date, result, station, cost alanlarını null bırak (ruhsatta bu bilgiler bulunmaz).`;
 
 const INVOICE_DOC_SCHEMA = z.object({
   documentDetected: z

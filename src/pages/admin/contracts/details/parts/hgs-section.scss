@@ -182,22 +182,6 @@
     margin-top: 0.6rem;
   }
 
-  &__hgs-actions {
-    @include m.flexbox(row, flex-start, center, 0.6rem);
-    margin-top: 0.9rem;
-  }
-
-  &__hgs-portal {
-    @include m.flexbox(row, center, center, 0.35rem);
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: v.$color5_3;
-    text-decoration: none;
-
-    svg { font-size: 0.8rem; }
-    &:hover { color: v.$color2; }
-  }
-
   &__hgs-hint {
     margin: 0.8rem 0 0;
     padding-top: 0.7rem;

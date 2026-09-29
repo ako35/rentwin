@@ -2,13 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
 import moment from "moment/moment";
-import { BsClockHistory, BsPatchCheck, BsBoxArrowUpRight, BsPlusLg } from "react-icons/bs";
+import { BsClockHistory, BsPatchCheck, BsPlusLg } from "react-icons/bs";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import { hgsRangesCoverPeriod } from "../contract-helpers";
 import "./hgs-section.scss";
-
-const HGS_PORTAL = "https://hgs.ptt.gov.tr/";
 
 // Left card: HGS / OGS operational check — pure audit, no manual result. Under
 // the rental period sits a log of every date range queried on the PTT HGS
@@ -236,16 +234,6 @@ const HgsSection = ({ formik, contractId }) => {
         )}
       </div>
 
-      <div className="contract-page__hgs-actions">
-        <a
-          href={HGS_PORTAL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="contract-page__hgs-portal"
-        >
-          <BsBoxArrowUpRight /> {c("openPortal")}
-        </a>
-      </div>
       <p className="contract-page__hgs-hint">{c("amountHint")}</p>
     </section>
   );

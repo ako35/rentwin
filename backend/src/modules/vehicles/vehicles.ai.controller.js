@@ -61,7 +61,7 @@ const extractInspection = asyncHandler(async (req, res) => {
   }
 
   if (!fields.documentDetected) {
-    throw new HttpError(422, "Görsel bir muayene/egzoz belgesine benzemiyor.");
+    throw new HttpError(422, "Görsel bir muayene/egzoz belgesine ya da ruhsata benzemiyor.");
   }
 
   delete fields.documentDetected;

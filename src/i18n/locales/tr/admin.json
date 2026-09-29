@@ -105,9 +105,9 @@
     },
     "inspectionScan": {
       "button": "Belgeden Doldur",
-      "hint": "Araç muayene raporu veya egzoz emisyon belgesi fotoğrafı ya da PDF'i yükleyin, alanlar otomatik doldurulsun.",
+      "hint": "Araç muayene raporu, egzoz emisyon belgesi ya da ruhsat fotoğrafı/PDF'i yükleyin, alanlar otomatik doldurulsun (ruhsattan yalnızca Bitiş Tarihi doldurulur).",
       "success": "Belge okundu, alanlar dolduruldu. Lütfen kontrol edin.",
-      "notDetected": "Görselde bir muayene/egzoz belgesi tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",
+      "notDetected": "Görselde bir muayene/egzoz belgesi ya da ruhsat tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",
       "error": "Belge okunamadı, lütfen alanları elle doldurun.",
       "tooLarge": "Dosya çok büyük. Lütfen daha küçük bir görsel (en fazla ~4 MB) veya PDF yükleyin.",
       "busy": "Yapay zeka servisi şu an yoğun. Lütfen birkaç saniye sonra tekrar deneyin.",
@@ -762,7 +762,6 @@
         "to": "Bitiş",
         "note": "Not",
         "notePlaceholder": "Opsiyonel — plaka, geçiş noktası, sorgu referansı…",
-        "openPortal": "PTT HGS Portalını Aç",
         "amountHint": "Geçiş bedeli eklemek için Dönüş Ekstra sekmesinden \"HGS / OGS\" ekstrası ekleyin."
       },
       "kbs": {
