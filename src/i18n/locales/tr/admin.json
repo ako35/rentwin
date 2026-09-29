@@ -279,6 +279,12 @@
       },
       "inspection": {
         "title": "Muayene / Egzoz Kayıtları",
+        "groups": {
+          "periodic": "Muayene",
+          "emission": "Egzoz",
+          "periodicTotal": "Toplam Muayene Ücreti",
+          "emissionTotal": "Toplam Egzoz Ücreti"
+        },
         "fields": {
           "type": "Tip",
           "date": "Tarih",

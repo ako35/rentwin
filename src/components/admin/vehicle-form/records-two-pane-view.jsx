@@ -2,9 +2,13 @@ import { Button, Form, Spinner, Table } from "react-bootstrap";
 import CustomForm from "../../common/custom-form/custom-form";
 import Loading from "../../common/loading/loading";
 import InsuranceScan from "./insurance-scan";
+import InspectionScan from "./inspection-scan";
 
-// Two-pane records view (Sigorta / Kasko): side-by-side group lists on the left,
-// an inline add/edit form on the right, with per-group totals.
+// config.aiScan -> the scan component it should show above the inline form.
+const AI_SCAN_COMPONENTS = { insurance: InsuranceScan, inspection: InspectionScan };
+
+// Two-pane records view (Sigorta/Kasko, Muayene/Egzoz): side-by-side group
+// lists on the left, an inline add/edit form on the right, with per-group totals.
 const RecordsTwoPaneView = ({
   config, t, i18n, rows, loading, formik, editing, saving,
   fieldLabel, formatCell, buildItems, setEditing, toFormValues,
@@ -14,6 +18,7 @@ const RecordsTwoPaneView = ({
   const groupTotal = (type) =>
     groupRows(type).reduce((sum, row) => sum + (Number(row[config.totalField]) || 0), 0);
   const inlineFields = config.fields.filter((field) => field.name !== config.typeField);
+  const ScanComponent = config.aiScan && AI_SCAN_COMPONENTS[config.aiScan];
 
   const startEdit = (row) => {
     setEditing(row);
@@ -26,16 +31,16 @@ const RecordsTwoPaneView = ({
     formik.resetForm({ values: config.initialValues });
   };
 
-  // AI-scan field names (type/company/policyNo/startDate/endDate/premium)
-  // already match the formik field names 1:1 — no allowlist/translation
-  // needed, just drop in whatever came back non-empty. A single setValues
-  // call (rather than one setFieldValue per field) so formik validates the
-  // fully-merged result in one pass — several setFieldValue calls in a row
-  // each validate against the pre-loop values, leaving stale "required"
-  // errors (and a disabled "Ekle" button) for fields a *later* call in the
-  // same batch had already filled. The scanned file itself is handed up too,
-  // so the caller can attach it as the record's own document once saved —
-  // sparing the operator from uploading the same poliçe photo twice.
+  // Whichever scan component is active, its extracted field names already
+  // match the formik field names 1:1 (see InsuranceScan/InspectionScan) — no
+  // allowlist/translation needed, just drop in whatever came back non-empty.
+  // A single setValues call (rather than one setFieldValue per field) so
+  // formik validates the fully-merged result in one pass — several
+  // setFieldValue calls in a row each validate against the pre-loop values,
+  // leaving stale "required" errors (and a disabled "Ekle" button) for fields
+  // a *later* call in the same batch had already filled. The scanned file
+  // itself is handed up too, so the caller can attach it as the record's own
+  // document once saved — sparing the operator from uploading it twice.
   const handleAiExtracted = (fields, file) => {
     const patch = {};
     Object.entries(fields).forEach(([key, value]) => {
@@ -106,10 +111,10 @@ const RecordsTwoPaneView = ({
       </div>
 
       <div className="records-two-pane__form">
-        {config.aiScan && !editing && (
+        {ScanComponent && !editing && (
           <div className="records-two-pane__ai-scan">
-            <InsuranceScan onExtracted={handleAiExtracted} />
-            <span className="text-muted">{t("vehicles.insuranceScan.hint")}</span>
+            <ScanComponent onExtracted={handleAiExtracted} />
+            <span className="text-muted">{t(`vehicles.${config.aiScan}Scan.hint`)}</span>
           </div>
         )}
         {/* Not a <form>: RecordsTwoPaneView renders inline inside the vehicle

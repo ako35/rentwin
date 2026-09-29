@@ -99,9 +99,24 @@ export const RECORD_CONFIGS = {
     tabKey: "inspection",
     initialValues: utils.initialValues.vehicleInspectionInitialValues,
     schema: utils.validations.vehicleInspectionValidationSchema,
-    // Shows "Belgeden Doldur" (Claude AI scan) above the add-record modal's
-    // fields — see InspectionScan.
+    // Two-pane layout (kolayCAR style), same as Sigorta/Kasko: left = Muayene
+    // + Egzoz lists, right = inline add/edit form.
+    twoPane: true,
+    typeField: "type",
+    totalField: "cost",
+    // Shows "Belgeden Doldur" (Claude AI scan) above the form — see InspectionScan.
     aiScan: "inspection",
+    groups: [
+      { key: "periodic", type: "Periodic" },
+      { key: "emission", type: "Emission" },
+    ],
+    listColumns: [
+      { key: "date", kind: "date" },
+      { key: "result", kind: "option", optionNs: "inspectionResults" },
+      { key: "expiryDate", kind: "date" },
+      { key: "station" },
+      { key: "cost", kind: "money" },
+    ],
     columns: [
       { key: "type", kind: "option", optionNs: "inspectionTypes" },
       { key: "date", kind: "date" },

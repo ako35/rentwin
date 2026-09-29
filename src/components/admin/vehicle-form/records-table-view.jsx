@@ -2,36 +2,15 @@ import { Badge, Button, Col, Form, Modal, Row, Spinner, Table } from "react-boot
 import { BsPaperclip, BsPencil, BsTrash } from "react-icons/bs";
 import CustomForm from "../../common/custom-form/custom-form";
 import Loading from "../../common/loading/loading";
-import InspectionScan from "./inspection-scan";
-
-// config.aiScan -> the scan component it should show above the add-record
-// modal's fields (Sigorta/Kasko's own "Poliçeden Doldur" lives in the
-// two-pane view instead, since that tab never uses this view).
-const AI_SCAN_COMPONENTS = { inspection: InspectionScan };
 
 // Default records view: a full-width table + an add/edit modal. Used by every
-// record type except Sigorta/Kasko (which use the two-pane view).
+// record type except Sigorta/Kasko and Muayene/Egzoz (which use the two-pane view).
 const RecordsTableView = ({
   config, t, rows, loading, formik, editing, saving, showModal, setShowModal,
-  fieldLabel, formatCell, buildItems, openCreate, openEdit, handleDelete, onManageDocuments, onScanFile,
+  fieldLabel, formatCell, buildItems, openCreate, openEdit, handleDelete, onManageDocuments,
 }) => {
   const gridFields = config.fields.filter((field) => !field.full);
   const fullFields = config.fields.filter((field) => field.full);
-  const ScanComponent = config.aiScan && AI_SCAN_COMPONENTS[config.aiScan];
-
-  // Same reasoning as RecordsTwoPaneView's handleAiExtracted: one setValues
-  // call so formik validates the fully-merged result in a single pass — see
-  // that file's comment for why several setFieldValue calls in a row would
-  // leave stale "required" errors (and a disabled "Kaydet") behind.
-  const handleAiExtracted = (fields, file) => {
-    const patch = {};
-    Object.entries(fields).forEach(([key, value]) => {
-      if (value === null || value === undefined || value === "") return;
-      patch[key] = typeof value === "number" ? String(value) : value;
-    });
-    formik.setValues({ ...formik.values, ...patch });
-    if (file) onScanFile(file);
-  };
 
   return (
     <div className="vehicle-records-panel">
@@ -98,12 +77,6 @@ const RecordsTableView = ({
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {ScanComponent && !editing && (
-              <div className="vehicle-records-panel__ai-scan">
-                <ScanComponent onExtracted={handleAiExtracted} />
-                <span className="text-muted">{t(`vehicles.${config.aiScan}Scan.hint`)}</span>
-              </div>
-            )}
             <Row className="row-cols-1 row-cols-md-2">
               {gridFields.map((field) => (
                 <CustomForm

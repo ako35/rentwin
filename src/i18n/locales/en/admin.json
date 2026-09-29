@@ -279,6 +279,12 @@
       },
       "inspection": {
         "title": "Inspection / Emission Records",
+        "groups": {
+          "periodic": "Inspection",
+          "emission": "Emission",
+          "periodicTotal": "Total Inspection Fees",
+          "emissionTotal": "Total Emission Fees"
+        },
         "fields": {
           "type": "Type",
           "date": "Date",
