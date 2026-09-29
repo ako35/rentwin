@@ -1,8 +1,19 @@
 const prisma = require("../../lib/prisma");
 const { sendWorkbook } = require("./excel-builders");
 const asyncHandler = require("../../middleware/async-handler");
-const { modelImageKey } = require("../../lib/serializers");
-const { loadModelImageMap } = require("../vehicles/vehicles.shared");
+const { getRentedVehicleIds, getVehicleStatus } = require("../vehicles/vehicles.shared");
+
+const TRANSMISSION_LABELS = { Manual: "Manuel", SemiAutomatic: "Yarı Otomatik", Automatic: "Otomatik" };
+const FUEL_LABELS = {
+  Diesel: "Dizel",
+  Gasoline: "Benzin",
+  Hybrid: "Hibrit",
+  Electricity: "Elektrik",
+  LPG: "LPG",
+  CNG: "CNG",
+  Hydrogen: "Hidrojen",
+};
+const STATUS_LABELS = { AVAILABLE: "Müsait", RENTED: "Kirada", OUT_OF_SERVICE: "Servis Dışı", SOLD: "Satıldı" };
 
 const downloadUsers = asyncHandler(async (req, res) => {
   const users = await prisma.user.findMany();
@@ -24,28 +35,34 @@ const downloadUsers = asyncHandler(async (req, res) => {
   );
 });
 
+// Mirrors the admin Araçlar list as closely as an xlsx can: same columns, same
+// order, same Turkish labels for the enum/status fields — so the exported
+// report reads like the on-screen table rather than the raw DB values.
 const downloadCars = asyncHandler(async (req, res) => {
-  const [vehicles, modelImages] = await Promise.all([
-    prisma.vehicle.findMany(),
-    loadModelImageMap(),
-  ]);
+  const vehicles = await prisma.vehicle.findMany({ include: { branch: true } });
+  const rentedIds = await getRentedVehicleIds(vehicles.map((v) => v.id));
   await sendWorkbook(
     res,
     "cars.xlsx",
     [
-      { header: "ID", key: "id", width: 36 },
-      { header: "Brand", key: "brand", width: 16 },
+      { header: "Plaka", key: "licensePlate", width: 14 },
+      { header: "Marka", key: "brand", width: 16 },
       { header: "Model", key: "model", width: 22 },
-      { header: "License Plate", key: "licensePlate", width: 14 },
-      { header: "Transmission", key: "transmission", width: 14 },
-      { header: "Fuel Type", key: "fuelType", width: 12 },
-      { header: "Out Of Service", key: "outOfService", width: 14 },
-      { header: "Has Image", key: "hasImage", width: 12 },
+      { header: "Şube", key: "branch", width: 18 },
+      { header: "Vites", key: "transmission", width: 16 },
+      { header: "Yakıt", key: "fuelType", width: 12 },
+      { header: "Durum", key: "status", width: 14 },
+      { header: "Satış Tarihi", key: "saleDate", width: 14 },
     ],
     vehicles.map((vehicle) => ({
-      ...vehicle,
-      outOfService: vehicle.outOfService ? "Yes" : "No",
-      hasImage: modelImages.has(modelImageKey(vehicle.brand, vehicle.model)) ? "Yes" : "No",
+      licensePlate: vehicle.licensePlate,
+      brand: vehicle.brand,
+      model: vehicle.model,
+      branch: vehicle.branch?.name || "-",
+      transmission: TRANSMISSION_LABELS[vehicle.transmission] || vehicle.transmission,
+      fuelType: FUEL_LABELS[vehicle.fuelType] || vehicle.fuelType,
+      status: STATUS_LABELS[getVehicleStatus(vehicle, rentedIds)],
+      saleDate: vehicle.soldAt ? vehicle.soldAt.toLocaleDateString("tr-TR") : "-",
     }))
   );
 });
