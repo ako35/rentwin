@@ -740,6 +740,9 @@ model Setting {
   alertWindowInsuranceDays  Int?
   alertWindowKaskoDays      Int?
   alertWindowTaxDays        Int?
+  // Bakım is purely km-based (no "days left" concept) — see
+  // vehicles.dashboard.controller.js.
+  alertWindowMaintenanceKm  Int?
   updatedAt                 DateTime @updatedAt
 }
 

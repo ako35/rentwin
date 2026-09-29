@@ -1186,12 +1186,14 @@
     },
     "alertWindows": {
       "title": "Uyarı Süreleri",
-      "hint": "Panoda Sigorta/Kasko/MTV/Muayene için \"yaklaşan / süresi geçmiş\" uyarısının kaç gün öncesinden başlayacağını buradan ayarlayın. Boş bırakılan alan 15 gün varsayılanını kullanır.",
+      "hint": "Panoda Sigorta/Kasko/MTV/Muayene için \"yaklaşan / süresi geçmiş\" uyarısının kaç gün öncesinden başlayacağını, Bakım için ise kaç km kala başlayacağını buradan ayarlayın. Boş bırakılan alan gün alanlarında 15, Bakım'da 1000 km varsayılanını kullanır.",
       "suffix": "gün",
+      "suffixKm": "km",
       "alertWindowInspectionDays": "Muayene / Egzoz",
       "alertWindowInsuranceDays": "Trafik Sigortası",
       "alertWindowKaskoDays": "Kasko",
-      "alertWindowTaxDays": "MTV"
+      "alertWindowTaxDays": "MTV",
+      "alertWindowMaintenanceKm": "Bakım (km)"
     },
     "kabisSystems": {
       "title": "KABİS Sistemleri",

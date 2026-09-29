@@ -207,10 +207,10 @@ const MaintenanceAlertBar = ({
       {open && !isSpecialTab(open) && (
         <div className="maintenance-alert-bar__panel">
           <div className="maintenance-alert-bar__panel-head">
-            {t(`alertBar.${open}`)} — {t("alertBar.dueWithin", { days: alerts?.windowDays?.[open] ?? 30 })}
-            {open === "maintenance" && alerts?.windowKm?.maintenance
-              ? ` / ${t("alertBar.dueWithinKm", { km: alerts.windowKm.maintenance })}`
-              : ""}
+            {t(`alertBar.${open}`)} —{" "}
+            {open === "maintenance"
+              ? t("alertBar.dueWithinKm", { km: alerts?.windowKm?.maintenance ?? 1000 })
+              : t("alertBar.dueWithin", { days: alerts?.windowDays?.[open] ?? 15 })}
           </div>
           {activeList.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.none")}</div>

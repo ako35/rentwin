@@ -1186,12 +1186,14 @@
     },
     "alertWindows": {
       "title": "Alert Windows",
-      "hint": "Set how many days ahead the dashboard's \"upcoming / overdue\" alert for Insurance/Kasko/MTV/Inspection should start warning. A field left blank uses the 15-day default.",
+      "hint": "Set how many days ahead the dashboard's \"upcoming / overdue\" alert for Insurance/Kasko/MTV/Inspection should start warning, and how many km ahead it should for Maintenance. A field left blank uses the 15-day default (1000 km for Maintenance).",
       "suffix": "days",
+      "suffixKm": "km",
       "alertWindowInspectionDays": "Inspection / Emissions",
       "alertWindowInsuranceDays": "Traffic Insurance",
       "alertWindowKaskoDays": "Kasko",
-      "alertWindowTaxDays": "Vehicle Tax (MTV)"
+      "alertWindowTaxDays": "Vehicle Tax (MTV)",
+      "alertWindowMaintenanceKm": "Maintenance (km)"
     },
     "kabisSystems": {
       "title": "KABİS Systems",

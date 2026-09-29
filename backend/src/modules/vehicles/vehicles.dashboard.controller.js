@@ -50,15 +50,14 @@ const getFleetStats = asyncHandler(async (req, res) => {
   });
 });
 
-// Sigorta/Kasko/MTV/Muayene are hard legal deadlines, so the dashboard flags
-// them tighter than Bakım (which is just a scheduling reminder, kept at 30).
+// Sigorta/Kasko/MTV/Muayene are hard legal deadlines with a fixed due date.
 // Each is independently overridable from Ayarlar > Uyarı Süreleri — this is
 // only the fallback when an operator hasn't set one.
 const DEFAULT_EXPIRY_WINDOW_DAYS = 15;
-const MAINTENANCE_WINDOW_DAYS = 30;
-// Vehicles within this many km of their planned service (odometer + interval)
-// also count as "due soon", alongside the date-based check above.
-const MAINTENANCE_WINDOW_KM = 1000;
+// Bakım has no "due date" of its own — a periodic (Periyodik) service plan is
+// tracked by odometer reading only, so "due soon" is purely km-based: within
+// this many km of the last Periyodik record's planned next-service odometer.
+const DEFAULT_MAINTENANCE_WINDOW_KM = 1000;
 
 const thresholdInDays = (days) => {
   const d = new Date();
@@ -83,7 +82,7 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
     kasko: thresholdInDays(windowDaysFor.kasko),
     tax: thresholdInDays(windowDaysFor.tax),
   };
-  const maintenanceThreshold = thresholdInDays(MAINTENANCE_WINDOW_DAYS);
+  const maintenanceThresholdKm = settings.alertWindowMaintenanceKm ?? DEFAULT_MAINTENANCE_WINDOW_KM;
 
   const carSelect = { select: { id: true, licensePlate: true, brand: true, model: true } };
 
@@ -104,12 +103,14 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
       where: { vehicle: vehicleWhere },
       select: { vehicleId: true, dueDate: true, paidDate: true, vehicle: carSelect },
     }),
+    // Only Periyodik (scheduled) service plans count toward "Bakım due soon" —
+    // a Tamir/Lastik/Diğer row's nextOdometer (if one was ever entered) isn't
+    // a service plan the dashboard should be nagging about.
     prisma.vehicleMaintenance.findMany({
-      where: { vehicle: vehicleWhere, OR: [{ nextDate: { not: null } }, { nextOdometer: { not: null } }] },
+      where: { vehicle: vehicleWhere, type: "Periodic", nextOdometer: { not: null } },
       select: {
         vehicleId: true,
         date: true,
-        nextDate: true,
         nextOdometer: true,
         vehicle: { select: { id: true, licensePlate: true, brand: true, model: true, currentKm: true } },
       },
@@ -175,26 +176,19 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
   }
   categories.inspection.push(...missingItemsFor(new Set(inspections.map((r) => r.vehicleId))));
 
-  // A vehicle's plan can be due by date, by km, or both — surface it once with
-  // whichever signals apply, keyed off its most recently logged service.
+  // Purely km-based: how far the vehicle's current odometer is from its most
+  // recent Periyodik record's planned next-service reading.
   for (const row of latestPerVehicle(maintenances, "date")) {
-    const daysLeft = row.nextDate
-      ? Math.ceil((new Date(row.nextDate).getTime() - now.getTime()) / 86400000)
-      : null;
     const kmLeft =
       row.nextOdometer != null && row.vehicle.currentKm != null
         ? row.nextOdometer - row.vehicle.currentKm
         : null;
-    const dueByDate = row.nextDate != null && new Date(row.nextDate) <= maintenanceThreshold;
-    const dueByKm = kmLeft != null && kmLeft <= MAINTENANCE_WINDOW_KM;
-    if (dueByDate || dueByKm) {
+    if (kmLeft != null && kmLeft <= maintenanceThresholdKm) {
       categories.maintenance.push({
         vehicleId: row.vehicle.id,
         plate: row.vehicle.licensePlate,
         name: [row.vehicle.brand, row.vehicle.model].filter(Boolean).join(" "),
-        date: row.nextDate || null,
-        daysLeft,
-        km: row.nextOdometer ?? null,
+        km: row.nextOdometer,
         kmLeft,
         missing: false,
       });
@@ -230,10 +224,9 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
       kasko: windowDaysFor.kasko,
       tax: windowDaysFor.tax,
       inspection: windowDaysFor.inspection,
-      maintenance: MAINTENANCE_WINDOW_DAYS,
     },
     windowKm: {
-      maintenance: MAINTENANCE_WINDOW_KM,
+      maintenance: maintenanceThresholdKm,
     },
     categories,
   });

@@ -27,13 +27,16 @@ const FIELDS = [
 ];
 
 // Dashboard's "yaklaşan/süresi geçmiş" alert panel window, per category —
-// blank falls back to the 15-day default (see vehicles.dashboard.controller.js).
-const ALERT_WINDOW_DEFAULT_DAYS = "15";
+// blank falls back to each field's own default (see
+// vehicles.dashboard.controller.js). Bakım has no "days left" concept — it's
+// tracked purely by km (Periyodik bakımın planlanan sonraki km'i), so it gets
+// its own unit/placeholder instead of the shared "gün" suffix.
 const ALERT_FIELDS = [
-  { name: "alertWindowInspectionDays" },
-  { name: "alertWindowInsuranceDays" },
-  { name: "alertWindowKaskoDays" },
-  { name: "alertWindowTaxDays" },
+  { name: "alertWindowInspectionDays", unit: "days", placeholder: "15" },
+  { name: "alertWindowInsuranceDays", unit: "days", placeholder: "15" },
+  { name: "alertWindowKaskoDays", unit: "days", placeholder: "15" },
+  { name: "alertWindowTaxDays", unit: "days", placeholder: "15" },
+  { name: "alertWindowMaintenanceKm", unit: "km", placeholder: "1000" },
 ];
 
 // Left-nav sections — each maps 1:1 to a settings.<key>.title translation.
@@ -347,9 +350,9 @@ const AdminSettingsPage = () => {
                         step="1"
                         value={form[f.name]}
                         onChange={setV(f.name)}
-                        placeholder={ALERT_WINDOW_DEFAULT_DAYS}
+                        placeholder={f.placeholder}
                       />
-                      <span>{c("alertWindows.suffix")}</span>
+                      <span>{c(f.unit === "km" ? "alertWindows.suffixKm" : "alertWindows.suffix")}</span>
                     </div>
                   </Form.Group>
                 ))}

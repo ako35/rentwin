@@ -12,6 +12,7 @@ const EMPTY = {
   alertWindowInsuranceDays: null,
   alertWindowKaskoDays: null,
   alertWindowTaxDays: null,
+  alertWindowMaintenanceKm: null,
 };
 
 // A non-empty form value to a finite number, else null.
@@ -21,9 +22,10 @@ const num = (value) => {
   return Number.isFinite(n) && n >= 0 ? n : null;
 };
 
-// A non-empty form value to a positive whole day count, else null (falls
-// back to the dashboard alert panel's default window).
-const dayWindow = (value) => {
+// A non-empty form value to a positive whole number, else null (falls back to
+// the dashboard alert panel's default window — days for most categories, km
+// for Bakım).
+const positiveInt = (value) => {
   if (value === "" || value === null || value === undefined) return null;
   const n = Number(value);
   return Number.isInteger(n) && n >= 1 ? n : null;
@@ -44,10 +46,11 @@ const updateSettings = asyncHandler(async (req, res) => {
     defaultMonthlyKmLimit: num(req.body.defaultMonthlyKmLimit),
     defaultKmOverageFee: num(req.body.defaultKmOverageFee),
     defaultFuelFeePerEighth: num(req.body.defaultFuelFeePerEighth),
-    alertWindowInspectionDays: dayWindow(req.body.alertWindowInspectionDays),
-    alertWindowInsuranceDays: dayWindow(req.body.alertWindowInsuranceDays),
-    alertWindowKaskoDays: dayWindow(req.body.alertWindowKaskoDays),
-    alertWindowTaxDays: dayWindow(req.body.alertWindowTaxDays),
+    alertWindowInspectionDays: positiveInt(req.body.alertWindowInspectionDays),
+    alertWindowInsuranceDays: positiveInt(req.body.alertWindowInsuranceDays),
+    alertWindowKaskoDays: positiveInt(req.body.alertWindowKaskoDays),
+    alertWindowTaxDays: positiveInt(req.body.alertWindowTaxDays),
+    alertWindowMaintenanceKm: positiveInt(req.body.alertWindowMaintenanceKm),
   };
   const saved = await prisma.setting.upsert({
     where: { id: SINGLETON_ID },
