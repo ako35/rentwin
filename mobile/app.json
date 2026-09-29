@@ -17,7 +17,11 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,7 +37,12 @@
       ]
     ],
     "extra": {
-      "apiUrl": "https://rentwin.com.tr/api"
-    }
+      "apiUrl": "https://rentwin.com.tr/api",
+      "router": {},
+      "eas": {
+        "projectId": "8afce014-50cf-4989-9b35-a9d2a3ddde58"
+      }
+    },
+    "owner": "alikcn35"
   }
 }
