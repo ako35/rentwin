@@ -176,6 +176,7 @@ const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
 
   const where = {
     ...soldScope,
+    ...(req.query.branchId ? { branchId: req.query.branchId } : {}),
     ...(columnTokens.length ? { AND: columnTokens.map((t) => ({ OR: t.or })) } : {}),
   };
 

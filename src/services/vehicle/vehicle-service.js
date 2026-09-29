@@ -86,11 +86,13 @@ export const getVehiclesByPageAdmin = async (
   sort = "id",
   direction = "DESC",
   sold = false,
-  query = ""
+  query = "",
+  branchId = ""
 ) => {
   const params = new URLSearchParams({ page, size, sort, direction });
   if (sold) params.set("sold", "1");
   if (query) params.set("q", query);
+  if (branchId) params.set("branchId", branchId);
 
   const response = await axios.get(`${API_URL}/car/admin/pages/auth?${params}`, services.authHeader());
   return response.data;

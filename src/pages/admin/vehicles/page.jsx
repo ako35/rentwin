@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { constants } from "../../../constants";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
 import { Button, ButtonGroup, Spinner } from "react-bootstrap";
@@ -15,6 +15,7 @@ const { routes } = constants;
 const AdminVehiclesPage = () => {
   const { t } = useTranslation("admin");
   const { t: tCommon } = useTranslation("common");
+  const { branchId } = useOutletContext() || {};
   const f = (key) => t(`vehicleFilters.${key}`);
   const [showSold, setShowSold] = useState(false);
   const columns = utils.tables.getAdminVehiclesColumns(t, tCommon, showSold);
@@ -48,7 +49,8 @@ const AdminVehiclesPage = () => {
         "id",
         "DESC",
         sold,
-        query.trim()
+        query.trim(),
+        branchId
       );
       if (thisRequest !== requestId.current) return;
       setVehicles(vehicleData.content);
@@ -125,10 +127,13 @@ const AdminVehiclesPage = () => {
     navigate(`${routes.adminVehicles}/${row.id}`);
   };
 
+  // Re-fetches on mount and again whenever the top bar's branch filter
+  // changes, resetting back to page 0 the same way switching sold/active does.
   useEffect(() => {
+    setResetPage((prev) => !prev);
     loadData(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [branchId]);
 
   return (
     <div className="admin-vehicle-page">
