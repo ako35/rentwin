@@ -266,6 +266,16 @@
       },
       "maintenance": {
         "title": "Bakım / Tamir Kayıtları",
+        "groups": {
+          "periodic": "Periyodik Bakım",
+          "repair": "Tamir",
+          "tire": "Lastik",
+          "other": "Diğer",
+          "periodicTotal": "Toplam Periyodik Bakım Tutarı",
+          "repairTotal": "Toplam Tamir Tutarı",
+          "tireTotal": "Toplam Lastik Tutarı",
+          "otherTotal": "Toplam Diğer Tutarı"
+        },
         "fields": {
           "type": "Tip",
           "date": "Tarih",

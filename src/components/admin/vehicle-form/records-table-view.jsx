@@ -4,7 +4,8 @@ import CustomForm from "../../common/custom-form/custom-form";
 import Loading from "../../common/loading/loading";
 
 // Default records view: a full-width table + an add/edit modal. Used by every
-// record type except Sigorta/Kasko and Muayene/Egzoz (which use the two-pane view).
+// record type except Sigorta/Kasko, Muayene/Egzoz and Bakım/Tamir (which use
+// the two-pane view).
 const RecordsTableView = ({
   config, t, rows, loading, formik, editing, saving, showModal, setShowModal,
   fieldLabel, formatCell, buildItems, openCreate, openEdit, handleDelete, onManageDocuments,

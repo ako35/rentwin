@@ -266,6 +266,16 @@
       },
       "maintenance": {
         "title": "Maintenance / Repair Records",
+        "groups": {
+          "periodic": "Periodic Maintenance",
+          "repair": "Repair",
+          "tire": "Tire",
+          "other": "Other",
+          "periodicTotal": "Total Periodic Maintenance",
+          "repairTotal": "Total Repair",
+          "tireTotal": "Total Tire",
+          "otherTotal": "Total Other"
+        },
         "fields": {
           "type": "Type",
           "date": "Date",

@@ -7,8 +7,9 @@ import InspectionScan from "./inspection-scan";
 // config.aiScan -> the scan component it should show above the inline form.
 const AI_SCAN_COMPONENTS = { insurance: InsuranceScan, inspection: InspectionScan };
 
-// Two-pane records view (Sigorta/Kasko, Muayene/Egzoz): side-by-side group
-// lists on the left, an inline add/edit form on the right, with per-group totals.
+// Two-pane records view (Sigorta/Kasko, Muayene/Egzoz, Bakım/Tamir):
+// side-by-side group lists on the left, an inline add/edit form on the
+// right, with per-group totals.
 const RecordsTwoPaneView = ({
   config, t, i18n, rows, loading, formik, editing, saving,
   fieldLabel, formatCell, buildItems, setEditing, toFormValues,

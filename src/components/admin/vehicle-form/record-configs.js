@@ -73,6 +73,24 @@ export const RECORD_CONFIGS = {
     tabKey: "maintenance",
     initialValues: utils.initialValues.vehicleMaintenanceInitialValues,
     schema: utils.validations.vehicleMaintenanceValidationSchema,
+    // Two-pane layout (kolayCAR style), same as Sigorta/Kasko and Muayene/
+    // Egzoz: left = one stacked list per maintenance type, right = inline
+    // add/edit form.
+    twoPane: true,
+    typeField: "type",
+    totalField: "cost",
+    groups: [
+      { key: "periodic", type: "Periodic" },
+      { key: "repair", type: "Repair" },
+      { key: "tire", type: "Tire" },
+      { key: "other", type: "Other" },
+    ],
+    listColumns: [
+      { key: "date", kind: "date" },
+      { key: "odometer", kind: "number" },
+      { key: "vendor" },
+      { key: "cost", kind: "money" },
+    ],
     columns: [
       { key: "type", kind: "option", optionNs: "maintenanceTypes" },
       { key: "date", kind: "date" },
