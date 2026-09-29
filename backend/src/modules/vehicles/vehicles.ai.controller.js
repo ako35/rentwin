@@ -1,6 +1,6 @@
 const HttpError = require("../../lib/http-error");
 const asyncHandler = require("../../middleware/async-handler");
-const { extractVehicleRegistration, extractVehicleInsurance } = require("../../lib/claude");
+const { extractVehicleRegistration, extractVehicleInsurance, extractVehicleInspection } = require("../../lib/claude");
 
 // "Ruhsattan Doldur": admin uploads a photo of the registration certificate,
 // Claude reads it and returns the fields as a prefill payload — nothing is
@@ -46,4 +46,26 @@ const extractInsurance = asyncHandler(async (req, res) => {
   res.json(fields);
 });
 
-module.exports = { extractRegistration, extractInsurance };
+// "Belgeden Doldur": same pattern, for the Muayene/Egzoz tab's add-record
+// form — Claude reads a TÜVTÜRK araç muayene raporu / egzoz emisyon ölçüm
+// belgesi photo or PDF into {type, date, result, expiryDate, station, cost}.
+const extractInspection = asyncHandler(async (req, res) => {
+  if (!req.file) throw new HttpError(400, "Görsel yüklenmedi.");
+
+  let fields;
+  try {
+    fields = await extractVehicleInspection(req.file.buffer, req.file.mimetype);
+  } catch (error) {
+    if (error.code === "AI_QUOTA") throw new HttpError(429, error.message, "AI_QUOTA");
+    throw new HttpError(502, error.message);
+  }
+
+  if (!fields.documentDetected) {
+    throw new HttpError(422, "Görsel bir muayene/egzoz belgesine benzemiyor.");
+  }
+
+  delete fields.documentDetected;
+  res.json(fields);
+});
+
+module.exports = { extractRegistration, extractInsurance, extractInspection };

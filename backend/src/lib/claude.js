@@ -123,6 +123,35 @@ Kurallar:
 - startDate/endDate: YYYY-MM-DD formatında — "Başlangıç/Bitiş", "Tanzim/Vade Sonu" gibi alanlardan.
 - premium: brüt prim / poliçe toplam tutarı — yalnızca sayı, TL sembolü ve binlik ayırıcı olmadan (örn. 4520.50).`;
 
+const INSPECTION_SCHEMA = z.object({
+  documentDetected: z
+    .boolean()
+    .describe("Görselde gerçekten bir Türkiye araç muayene (TÜVTÜRK) raporu ya da egzoz emisyon ölçüm belgesi/pulu görülüyor mu?"),
+  type: z
+    .enum(["Periodic", "Emission"])
+    .nullable()
+    .describe("Belge türü — Araç Muayene istasyonu (TÜVTÜRK) raporuysa Periodic, Egzoz Emisyon ölçüm raporu/pulu ise Emission."),
+  date: z.string().nullable().describe("Muayene / ölçüm tarihi, YYYY-MM-DD formatında"),
+  result: z
+    .enum(["Pass", "Fail", "Defective"])
+    .nullable()
+    .describe("Sonuç — Uygun/Geçti ise Pass, Elverişsiz/Kaldı ise Fail, Kusurlu/eksiklik var ise Defective."),
+  expiryDate: z.string().nullable().describe("Bir sonraki muayene / geçerlilik tarihi, YYYY-MM-DD formatında"),
+  station: z.string().nullable().describe("Muayene istasyonu / ölçüm merkezi adı"),
+  cost: z.number().nullable().describe("Muayene / ölçüm ücreti (TL), yalnızca sayı"),
+});
+
+const INSPECTION_PROMPT = `Bu görüntü bir Türkiye araç muayene (TÜVTÜRK) raporu ya da egzoz emisyon ölçüm belgesi/pulu mu incele.
+Kurallar:
+- Böyle bir belge değilse ya da hiçbir alan güvenle okunamıyorsa documentDetected=false yap ve tüm alanları null bırak. Asla tahmin etme.
+- Belgeyse documentDetected=true yap; yalnızca NET okuduğun alanları doldur, okuyamadığını null bırak.
+- type: belge "Araç Muayene İstasyonu" / TÜVTÜRK periyodik muayene raporuysa Periodic; "Egzoz Emisyon Ölçüm" raporu/pulu ise Emission.
+- date: muayene / ölçüm tarihi, YYYY-MM-DD formatında.
+- result: "Uygun" / "Geçti" ise Pass; "Elverişsiz" / "Kaldı" ise Fail; kusur/eksiklik belirtilmişse Defective.
+- expiryDate: bir sonraki muayene tarihi / geçerlilik süresi sonu, YYYY-MM-DD formatında.
+- station: muayeneyi/ölçümü yapan istasyon veya merkezin adı.
+- cost: ödenen ücret — yalnızca sayı, TL sembolü ve binlik ayırıcı olmadan (örn. 1250.00).`;
+
 const INVOICE_DOC_SCHEMA = z.object({
   documentDetected: z
     .boolean()
@@ -269,6 +298,9 @@ const extractCustomerDocument = (buffer, mimeType, kind) =>
 const extractVehicleInsurance = (buffer, mimeType) =>
   claudeVisionJson(buffer, mimeType, INSURANCE_PROMPT, INSURANCE_SCHEMA);
 
+const extractVehicleInspection = (buffer, mimeType) =>
+  claudeVisionJson(buffer, mimeType, INSPECTION_PROMPT, INSPECTION_SCHEMA);
+
 const extractInvoiceDocument = (buffer, mimeType) =>
   claudeVisionJson(buffer, mimeType, INVOICE_DOC_PROMPT, INVOICE_DOC_SCHEMA);
 
@@ -276,5 +308,6 @@ module.exports = {
   extractVehicleRegistration,
   extractCustomerDocument,
   extractVehicleInsurance,
+  extractVehicleInspection,
   extractInvoiceDocument,
 };

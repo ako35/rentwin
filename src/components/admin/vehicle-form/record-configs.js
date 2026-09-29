@@ -15,8 +15,8 @@ export const RECORD_CONFIGS = {
     twoPane: true,
     typeField: "type",
     totalField: "premium",
-    // Shows "Poliçeden Doldur" (Gemini AI scan) above the form — see InsuranceScan.
-    aiScan: true,
+    // Shows "Poliçeden Doldur" (Claude AI scan) above the form — see InsuranceScan.
+    aiScan: "insurance",
     groups: [
       { key: "sigorta", type: "Traffic" },
       { key: "kasko", type: "Kasko" },
@@ -99,6 +99,9 @@ export const RECORD_CONFIGS = {
     tabKey: "inspection",
     initialValues: utils.initialValues.vehicleInspectionInitialValues,
     schema: utils.validations.vehicleInspectionValidationSchema,
+    // Shows "Belgeden Doldur" (Claude AI scan) above the add-record modal's
+    // fields — see InspectionScan.
+    aiScan: "inspection",
     columns: [
       { key: "type", kind: "option", optionNs: "inspectionTypes" },
       { key: "date", kind: "date" },

@@ -275,6 +275,19 @@ $breakpointxl: 1200px;
     &--done { background: #d6f2df; color: #1c7a3e; }
     &--cancelled { background: #f7d9d9; color: #a52626; }
   }
+
+  // "Belgeden Doldur" row above the add/edit modal's fields — same look as
+  // the two-pane view's own &__ai-scan (Sigorta/Kasko), scoped here too so
+  // any RecordsTableView-based tab (currently Muayene/Egzoz) can show it.
+  &__ai-scan {
+    @include m.flexbox(row, flex-start, center, 0.75rem);
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+
+    span {
+      font-size: 0.8rem;
+    }
+  }
 }
 
 .vehicle-documents-tab__upload {

@@ -15,7 +15,7 @@ const {
   deleteVehicle,
 } = require("./vehicles.controller");
 const { getFleetStats, getExpiryAlerts, getFleetStatusBoard } = require("./vehicles.dashboard.controller");
-const { extractRegistration, extractInsurance } = require("./vehicles.ai.controller");
+const { extractRegistration, extractInsurance, extractInspection } = require("./vehicles.ai.controller");
 
 const router = Router();
 
@@ -48,6 +48,13 @@ router.post(
   requireAdmin,
   upload.single("file"),
   extractInsurance
+);
+router.post(
+  "/car/admin/extract-inspection/auth",
+  authenticate,
+  requireAdmin,
+  upload.single("file"),
+  extractInspection
 );
 router.get(`/car/admin/:id${ID}/auth`, authenticate, requireAdmin, getVehicleByIdAdmin);
 router.post("/car/admin/add", authenticate, requireAdmin, addVehicle);
