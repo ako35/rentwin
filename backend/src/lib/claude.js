@@ -62,7 +62,9 @@ const INDIVIDUAL_DOC_SCHEMA = z.object({
   nationalId: z
     .string()
     .nullable()
-    .describe("T.C. Kimlik No (tam 11 rakam) — belge bir pasaportsa bunun yerine pasaport numarası (harf+rakam)."),
+    .describe(
+      "T.C. Kimlik No, tam 11 rakam. Ehliyette bu, '4d' olarak numaralanmış alandır — '5' numaralı alan (Sürücü Belgesi Seri No, kısa) DEĞİLDİR. Belge bir pasaportsa bunun yerine pasaport numarası (harf+rakam)."
+    ),
   birthDate: z.string().nullable().describe("Doğum tarihi, YYYY-MM-DD formatında."),
 });
 
@@ -70,10 +72,12 @@ const INDIVIDUAL_DOC_PROMPT = `Bu görüntü bir Türkiye sürücü belgesi (ehl
 Kurallar:
 - Böyle bir belge değilse ya da hiçbir alan güvenle okunamıyorsa documentDetected=false yap ve tüm alanları null bırak. Asla tahmin etme.
 - Belgeyse documentDetected=true yap; yalnızca NET okuduğun alanları doldur, okuyamadığını null bırak.
-- Sürücü belgesinde alanlar numaralıdır: 1=Soyadı, 2=Adı, 3=Doğum Tarihi, 4d=T.C. Kimlik No. Kimlik kartında "Soyadı/Surname", "Adı/Given Name(s)", "Doğum Tarihi/Date of Birth", "T.C. Kimlik No / TR Identity No".
+- Sürücü belgesinde (ehliyet) numaralı alanlar şöyledir: 1=Soyadı, 2=Adı, 3=Doğum Tarihi ve Yeri, 4a=Düzenlenme Tarihi, 4b=Geçerlilik Tarihi, 4c=Düzenleyen Makam, 4d=Belge No, 5=Sürücü Belgesi Seri No, 9=Sürücü Sınıfları (B, A2 gibi kısaltmalar).
+- ÖNEMLİ — ehliyette T.C. Kimlik No, "4d" olarak numaralanmış, TAM 11 RAKAMdan oluşan alandır (genelde "4c" satırının hemen altında/yanında, sağ tarafta yer alır). "5" numaralı alan (Sürücü Belgesi Seri No) T.C. Kimlik No DEĞİLDİR ve genelde çok daha kısadır (5-6 rakam) — nationalId için ASLA "5" numaralı alanı kullanma, yalnızca tam 11 rakam olan "4d" alanını kullan. "4d" net okunamıyorsa veya 11 rakam değilse nationalId'yi null bırak, "5" alanını yedek olarak kullanma.
+- Kimlik kartında "Soyadı/Surname", "Adı/Given Name(s)", "Doğum Tarihi/Date of Birth", "T.C. Kimlik No / TR Identity No" etiketli alanları kullan.
 - Pasaportta (herhangi bir ülke): alt kısımdaki MRZ (makine okunabilir bölge) ve üst bölümdeki "Surname/Soyadı", "Given Names/Adı", "Date of Birth/Doğum Tarihi", "Passport No/Pasaport No" alanlarını kullan.
 - firstName/lastName: belgede yazıldığı gibi (BÜYÜK HARF olabilir, olduğu gibi bırak; pasaportta Latin harfleriyle yazılmış haliyle bırak).
-- nationalId: T.C. kimlik kartı/ehliyetse yalnızca 11 rakam, boşluksuz. Pasaportsa pasaport numarasını olduğu gibi (harf+rakam, boşluksuz) yaz.
+- nationalId: T.C. kimlik kartı/ehliyetse yalnızca 11 rakam, boşluksuz — 11 rakamdan az/fazla bir şeyi asla nationalId olarak yazma. Pasaportsa pasaport numarasını olduğu gibi (harf+rakam, boşluksuz) yaz.
 - birthDate: YYYY-MM-DD formatında (örn. belgede "12.05.1990" ise "1990-05-12" yaz). Emin değilsen null bırak.`;
 
 const CORPORATE_DOC_SCHEMA = z.object({
