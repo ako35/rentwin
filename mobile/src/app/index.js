@@ -25,12 +25,12 @@ const Section = ({ title, rows, loading, stage, onOpen }) => (
     ) : (
       rows.map((row) => (
         <Pressable key={row.id} style={styles.row} onPress={() => onOpen(row, stage)}>
-          <View>
+          <View style={styles.rowInfo}>
             <Text style={styles.plate}>{row.car?.licensePlate || "—"}</Text>
             <Text style={styles.rowSub}>
               {row.car?.brand} {row.car?.model} · {row.contractNo || "kontrat no yok"}
             </Text>
-            <Text style={styles.rowSub}>
+            <Text style={styles.rowSub} numberOfLines={2}>
               {row.user?.companyTitle || `${row.user?.firstName || ""} ${row.user?.lastName || ""}`.trim()}
             </Text>
           </View>
@@ -95,8 +95,8 @@ export default function ScheduleScreen() {
               </Text>
             </View>
           )}
-          <Section title="Bugün Teslim Alınacaklar" rows={departures} loading={loading} stage="PICKUP" onOpen={openContract} />
-          <Section title="Bugün İade Edilecekler" rows={returns} loading={loading} stage="RETURN" onOpen={openContract} />
+          <Section title="Çıkışlar" rows={departures} loading={loading} stage="PICKUP" onOpen={openContract} />
+          <Section title="Dönüşler" rows={returns} loading={loading} stage="RETURN" onOpen={openContract} />
           <Pressable style={styles.logout} onPress={logout}>
             <Text style={styles.logoutText}>Çıkış Yap</Text>
           </Pressable>
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start",
     backgroundColor: "#fff",
     borderRadius: 10,
     padding: 12,
@@ -122,9 +122,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e2e8f0",
   },
+  rowInfo: { flex: 1, marginRight: 8 },
   plate: { fontSize: 16, fontWeight: "700", color: "#0f172a" },
   rowSub: { fontSize: 12, color: "#64748b", marginTop: 2 },
-  rowDate: { fontSize: 12, color: "#64748b" },
+  rowDate: { fontSize: 12, color: "#64748b", flexShrink: 0 },
   queueBanner: {
     backgroundColor: "#fef3c7",
     borderRadius: 10,
