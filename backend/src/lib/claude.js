@@ -57,8 +57,14 @@ const INDIVIDUAL_DOC_SCHEMA = z.object({
     .describe(
       "Görselde gerçekten bir Türkiye sürücü belgesi (ehliyet), T.C. kimlik kartı / nüfus cüzdanı, ya da yabancı uyruklu bir müşterinin pasaportu görülüyor mu?"
     ),
-  firstName: z.string().nullable().describe("Adı (verilen ad)"),
-  lastName: z.string().nullable().describe("Soyadı"),
+  lastName: z
+    .string()
+    .nullable()
+    .describe("Soyadı — ehliyette '1' numaralı alan, kimlik kartında üstteki ad satırı. Adı ile KARIŞTIRMA."),
+  firstName: z
+    .string()
+    .nullable()
+    .describe("Adı (verilen ad) — ehliyette '2' numaralı alan, Soyadı'nın hemen ALTINDA yazar. Soyadı ile KARIŞTIRMA."),
   nationalId: z
     .string()
     .nullable()
@@ -73,6 +79,7 @@ Kurallar:
 - Böyle bir belge değilse ya da hiçbir alan güvenle okunamıyorsa documentDetected=false yap ve tüm alanları null bırak. Asla tahmin etme.
 - Belgeyse documentDetected=true yap; yalnızca NET okuduğun alanları doldur, okuyamadığını null bırak.
 - Sürücü belgesinde (ehliyet) numaralı alanlar şöyledir: 1=Soyadı, 2=Adı, 3=Doğum Tarihi ve Yeri, 4a=Düzenlenme Tarihi, 4b=Geçerlilik Tarihi, 4c=Düzenleyen Makam, 4d=Belge No, 5=Sürücü Belgesi Seri No, 9=Sürücü Sınıfları (B, A2 gibi kısaltmalar).
+- ÖNEMLİ — ehliyette "1" numaralı alan (Soyadı) her zaman ÜSTTE, "2" numaralı alan (Adı) onun hemen ALTINDA yazar. Bu iki alanı ASLA ters yazma: üstteki satır lastName'e, alttaki satır firstName'e gider. Kimlik kartında da aynı sıra geçerlidir ("Soyadı/Surname" alanı "Adı/Given Name(s)" alanından önce/üstte gelir).
 - ÖNEMLİ — ehliyette T.C. Kimlik No, "4d" olarak numaralanmış, TAM 11 RAKAMdan oluşan alandır (genelde "4c" satırının hemen altında/yanında, sağ tarafta yer alır). "5" numaralı alan (Sürücü Belgesi Seri No) T.C. Kimlik No DEĞİLDİR ve genelde çok daha kısadır (5-6 rakam) — nationalId için ASLA "5" numaralı alanı kullanma, yalnızca tam 11 rakam olan "4d" alanını kullan. "4d" net okunamıyorsa veya 11 rakam değilse nationalId'yi null bırak, "5" alanını yedek olarak kullanma.
 - Kimlik kartında "Soyadı/Surname", "Adı/Given Name(s)", "Doğum Tarihi/Date of Birth", "T.C. Kimlik No / TR Identity No" etiketli alanları kullan.
 - Pasaportta (herhangi bir ülke): alt kısımdaki MRZ (makine okunabilir bölge) ve üst bölümdeki "Surname/Soyadı", "Given Names/Adı", "Date of Birth/Doğum Tarihi", "Passport No/Pasaport No" alanlarını kullan.

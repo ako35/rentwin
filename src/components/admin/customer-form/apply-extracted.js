@@ -33,6 +33,9 @@ export const applyExtractedCustomerFields = (formik, fields) => {
     // accepts a strict YYYY-MM-DD value — silently drop anything else rather
     // than feed it a string it can't display.
     if (key === "birthDate" && !/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
+    // Names are always recorded in upper case, matching how they print on the
+    // source document (ehliyet/kimlik) and on the printed contract.
+    if (key === "firstName" || key === "lastName") value = String(value).toLocaleUpperCase("tr");
     // city must be set before district so the district dropdown has its options.
     patch[key] = value;
   });
