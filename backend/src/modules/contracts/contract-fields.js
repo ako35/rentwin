@@ -159,21 +159,34 @@ const isoDayAfter = (day) => {
   d.setUTCDate(d.getUTCDate() + 1);
   return d.toISOString().slice(0, 10);
 };
-const hgsRangesCoverPeriod = (rows, pickUp, dropOff) => {
+// Farthest day a contract's logged check ranges contiguously cover, starting
+// from pickUp (day precision) — null if pickUp itself isn't covered by any
+// range yet. hgsRangesCoverPeriod (below) is the yes/no "does it reach a
+// known end" test; this exposes *how far* it got, which
+// getHgsPendingContracts needs to flag a still-open contract whose coverage
+// has gone stale rather than merely incomplete.
+const hgsCoverageReach = (rows, pickUp) => {
   const start = isoDay(pickUp);
-  const end = isoDay(dropOff);
-  if (!start || !end || end < start || !Array.isArray(rows) || rows.length === 0) return false;
+  if (!start || !Array.isArray(rows) || rows.length === 0) return null;
   const intervals = rows
     .map((r) => ({ from: isoDay(r.rangeFrom), to: isoDay(r.rangeTo) }))
     .filter((r) => r.from && r.to && r.from <= r.to)
     .sort((a, b) => (a.from < b.from ? -1 : a.from > b.from ? 1 : 0));
-  if (intervals.length === 0 || intervals[0].from > start) return false;
+  if (intervals.length === 0 || intervals[0].from > start) return null;
   let reach = intervals[0].to;
   for (let i = 1; i < intervals.length; i += 1) {
     if (intervals[i].from > isoDayAfter(reach)) break; // gap in coverage
     if (intervals[i].to > reach) reach = intervals[i].to;
   }
-  return reach >= end;
+  return reach;
+};
+
+const hgsRangesCoverPeriod = (rows, pickUp, dropOff) => {
+  const start = isoDay(pickUp);
+  const end = isoDay(dropOff);
+  if (!start || !end || end < start) return false;
+  const reach = hgsCoverageReach(rows, pickUp);
+  return !!reach && reach >= end;
 };
 
 module.exports = {
@@ -187,4 +200,5 @@ module.exports = {
   rentalDays,
   rentalTerm,
   hgsRangesCoverPeriod,
+  hgsCoverageReach,
 };

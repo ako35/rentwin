@@ -43,8 +43,8 @@ const VEHICLE_TAB_BY_CATEGORY = {
 const custName = (u) =>
   (u?.companyTitle || `${u?.firstName || ""} ${u?.lastName || ""}`.trim() || "—");
 
-// HGS Kontrolü: only ever closed contracts (the check only makes sense once
-// the rental is actually over), so a single "closed at" date column is enough.
+// KABİS Bekleyen (release leg) and the rest: contracts that only ever land
+// here once closed, so a single "closed at" date column is enough.
 const ClosedContractsTable = ({ rows }) => {
   const { t } = useTranslation("admin");
   return (
@@ -74,10 +74,10 @@ const ClosedContractsTable = ({ rows }) => {
   );
 };
 
-// KABİS Bekleyen and Fatura Bekleyen (open MONTHLY leg) both mix open and
-// closed contracts — filing/invoicing is due before the rental is over, not
-// only once it's returned — so their rows carry their own status badge
-// instead of a single "closed at" date. Shared table for both.
+// HGS Kontrolü, KABİS Bekleyen and Fatura Bekleyen (open MONTHLY leg) all mix
+// open and closed contracts — the check/filing/invoicing is due before the
+// rental is over, not only once it's returned — so their rows carry their
+// own status badge instead of a single "closed at" date. Shared table for all three.
 const MixedStatusTable = ({ rows }) => {
   const { t } = useTranslation("admin");
   const { t: tCommon } = useTranslation("common");
@@ -259,7 +259,7 @@ const MaintenanceAlertBar = ({
           {hgsPending.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.hgsNone")}</div>
           ) : (
-            <ClosedContractsTable rows={hgsPending} />
+            <MixedStatusTable rows={hgsPending} />
           )}
         </div>
       )}
