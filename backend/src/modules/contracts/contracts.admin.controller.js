@@ -473,6 +473,13 @@ const cancelContract = setContractStatus("CANCELLED");
 // instead of quietly falling out of every window once its date passes.
 // Always excludes CANCELLED; optionally excludes DONE too (a genuinely
 // completed return is the only thing that should ever drop off this list).
+//
+// Returns has a status transition to key off (CREATED -> DONE), but pickup
+// doesn't — a contract stays CREATED for its whole active rental, so
+// "departures" additionally drops any contract that already has a PICKUP
+// ContractPhoto: that's the mobile staff app's own signal that the hand-over
+// was actually done, same spirit as excludeCompleted for returns (the only
+// caller of type=departures today is the mobile Saha app's Çıkışlar list).
 const getAdminSchedule = asyncHandler(async (req, res) => {
   const { type = "returns", window = "7", excludeCompleted, branchId } = req.query;
   const dateField = type === "departures" ? "pickUpTime" : "dropOffTime";
@@ -482,6 +489,9 @@ const getAdminSchedule = asyncHandler(async (req, res) => {
     where: {
       [dateField]: { lte: to },
       status: excludeCompleted === "true" ? { notIn: ["CANCELLED", "DONE"] } : { not: "CANCELLED" },
+      ...(type === "departures" && excludeCompleted === "true"
+        ? { photos: { none: { stage: "PICKUP" } } }
+        : {}),
       ...(branchId ? { car: { branchId } } : {}),
     },
     orderBy: { [dateField]: "asc" },
