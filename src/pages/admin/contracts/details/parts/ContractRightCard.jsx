@@ -136,7 +136,13 @@ const ContractRightCard = ({
           ))}
         </Nav>
 
-        <fieldset className="contract-page__fieldset contract-page__sub-content" disabled={locked}>
+        {/* Tahsilat stays usable after closing — a collection often comes in
+            once the rental has already ended (the customer's cari balance is
+            settled later). The other sub tabs keep the contract's lock. */}
+        <fieldset
+          className="contract-page__fieldset contract-page__sub-content"
+          disabled={locked && subTab !== "payments"}
+        >
           {subTab === "summary" && (
             <SummaryTab formik={formik} selectedCar={selectedCar} billableDays={billableDays} />
           )}
