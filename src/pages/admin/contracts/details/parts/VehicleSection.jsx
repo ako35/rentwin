@@ -106,7 +106,7 @@ const VehicleSection = ({
 
       <CustomForm
         formik={formik} name="carId" label={c("vehicle")}
-        type="select" itemsArr={vehicleOptions} disabled={!isCreate}
+        type="searchable-select" itemsArr={vehicleOptions} disabled={!isCreate}
       />
       {isCreate && showNoAvailable && (
         <p className="text-muted mb-2" style={{ fontSize: "0.8rem" }}>{c("noAvailableCars")}</p>

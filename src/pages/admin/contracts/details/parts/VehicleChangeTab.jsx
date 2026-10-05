@@ -5,6 +5,7 @@ import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import { buildFuelEighthsOptions } from "../../../../../utils/fuel-eighths";
 import { buildVehicleOptions } from "../contract-helpers";
+import SearchableCombobox from "../../../../../components/common/searchable-select/searchable-combobox";
 import SaveFirstHint from "./SaveFirstHint";
 import "./vehicle-change-tab.scss";
 
@@ -73,8 +74,7 @@ const VehicleChangeTab = ({
   // Picking the new vehicle also pulls its current odometer + fuel gauge in as
   // a starting point (same prefill-then-editable pattern as the contract's own
   // hand-over fields) — the admin can still correct them before saving.
-  const setNewCar = (e) => {
-    const newCarId = e.target.value;
+  const setNewCar = (newCarId) => {
     const car = availableCars.find((v) => v.id === newCarId);
     setForm((f) => ({
       ...f,
@@ -164,11 +164,13 @@ const VehicleChangeTab = ({
             <h4>{c("vehicleChange.newCarGroup")}</h4>
             <Form.Group className="vct__field">
               <Form.Label>{c("vehicleChange.newVehicle")}</Form.Label>
-              <Form.Select size="sm" value={form.newCarId} disabled={!form.dateTime || loadingCars} onChange={setNewCar}>
-                {carOptions.map((item) => (
-                  <option key={item.id} value={item.value}>{item.name}</option>
-                ))}
-              </Form.Select>
+              <SearchableCombobox
+                size="sm"
+                value={form.newCarId}
+                onChange={setNewCar}
+                items={carOptions}
+                disabled={!form.dateTime || loadingCars}
+              />
             </Form.Group>
             <Form.Group className="vct__field">
               <Form.Label>{c("vehicleChange.newCarKm")}</Form.Label>

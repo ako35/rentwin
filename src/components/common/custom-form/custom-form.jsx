@@ -2,6 +2,7 @@ import ReactInputMask from "react-input-mask-next";
 import { FloatingLabel, Form } from "react-bootstrap";
 import moment from "moment/moment";
 import { utils } from "../../../utils";
+import SearchableSelect from "../searchable-select/searchable-select";
 
 const CustomForm = (props) => {
     const {
@@ -150,6 +151,13 @@ const CustomForm = (props) => {
                         ))}
                     </Form.Select>
                 </Form.Group>
+            );
+        case "searchable-select":
+            return (
+                <SearchableSelect
+                    formik={formik} name={name} label={label}
+                    itemsArr={itemsArr} disabled={disabled} asGroup={asGroup}
+                />
             );
         case "checkbox":
             return <>CHECKBOX</>;
