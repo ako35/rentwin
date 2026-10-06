@@ -160,7 +160,10 @@
       "dropOffDate": "Drop-off",
       "amount": "Amount",
       "status": "Status",
-      "empty": "No contracts for this vehicle yet."
+      "empty": "No contracts for this vehicle yet.",
+      "monthFilter": "Pick-up month",
+      "allMonths": "All months",
+      "emptyMonth": "No contracts for this vehicle in the selected month."
     },
     "documentsTab": {
       "title": "Vehicle Documents",

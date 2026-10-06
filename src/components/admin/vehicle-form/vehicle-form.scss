@@ -237,6 +237,14 @@ $breakpointxl: 1200px;
     }
   }
 
+  &__filter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .form-control { width: auto; }
+  }
+
   &__table {
     font-size: 0.88rem;
 

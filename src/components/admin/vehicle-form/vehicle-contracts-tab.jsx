@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Alert, Table } from "react-bootstrap";
+import { Alert, Button, Form, Table } from "react-bootstrap";
+import moment from "moment/moment";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
 import { constants } from "../../../constants";
@@ -18,6 +19,8 @@ const VehicleContractsTab = ({ vehicleId }) => {
 
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
+  // Pick-up month filter ("YYYY-MM"); empty = every contract.
+  const [month, setMonth] = useState("");
 
   const c = (key) => t(`vehicles.contractsTab.${key}`);
 
@@ -30,6 +33,12 @@ const VehicleContractsTab = ({ vehicleId }) => {
       .catch(() => setRows([]))
       .finally(() => setLoading(false));
   }, [vehicleId]);
+
+  // Same UTC day convention as the Alış column (utils getDateUTC), so the
+  // month a row is filed under matches the date shown on it.
+  const visibleRows = month
+    ? rows.filter((r) => moment.utc(r.pickUpTime).format("YYYY-MM") === month)
+    : rows;
 
   const money = (v) =>
     Number(v || 0).toLocaleString(i18n.language, {
@@ -51,6 +60,21 @@ const VehicleContractsTab = ({ vehicleId }) => {
     <div className="vehicle-records-panel">
       <div className="vehicle-records-panel__head">
         <h3>{c("title")}</h3>
+        <div className="vehicle-records-panel__filter">
+          <Form.Control
+            type="month"
+            size="sm"
+            value={month}
+            aria-label={c("monthFilter")}
+            title={c("monthFilter")}
+            onChange={(e) => setMonth(e.target.value)}
+          />
+          {month && (
+            <Button variant="link" size="sm" className="p-0" onClick={() => setMonth("")}>
+              {c("allMonths")}
+            </Button>
+          )}
+        </div>
       </div>
 
       <Table hover responsive className="vehicle-records-panel__table">
@@ -65,12 +89,14 @@ const VehicleContractsTab = ({ vehicleId }) => {
           </tr>
         </thead>
         <tbody>
-          {rows.length === 0 && (
+          {visibleRows.length === 0 && (
             <tr>
-              <td colSpan={6} className="text-center text-muted">{c("empty")}</td>
+              <td colSpan={6} className="text-center text-muted">
+                {rows.length === 0 ? c("empty") : c("emptyMonth")}
+              </td>
             </tr>
           )}
-          {rows.map((r) => (
+          {visibleRows.map((r) => (
             <tr
               key={r.id}
               className="vehicle-records-panel__row--clickable"

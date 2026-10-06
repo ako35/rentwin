@@ -160,7 +160,10 @@
       "dropOffDate": "Teslim",
       "amount": "Tutar",
       "status": "Durum",
-      "empty": "Bu araca ait kontrat bulunmuyor."
+      "empty": "Bu araca ait kontrat bulunmuyor.",
+      "monthFilter": "Alış ayı",
+      "allMonths": "Tüm aylar",
+      "emptyMonth": "Seçilen ayda bu araca ait kontrat yok."
     },
     "documentsTab": {
       "title": "Araç Evrakları",
