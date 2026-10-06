@@ -245,6 +245,20 @@ $breakpointxl: 1200px;
     .form-control { width: auto; }
   }
 
+  &__total {
+    td {
+      font-weight: 700;
+      border-top: 2px solid v.$color3;
+    }
+
+    td > span {
+      margin-left: 0.5rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--rw-ink-muted);
+    }
+  }
+
   &__table {
     font-size: 0.88rem;
 

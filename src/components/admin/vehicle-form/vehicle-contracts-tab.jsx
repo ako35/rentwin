@@ -22,7 +22,7 @@ const VehicleContractsTab = ({ vehicleId }) => {
   // Pick-up month filter ("YYYY-MM"); empty = every contract.
   const [month, setMonth] = useState("");
 
-  const c = (key) => t(`vehicles.contractsTab.${key}`);
+  const c = (key, opts) => t(`vehicles.contractsTab.${key}`, opts);
 
   useEffect(() => {
     if (!vehicleId) return;
@@ -39,6 +39,14 @@ const VehicleContractsTab = ({ vehicleId }) => {
   const visibleRows = month
     ? rows.filter((r) => moment.utc(r.pickUpTime).format("YYYY-MM") === month)
     : rows;
+
+  // Earnings of the visible rows (the selected month, or all). Cancelled
+  // contracts never earned anything, so they stay out of the total.
+  const earningRows = visibleRows.filter((r) => r.status !== "CANCELLED");
+  const earnings = earningRows.reduce((sum, r) => sum + Number(r.totalPrice || 0), 0);
+  const monthLabel = month
+    ? new Date(`${month}-01T00:00:00`).toLocaleDateString(i18n.language, { month: "long", year: "numeric" })
+    : "";
 
   const money = (v) =>
     Number(v || 0).toLocaleString(i18n.language, {
@@ -115,6 +123,18 @@ const VehicleContractsTab = ({ vehicleId }) => {
             </tr>
           ))}
         </tbody>
+        {rows.length > 0 && (
+          <tfoot>
+            <tr className="vehicle-records-panel__total">
+              <td colSpan={4}>
+                {month ? c("monthTotal", { month: monthLabel }) : c("total")}
+                <span>{c("contractCount", { n: earningRows.length })}</span>
+              </td>
+              <td className="text-end">{money(earnings)} TL</td>
+              <td />
+            </tr>
+          </tfoot>
+        )}
       </Table>
     </div>
   );

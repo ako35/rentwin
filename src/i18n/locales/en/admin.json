@@ -163,7 +163,10 @@
       "empty": "No contracts for this vehicle yet.",
       "monthFilter": "Pick-up month",
       "allMonths": "All months",
-      "emptyMonth": "No contracts for this vehicle in the selected month."
+      "emptyMonth": "No contracts for this vehicle in the selected month.",
+      "total": "Total earnings",
+      "monthTotal": "{{month}} earnings",
+      "contractCount": "{{n}} contracts (cancellations excluded)"
     },
     "documentsTab": {
       "title": "Vehicle Documents",

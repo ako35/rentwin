@@ -163,7 +163,10 @@
       "empty": "Bu araca ait kontrat bulunmuyor.",
       "monthFilter": "Alış ayı",
       "allMonths": "Tüm aylar",
-      "emptyMonth": "Seçilen ayda bu araca ait kontrat yok."
+      "emptyMonth": "Seçilen ayda bu araca ait kontrat yok.",
+      "total": "Toplam kazanç",
+      "monthTotal": "{{month}} kazancı",
+      "contractCount": "{{n}} kontrat (iptaller hariç)"
     },
     "documentsTab": {
       "title": "Araç Evrakları",
