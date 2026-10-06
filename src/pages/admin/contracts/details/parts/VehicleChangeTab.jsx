@@ -31,8 +31,11 @@ const nowLocalValue = () => {
 // actually free from the change date through the contract's existing drop-off;
 // each swap is logged (previous/new car snapshot) and repoints Contract.carId —
 // the left card's vehicle picker (disabled once opened) picks up the change.
+// On a closed contract (`locked`) the swap form is read-only while the
+// history stays open — past changes must remain viewable after closing.
 const VehicleChangeTab = ({
   isCreate, contractId, carId, pickUpDate, dropOffDate, dropOffTime, vehicleChanges, onChanged,
+  locked = false,
 }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.${key}`, opts);
@@ -120,100 +123,102 @@ const VehicleChangeTab = ({
 
   return (
     <>
-      <div className="vct">
-        <Form.Group className="vct__datetime">
-          <Form.Label>{c("vehicleChange.dateTime")}</Form.Label>
-          <div className="vct__datetime-row">
-            <Form.Control
-              type="datetime-local"
-              size="sm"
-              value={form.dateTime}
-              min={pickUpDate ? `${pickUpDate}T00:00` : undefined}
-              max={dropOffDate ? `${dropOffDate}T23:59` : undefined}
-              onChange={setField("dateTime")}
-            />
+      <fieldset className="contract-page__fieldset" disabled={locked}>
+        <div className="vct">
+          <Form.Group className="vct__datetime">
+            <Form.Label>{c("vehicleChange.dateTime")}</Form.Label>
+            <div className="vct__datetime-row">
+              <Form.Control
+                type="datetime-local"
+                size="sm"
+                value={form.dateTime}
+                min={pickUpDate ? `${pickUpDate}T00:00` : undefined}
+                max={dropOffDate ? `${dropOffDate}T23:59` : undefined}
+                onChange={setField("dateTime")}
+              />
+              <Button
+                type="button"
+                variant="outline-secondary"
+                size="sm"
+                onClick={() => setForm((f) => ({ ...f, dateTime: nowLocalValue() }))}
+              >
+                {c("vehicleChange.now")}
+              </Button>
+            </div>
+          </Form.Group>
+
+          <div className="vct__cards">
+            <section className="vct__card">
+              <h4>{c("vehicleChange.returnGroup")}</h4>
+              <Form.Group className="vct__field">
+                <Form.Label>{c("vehicleChange.returnKm")}</Form.Label>
+                <Form.Control type="number" size="sm" value={form.returnKm} onChange={setField("returnKm")} />
+              </Form.Group>
+              <Form.Group className="vct__field">
+                <Form.Label>{c("vehicleChange.returnFuelLevel")}</Form.Label>
+                <Form.Select size="sm" value={form.returnFuelEighths} onChange={setField("returnFuelEighths")}>
+                  {fuelOptions.map((o) => (
+                    <option key={o.id} value={o.value}>{o.name}</option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </section>
+
+            <section className="vct__card">
+              <h4>{c("vehicleChange.newCarGroup")}</h4>
+              <Form.Group className="vct__field">
+                <Form.Label>{c("vehicleChange.newVehicle")}</Form.Label>
+                <SearchableCombobox
+                  size="sm"
+                  value={form.newCarId}
+                  onChange={setNewCar}
+                  items={carOptions}
+                  disabled={!form.dateTime || loadingCars}
+                />
+              </Form.Group>
+              <Form.Group className="vct__field">
+                <Form.Label>{c("vehicleChange.newCarKm")}</Form.Label>
+                <Form.Control
+                  type="number" size="sm" value={form.newCarKm}
+                  disabled={!form.newCarId} onChange={setField("newCarKm")}
+                />
+              </Form.Group>
+              <Form.Group className="vct__field">
+                <Form.Label>{c("vehicleChange.newCarFuelLevel")}</Form.Label>
+                <Form.Select
+                  size="sm"
+                  value={form.newCarFuelEighths}
+                  disabled={!form.newCarId}
+                  onChange={setField("newCarFuelEighths")}
+                >
+                  {fuelOptions.map((o) => (
+                    <option key={o.id} value={o.value}>{o.name}</option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </section>
+          </div>
+
+          <Form.Group className="vct__note">
+            <Form.Label>{c("vehicleChange.note")}</Form.Label>
+            <Form.Control as="textarea" rows={2} size="sm" value={form.note} onChange={setField("note")} />
+          </Form.Group>
+
+          {form.dateTime && !loadingCars && availableCars.length === 0 && (
+            <p className="vct__hint">{c("vehicleChange.noAvailable")}</p>
+          )}
+
+          <div className="vct__actions">
             <Button
               type="button"
-              variant="outline-secondary"
-              size="sm"
-              onClick={() => setForm((f) => ({ ...f, dateTime: nowLocalValue() }))}
+              disabled={saving || !form.dateTime || !form.newCarId}
+              onClick={changeVehicle}
             >
-              {c("vehicleChange.now")}
+              {saving && <Spinner animation="border" size="sm" />} {c("vehicleChange.submit")}
             </Button>
           </div>
-        </Form.Group>
-
-        <div className="vct__cards">
-          <section className="vct__card">
-            <h4>{c("vehicleChange.returnGroup")}</h4>
-            <Form.Group className="vct__field">
-              <Form.Label>{c("vehicleChange.returnKm")}</Form.Label>
-              <Form.Control type="number" size="sm" value={form.returnKm} onChange={setField("returnKm")} />
-            </Form.Group>
-            <Form.Group className="vct__field">
-              <Form.Label>{c("vehicleChange.returnFuelLevel")}</Form.Label>
-              <Form.Select size="sm" value={form.returnFuelEighths} onChange={setField("returnFuelEighths")}>
-                {fuelOptions.map((o) => (
-                  <option key={o.id} value={o.value}>{o.name}</option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-          </section>
-
-          <section className="vct__card">
-            <h4>{c("vehicleChange.newCarGroup")}</h4>
-            <Form.Group className="vct__field">
-              <Form.Label>{c("vehicleChange.newVehicle")}</Form.Label>
-              <SearchableCombobox
-                size="sm"
-                value={form.newCarId}
-                onChange={setNewCar}
-                items={carOptions}
-                disabled={!form.dateTime || loadingCars}
-              />
-            </Form.Group>
-            <Form.Group className="vct__field">
-              <Form.Label>{c("vehicleChange.newCarKm")}</Form.Label>
-              <Form.Control
-                type="number" size="sm" value={form.newCarKm}
-                disabled={!form.newCarId} onChange={setField("newCarKm")}
-              />
-            </Form.Group>
-            <Form.Group className="vct__field">
-              <Form.Label>{c("vehicleChange.newCarFuelLevel")}</Form.Label>
-              <Form.Select
-                size="sm"
-                value={form.newCarFuelEighths}
-                disabled={!form.newCarId}
-                onChange={setField("newCarFuelEighths")}
-              >
-                {fuelOptions.map((o) => (
-                  <option key={o.id} value={o.value}>{o.name}</option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-          </section>
         </div>
-
-        <Form.Group className="vct__note">
-          <Form.Label>{c("vehicleChange.note")}</Form.Label>
-          <Form.Control as="textarea" rows={2} size="sm" value={form.note} onChange={setField("note")} />
-        </Form.Group>
-
-        {form.dateTime && !loadingCars && availableCars.length === 0 && (
-          <p className="vct__hint">{c("vehicleChange.noAvailable")}</p>
-        )}
-
-        <div className="vct__actions">
-          <Button
-            type="button"
-            disabled={saving || !form.dateTime || !form.newCarId}
-            onClick={changeVehicle}
-          >
-            {saving && <Spinner animation="border" size="sm" />} {c("vehicleChange.submit")}
-          </Button>
-        </div>
-      </div>
+      </fieldset>
 
       {vehicleChanges.length > 0 && (
         <Button
