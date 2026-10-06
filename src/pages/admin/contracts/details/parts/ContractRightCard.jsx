@@ -18,6 +18,8 @@ import PricingBlock from "./PricingBlock";
 import "./right-card.scss";
 
 const SUB_TABS = ["summary", "payments", "returnExtra", "extension", "vehicleChange"];
+// Sub tabs that stay editable on a closed (DONE / CANCELLED) contract.
+const OPEN_AFTER_CLOSE_SUB_TABS = ["payments", "returnExtra"];
 
 // A titled, bordered section of the right column. Defined at module scope so its
 // identity is stable across re-renders.
@@ -136,12 +138,13 @@ const ContractRightCard = ({
           ))}
         </Nav>
 
-        {/* Tahsilat stays usable after closing — a collection often comes in
-            once the rental has already ended (the customer's cari balance is
-            settled later). The other sub tabs keep the contract's lock. */}
+        {/* Tahsilat and Dönüş Ekstra stay usable after closing — a collection
+            often comes in once the rental has already ended, and return
+            charges (HGS, damage, fuel…) are usually only known after the car is
+            back. Summary, extension and vehicle change keep the contract's lock. */}
         <fieldset
           className="contract-page__fieldset contract-page__sub-content"
-          disabled={locked && subTab !== "payments"}
+          disabled={locked && !OPEN_AFTER_CLOSE_SUB_TABS.includes(subTab)}
         >
           {subTab === "summary" && (
             <SummaryTab formik={formik} selectedCar={selectedCar} billableDays={billableDays} />
