@@ -505,14 +505,14 @@ const getAdminSchedule = asyncHandler(async (req, res) => {
 //   - closed (DONE) contracts whose derived hgsStatus never reached "CHECKED"
 //     (the queried ranges don't span the whole (now-final) rental window).
 //   - still-open contracts (not cancelled) whose check coverage has gone
-//     stale: the farthest day their logged ranges reach is HGS_STALE_DAYS or
-//     more behind today. A long-running rental doesn't wait for its return
-//     to get flagged — but unlike the invoice panel (any gap flags it
-//     immediately), HGS/OGS toll postings lag by days-to-weeks, so a fresh
-//     gap is expected noise and only a stale one (default: 1 month) is worth
-//     surfacing.
+//     stale: the farthest day their logged ranges reach is more than
+//     HGS_STALE_DAYS behind today. A long-running rental doesn't wait for
+//     its return to get flagged — but unlike the invoice panel (any gap
+//     flags it immediately), HGS/OGS toll postings lag by days-to-weeks, so
+//     a fresh gap is expected noise and only a genuinely stale one (more
+//     than 31 days) is worth surfacing.
 // Oldest-stale first so the longest-outstanding ones sit at the top.
-const HGS_STALE_DAYS = 30;
+const HGS_STALE_DAYS = 31;
 const getHgsPendingContracts = asyncHandler(async (req, res) => {
   const { branchId } = req.query;
   const branchWhere = branchId ? { car: { branchId } } : {};
@@ -538,7 +538,7 @@ const getHgsPendingContracts = asyncHandler(async (req, res) => {
     const reach = hgsCoverageReach(c.hgsChecks, c.pickUpTime);
     const sinceDay = reach || c.pickUpTime.toISOString().slice(0, 10);
     const gapDays = Math.floor((today - new Date(`${sinceDay}T00:00:00.000Z`)) / 86400000);
-    return gapDays >= HGS_STALE_DAYS;
+    return gapDays > HGS_STALE_DAYS;
   });
 
   const rows = [...closedPending, ...openPending].sort(
