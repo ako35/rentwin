@@ -11,7 +11,9 @@ const PRINT_DOCS = ["sozlesme", "ek1", "tutanak"];
 // primary flow actions on the right.
 // Create: "Vazgeç" | "Oluştur ve Aç".
 // Edit (open): "Kontratı İptal Et", "Sil" | "Yazdır ▾", "Araç Teslim Al", "Kaydet".
-// Edit (closed DONE/CANCELLED): the form is read-only, so only "Geri Aç" shows.
+// Edit (closed DONE/CANCELLED): most of the form is read-only, but pricing
+// (right card's "Fiyat / Ödeme" panel) stays editable — so "Kaydet" shows
+// next to "Geri Aç" instead of disappearing.
 const ContractActions = ({
   isCreate, contractId, updating, deleting, canSave, status, errors,
   onDiscard, onDelete, onVehicleReturn, onCancelContract, onReopen,
@@ -82,9 +84,14 @@ const ContractActions = ({
       <div className="contract-page__actionbar-right">
         {printMenu}
         {closed ? (
-          <Button variant="outline-secondary" type="button" disabled={updating} onClick={onReopen}>
-            {updating && <Spinner animation="border" size="sm" />} {c("reopenContract")}
-          </Button>
+          <>
+            <Button variant="outline-secondary" type="button" disabled={updating} onClick={onReopen}>
+              {updating && <Spinner animation="border" size="sm" />} {c("reopenContract")}
+            </Button>
+            <Button type="submit" disabled={!canSave || updating}>
+              {updating && <Spinner animation="border" size="sm" />} {t("reservations.save")}
+            </Button>
+          </>
         ) : (
           <>
             <Button variant="info" type="button" disabled={updating} onClick={onVehicleReturn}>
