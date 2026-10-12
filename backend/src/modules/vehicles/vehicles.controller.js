@@ -73,7 +73,7 @@ const getVehiclesByPage = asyncHandler(async (req, res) => {
     allowedSortFields: ALLOWED_SORT_FIELDS,
   });
 
-  const where = { outOfService: false, soldAt: null };
+  const where = { outOfService: false, soldAt: null, passiveAt: null };
   const pickUp = parseFrontendDateTime(req.query.pickUpTime);
   const dropOff = parseFrontendDateTime(req.query.dropOffTime);
   if (pickUp && dropOff && dropOff > pickUp) {
@@ -117,7 +117,7 @@ const FUEL_LABELS = {
   CNG: "cng",
   Hydrogen: "hidrojen",
 };
-const STATUS_LABELS = { AVAILABLE: "müsait", RENTED: "kirada", OUT_OF_SERVICE: "servis dışı" };
+const STATUS_LABELS = { AVAILABLE: "müsait", RENTED: "kirada", OUT_OF_SERVICE: "servis dışı", PASSIVE: "pasif" };
 
 // A single word from the search box: which plain-column/relation conditions
 // it satisfies (OR'd together), and which computed status value it names, if
@@ -190,17 +190,19 @@ const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
 
     const candidates = await prisma.vehicle.findMany({
       where,
-      select: { id: true, outOfService: true },
+      select: { id: true, outOfService: true, passiveAt: true },
       orderBy: { [sortField]: direction },
     });
 
     let matchingIds;
     if (requiredStatus === "OUT_OF_SERVICE") {
       matchingIds = candidates.filter((v) => v.outOfService).map((v) => v.id);
+    } else if (requiredStatus === "PASSIVE") {
+      matchingIds = candidates.filter((v) => !v.outOfService && v.passiveAt).map((v) => v.id);
     } else {
-      const inService = candidates.filter((v) => !v.outOfService);
-      const rentedIds = await getRentedVehicleIds(inService.map((v) => v.id));
-      matchingIds = inService
+      const active = candidates.filter((v) => !v.outOfService && !v.passiveAt);
+      const rentedIds = await getRentedVehicleIds(active.map((v) => v.id));
+      matchingIds = active
         .filter((v) => (requiredStatus === "RENTED" ? rentedIds.has(v.id) : !rentedIds.has(v.id)))
         .map((v) => v.id);
     }
@@ -353,6 +355,39 @@ const unmarkVehicleSold = asyncHandler(async (req, res) => {
   res.json({ ...serializeVehicle(vehicle, await loadModelImageMap()), status: getVehicleStatus(vehicle, rentedIds) });
 });
 
+const markVehiclePassive = asyncHandler(async (req, res) => {
+  const target = await prisma.vehicle.findUnique({ where: { id: req.params.id } });
+  if (!target) throw new HttpError(404, "Vehicle not found.");
+  if (target.builtIn) throw new HttpError(403, "This vehicle cannot be modified.");
+  if (target.soldAt) throw new HttpError(409, "Bu araç satılmış.", "VEHICLE_SOLD");
+
+  await activeRentalGuard(target.id);
+
+  const passiveAt = req.body?.passiveAt ? new Date(req.body.passiveAt) : new Date();
+  if (Number.isNaN(passiveAt.getTime())) throw new HttpError(400, "Invalid date.");
+  const passiveNote = typeof req.body?.passiveNote === "string" ? req.body.passiveNote.trim() || null : null;
+
+  const vehicle = await prisma.vehicle.update({
+    where: { id: target.id },
+    data: { passiveAt, passiveNote },
+    include: IMAGES_AND_BRANCH_INCLUDE,
+  });
+  res.json({ ...serializeVehicle(vehicle, await loadModelImageMap()), status: getVehicleStatus(vehicle, new Set()) });
+});
+
+const unmarkVehiclePassive = asyncHandler(async (req, res) => {
+  const target = await prisma.vehicle.findUnique({ where: { id: req.params.id } });
+  if (!target) throw new HttpError(404, "Vehicle not found.");
+
+  const vehicle = await prisma.vehicle.update({
+    where: { id: target.id },
+    data: { passiveAt: null, passiveNote: null },
+    include: IMAGES_AND_BRANCH_INCLUDE,
+  });
+  const rentedIds = await getRentedVehicleIds([vehicle.id]);
+  res.json({ ...serializeVehicle(vehicle, await loadModelImageMap()), status: getVehicleStatus(vehicle, rentedIds) });
+});
+
 const deleteVehicle = asyncHandler(async (req, res) => {
   const target = await prisma.vehicle.findUnique({
     where: { id: req.params.id },
@@ -391,5 +426,7 @@ module.exports = {
   updateVehicle,
   markVehicleSold,
   unmarkVehicleSold,
+  markVehiclePassive,
+  unmarkVehiclePassive,
   deleteVehicle,
 };

@@ -8,6 +8,7 @@ import { utils } from "../../../../utils";
 import { Loading, VehicleForm } from "../../../../components";
 import { services } from "../../../../services";
 import SellVehicleModal from "./sell-vehicle-modal";
+import MarkPassiveModal from "./mark-passive-modal";
 import "./style.scss";
 
 const { routes } = constants;
@@ -26,6 +27,8 @@ const AdminVehicleDetailsPage = () => {
   const [vehicle, setVehicle] = useState(null);
   const [sellModal, setSellModal] = useState(false);
   const [soldSaving, setSoldSaving] = useState(false);
+  const [passiveModal, setPassiveModal] = useState(false);
+  const [passiveSaving, setPassiveSaving] = useState(false);
 
   const { vehicleId } = useParams();
   const navigate = useNavigate();
@@ -152,6 +155,42 @@ const AdminVehicleDetailsPage = () => {
       });
   };
 
+  const handleMarkPassive = async ({ passiveAt, passiveNote }) => {
+    setPassiveSaving(true);
+    try {
+      const updated = await services.vehicle.markVehiclePassive(vehicleId, { passiveAt, passiveNote });
+      setVehicle(updated);
+      setPassiveModal(false);
+      utils.functions.swalToast(t("vehicles.toasts.passiveSuccess"), "success");
+    } catch (error) {
+      const key =
+        error?.response?.data?.code === "VEHICLE_HAS_ACTIVE_RENTALS"
+          ? "vehicles.toasts.hasActiveRentals"
+          : "vehicles.toasts.passiveError";
+      utils.functions.swalToast(t(key), "error");
+    } finally {
+      setPassiveSaving(false);
+    }
+  };
+
+  const handleUnpassive = () => {
+    utils.functions
+      .swalQuestion(t("vehicles.passive.unmarkConfirmTitle"), t("vehicles.passive.unmarkConfirmText"))
+      .then(async (result) => {
+        if (!result.isConfirmed) return;
+        setPassiveSaving(true);
+        try {
+          const updated = await services.vehicle.unmarkVehiclePassive(vehicleId);
+          setVehicle(updated);
+          utils.functions.swalToast(t("vehicles.toasts.unpassiveSuccess"), "success");
+        } catch (error) {
+          utils.functions.swalToast(t("vehicles.toasts.passiveError"), "error");
+        } finally {
+          setPassiveSaving(false);
+        }
+      });
+  };
+
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -160,6 +199,7 @@ const AdminVehicleDetailsPage = () => {
   if (loading) return <Loading height={500} />;
 
   const sold = !!vehicle?.soldAt;
+  const passive = !sold && !!vehicle?.passiveAt;
 
   return (
     <>
@@ -172,6 +212,19 @@ const AdminVehicleDetailsPage = () => {
           </div>
           <Button variant="outline-secondary" size="sm" disabled={soldSaving} onClick={handleUnsold}>
             {soldSaving && <Spinner animation="border" size="sm" />} {t("vehicles.sold.unmarkButton")}
+          </Button>
+        </Alert>
+      )}
+
+      {passive && (
+        <Alert variant="warning" className="admin-vehicle-sold-alert">
+          <div>
+            <strong>{t("vehicles.passive.badge")}</strong> ·{" "}
+            {t("vehicles.passive.passiveOn", { date: trDate(vehicle.passiveAt) })}
+            {vehicle.passiveNote && <div className="admin-vehicle-sold-alert__note">{vehicle.passiveNote}</div>}
+          </div>
+          <Button variant="outline-secondary" size="sm" disabled={passiveSaving} onClick={handleUnpassive}>
+            {passiveSaving && <Spinner animation="border" size="sm" />} {t("vehicles.passive.unmarkButton")}
           </Button>
         </Alert>
       )}
@@ -194,6 +247,11 @@ const AdminVehicleDetailsPage = () => {
                 <Button type="submit" disabled={!(formik.dirty && formik.isValid) || updating}>
                   {updating && <Spinner animation="border" size="sm" />} {t("vehicles.update")}
                 </Button>
+                {!passive && (
+                  <Button variant="outline-warning" disabled={passiveSaving} onClick={() => setPassiveModal(true)}>
+                    {t("vehicles.passive.markButton")}
+                  </Button>
+                )}
                 <Button variant="outline-danger" disabled={soldSaving} onClick={() => setSellModal(true)}>
                   {t("vehicles.sold.markButton")}
                 </Button>
@@ -213,6 +271,13 @@ const AdminVehicleDetailsPage = () => {
         onHide={() => setSellModal(false)}
         onConfirm={handleMarkSold}
         saving={soldSaving}
+      />
+
+      <MarkPassiveModal
+        show={passiveModal}
+        onHide={() => setPassiveModal(false)}
+        onConfirm={handleMarkPassive}
+        saving={passiveSaving}
       />
     </>
   );

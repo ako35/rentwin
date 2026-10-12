@@ -215,7 +215,7 @@ const resolvePath = async (reqPath) => {
   // /kampanyalar, the server-rendered card list).
   if (canonicalPath === "/vehicles") {
     const vehicles = await prisma.vehicle.findMany({
-      where: { outOfService: false, soldAt: null },
+      where: { outOfService: false, soldAt: null, passiveAt: null },
       select: { id: true, brand: true, model: true },
       orderBy: { model: "asc" },
       take: 100,

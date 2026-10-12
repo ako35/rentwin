@@ -12,6 +12,8 @@ const {
   updateVehicle,
   markVehicleSold,
   unmarkVehicleSold,
+  markVehiclePassive,
+  unmarkVehiclePassive,
   deleteVehicle,
 } = require("./vehicles.controller");
 const { getFleetStats, getExpiryAlerts, getFleetStatusBoard } = require("./vehicles.dashboard.controller");
@@ -61,6 +63,8 @@ router.post("/car/admin/add", authenticate, requireAdmin, addVehicle);
 router.put("/car/admin/auth", authenticate, requireAdmin, updateVehicle);
 router.post(`/car/admin/:id${ID}/sold/auth`, authenticate, requireAdmin, markVehicleSold);
 router.delete(`/car/admin/:id${ID}/sold/auth`, authenticate, requireAdmin, unmarkVehicleSold);
+router.post(`/car/admin/:id${ID}/passive/auth`, authenticate, requireAdmin, markVehiclePassive);
+router.delete(`/car/admin/:id${ID}/passive/auth`, authenticate, requireAdmin, unmarkVehiclePassive);
 router.delete(`/car/admin/:id${ID}/auth`, authenticate, requireAdmin, deleteVehicle);
 
 module.exports = router;

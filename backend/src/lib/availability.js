@@ -40,6 +40,7 @@ const checkAvailability = async (
   const vehicle = await prisma.vehicle.findUnique({ where: { id: carId } });
   if (!vehicle) throw new HttpError(404, "Vehicle not found.");
   if (vehicle.soldAt) throw new HttpError(409, "Bu araç satılmış, kiralanamaz.", "VEHICLE_SOLD");
+  if (vehicle.passiveAt) throw new HttpError(409, "Bu araç pasife alınmış, kiralanamaz.", "VEHICLE_PASSIVE");
 
   const [contractClash, reservationClash] = await Promise.all([
     prisma.contract.findFirst({

@@ -52,6 +52,7 @@ $breakpointxl: 1200px;
     &--available { background-color: #1b7a43; }
     &--rented { background-color: #c98a1f; }
     &--out-of-service { background-color: #b93a3a; }
+    &--passive { background-color: #7c3aed; }
     &--sold { background-color: #6b7280; }
 
     // "Kirada" is the one status backed by a live contract — make that

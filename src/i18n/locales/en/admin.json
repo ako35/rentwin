@@ -25,7 +25,8 @@
     "total": "Total",
     "rented": "Rented",
     "available": "Available",
-    "outOfService": "Out of Service"
+    "outOfService": "Out of Service",
+    "passive": "Passive"
   },
   "vehicleStatusBoard": {
     "title": "Vehicle Status Board",
@@ -81,6 +82,18 @@
       "noteLabel": "Note (optional)",
       "confirm": "Mark as sold",
       "unmarkConfirmTitle": "Undo the sale?",
+      "unmarkConfirmText": "The vehicle returns to the active fleet."
+    },
+    "passive": {
+      "markButton": "Mark as passive",
+      "unmarkButton": "Reactivate",
+      "badge": "PASSIVE",
+      "passiveOn": "Passive since {{date}}",
+      "modalTitle": "Mark vehicle as passive",
+      "dateLabel": "Passive since",
+      "noteLabel": "Note (optional)",
+      "confirm": "Mark as passive",
+      "unmarkConfirmTitle": "Clear the passive status?",
       "unmarkConfirmText": "The vehicle returns to the active fleet."
     },
     "registrationScan": {
@@ -330,7 +343,10 @@
       "soldSuccess": "Vehicle marked as sold.",
       "soldError": "The action could not be completed, please try again.",
       "hasActiveRentals": "This vehicle has an open or upcoming rental/reservation. Close those first.",
-      "unsoldSuccess": "Vehicle returned to the active fleet."
+      "unsoldSuccess": "Vehicle returned to the active fleet.",
+      "passiveSuccess": "Vehicle marked as passive.",
+      "passiveError": "The action could not be completed, please try again.",
+      "unpassiveSuccess": "Vehicle returned to the active fleet."
     }
   },
   "reservations": {
@@ -1169,6 +1185,7 @@
     "AVAILABLE": "Available",
     "RENTED": "Rented",
     "OUT_OF_SERVICE": "Out of Service",
+    "PASSIVE": "Passive",
     "SOLD": "Sold"
   },
   "settings": {

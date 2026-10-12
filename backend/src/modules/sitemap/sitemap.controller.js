@@ -69,7 +69,7 @@ const latest = (rows, field) =>
 const getSitemap = asyncHandler(async (req, res) => {
   const [vehicles, locations, campaigns, posts, reviewsAgg, modelImages] = await Promise.all([
     prisma.vehicle.findMany({
-      where: { outOfService: false, soldAt: null },
+      where: { outOfService: false, soldAt: null, passiveAt: null },
       select: {
         id: true,
         brand: true,

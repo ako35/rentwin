@@ -37,6 +37,7 @@ const getRentedVehicleIds = async (vehicleIds) => {
 const getVehicleStatus = (vehicle, rentedIds) => {
   if (vehicle.soldAt) return "SOLD";
   if (vehicle.outOfService) return "OUT_OF_SERVICE";
+  if (vehicle.passiveAt) return "PASSIVE";
   if (rentedIds.has(vehicle.id)) return "RENTED";
   return "AVAILABLE";
 };

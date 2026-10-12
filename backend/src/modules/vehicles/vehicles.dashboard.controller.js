@@ -22,18 +22,22 @@ const getFleetStats = asyncHandler(async (req, res) => {
     select: {
       id: true,
       outOfService: true,
+      passiveAt: true,
       nextMaintenanceDate: true,
       nextInspectionDate: true,
     },
   });
 
   const outOfService = vehicles.filter((v) => v.outOfService).length;
-  const inServiceIds = vehicles.filter((v) => !v.outOfService).map((v) => v.id);
+  // outOfService wins if a car somehow carries both flags — same precedence
+  // getVehicleStatus uses for the single-vehicle badge.
+  const passive = vehicles.filter((v) => !v.outOfService && v.passiveAt).length;
+  const inServiceIds = vehicles.filter((v) => !v.outOfService && !v.passiveAt).map((v) => v.id);
   const rentedIds = await getRentedVehicleIds(inServiceIds);
 
   const total = vehicles.length;
   const rented = rentedIds.size;
-  const available = total - outOfService - rented;
+  const available = total - outOfService - passive - rented;
   const rate = (count) => (total > 0 ? Math.round((count / total) * 100) : 0);
   const maintenanceDue = vehicles.filter((v) => isDueSoon(v.nextMaintenanceDate)).length;
   const inspectionDue = vehicles.filter((v) => isDueSoon(v.nextInspectionDate)).length;
@@ -43,8 +47,10 @@ const getFleetStats = asyncHandler(async (req, res) => {
     rented,
     available,
     outOfService,
+    passive,
     occupancyRate: rate(rented),
     outOfServiceRate: rate(outOfService),
+    passiveRate: rate(passive),
     maintenanceDue,
     inspectionDue,
   });
@@ -235,14 +241,15 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
 // Two lightweight lists (dashboard "Kirada"/"Müsait" tiles drill into this):
 // every in-service, unsold vehicle split into rented (with its active
 // contract's drop-off + renter) and available (with its nearest upcoming
-// reservation, if any). Out-of-service vehicles appear in neither — same
-// split getFleetStats already counts by, so the two screens agree.
+// reservation, if any). Out-of-service and passive vehicles appear in
+// neither — same split getFleetStats already counts by, so the two screens
+// agree.
 const custName = (u) => (u?.companyTitle || `${u?.firstName || ""} ${u?.lastName || ""}`.trim() || null);
 
 const getFleetStatusBoard = asyncHandler(async (req, res) => {
   const { branchId } = req.query;
   const vehicles = await prisma.vehicle.findMany({
-    where: { soldAt: null, outOfService: false, ...(branchId ? { branchId } : {}) },
+    where: { soldAt: null, outOfService: false, passiveAt: null, ...(branchId ? { branchId } : {}) },
     select: {
       id: true,
       licensePlate: true,

@@ -175,6 +175,11 @@ model Vehicle {
   builtIn              Boolean              @default(false)
   soldAt               DateTime? // set = vehicle sold and retired from the fleet; auto-purged 5 years later
   saleNote             String? // free-text note captured at sale time
+  passiveAt            DateTime? // set = temporarily pulled from the active fleet by an admin decision — distinct
+                                  // from outOfService (mechanical/maintenance) and from soldAt (permanent, purged);
+                                  // reversible any time by clearing it. Excluded from listings/availability the
+                                  // same way outOfService is.
+  passiveNote          String? // free-text reason captured when marking passive
   branchId             String?
   branch               Branch?              @relation(fields: [branchId], references: [id], onDelete: SetNull)
   nextMaintenanceDate  DateTime?

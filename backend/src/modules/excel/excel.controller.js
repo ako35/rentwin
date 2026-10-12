@@ -13,7 +13,7 @@ const FUEL_LABELS = {
   CNG: "CNG",
   Hydrogen: "Hidrojen",
 };
-const STATUS_LABELS = { AVAILABLE: "Müsait", RENTED: "Kirada", OUT_OF_SERVICE: "Servis Dışı", SOLD: "Satıldı" };
+const STATUS_LABELS = { AVAILABLE: "Müsait", RENTED: "Kirada", OUT_OF_SERVICE: "Servis Dışı", PASSIVE: "Pasif", SOLD: "Satıldı" };
 
 const downloadUsers = asyncHandler(async (req, res) => {
   const users = await prisma.user.findMany();

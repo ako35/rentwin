@@ -25,7 +25,8 @@
     "total": "Toplam",
     "rented": "Kirada",
     "available": "Müsait",
-    "outOfService": "Servis Dışı"
+    "outOfService": "Servis Dışı",
+    "passive": "Pasif"
   },
   "vehicleStatusBoard": {
     "title": "Araç Durum Tablosu",
@@ -81,6 +82,18 @@
       "noteLabel": "Not (opsiyonel)",
       "confirm": "Satıldı olarak işaretle",
       "unmarkConfirmTitle": "Satış geri alınsın mı?",
+      "unmarkConfirmText": "Araç yeniden aktif filoya döner."
+    },
+    "passive": {
+      "markButton": "Pasife al",
+      "unmarkButton": "Pasifliği kaldır",
+      "badge": "PASİF",
+      "passiveOn": "{{date}} tarihinden beri pasif",
+      "modalTitle": "Aracı pasife al",
+      "dateLabel": "Pasife alma tarihi",
+      "noteLabel": "Not (opsiyonel)",
+      "confirm": "Pasife al",
+      "unmarkConfirmTitle": "Pasiflik kaldırılsın mı?",
       "unmarkConfirmText": "Araç yeniden aktif filoya döner."
     },
     "registrationScan": {
@@ -330,7 +343,10 @@
       "soldSuccess": "Araç satıldı olarak işaretlendi.",
       "soldError": "İşlem tamamlanamadı, lütfen tekrar deneyin.",
       "hasActiveRentals": "Bu aracın açık veya gelecek tarihli kiralaması/rezervasyonu var. Önce onları kapatın.",
-      "unsoldSuccess": "Araç yeniden aktif filoya alındı."
+      "unsoldSuccess": "Araç yeniden aktif filoya alındı.",
+      "passiveSuccess": "Araç pasife alındı.",
+      "passiveError": "İşlem tamamlanamadı, lütfen tekrar deneyin.",
+      "unpassiveSuccess": "Araç yeniden aktif filoya alındı."
     }
   },
   "reservations": {
@@ -1169,6 +1185,7 @@
     "AVAILABLE": "Müsait",
     "RENTED": "Kirada",
     "OUT_OF_SERVICE": "Servis Dışı",
+    "PASSIVE": "Pasif",
     "SOLD": "Satıldı"
   },
   "settings": {

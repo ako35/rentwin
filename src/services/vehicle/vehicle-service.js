@@ -62,6 +62,21 @@ export const unmarkVehicleSold = async (id) => {
   );
   return response.data;
 };
+export const markVehiclePassive = async (id, payload) => {
+  const response = await axios.post(
+    `${API_URL}/car/admin/${id}/passive/auth`,
+    payload,
+    services.authHeader()
+  );
+  return response.data;
+};
+export const unmarkVehiclePassive = async (id) => {
+  const response = await axios.delete(
+    `${API_URL}/car/admin/${id}/passive/auth`,
+    services.authHeader()
+  );
+  return response.data;
+};
 export const downloadVehicleReports = async() => {
   const token = services.encryptedLocalStorage.getItem("rentwintoken");
   const response = await axios.get(`${API_URL}/excel/download/cars`, {
