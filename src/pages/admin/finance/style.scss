@@ -145,9 +145,11 @@
   &__note { color: v.$color5_3; }
   &__opening td { background-color: v.$color3_5; font-weight: 600; color: v.$color5_3; }
   &__empty { text-align: center; color: v.$color5_3; padding: 2rem 0 !important; }
-  &__act {
+  // No display:flex on the <td> itself — see the comment in LedgerTable.jsx.
+  &__act { white-space: nowrap; }
+  &__act-inner {
     @include m.flexbox(row, flex-end, center, 0.15rem);
-    white-space: nowrap;
+    height: 100%;
   }
 }
 

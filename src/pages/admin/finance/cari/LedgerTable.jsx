@@ -83,8 +83,13 @@ const LedgerTable = ({ data, filtered, money, onEdit, onRemove }) => {
                 <td className="text-end">{r.direction === "CREDIT" ? money(r.amount) : ""}</td>
                 <td className="text-end ledger-table__bal">{money(r.balance)}</td>
                 <td className="ledger-table__act">
+                  {/* The flex layout lives on this inner div, not the <td> itself —
+                      `display: flex` directly on a table cell drops it out of the
+                      row's normal height-stretching, so the cell renders shorter
+                      than its siblings and its border-bottom lands mid-row instead
+                      of at the row's true bottom. */}
                   {manual && (
-                    <>
+                    <div className="ledger-table__act-inner">
                       <button
                         type="button"
                         className="ghost-btn"
@@ -101,7 +106,7 @@ const LedgerTable = ({ data, filtered, money, onEdit, onRemove }) => {
                       >
                         🗑
                       </button>
-                    </>
+                    </div>
                   )}
                 </td>
               </tr>
