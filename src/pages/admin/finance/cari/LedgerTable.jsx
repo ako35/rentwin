@@ -15,6 +15,21 @@ const LedgerTable = ({ data, filtered, money, onEdit, onRemove }) => {
   return (
     <div className="finance-page__panel">
       <table className="ledger-table">
+        {/* Fixed column widths, declared once here — with the browser's default
+            auto layout, the thead/tbody/tfoot row groups could each size this
+            table's columns slightly differently (a stray colSpan or an empty
+            cell was enough to throw it off), leaving a row's border-bottom
+            short of the table's true right edge. A colgroup is the one widths
+            source every row group shares, so that can't happen again. */}
+        <colgroup>
+          <col style={{ width: "13%" }} />
+          <col style={{ width: "17%" }} />
+          <col style={{ width: "26%" }} />
+          <col style={{ width: "13%" }} />
+          <col style={{ width: "12%" }} />
+          <col style={{ width: "13%" }} />
+          <col style={{ width: "6%" }} />
+        </colgroup>
         <thead>
           <tr>
             <th>{f("table.date")}</th>
@@ -31,7 +46,7 @@ const LedgerTable = ({ data, filtered, money, onEdit, onRemove }) => {
             <tr className="ledger-table__opening">
               <td colSpan={5}>{f("table.opening")}</td>
               <td className="text-end">{money(data.opening)}</td>
-              <td />
+              <td className="ledger-table__act" />
             </tr>
           )}
           {data.rows.length === 0 && (
@@ -99,7 +114,7 @@ const LedgerTable = ({ data, filtered, money, onEdit, onRemove }) => {
             <td className="text-end">{money(data.debit)}</td>
             <td className="text-end">{money(data.credit)}</td>
             <td className="text-end ledger-table__bal">{money(data.balance)}</td>
-            <td />
+            <td className="ledger-table__act" />
           </tr>
         </tfoot>
       </table>

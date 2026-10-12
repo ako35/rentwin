@@ -100,6 +100,9 @@
   width: 100%;
   margin: 0;
   border-collapse: collapse;
+  // Column widths come from the <colgroup> in LedgerTable.jsx, not from each
+  // row's own content — see the comment there for why.
+  table-layout: fixed;
   font-size: 0.86rem;
 
   thead th {
@@ -121,6 +124,10 @@
     vertical-align: top;
   }
 
+  // Amount columns never wrap — with fixed column widths a long formatted
+  // number (or the header word above it) could otherwise break onto two lines.
+  th.text-end, td.text-end { white-space: nowrap; }
+
   tbody tr:hover td { background-color: v.$color4; }
 
   tfoot td {
@@ -140,7 +147,6 @@
   &__empty { text-align: center; color: v.$color5_3; padding: 2rem 0 !important; }
   &__act {
     @include m.flexbox(row, flex-end, center, 0.15rem);
-    width: 1%;
     white-space: nowrap;
   }
 }
