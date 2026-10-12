@@ -81,6 +81,17 @@ const AdminFinancePage = () => {
           <Loading height={320} />
         ) : (
           <Table hover responsive className="ledger-table">
+            {/* Fixed widths so a long company title truncates to one line
+                instead of wrapping and stretching the row — see the
+                __name rule in style.scss. */}
+            <colgroup>
+              <col style={{ width: "10%" }} />
+              <col style={{ width: "38%" }} />
+              <col style={{ width: "10%" }} />
+              <col style={{ width: "14%" }} />
+              <col style={{ width: "14%" }} />
+              <col style={{ width: "14%" }} />
+            </colgroup>
             <thead>
               <tr>
                 <th>{f("list.code")}</th>
@@ -105,7 +116,9 @@ const AdminFinancePage = () => {
                     <RowLink to={`${routes.adminFinance}/cari/${r.id}`} label={r.companyTitle || r.firstName} />
                     <span className="ledger-code">{r.customerCode || "—"}</span>
                   </td>
-                  <td className="finance-page__name">{(r.companyTitle || `${r.firstName} ${r.lastName}`).trim() || "—"}</td>
+                  <td className="finance-page__name" title={(r.companyTitle || `${r.firstName} ${r.lastName}`).trim() || "—"}>
+                    {(r.companyTitle || `${r.firstName} ${r.lastName}`).trim() || "—"}
+                  </td>
                   <td>{r.customerType || "Bireysel"}</td>
                   <td className="text-end">{money(r.debit)}</td>
                   <td className="text-end">{money(r.credit)}</td>

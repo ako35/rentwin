@@ -93,7 +93,16 @@
   }
 
   &__row { cursor: pointer; }
-  &__name { font-weight: 600; }
+  &__name {
+    font-weight: 600;
+    // Truncate a long unvan to one line instead of wrapping the row — the
+    // full name is still there as a native tooltip (title attr) and on the
+    // cari's own detail page.
+    max-width: 0; // defers to the <colgroup> width instead of content size
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 
 .ledger-table {
