@@ -75,6 +75,7 @@ export const useContractData = ({ isCreate, contractId }) => {
         monthlyKmLimit: pick("defaultMonthlyKmLimit", EMPTY_CONTRACT.monthlyKmLimit),
         kmOverageFee: pick("defaultKmOverageFee", EMPTY_CONTRACT.kmOverageFee),
         fuelFeePerEighth: pick("defaultFuelFeePerEighth", EMPTY_CONTRACT.fuelFeePerEighth),
+        deposit: pick("defaultDeposit", EMPTY_CONTRACT.deposit),
       });
     } catch (error) {
       console.log(error);

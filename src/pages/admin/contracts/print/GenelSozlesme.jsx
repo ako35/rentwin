@@ -50,6 +50,7 @@ const GenelSozlesme = ({ data, p }) => {
   const fuelFeeText = data.fuelFeePerEighth
     ? s("feePerEighth", { v: data.fuelFeePerEighth })
     : s("notSet");
+  const depositText = data.deposit ? s("depositAmount", { v: data.deposit }) : s("depositNone");
 
   const madde5Body =
     (data.kmUnlimited
@@ -141,6 +142,10 @@ const GenelSozlesme = ({ data, p }) => {
               <td>{kmOverageText}</td>
               <th>{s("sumFuelFee")}</th>
               <td>{fuelFeeText}</td>
+            </tr>
+            <tr>
+              <th>{s("sumDeposit")}</th>
+              <td colSpan={3}>{depositText}</td>
             </tr>
           </tbody>
         </table>

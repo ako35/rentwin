@@ -24,6 +24,7 @@ const FIELDS = [
   { name: "defaultMonthlyKmLimit", suffix: "km/ay", type: "int" },
   { name: "defaultKmOverageFee", suffix: "₺/km", type: "money" },
   { name: "defaultFuelFeePerEighth", suffix: "₺ / (1/8)", type: "money" },
+  { name: "defaultDeposit", suffix: "TL", type: "money" },
 ];
 
 // Dashboard's "yaklaşan/süresi geçmiş" alert panel window, per category —

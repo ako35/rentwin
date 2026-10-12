@@ -880,11 +880,14 @@
           "sumKmLimit": "Mileage Limit",
           "sumKmOverage": "Excess-km Fee",
           "sumFuelFee": "Missing-fuel Fee",
+          "sumDeposit": "Deposit",
           "kmUnlimited": "Unlimited",
           "perDay": "{{n}} km/day",
           "perMonth": "{{n}} km/month",
           "feePerKm": "{{v}} ₺ / excess km (VAT incl.)",
           "feePerEighth": "{{v}} ₺ / missing 1/8 tank (VAT incl.)",
+          "depositAmount": "{{v}} ₺",
+          "depositNone": "Not collected",
           "notSet": "Not specified",
           "a1t": "ARTICLE 1: SUBJECT AND SCOPE OF THE AGREEMENT",
           "a1": "This agreement covers the terms on which the motor land vehicles owned, possessed or operated by the LESSOR are rented to the LESSEE, together with the mutual rights and obligations of the parties.\nThe vehicle(s) subject to the rental, the rental periods, rental fees, payment plan and special terms are set out in ANNEX-1 (Rental and Financial Detail Form), an integral part of this agreement. ANNEX-2 (Vehicle Handover and Return Report) is drawn up on the physical delivery and return of the vehicles. Upon signing ANNEX-2, legal and physical responsibility for the vehicle passes to the LESSEE.",
@@ -1187,7 +1190,8 @@
       "defaultDailyKmLimit": "Daily KM Limit",
       "defaultMonthlyKmLimit": "Monthly KM Limit",
       "defaultKmOverageFee": "KM Overage Fee",
-      "defaultFuelFeePerEighth": "Missing Fuel Fee"
+      "defaultFuelFeePerEighth": "Missing Fuel Fee",
+      "defaultDeposit": "Deposit"
     },
     "alertWindows": {
       "title": "Alert Windows",

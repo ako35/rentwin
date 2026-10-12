@@ -246,6 +246,7 @@ const createContract = asyncHandler(async (req, res) => {
     monthlyKmLimit: s.defaultMonthlyKmLimit ?? null,
     kmOverageFee: s.defaultKmOverageFee ?? null,
     fuelFeePerEighth: s.defaultFuelFeePerEighth ?? null,
+    deposit: s.defaultDeposit ?? null,
     reservationId: reservationId || null,
   });
   res.status(201).json({ id: contract.id });

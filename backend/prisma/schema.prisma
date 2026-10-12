@@ -734,6 +734,7 @@ model Setting {
   defaultMonthlyKmLimit     Int?
   defaultKmOverageFee       Float?
   defaultFuelFeePerEighth   Float?
+  defaultDeposit            Float?
   // Dashboard "yaklaşan/süresi geçmiş" alert panel window, per category — null
   // means "use the 15-day default" (see vehicles.dashboard.controller.js).
   alertWindowInspectionDays Int?

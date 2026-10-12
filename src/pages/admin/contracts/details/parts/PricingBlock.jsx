@@ -150,6 +150,11 @@ const PricingBlock = ({ formik, pricing, billableDays, collected, money }) => {
           </>
         )}
         <InputRow formik={formik} name="fuelFeePerEighth" label={c("fuelFeePerEighth")} suffix="₺ / (1/8)" />
+        {/* Refundable collateral, held separately from the rental price — never
+            folded into pricing.total/balance above (see computePricing). Settings'
+            "Sözleşme Fiyat Varsayılanları" pre-fills new contracts; editable here
+            per contract, and printed on the Genel Sözleşme (GenelSozlesme.jsx). */}
+        <InputRow formik={formik} name="deposit" label={c("deposit")} suffix="" />
       </section>
 
       <div className="pricing__summary">
