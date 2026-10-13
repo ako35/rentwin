@@ -39,8 +39,11 @@ const getFleetStats = asyncHandler(async (req, res) => {
   const rented = rentedIds.size;
   const available = total - outOfService - passive - rented;
   const rate = (count) => (total > 0 ? Math.round((count / total) * 100) : 0);
-  const maintenanceDue = vehicles.filter((v) => isDueSoon(v.nextMaintenanceDate)).length;
-  const inspectionDue = vehicles.filter((v) => isDueSoon(v.nextInspectionDate)).length;
+  // A passive vehicle is temporarily pulled from the fleet by an admin
+  // decision — its legal-deadline nags should stop too while it's parked,
+  // the same way it already drops out of the rented/available tiles above.
+  const maintenanceDue = vehicles.filter((v) => !v.passiveAt && isDueSoon(v.nextMaintenanceDate)).length;
+  const inspectionDue = vehicles.filter((v) => !v.passiveAt && isDueSoon(v.nextInspectionDate)).length;
 
   res.json({
     total,
@@ -73,7 +76,11 @@ const thresholdInDays = (days) => {
 
 const getExpiryAlerts = asyncHandler(async (req, res) => {
   const { branchId } = req.query;
-  const vehicleWhere = { soldAt: null, ...(branchId ? { branchId } : {}) };
+  // passiveAt: a vehicle an admin temporarily pulled from the fleet stops
+  // nagging for Sigorta/Kasko/MTV/Muayene/Bakım here — reactivating it
+  // (clearing passiveAt) brings it straight back into this same live query,
+  // so whatever was already due simply reappears on its own.
+  const vehicleWhere = { soldAt: null, passiveAt: null, ...(branchId ? { branchId } : {}) };
   const now = new Date();
   const settings = await readSettings();
   const windowDaysFor = {
