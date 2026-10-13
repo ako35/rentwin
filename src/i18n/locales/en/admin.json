@@ -1257,7 +1257,6 @@
       "deleteConfirmText": "{{name}} will no longer be able to sign in to the admin panel.",
       "addSuccess": "Administrator account created.",
       "editSuccess": "Administrator account updated.",
-      "emailExists": "An account with this email already exists.",
       "addError": "There was an error creating the administrator account.",
       "editError": "There was an error updating the administrator account.",
       "deleteError": "There was an error deleting the administrator account."
@@ -1444,8 +1443,7 @@
     "title": "New Customer",
     "create": "Create",
     "success": "Customer created.",
-    "error": "Something went wrong while creating the customer.",
-    "emailExists": "An account with this email already exists."
+    "error": "Something went wrong while creating the customer."
   },
   "newContract": {
     "title": "New Contract",

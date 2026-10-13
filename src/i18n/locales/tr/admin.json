@@ -1257,7 +1257,6 @@
       "deleteConfirmText": "{{name}} artık yönetim paneline giriş yapamayacak.",
       "addSuccess": "Yönetici hesabı oluşturuldu.",
       "editSuccess": "Yönetici hesabı güncellendi.",
-      "emailExists": "Bu e-posta ile kayıtlı bir hesap zaten var.",
       "addError": "Yönetici hesabı oluşturulurken bir hata oluştu.",
       "editError": "Yönetici hesabı güncellenirken bir hata oluştu.",
       "deleteError": "Yönetici hesabı silinirken bir hata oluştu."
@@ -1444,8 +1443,7 @@
     "title": "Yeni Müşteri",
     "create": "Oluştur",
     "success": "Müşteri oluşturuldu.",
-    "error": "Müşteri oluşturulurken bir hata oluştu.",
-    "emailExists": "Bu e-posta ile bir hesap zaten var."
+    "error": "Müşteri oluşturulurken bir hata oluştu."
   },
   "newContract": {
     "title": "Yeni Kontrat",

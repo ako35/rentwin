@@ -35,12 +35,10 @@ const AdminNewCustomerPage = () => {
       utils.functions.swalToast(t("newCustomer.success"), "success");
       navigate(`${routes.adminUsers}/${user.id}`);
     } catch (error) {
-      const status = error?.response?.status;
+      // Email isn't unique in this system — the real 409 cause (a duplicate
+      // TC/VKN) already comes with its own specific, correct message.
       const message = error?.response?.data?.message;
-      utils.functions.swalToast(
-        status === 409 ? t("newCustomer.emailExists") : message || t("newCustomer.error"),
-        "error"
-      );
+      utils.functions.swalToast(message || t("newCustomer.error"), "error");
       setSaving(false);
     }
   };

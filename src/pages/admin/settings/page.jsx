@@ -204,10 +204,11 @@ const AdminSettingsPage = () => {
       await loadAdmins();
       utils.functions.swalToast(c(isEditingAdmin ? "admins.editSuccess" : "admins.addSuccess"), "success");
     } catch (error) {
+      // Email isn't unique anywhere in this system, so a 409 here is never
+      // actually "this email is taken" — show whatever the backend really
+      // said instead of a hardcoded, wrong assumption.
       utils.functions.swalToast(
-        error?.response?.status === 409
-          ? c("admins.emailExists")
-          : c(isEditingAdmin ? "admins.editError" : "admins.addError"),
+        error?.response?.data?.message || c(isEditingAdmin ? "admins.editError" : "admins.addError"),
         "error"
       );
     } finally {

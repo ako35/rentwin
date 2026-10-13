@@ -23,12 +23,11 @@ const NewCustomerModal = ({ show, onHide, onCreated }) => {
       utils.functions.swalToast(t("newCustomer.success"), "success");
       onCreated(created);
     } catch (error) {
-      utils.functions.swalToast(
-        error?.response?.status === 409
-          ? t("newCustomer.emailExists")
-          : error?.response?.data?.message || t("newCustomer.error"),
-        "error"
-      );
+      // No status-code special-casing here — email isn't unique in this system
+      // (the same address can belong to several customer records), so the
+      // only realistic 409 is a duplicate TC/VKN, and the backend already
+      // sends a specific, correct Turkish message for that.
+      utils.functions.swalToast(error?.response?.data?.message || t("newCustomer.error"), "error");
     }
   };
 
