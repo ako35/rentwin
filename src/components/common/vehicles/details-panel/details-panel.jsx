@@ -36,6 +36,20 @@ const DetailsPanel = () => {
     },
   ];
 
+  // A per-vehicle sentence (brand/model/year/transmission/fuel combination
+  // is rarely identical across the fleet) so each detail page carries some
+  // unique text instead of just a photo + spec table — thin, templated-looking
+  // pages are exactly what search engines are slow to index on a new domain.
+  const description = vehicle
+    ? t(vehicle.modelYear ? "details.descriptionWithYear" : "details.description", {
+        brand: vehicle.brand,
+        model: vehicle.model,
+        year: vehicle.modelYear,
+        transmission: tCommon(`options.transmissionTypes.${vehicle.transmission}`),
+        fuel: tCommon(`options.fuelTypes.${vehicle.fuelType}`),
+      })
+    : "";
+
   return (
     <div className="details-panel">
       <div className="panel-title">
@@ -50,6 +64,7 @@ const DetailsPanel = () => {
         />
       </Card>
       <Spacer />
+      <p className="details-panel__description">{description}</p>
       <h2 className="text-primary">{t("details.propertyHighlights")}</h2>
       <Row xs={2} md={4}>
         {carDetails.map((item) => (

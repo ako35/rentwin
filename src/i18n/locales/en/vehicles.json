@@ -57,7 +57,10 @@
     "fuelType": "Fuel Type",
     "age": "Age",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "description": "The {{brand}} {{model}} is part of the Rentwin fleet, available with {{transmission}} transmission and {{fuel}} fuel. Available for pickup across Aliağa and İzmir, this vehicle is fully serviced and ready to drive.",
+    "descriptionWithYear": "The {{year}} {{brand}} {{model}} is part of the Rentwin fleet, available with {{transmission}} transmission and {{fuel}} fuel. Available for pickup across Aliağa and İzmir, this vehicle is fully serviced and ready to drive.",
+    "relatedTitle": "Similar Vehicles"
   },
   "booking": {
     "sectionTitle1": "Book",

@@ -57,7 +57,10 @@
     "fuelType": "Yakıt Tipi",
     "age": "Yaş",
     "yes": "Evet",
-    "no": "Hayır"
+    "no": "Hayır",
+    "description": "{{brand}} {{model}}, Rentwin filosunda {{transmission}} vites ve {{fuel}} yakıt seçeneğiyle hizmetinizde. Aliağa ve İzmir genelinde teslim alınabilen bu araç, bakımları tamamlanmış ve kullanıma hazır durumdadır.",
+    "descriptionWithYear": "{{year}} model {{brand}} {{model}}, Rentwin filosunda {{transmission}} vites ve {{fuel}} yakıt seçeneğiyle hizmetinizde. Aliağa ve İzmir genelinde teslim alınabilen bu araç, bakımları tamamlanmış ve kullanıma hazır durumdadır.",
+    "relatedTitle": "Benzer Araçlar"
   },
   "booking": {
     "sectionTitle1": "Şimdi",

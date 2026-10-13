@@ -1,0 +1,19 @@
+@use '../../../../styles/variables' as v;
+
+.vehicle-details__related {
+  h2 {
+    font-size: 1.3rem;
+    color: v.$color5;
+    margin-bottom: 1rem;
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(255px, 275px));
+    gap: 1.1rem;
+
+    @media (max-width: 560px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}

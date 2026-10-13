@@ -8,6 +8,7 @@ import {
   Loading,
   PageHeader,
   Spacer,
+  VehicleGridCard,
 } from "../../../../components";
 import { useEffect, useState } from "react";
 import { services } from "../../../../services";
@@ -16,12 +17,14 @@ import { useTranslation } from "react-i18next";
 import { setVehicle } from "../../../../store";
 import { usePageMeta } from "../../../../hooks/use-page-meta";
 import { breadcrumbLd, vehicleLd } from "../../../../utils/seo";
+import "./style.scss";
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
 
 const VehicleDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [vehicle, setVehicleState] = useState(null);
+  const [related, setRelated] = useState([]);
   // `notFound` (backend-confirmed: deleted/sold vehicle) drives noindex — a
   // transient network/server error must never tell search engines a live
   // listing is gone. `loadFailed` covers both cases for the fallback UI, same
@@ -61,10 +64,30 @@ const VehicleDetailsPage = () => {
     }
   };
 
+  // Best-effort — a few other in-service vehicles to link to from this page
+  // ("Benzer Araçlar"). Never blocks or fails the main page: an empty list
+  // just hides the section.
+  const loadRelated = async (excludeId) => {
+    try {
+      const { content } = await services.vehicle.getVehiclesByPage(0, 5);
+      setRelated((content || []).filter((item) => item.id !== excludeId).slice(0, 4));
+    } catch (error) {
+      setRelated([]);
+    }
+  };
+
   useEffect(() => {
+    // Clicking a "Benzer Araçlar" card keeps this same route component
+    // mounted with a new :vehicleId param — without resetting these, a page
+    // that 404'd (or failed to load) would keep showing that state forever
+    // for every vehicle visited afterwards.
+    setLoading(true);
+    setNotFound(false);
+    setLoadFailed(false);
     loadData();
+    loadRelated(vehicleId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [vehicleId]);
 
   if (loadFailed) {
     return (
@@ -132,6 +155,19 @@ const VehicleDetailsPage = () => {
           )}
         </Row>
       </Container>
+      {!loading && related.length > 0 && (
+        <>
+          <Spacer />
+          <Container as="section" className="vehicle-details__related">
+            <h2>{t("details.relatedTitle")}</h2>
+            <div className="vehicle-details__related-grid">
+              {related.map((item) => (
+                <VehicleGridCard key={item.id} {...item} />
+              ))}
+            </div>
+          </Container>
+        </>
+      )}
       <Spacer />
     </>
   );

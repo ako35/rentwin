@@ -18,6 +18,12 @@ $breakpointsm: 400px;
         font-size: 1.15rem;
     }
 
+    &__description{
+        color: v.$color5_3;
+        line-height: 1.55;
+        margin: 1.1rem 0;
+    }
+
     .card{
         max-width: 340px;
         margin: 0 auto;
