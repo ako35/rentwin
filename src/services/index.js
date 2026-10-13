@@ -12,7 +12,7 @@ import { createUserAdmin, deleteUser, downloadUserReports, extractCustomerDocume
 import { addVehicle, deleteVehicle, downloadVehicleReports, extractRegistration, extractInsurance, extractInspection, getExpiryAlerts, getFleetStats, getFleetStatusBoard, getVehicleById, getVehicleByIdAdmin, getVehicles, getVehiclesByPage, getVehiclesByPageAdmin, markVehicleSold, unmarkVehicleSold, markVehiclePassive, unmarkVehiclePassive, updateVehicle } from "./vehicle/vehicle-service";
 
 import { addVehicleRecord, deleteVehicleRecord, getVehicleRecords, updateVehicleRecord } from "./vehicle/vehicle-records-service";
-import { deleteModelImage, generateModelImage, listModelImages, uploadModelImage } from "./vehicle/vehicle-model-image-service";
+import { deleteModelImage, generateModelImage, listModelImages, renameModelGroup, uploadModelImage } from "./vehicle/vehicle-model-image-service";
 import { addVehicleDocument, deleteVehicleDocument, getVehicleDocuments, addRecordDocument, getRecordDocuments } from "./vehicle/vehicle-document-service";
 
 import { addBranch, deleteBranch, getBranches, getPublicBranches, updateBranch } from "./branch/branch-service";
@@ -139,6 +139,7 @@ export const services = {
         uploadModelImage,
         generateModelImage,
         deleteModelImage,
+        renameModelGroup,
         // VEHICLE SUB-RECORDS (insurance / tax / maintenance / inspection)
         getVehicleRecords,
         addVehicleRecord,

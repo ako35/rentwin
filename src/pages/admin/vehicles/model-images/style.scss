@@ -43,6 +43,7 @@
     justify-content: space-between;
     gap: 0.5rem;
     margin-bottom: 0.75rem;
+    flex-wrap: wrap;
 
     strong {
       color: var(--rw-ink, #{v.$color5});
@@ -53,6 +54,29 @@
       white-space: nowrap;
       border: 1px solid v.$color3;
     }
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  &__edit-btn {
+    padding: 0.1rem 0.25rem;
+    color: v.$color5_3;
+
+    &:hover { color: v.$color1; }
+  }
+
+  &__rename {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 1;
+    min-width: 260px;
+
+    .form-control { max-width: 160px; }
   }
 
   &__slots {

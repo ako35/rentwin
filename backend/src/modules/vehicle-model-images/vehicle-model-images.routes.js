@@ -7,6 +7,7 @@ const {
   uploadModelImage,
   generateModelImage,
   deleteModelImage,
+  renameModelGroup,
 } = require("./vehicle-model-images.controller");
 
 const router = Router();
@@ -26,5 +27,6 @@ router.post(
   generateModelImage
 );
 router.delete("/car/admin/model-images/:id/auth", authenticate, requireAdmin, deleteModelImage);
+router.put("/car/admin/model-images/rename/auth", authenticate, requireAdmin, renameModelGroup);
 
 module.exports = router;

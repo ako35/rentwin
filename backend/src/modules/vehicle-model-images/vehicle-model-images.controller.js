@@ -174,4 +174,60 @@ const deleteModelImage = asyncHandler(async (req, res) => {
   res.json({ message: "Model görseli silindi." });
 });
 
-module.exports = { listModelImages, uploadModelImage, generateModelImage, deleteModelImage };
+// Bulk-fix a marka/model typo right from this page instead of editing every
+// vehicle one by one: every vehicle currently grouped under {fromBrand,
+// fromModel} (same normalized match listModelImages groups by) gets the new
+// brand/model text. Each of that group's own VehicleModelImage rows (generic
+// + every colour) moves to the new key too, so already-uploaded images carry
+// over — unless the destination key already has its own image, in which case
+// the old row is left behind as an orphan (still visible, still removable on
+// this page) rather than silently overwriting or deleting someone else's image.
+const renameModelGroup = asyncHandler(async (req, res) => {
+  const { fromBrand, fromModel } = req.body || {};
+  const toBrand = (req.body?.toBrand || "").trim();
+  const toModel = (req.body?.toModel || "").trim();
+  if (!fromBrand || !fromModel) throw new HttpError(400, "Kaynak marka ve model gerekli.");
+  if (!toBrand || !toModel) throw new HttpError(400, "Yeni marka ve model gerekli.");
+
+  const fromKey = groupKey(fromBrand, fromModel);
+  if (fromKey === groupKey(toBrand, toModel)) {
+    return res.json({ renamedVehicles: 0, movedImages: 0, orphanedImages: 0 });
+  }
+
+  const vehicles = await prisma.vehicle.findMany({ select: { id: true, brand: true, model: true } });
+  const matchIds = vehicles.filter((v) => groupKey(v.brand, v.model) === fromKey).map((v) => v.id);
+  if (matchIds.length) {
+    await prisma.vehicle.updateMany({ where: { id: { in: matchIds } }, data: { brand: toBrand, model: toModel } });
+  }
+
+  const images = await prisma.vehicleModelImage.findMany();
+  const ownImages = images.filter((i) => groupKey(i.brand, i.model) === fromKey);
+  const destBrand = normPart(toBrand);
+  const destModel = normPart(toModel);
+  let movedImages = 0;
+  let orphanedImages = 0;
+  for (const image of ownImages) {
+    const clash = images.some(
+      (i) => i.id !== image.id && i.brand === destBrand && i.model === destModel && i.color === image.color
+    );
+    if (clash) {
+      orphanedImages += 1;
+      continue;
+    }
+    await prisma.vehicleModelImage.update({
+      where: { id: image.id },
+      data: { brand: destBrand, model: destModel },
+    });
+    movedImages += 1;
+  }
+
+  res.json({ renamedVehicles: matchIds.length, movedImages, orphanedImages });
+});
+
+module.exports = {
+  listModelImages,
+  uploadModelImage,
+  generateModelImage,
+  deleteModelImage,
+  renameModelGroup,
+};

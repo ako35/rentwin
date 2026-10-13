@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Badge, Button, Spinner } from "react-bootstrap";
-import { BsImage, BsStars, BsTrash, BsUpload } from "react-icons/bs";
+import { Badge, Button, Form, Spinner } from "react-bootstrap";
+import { BsCheckLg, BsImage, BsPencil, BsStars, BsTrash, BsUpload, BsXLg } from "react-icons/bs";
 import { Loading } from "../../../../components";
 import { services } from "../../../../services";
 import { utils } from "../../../../utils";
@@ -81,6 +81,9 @@ const AdminVehicleModelImagesPage = () => {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState([]);
   const [busySlot, setBusySlot] = useState(null);
+  const [editingKey, setEditingKey] = useState(null);
+  const [editForm, setEditForm] = useState({ brand: "", model: "" });
+  const [renaming, setRenaming] = useState(false);
 
   const loadData = async () => {
     try {
@@ -143,6 +146,44 @@ const AdminVehicleModelImagesPage = () => {
       });
   };
 
+  // Bulk-fix a marka/model typo for a whole group at once — every vehicle in
+  // it, plus its own uploaded images, move to the corrected name.
+  const startEdit = (row) => {
+    setEditingKey(groupKey(row));
+    setEditForm({ brand: row.brand, model: row.model });
+  };
+  const cancelEdit = () => setEditingKey(null);
+
+  const submitEdit = async (row) => {
+    const toBrand = editForm.brand.trim();
+    const toModel = editForm.model.trim();
+    if (!toBrand || !toModel) {
+      utils.functions.swalToast(c("renameEmpty"), "error");
+      return;
+    }
+    if (toBrand === row.brand && toModel === row.model) {
+      setEditingKey(null);
+      return;
+    }
+    const result = await utils.functions.swalQuestion(
+      c("renameConfirmTitle"),
+      c("renameConfirmText", { n: row.vehicleCount, from: `${row.brand} ${row.model}`, to: `${toBrand} ${toModel}` })
+    );
+    if (!result.isConfirmed) return;
+
+    setRenaming(true);
+    try {
+      await services.vehicle.renameModelGroup({ fromBrand: row.brand, fromModel: row.model, toBrand, toModel });
+      utils.functions.swalToast(c("renameSuccess"), "success");
+      setEditingKey(null);
+      await loadData();
+    } catch (error) {
+      utils.functions.swalToast(error?.response?.data?.message || c("error"), "error");
+    } finally {
+      setRenaming(false);
+    }
+  };
+
   if (loading) return <Loading height={400} />;
 
   return (
@@ -159,7 +200,47 @@ const AdminVehicleModelImagesPage = () => {
           {rows.map((row) => (
             <article key={groupKey(row)} className="model-image-card">
               <div className="model-image-card__head">
-                <strong>{row.brand} {row.model}</strong>
+                {editingKey === groupKey(row) ? (
+                  <Form
+                    className="model-image-card__rename"
+                    onSubmit={(e) => { e.preventDefault(); submitEdit(row); }}
+                  >
+                    <Form.Control
+                      size="sm"
+                      autoFocus
+                      value={editForm.brand}
+                      onChange={(e) => setEditForm((f) => ({ ...f, brand: e.target.value }))}
+                      placeholder={c("renameBrandPlaceholder")}
+                      disabled={renaming}
+                    />
+                    <Form.Control
+                      size="sm"
+                      value={editForm.model}
+                      onChange={(e) => setEditForm((f) => ({ ...f, model: e.target.value }))}
+                      placeholder={c("renameModelPlaceholder")}
+                      disabled={renaming}
+                    />
+                    <Button type="submit" size="sm" variant="outline-primary" disabled={renaming} title={c("renameSave")}>
+                      {renaming ? <Spinner animation="border" size="sm" /> : <BsCheckLg />}
+                    </Button>
+                    <Button
+                      type="button" size="sm" variant="outline-secondary" disabled={renaming}
+                      onClick={cancelEdit} title={c("renameCancel")}
+                    >
+                      <BsXLg />
+                    </Button>
+                  </Form>
+                ) : (
+                  <div className="model-image-card__title">
+                    <strong>{row.brand} {row.model}</strong>
+                    <Button
+                      type="button" size="sm" variant="link" className="model-image-card__edit-btn"
+                      onClick={() => startEdit(row)} title={c("renameEdit")}
+                    >
+                      <BsPencil />
+                    </Button>
+                  </div>
+                )}
                 <Badge bg="light" text="dark">{c("vehicleCount", { n: row.vehicleCount })}</Badge>
               </div>
 

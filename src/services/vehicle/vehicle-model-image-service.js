@@ -38,3 +38,14 @@ export const deleteModelImage = async (id) => {
   );
   return response.data;
 };
+
+// Bulk-fixes a marka/model typo: every vehicle in the {fromBrand, fromModel}
+// group (and its uploaded images) move to {toBrand, toModel} in one go.
+export const renameModelGroup = async ({ fromBrand, fromModel, toBrand, toModel }) => {
+  const response = await axios.put(
+    `${API_URL}/car/admin/model-images/rename/auth`,
+    { fromBrand, fromModel, toBrand, toModel },
+    services.authHeader()
+  );
+  return response.data;
+};
