@@ -67,6 +67,14 @@ const Ek1Form = ({ data, p }) => {
         <div className="cprint-legal__infogrid">
           <Row label={e("f_start")} value={data.pickUpDate} />
           <Row label={e("f_deposit")} value={data.deposit ? `${data.deposit} ₺` : e("depositless")} />
+          <Row
+            label={e("f_damageDeductible")}
+            value={
+              data.damageDeductible
+                ? sz("damageDeductibleAmount", { v: data.damageDeductible })
+                : sz("damageDeductibleDefault")
+            }
+          />
           <Row label={e("f_payment")} value={e("paymentCash")} />
           <Row label={e("f_kmLimit")} value={kmLimit} />
           <Row label={e("f_kmOverage")} value={kmOverage} />

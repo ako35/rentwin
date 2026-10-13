@@ -29,6 +29,7 @@ const CONTRACT_NUMBER_FIELDS = [
   "oneWayFee",
   "returnExtraAmount",
   "deposit",
+  "damageDeductible",
   "kmLimit",
   "dailyKmLimit",
   "monthlyKmLimit",

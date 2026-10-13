@@ -17,7 +17,7 @@ export const EMPTY_CONTRACT = {
   pickUpKm: "", pickUpFuelEighths: "",
   returnKm: "", returnFuelEighths: "", returnedAt: "",
   rentalType: "DAILY", dailyPrice: "", monthlyPrice: "", returnExtraAmount: "",
-  deposit: "", kmLimit: "", unlimitedKm: false,
+  deposit: "", damageDeductible: "", kmLimit: "", unlimitedKm: false,
   dailyKmLimit: 300, monthlyKmLimit: "", kmOverageFee: "", fuelFeePerEighth: "",
   vatRate: 20,
   referenceUserId: "",
@@ -274,7 +274,8 @@ export const buildContractDto = (values) => ({
   // extrasTotal / oneWayFee are no longer written from this form — one-off
   // charges are itemised on the "Dönüş Ekstra" tab and roll up into
   // returnExtraAmount, which the backend derives and caches.
-  deposit: values.deposit, kmLimit: values.unlimitedKm ? "" : values.kmLimit,
+  deposit: values.deposit, damageDeductible: values.damageDeductible,
+  kmLimit: values.unlimitedKm ? "" : values.kmLimit,
   unlimitedKm: values.unlimitedKm,
   dailyKmLimit: values.unlimitedKm ? "" : values.dailyKmLimit,
   monthlyKmLimit: values.unlimitedKm ? "" : values.monthlyKmLimit,
@@ -309,7 +310,7 @@ export const contractToFormValues = (r) => ({
   dailyPrice: r.dailyPrice ?? "",
   monthlyPrice: r.monthlyPrice ?? "",
   returnExtraAmount: r.returnExtraAmount ?? "",
-  deposit: r.deposit ?? "", kmLimit: r.kmLimit ?? "",
+  deposit: r.deposit ?? "", damageDeductible: r.damageDeductible ?? "", kmLimit: r.kmLimit ?? "",
   unlimitedKm: r.unlimitedKm ?? true,
   dailyKmLimit: r.dailyKmLimit ?? "", monthlyKmLimit: r.monthlyKmLimit ?? "",
   kmOverageFee: r.kmOverageFee ?? "", fuelFeePerEighth: r.fuelFeePerEighth ?? "",

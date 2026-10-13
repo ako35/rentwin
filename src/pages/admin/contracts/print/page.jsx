@@ -139,6 +139,7 @@ const ContractPrintPage = () => {
       kmOverageFee: money(c.kmOverageFee),
       fuelFeePerEighth: money(c.fuelFeePerEighth),
       deposit: money(c.deposit),
+      damageDeductible: money(c.damageDeductible),
       dailyPrice: money(c.dailyPrice),
       drivers: (c.drivers || []).map((d) => ({
         name: `${d.firstName || ""} ${d.lastName || ""}`.trim() || "—",

@@ -470,6 +470,7 @@ model Contract {
   discountIsPercent Boolean             @default(false)
   discountDailyOnly Boolean             @default(true)
   deposit           Float?
+  damageDeductible  Float? // Kasko muafiyeti: kaza başına KİRACI'nın karşılayacağı tutar; boşsa basılı sözleşmenin Madde 4 metni varsayılan (15.000 ₺) ifadesini kullanır
   returnExtraAmount Float?
   kmLimit           Int? // legacy single total-km allowance; superseded by daily/monthly below
   dailyKmLimit      Int? // km allowance per rental day

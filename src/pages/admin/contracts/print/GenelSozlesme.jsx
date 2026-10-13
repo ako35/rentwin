@@ -51,6 +51,9 @@ const GenelSozlesme = ({ data, p }) => {
     ? s("feePerEighth", { v: data.fuelFeePerEighth })
     : s("notSet");
   const depositText = data.deposit ? s("depositAmount", { v: data.deposit }) : s("depositNone");
+  const damageDeductibleText = data.damageDeductible
+    ? s("damageDeductibleAmount", { v: data.damageDeductible })
+    : s("damageDeductibleDefault");
 
   const madde5Body =
     (data.kmUnlimited
@@ -58,6 +61,16 @@ const GenelSozlesme = ({ data, p }) => {
       : s("a5limited", { kmLimit: kmLimitText, kmOverageFee: kmOverageText })) +
     "\n" +
     s("a5fuel", { fuelFee: fuelFeeText });
+
+  // MADDE 4's first paragraph states the kasko deductible — a fixed sentence
+  // when the contract doesn't override it (the historical "15.000 ₺ unless
+  // EK-1 says otherwise" clause), else the contract's own amount.
+  const madde4Para1 = `${s("a4_1")} ${
+    data.damageDeductible
+      ? s("a4_damageSet", { v: data.damageDeductible })
+      : s("a4_damageDefault")
+  }`;
+  const madde4Body = [madde4Para1, s("a4_2"), s("a4_3"), s("a4_4")].join("\n");
 
   return (
     <div className="cprint-legal">
@@ -145,7 +158,9 @@ const GenelSozlesme = ({ data, p }) => {
             </tr>
             <tr>
               <th>{s("sumDeposit")}</th>
-              <td colSpan={3}>{depositText}</td>
+              <td>{depositText}</td>
+              <th>{s("sumDamageDeductible")}</th>
+              <td>{damageDeductibleText}</td>
             </tr>
           </tbody>
         </table>
@@ -157,7 +172,7 @@ const GenelSozlesme = ({ data, p }) => {
           <Article
             key={key}
             title={s(`${key}t`)}
-            body={key === "a5" ? madde5Body : s(key)}
+            body={key === "a4" ? madde4Body : key === "a5" ? madde5Body : s(key)}
           />
         ))}
         <p className="cprint-legal__closing">{s("closing", { date: data.contractDate })}</p>

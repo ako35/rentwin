@@ -155,6 +155,11 @@ const PricingBlock = ({ formik, pricing, billableDays, collected, money }) => {
             "Sözleşme Fiyat Varsayılanları" pre-fills new contracts; editable here
             per contract, and printed on the Genel Sözleşme (GenelSozlesme.jsx). */}
         <InputRow formik={formik} name="deposit" label={c("deposit")} suffix="" />
+        {/* Kasko muafiyeti — kaza başına KİRACI'nın karşılayacağı tutar. Deposit
+            gibi toplam tutara dahil değildir; boş bırakılırsa basılı sözleşmenin
+            Madde 4 metni varsayılan (15.000 ₺) ifadesini kullanır (bkz.
+            GenelSozlesme.jsx / Ek1Form.jsx). */}
+        <InputRow formik={formik} name="damageDeductible" label={c("damageDeductible")} suffix="" />
       </section>
 
       <div className="pricing__summary">
