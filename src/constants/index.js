@@ -143,9 +143,16 @@ const routes = {
   vehicles: "/vehicles",
 };
 
-const rentwinAddress = "KÜLTÜR MAH. 260 SK. NO: 3 E ALİAĞA / İZMİR";
+// 2026-10-14: corrected to the real registered/physical office — this used
+// to say "Kültür Mah. 260 Sk. No: 3 E" (a stale address), which mismatched
+// website.legalAddress below and the business's actual Google Business
+// Profile location, contributing to that profile being suspended for an
+// address-verification issue.
+const rentwinAddress = "ATATÜRK MAH. 356 SK. NO: 16/31 ALİAĞA / İZMİR";
 
-// Google Business Profile place (maps.app.goo.gl/r7VLYXKt7nJjXPuFA resolved).
+// TODO: update once re-geocoded for the corrected address above — these still
+// point at the old "Kültür Mah." location (originally resolved from the
+// Google Business Profile's maps.app.goo.gl/r7VLYXKt7nJjXPuFA short link).
 const rentwinGeo = { latitude: 38.8020867, longitude: 26.9715113 };
 const rentwinMapsUrl = "https://maps.google.com/?cid=3109543909970773042";
 
@@ -153,7 +160,7 @@ const website = {
   name: "Rentwin",
   url: "https://rentwin.com.tr",
   address: rentwinAddress,
-  streetAddress: "Kültür Mah. 260 Sk. No: 3 E",
+  streetAddress: "Atatürk Mah. 356 Sk. No: 16/31",
   addressLocality: "Aliağa",
   addressRegion: "İzmir",
   postalCode: "35800",
@@ -182,7 +189,9 @@ const website = {
 website.legalName =
   "MOVİLO ULAŞIM TEKNOLOJİ ANONİM ŞİRKETİ ve ŞAİR TURİZM OTO KİRALAMA NAKLİYAT İLETİŞİM İNŞAAT TAAHHÜT SANAYİ VE TİCARET LİMİTED ŞİRKETİ";
 website.legalNameShort = "MOVİLO ULAŞIM TEKNOLOJİ A.Ş. & ŞAİR TURİZM OTO KİRALAMA LTD. ŞTİ.";
-website.legalAddress = "Atatürk Mah. 356 Sk. No: 16/31 Aliağa / İzmir";
+// Same real-world office as website.address above (no longer a separately
+// hand-typed string) — the two had drifted apart before the 2026-10-14 fix.
+website.legalAddress = `${website.streetAddress}, ${website.addressLocality} / ${website.addressRegion}`;
 
 // The two companies that can individually issue a contract under the RENTWİN
 // trade name (Contract.lessorCompany) — same registered office address as

@@ -16,13 +16,16 @@ const business = {
   name: "Rentwin",
   email: "info@rentwin.com.tr",
   phoneE164: "+905073503135",
-  streetAddress: "Kültür Mah. 260 Sk. No: 3 E",
+  // 2026-10-14: corrected to match src/constants/index.js — was the stale
+  // "Kültür Mah. 260 Sk. No: 3 E" (see that file's comment for why).
+  streetAddress: "Atatürk Mah. 356 Sk. No: 16/31",
   addressLocality: "Aliağa",
   addressRegion: "İzmir",
   postalCode: "35800",
   addressCountry: "TR",
   mapUrl: MAPS_URL,
-  // Aliağa office coordinates — keep in sync with src/constants/index.js `website.geo`.
+  // TODO: re-geocode for the corrected streetAddress above — still the old
+  // "Kültür Mah." coordinates. Keep in sync with src/constants/index.js `website.geo`.
   geo: { latitude: 38.8020867, longitude: 26.9715113 },
   // Verified public profiles only — an unverifiable sameAs hurts rich results.
   sameAs: [MAPS_URL],
