@@ -16,7 +16,16 @@ const getClient = () => {
   if (client) return client;
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY tanımlı değil.");
-  client = new Anthropic({ apiKey });
+  // The SDK's own default (2) means a slow/overloaded call can retry twice,
+  // each with its own fresh 15s timeout below — worst case ~45-50s of
+  // wall-clock time for one admin click. Vercel's serverless function this
+  // runs in has a duration cap (10s on Hobby, 15s by default on Pro unless
+  // raised in vercel.json) that's likely shorter than that, so a retried
+  // call risks being killed by the platform before ever reaching claude.js's
+  // own error handling — the admin then sees a bare network failure instead
+  // of a useful message. One retry keeps some resilience to a single
+  // transient blip without compounding the timeout this badly.
+  client = new Anthropic({ apiKey, maxRetries: 1 });
   return client;
 };
 
