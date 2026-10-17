@@ -9,7 +9,14 @@ const prisma = require("./prisma");
 
 // Override with CLAUDE_VISION_MODEL without a redeploy if a better/cheaper
 // model is needed later.
-const MODEL = process.env.CLAUDE_VISION_MODEL || "claude-haiku-4-5";
+// 2026-10-17: was claude-haiku-4-5 — admin reported frequent wrong/missing
+// fields on dense official documents (vergi levhası, kimlik), consistent
+// with the several ad/soyad- and TC-no-field prompt patches already made
+// (see git log) — a capability ceiling on Haiku's cheapest vision tier, not
+// a prompt problem. Sonnet reads small, cluttered print far more reliably;
+// this is an admin-only tool at low volume, so the per-call cost increase
+// is negligible next to getting correct data.
+const MODEL = process.env.CLAUDE_VISION_MODEL || "claude-sonnet-5-5";
 
 let client = null;
 const getClient = () => {

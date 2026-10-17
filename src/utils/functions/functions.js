@@ -55,11 +55,15 @@ export const combineDateAndTime = (date, time) => {
 }
 
 // Shrink a photo before upload so it clears the serverless request-body cap
-// (Vercel ~4.5 MB) and the multer limit — a phone snap of a belge is 3-8 MB but
-// stays perfectly readable at ~2000 px / JPEG. PDFs and non-images pass through
-// untouched; if anything fails, or the result isn't smaller, the original is
-// returned so the upload still goes ahead.
-export const downscaleImage = (file, { maxEdge = 2000, quality = 0.82 } = {}) =>
+// (Vercel ~4.5 MB) and the multer limit — a phone snap of a belge is 3-8 MB.
+// 2026-10-17: raised from 2000px/0.82 — admins reported the AI frequently
+// misreading dense, small-print official documents (vergi levhası, kimlik);
+// keeping more pixels/less JPEG compression gives the model sharper small
+// text to work with. Callers' own `tooLarge` check still catches the rare
+// case this doesn't end up smaller than the 4 MB ceiling. PDFs and
+// non-images pass through untouched; if anything fails, or the result isn't
+// smaller, the original is returned so the upload still goes ahead.
+export const downscaleImage = (file, { maxEdge = 2600, quality = 0.88 } = {}) =>
     new Promise((resolve) => {
         if (!file || !file.type?.startsWith("image/")) return resolve(file);
         // Already small enough to send as-is — skip decoding it (and creating an
