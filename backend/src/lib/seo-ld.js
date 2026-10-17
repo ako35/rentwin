@@ -373,6 +373,174 @@ const renderCampaignsBody = (campaigns = [], locale = "tr") => {
   );
 };
 
+/* --------------------------------------- /vehicles/:id crawler body  */
+// Every other route's #root ships empty to a JS-less crawler (see the
+// ROOT_OPEN comment in modules/prerender/prerender.controller.js) — fine for
+// a bot that renders JS (modern Googlebot does, in a second pass), but a
+// pile of identically-empty bodies differing only by <head> tags is exactly
+// what makes near-duplicate-content heuristics fold distinct vehicle/location
+// pages into one another before that render pass ever happens. This renders
+// real text for the two page types that matter most for that (vehicle
+// detail, location detail) — mirrors src/components/common/vehicles/
+// details-panel/details-panel.jsx + src/pages/common/vehicles/details/page.jsx
+// and src/i18n/locales/{tr,en}/vehicles.json `details.*`. KEEP IN SYNC.
+
+const TRANSMISSION_LABELS = {
+  tr: { Manual: "Manuel", SemiAutomatic: "Yarı Otomatik", Automatic: "Otomatik" },
+  en: { Manual: "Manual", SemiAutomatic: "Semi-Automatic", Automatic: "Automatic" },
+};
+const FUEL_LABELS = {
+  tr: { Diesel: "Dizel", Gasoline: "Benzin", Hybrid: "Hibrit", Electricity: "Elektrik", LPG: "LPG", CNG: "CNG", Hydrogen: "Hidrojen" },
+  en: { Diesel: "Diesel", Gasoline: "Gasoline", Hybrid: "Hybrid", Electricity: "Electricity", LPG: "LPG", CNG: "CNG", Hydrogen: "Hydrogen" },
+};
+
+const VEHICLE_DETAIL_COPY = {
+  tr: {
+    highlightsTitle: "Öne Çıkan Özellikler",
+    modelLabel: "Model",
+    transmissionLabel: "Vites",
+    fuelLabel: "Yakıt Tipi",
+    relatedTitle: "Benzer Araçlar",
+    description: ({ brand, model, transmission, fuel }) =>
+      `${brand} ${model}, Rentwin filosunda ${transmission} vites ve ${fuel} yakıt seçeneğiyle hizmetinizde. Aliağa ve İzmir genelinde teslim alınabilen bu araç, bakımları tamamlanmış ve kullanıma hazır durumdadır.`,
+    descriptionWithYear: ({ year, brand, model, transmission, fuel }) =>
+      `${year} model ${brand} ${model}, Rentwin filosunda ${transmission} vites ve ${fuel} yakıt seçeneğiyle hizmetinizde. Aliağa ve İzmir genelinde teslim alınabilen bu araç, bakımları tamamlanmış ve kullanıma hazır durumdadır.`,
+  },
+  en: {
+    highlightsTitle: "Property Higlights",
+    modelLabel: "Model",
+    transmissionLabel: "Transmission",
+    fuelLabel: "Fuel Type",
+    relatedTitle: "Similar Vehicles",
+    description: ({ brand, model, transmission, fuel }) =>
+      `The ${brand} ${model} is part of the Rentwin fleet, available with ${transmission} transmission and ${fuel} fuel. Available for pickup across Aliağa and İzmir, this vehicle is fully serviced and ready to drive.`,
+    descriptionWithYear: ({ year, brand, model, transmission, fuel }) =>
+      `The ${year} ${brand} ${model} is part of the Rentwin fleet, available with ${transmission} transmission and ${fuel} fuel. Available for pickup across Aliağa and İzmir, this vehicle is fully serviced and ready to drive.`,
+  },
+};
+
+// vehicle: { name, brand, model, transmission, fuelType, modelYear } (raw
+// enum values, labeled here); related: [{ id, name }] — a few other
+// in-service vehicles to link to, same purpose as the frontend's "Benzer
+// Araçlar" section (internal link discovery for a crawler that never runs
+// the client-side fetch).
+const renderVehicleDetailBody = ({ vehicle, related = [] }, locale = "tr") => {
+  const copy = VEHICLE_DETAIL_COPY[locale];
+  const transmissionLabel = TRANSMISSION_LABELS[locale][vehicle.transmission] || vehicle.transmission || "";
+  const fuelLabel = FUEL_LABELS[locale][vehicle.fuelType] || vehicle.fuelType || "";
+  const descArgs = {
+    brand: vehicle.brand,
+    model: vehicle.model,
+    year: vehicle.modelYear,
+    transmission: transmissionLabel,
+    fuel: fuelLabel,
+  };
+  const description = vehicle.modelYear ? copy.descriptionWithYear(descArgs) : copy.description(descArgs);
+  const relatedList = related.length
+    ? `<h2>${htmlEsc(copy.relatedTitle)}</h2><ul>${related
+        .map(
+          (r) =>
+            `<li><a href="${htmlEsc(`${SITE_URL}${localizePath(`/vehicles/${r.id}`, locale)}`)}">${htmlEsc(r.name)}</a></li>`
+        )
+        .join("")}</ul>`
+    : "";
+  return (
+    `<main><h1>${htmlEsc(vehicle.name)}</h1>` +
+    `<p>${htmlEsc(description)}</p>` +
+    `<h2>${htmlEsc(copy.highlightsTitle)}</h2>` +
+    "<ul>" +
+    `<li>${htmlEsc(copy.modelLabel)}: ${htmlEsc(`${vehicle.brand} ${vehicle.model}`.trim())}</li>` +
+    `<li>${htmlEsc(copy.transmissionLabel)}: ${htmlEsc(transmissionLabel)}</li>` +
+    `<li>${htmlEsc(copy.fuelLabel)}: ${htmlEsc(fuelLabel)}</li>` +
+    "</ul>" +
+    relatedList +
+    "</main>"
+  );
+};
+
+/* ------------------------------------- /lokasyonlar/:slug crawler body  */
+// Mirrors src/pages/common/locations/details/page.jsx +
+// src/i18n/locales/{tr,en}/locations.json `detail.*`. KEEP IN SYNC.
+
+const LOCATIONS_COPY = {
+  tr: {
+    heading: (n) => `${n} Araç Kiralama`,
+    lead: (n) =>
+      `${n} bölgesinde araç mı kiralamak istiyorsunuz? Rentwin'in bakımlı filosuyla ${n} ve çevresinde şehir içi, iş ve tatil seyahatleriniz için doğru aracı kolayca bulabilirsiniz. Şeffaf fiyatlandırma, sorunsuz teslimat ve 7/24 destek.`,
+    whyTitle: (n) => `${n} için neden Rentwin?`,
+    why: (n) => [
+      "Bakımlı ve sigortalı geniş araç filosu",
+      "Ek ücret sürprizi olmayan şeffaf fiyatlandırma",
+      `${n} noktasından hızlı teslim alma ve bırakma`,
+      "Online rezervasyon ve esnek iptal koşulları",
+    ],
+    howTitle: (n) => `${n} lokasyonundan kiralama nasıl işler?`,
+    how: (n) => [
+      `Alış–bırakış tarih ve saatlerinizi seçip ${n} için müsait araçları listeleyin.`,
+      "Aracınızı ve ek hizmetleri (havalimanı karşılama, tek yön kiralama, ek sürücü) belirleyip rezervasyonu oluşturun.",
+      `${n} noktasında kimlik, ehliyet ve kart ile aracınızı teslim alın; depozito talep edilmez.`,
+    ],
+  },
+  en: {
+    heading: (n) => `Car Rental in ${n}`,
+    lead: (n) =>
+      `Looking to rent a car in ${n}? With Rentwin's well-kept fleet you can easily find the right vehicle for city, business, and holiday trips in and around ${n}. Transparent pricing, smooth handover, and 24/7 support.`,
+    whyTitle: (n) => `Why Rentwin for ${n}?`,
+    why: (n) => [
+      "A large fleet of maintained, insured vehicles",
+      "Transparent pricing with no surprise fees",
+      `Fast pick-up and drop-off at ${n}`,
+      "Online booking with flexible cancellation",
+    ],
+    howTitle: (n) => `How does renting from ${n} work?`,
+    how: (n) => [
+      `Choose your pick-up and drop-off dates and times to list the cars available at ${n}.`,
+      "Select your car and any extras (airport meet-and-greet, one-way rental, additional driver) and place the booking.",
+      `Pick up your car at ${n} with your ID, licence, and card — no deposit required.`,
+    ],
+  },
+};
+
+// Per-slug extra paragraphs — mirrors locations.json `detail.local.*`. Only
+// "aliaga" has one today; a slug with none simply gets no extra section.
+const LOCATION_LOCAL_COPY = {
+  tr: {
+    aliaga: {
+      title: "Aliağa'da araç kiralama hakkında",
+      paragraphs: [
+        "Aliağa; STAR Rafineri, Petkim petrokimya kompleksi ve liman tesisleriyle İzmir'in önemli sanayi merkezlerinden biri. İş seyahati, fabrika ziyaretleri veya vardiya değişimleri için araç kiralamak isteyenler Rentwin'in Atatürk Mahallesi'ndeki ofisinden dakikalar içinde araç teslim alabilir.",
+        "Aliağa merkezden Foça, Yeni Foça ve Çandarlı'daki tatil beldelerine kolayca ulaşabilir, İzmir Adnan Menderes Havalimanı'na teslim ve karşılama hizmetimizden yararlanabilirsiniz. Ofisimiz haftanın 7 günü açık: Pazartesi–Cuma 09:00–21:00, Cumartesi 09:00–19:00, Pazar 09:00–17:00.",
+      ],
+    },
+  },
+  en: {
+    aliaga: {
+      title: "Renting a car in Aliağa",
+      paragraphs: [
+        "Aliağa is one of İzmir's key industrial hubs, home to the STAR Refinery, the Petkim petrochemical complex and major port facilities. If you're here for business travel, plant visits or shift changes, you can pick up a car from our office in Atatürk Mahallesi in minutes.",
+        "From central Aliağa you can easily reach nearby coastal towns like Foça, Yeni Foça and Çandarlı, and we also offer airport delivery and meet-and-greet at İzmir Adnan Menderes Airport. Our office is open 7 days a week: Monday–Friday 09:00–21:00, Saturday 09:00–19:00, Sunday 09:00–17:00.",
+      ],
+    },
+  },
+};
+
+const renderLocationDetailBody = ({ locationName, slug }, locale = "tr") => {
+  const copy = LOCATIONS_COPY[locale];
+  const local = LOCATION_LOCAL_COPY[locale][slug];
+  const list = (items) => `<ul>${items.map((i) => `<li>${htmlEsc(i)}</li>`).join("")}</ul>`;
+  const steps = (items) => `<ol>${items.map((i) => `<li>${htmlEsc(i)}</li>`).join("")}</ol>`;
+  return (
+    `<main><h1>${htmlEsc(copy.heading(locationName))}</h1>` +
+    `<p>${htmlEsc(copy.lead(locationName))}</p>` +
+    `<h2>${htmlEsc(copy.whyTitle(locationName))}</h2>${list(copy.why(locationName))}` +
+    `<h2>${htmlEsc(copy.howTitle(locationName))}</h2>${steps(copy.how(locationName))}` +
+    (local
+      ? `<h2>${htmlEsc(local.title)}</h2>${local.paragraphs.map((p) => `<p>${htmlEsc(p)}</p>`).join("")}`
+      : "") +
+    "</main>"
+  );
+};
+
 // path → { title, description, jsonLd(locale) } per locale. Keyed by the
 // canonical (unprefixed/TR-shaped) path in both maps.
 const STATIC_META = {
@@ -543,7 +711,9 @@ const noindex = (head) => ({ ...head, canonical: null, robots: "noindex, nofollo
  * @param {string} args.path      normalized request path, no trailing slash ("/" or "/en" stay as-is) — may carry an "/en" locale prefix
  * @param {object} [args.vehicle] { id, name, brand, model, image, transmission, fuelType, modelYear, color } or null
  * @param {boolean} [args.vehicleMissing]  path was /vehicles/:id but no such vehicle
+ * @param {object[]} [args.related]        [{ id, name }] a few other in-service vehicles, for the vehicle detail body
  * @param {string} [args.locationName]     resolved Location.name for /lokasyonlar/:slug
+ * @param {string} [args.slug]             the raw /lokasyonlar/:slug param (keys LOCATION_LOCAL_COPY)
  * @param {boolean} [args.locationMissing] path was /lokasyonlar/:slug but no match
  * @param {object} [args.post]      { title, excerpt, image, publishedAt, updatedAt } for /blog/:slug
  * @param {boolean} [args.postMissing]  path was /blog/:slug but no such (published) post
@@ -559,7 +729,9 @@ const buildHead = ({
   path,
   vehicle,
   vehicleMissing,
+  related,
   locationName,
+  slug,
   locationMissing,
   post,
   postMissing,
@@ -601,6 +773,7 @@ const buildHead = ({
         ),
         vehicleLd({ ...vehicle, path: canonicalPath, locale }),
       ],
+      bodyHtml: renderVehicleDetailBody({ vehicle, related: related || [] }, locale),
     };
   }
 
@@ -632,6 +805,7 @@ const buildHead = ({
           locale
         ),
       ],
+      bodyHtml: renderLocationDetailBody({ locationName, slug }, locale),
     };
   }
 

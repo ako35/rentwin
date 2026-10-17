@@ -150,12 +150,20 @@ const resolvePath = async (reqPath) => {
   const canonicalPath = stripLocalePrefix(reqPath);
   const vehicleMatch = canonicalPath.match(/^\/vehicles\/([^/]+)$/);
   if (vehicleMatch) {
-    const [vehicle, modelImages] = await Promise.all([
+    const [vehicle, modelImages, relatedRows] = await Promise.all([
       prisma.vehicle.findUnique({
         where: { id: vehicleMatch[1] },
         include: { images: { orderBy: { createdAt: "asc" }, take: 1 } },
       }),
       loadModelImageMap(),
+      // A few other in-service vehicles for the body's "Benzer Araçlar" —
+      // mirrors the frontend's getVehiclesByPage(0, 5) default sort/size.
+      prisma.vehicle.findMany({
+        where: { outOfService: false, soldAt: null, passiveAt: null },
+        select: { id: true, brand: true, model: true },
+        orderBy: { model: "asc" },
+        take: 5,
+      }),
     ]);
     // Mirror the SPA's getVehicleById so a bot and a browser never see
     // different pages for the same URL: out-of-service still renders, but a
@@ -168,6 +176,10 @@ const resolvePath = async (reqPath) => {
     const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
     const brand = clean(vehicle.brand);
     const model = clean(vehicle.model);
+    const related = relatedRows
+      .filter((r) => r.id !== vehicle.id)
+      .slice(0, 4)
+      .map((r) => ({ id: r.id, name: `${clean(r.brand)} ${clean(r.model)}`.trim() }));
     return {
       path: reqPath,
       vehicle: {
@@ -180,6 +192,7 @@ const resolvePath = async (reqPath) => {
         modelYear: vehicle.modelYear,
         color: vehicle.color,
       },
+      related,
     };
   }
 
@@ -189,7 +202,7 @@ const resolvePath = async (reqPath) => {
     const locations = await prisma.location.findMany({ select: { name: true } });
     const match = locations.find((l) => slugify(l.name) === slug);
     if (!match) return { path: reqPath, locationMissing: true };
-    return { path: reqPath, locationName: match.name };
+    return { path: reqPath, locationName: match.name, slug };
   }
 
   const postMatch = canonicalPath.match(/^\/blog\/([^/]+)$/);
