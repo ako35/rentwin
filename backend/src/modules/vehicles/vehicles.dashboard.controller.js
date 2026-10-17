@@ -32,12 +32,16 @@ const getFleetStats = asyncHandler(async (req, res) => {
   // outOfService wins if a car somehow carries both flags — same precedence
   // getVehicleStatus uses for the single-vehicle badge.
   const passive = vehicles.filter((v) => !v.outOfService && v.passiveAt).length;
-  const inServiceIds = vehicles.filter((v) => !v.outOfService && !v.passiveAt).map((v) => v.id);
+  // A passive vehicle isn't part of the countable fleet at all (not just
+  // "unavailable right now") — excluded from `total` and everything derived
+  // from it below, the same way a sold vehicle already is via soldAt:null.
+  const countable = vehicles.filter((v) => v.outOfService || !v.passiveAt);
+  const inServiceIds = countable.filter((v) => !v.outOfService).map((v) => v.id);
   const rentedIds = await getRentedVehicleIds(inServiceIds);
 
-  const total = vehicles.length;
+  const total = countable.length;
   const rented = rentedIds.size;
-  const available = total - outOfService - passive - rented;
+  const available = total - outOfService - rented;
   const rate = (count) => (total > 0 ? Math.round((count / total) * 100) : 0);
   // A passive vehicle is temporarily pulled from the fleet by an admin
   // decision — its legal-deadline nags should stop too while it's parked,
@@ -53,7 +57,6 @@ const getFleetStats = asyncHandler(async (req, res) => {
     passive,
     occupancyRate: rate(rented),
     outOfServiceRate: rate(outOfService),
-    passiveRate: rate(passive),
     maintenanceDue,
     inspectionDue,
   });

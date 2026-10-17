@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaCar, FaCheckCircle, FaMapMarkerAlt, FaCog, FaPauseCircle } from "react-icons/fa";
+import { FaCar, FaCheckCircle, FaMapMarkerAlt, FaCog } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import { constants } from "../../../constants";
 import "./vehicle-stats-panel.scss";
@@ -25,7 +25,6 @@ const VehicleStatsPanel = ({ stats }) => {
       to: `${routes.adminVehicleStatusBoard}?tab=available`,
     },
     { label: t("vehicleStatsPanel.outOfService"), value: stats?.outOfService, icon: <FaCog />, color: "blue" },
-    { label: t("vehicleStatsPanel.passive"), value: stats?.passive, icon: <FaPauseCircle />, color: "purple" },
   ];
 
   return (
