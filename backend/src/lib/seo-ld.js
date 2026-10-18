@@ -541,6 +541,29 @@ const renderLocationDetailBody = ({ locationName, slug }, locale = "tr") => {
   );
 };
 
+/* ------------------------------------------ /blog/:slug crawler body  */
+// Mirrors src/pages/common/blog/details/page.jsx. Unlike the vehicle/
+// location bodies above, there's no copy to hand-duplicate here — post.content
+// is already the real, trusted, admin-authored HTML the frontend drops in
+// via dangerouslySetInnerHTML (see blog.controller.js's buildData comment),
+// so it goes straight through unescaped, same trust level.
+const BLOG_COPY = {
+  tr: { publishedOn: (date) => `${date} tarihinde yayınlandı` },
+  en: { publishedOn: (date) => `Published on ${date}` },
+};
+
+const renderBlogPostBody = ({ post }, locale = "tr") => {
+  const copy = BLOG_COPY[locale];
+  const dateLocale = locale === "en" ? "en-GB" : "tr-TR";
+  const dateStr = new Date(post.publishedAt).toLocaleDateString(dateLocale);
+  return (
+    `<main><h1>${htmlEsc(post.title)}</h1>` +
+    `<p>${htmlEsc(copy.publishedOn(dateStr))}</p>` +
+    (post.content || "") +
+    "</main>"
+  );
+};
+
 // path → { title, description, jsonLd(locale) } per locale. Keyed by the
 // canonical (unprefixed/TR-shaped) path in both maps.
 const STATIC_META = {
@@ -715,7 +738,7 @@ const noindex = (head) => ({ ...head, canonical: null, robots: "noindex, nofollo
  * @param {string} [args.locationName]     resolved Location.name for /lokasyonlar/:slug
  * @param {string} [args.slug]             the raw /lokasyonlar/:slug param (keys LOCATION_LOCAL_COPY)
  * @param {boolean} [args.locationMissing] path was /lokasyonlar/:slug but no match
- * @param {object} [args.post]      { title, excerpt, image, publishedAt, updatedAt } for /blog/:slug
+ * @param {object} [args.post]      { title, excerpt, content, image, publishedAt, updatedAt } for /blog/:slug
  * @param {boolean} [args.postMissing]  path was /blog/:slug but no such (published) post
  * @param {object[]} [args.vehicles]        [{ id, brand, model }] for the /vehicles list
  * @param {object[]} [args.locations]       [{ name }] for the /lokasyonlar list
@@ -835,6 +858,7 @@ const buildHead = ({
         ),
         articleLd({ ...post, path: canonicalPath, locale }),
       ],
+      bodyHtml: renderBlogPostBody({ post }, locale),
     };
   }
 

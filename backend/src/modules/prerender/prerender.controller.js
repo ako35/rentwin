@@ -217,6 +217,7 @@ const resolvePath = async (reqPath) => {
       post: {
         title: post.title,
         excerpt: post.excerpt,
+        content: post.content,
         image,
         publishedAt: post.publishedAt,
         updatedAt: post.updatedAt,
