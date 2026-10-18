@@ -75,13 +75,14 @@ const extractInspection = asyncHandler(async (req, res) => {
 });
 
 // Fiyat Listesi "Yapay Zeka ile Araştır": looks up the vehicle's own
-// brand/model/year, has Claude search the live web for competitor rental
-// prices, and hands the suggestion back — nothing is saved here, the admin
-// reviews it and applies it to the (still-manual) price-list save.
+// brand/model/year/transmission/fuelType, has Claude search the live web
+// for competitor rental prices of that exact spec, and hands the
+// suggestion back — nothing is saved here, the admin reviews it and
+// applies it to the (still-manual) price-list save.
 const researchPrice = asyncHandler(async (req, res) => {
   const vehicle = await prisma.vehicle.findUnique({
     where: { id: req.params.id },
-    select: { brand: true, model: true, modelYear: true },
+    select: { brand: true, model: true, modelYear: true, transmission: true, fuelType: true },
   });
   if (!vehicle) throw new HttpError(404, "Vehicle not found.");
 

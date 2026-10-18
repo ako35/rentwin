@@ -354,20 +354,42 @@ const extractInvoiceDocument = (buffer, mimeType) =>
 // is unchanged either way).
 const RESEARCH_MODEL = process.env.CLAUDE_RESEARCH_MODEL || "claude-haiku-5-5";
 
-const priceResearchPrompt = ({ brand, model, modelYear }) => {
+// Turkish labels for the prompt — mirrors the same enum -> TR mapping kept
+// locally in modules/vehicles/vehicles.controller.js and lib/seo-ld.js
+// (this codebase's established pattern: a small hand-duplicated map per
+// file that needs it, rather than a shared import).
+const TRANSMISSION_LABELS = { Manual: "manuel", SemiAutomatic: "yarı otomatik", Automatic: "otomatik" };
+const FUEL_LABELS = {
+  Diesel: "dizel",
+  Gasoline: "benzin",
+  Hybrid: "hibrit",
+  Electricity: "elektrik",
+  LPG: "lpg",
+  CNG: "cng",
+  Hydrogen: "hidrojen",
+};
+
+const priceResearchPrompt = ({ brand, model, modelYear, transmission, fuelType }) => {
   const name = `${brand} ${model}`.trim();
   const yearPart = modelYear ? ` (${modelYear} model)` : "";
+  const transmissionLabel = TRANSMISSION_LABELS[transmission] || null;
+  const fuelLabel = FUEL_LABELS[fuelType] || null;
+  const specParts = [transmissionLabel && `${transmissionLabel} vites`, fuelLabel && `${fuelLabel} yakıt`].filter(Boolean);
+  const specPart = specParts.length ? `, ${specParts.join(", ")}` : "";
+
   return `Rol: Türkiye araç kiralama piyasasını izleyen bir fiyat analistisin.
 
-Görev: "${name}"${yearPart} aracına (ya da hiçbir kiralama şirketi tam bu aracı listelemiyorsa aynı segment/sınıftaki çok benzer bir araca) ait GÜNCEL günlük ve aylık araç kiralama fiyatlarını, Türkiye'de faaliyet gösteren araç kiralama şirketlerinin (örn. Garenta, Budget, Avis, Enterprise, Lokalrent, Intercity Rent A Car, Locacar, Troya Rent A Car gibi ulusal/bölgesel kiralama firmaları) kendi web sitelerinde web araması yaparak araştır.
+Görev: "${name}"${yearPart}${specPart} özelliklerindeki araca ait GÜNCEL günlük ve aylık araç kiralama fiyatlarını, Türkiye'de faaliyet gösteren araç kiralama şirketlerinin (örn. Garenta, Budget, Avis, Enterprise, Lokalrent, Intercity Rent A Car, Locacar, Troya Rent A Car gibi ulusal/bölgesel kiralama firmaları) kendi web sitelerinde web araması yaparak araştır.
 
 Kurallar:
+- Öncelikle TAM OLARAK bu vites türü (${transmissionLabel || "belirtilmemiş"}) ve bu yakıt tipindeki (${fuelLabel || "belirtilmemiş"}) aracı ara — aynı model farklı vites/yakıt seçeneğiyle farklı fiyatlanır (örn. otomatik genelde manuelden, dizel genelde benzinden daha pahalı kiralanır), bunları birbirine karıştırma.
+- Tam eşleşen vites/yakıt kombinasyonunu hiçbir kaynakta bulamazsan, en yakın/benzer kombinasyonu kullanabilirsin ama bunu summary'de açıkça belirt (örn. "otomatik versiyon bulunamadı, manuel fiyatı kullanıldı").
 - En az 3, en fazla 6 farklı site/kaynaktan fiyat bulmaya çalış.
 - Bir sitede yalnızca günlük VEYA yalnızca aylık fiyat varsa, bulduğunu yaz; diğerini null bırak.
 - Hiçbir kaynak bulamazsan dailyPriceTRY ve monthlyPriceTRY alanlarını null yap, confidence="low" yap ve summary'de bunu açıkla — asla rakam uydurma.
 - dailyPriceTRY / monthlyPriceTRY (özet kısımdaki): bulduğun kaynakların basit ortalaması, KDV dahil TL, yalnızca sayı (ondalıksız, en yakın tam sayıya yuvarla).
-- confidence: bulduğun kaynak sayısı ve fiyatların birbirine yakınlığına göre "low" (0-1 kaynak ya da çok dağınık), "medium" (2-3 kaynak), "high" (4+ tutarlı kaynak) seç.
-- summary: Türkçe, 2-3 cümlelik kısa bir özet (kaç kaynak bulundu, fiyat aralığı nasıl, dikkat edilmesi gereken bir şey var mı).
+- confidence: bulduğun kaynak sayısı, fiyatların birbirine yakınlığına VE vites/yakıt eşleşmesinin tam olup olmadığına göre "low" (0-1 kaynak, çok dağınık, ya da vites/yakıt eşleşmiyor), "medium" (2-3 kaynak), "high" (4+ tutarlı kaynak, vites/yakıt tam eşleşiyor) seç.
+- summary: Türkçe, 2-3 cümlelik kısa bir özet (kaç kaynak bulundu, fiyat aralığı nasıl, vites/yakıt tam eşleşti mi, dikkat edilmesi gereken bir şey var mı).
 
 Araştırmayı bitirdikten sonra SADECE aşağıdaki JSON şemasında, başka hiçbir açıklama metni olmadan, bir \`\`\`json kod bloğu içinde yanıt ver:
 {
@@ -390,7 +412,7 @@ Araştırmayı bitirdikten sonra SADECE aşağıdaki JSON şemasında, başka hi
 // noticeably slower (multiple real web searches) and costs more per call
 // than a vision read, so it's deliberately opt-in (one button click per
 // vehicle), never automatic.
-const researchVehiclePrice = async ({ brand, model, modelYear }) => {
+const researchVehiclePrice = async ({ brand, model, modelYear, transmission, fuelType }) => {
   let response;
   try {
     response = await getClient().messages.create(
@@ -405,7 +427,7 @@ const researchVehiclePrice = async ({ brand, model, modelYear }) => {
             user_location: { type: "approximate", country: "TR", city: "Aliağa", region: "İzmir", timezone: "Europe/Istanbul" },
           },
         ],
-        messages: [{ role: "user", content: priceResearchPrompt({ brand, model, modelYear }) }],
+        messages: [{ role: "user", content: priceResearchPrompt({ brand, model, modelYear, transmission, fuelType }) }],
       },
       { timeout: 90000 }
     );
@@ -439,6 +461,9 @@ const researchVehiclePrice = async ({ brand, model, modelYear }) => {
   try {
     parsed = JSON.parse(raw);
   } catch {
+    // Rare: the model occasionally mangles the JSON block — log it for
+    // diagnosis, but the admin sees a plain "try again" toast either way.
+    console.error("[claude price research] unparsable JSON:", raw.slice(0, 2000));
     throw new Error("Yapay zeka araştırma sonucu geçersiz JSON döndürdü.");
   }
   return parsed;
