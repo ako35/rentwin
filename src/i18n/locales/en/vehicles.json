@@ -43,7 +43,8 @@
     "doors": "doors",
     "seats": "seats",
     "rentNow": "Rent Now",
-    "quoteHint": "Request a quote"
+    "quoteHint": "Request a quote",
+    "perDay": "/ day"
   },
   "details": {
     "pricePerHour": "${{price}} / hour",
@@ -55,6 +56,8 @@
     "transmission": "Transmission",
     "airConditioning": "Air Conditioning",
     "fuelType": "Fuel Type",
+    "dailyPrice": "Daily Price",
+    "monthlyPrice": "Monthly Price",
     "age": "Age",
     "yes": "Yes",
     "no": "No",

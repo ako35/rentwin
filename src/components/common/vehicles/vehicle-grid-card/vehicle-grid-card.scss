@@ -100,6 +100,12 @@
         color: v.$color-muted;
     }
 
+    &__price {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: v.$color2;
+    }
+
     // Embedded, rounded action — deep green so it holds contrast on white,
     // with a standing shadow so it reads as raised inside the card.
     &__cta {

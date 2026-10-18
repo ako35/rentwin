@@ -137,6 +137,7 @@ export const vehicleLd = ({
   fuelType,
   modelYear,
   color,
+  dailyPrice,
   path,
 }) => ({
   "@context": "https://schema.org",
@@ -155,6 +156,7 @@ export const vehicleLd = ({
     "@type": "Offer",
     availability: "https://schema.org/InStock",
     priceCurrency: "TRY",
+    ...(dailyPrice ? { price: dailyPrice } : {}),
     businessFunction: "https://schema.org/LeaseOut",
     seller: { "@id": `${SITE_URL}/#organization` },
   },

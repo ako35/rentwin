@@ -1,6 +1,6 @@
 import { GiGearStickPattern } from "react-icons/gi";
 import { FaCar } from "react-icons/fa";
-import { BsFuelPump } from "react-icons/bs";
+import { BsFuelPump, BsTag, BsCashStack } from "react-icons/bs";
 import "./details-panel.scss";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -35,6 +35,22 @@ const DetailsPanel = () => {
       info: tCommon(`options.fuelTypes.${vehicle?.fuelType}`),
     },
   ];
+  if (vehicle?.dailyPrice) {
+    carDetails.push({
+      id: 4,
+      title: t("details.dailyPrice"),
+      icon: <BsTag />,
+      info: `${Number(vehicle.dailyPrice).toLocaleString("tr-TR")} TL`,
+    });
+  }
+  if (vehicle?.monthlyPrice) {
+    carDetails.push({
+      id: 5,
+      title: t("details.monthlyPrice"),
+      icon: <BsCashStack />,
+      info: `${Number(vehicle.monthlyPrice).toLocaleString("tr-TR")} TL`,
+    });
+  }
 
   // A per-vehicle sentence (brand/model/year/transmission/fuel combination
   // is rarely identical across the fleet) so each detail page carries some

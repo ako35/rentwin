@@ -129,7 +129,7 @@ const itemListLd = ({ name, itemListElement }) => ({
   itemListElement,
 });
 
-const vehicleLd = ({ name, brand, model, image, transmission, fuelType, modelYear, color, path, locale = "tr" }) => ({
+const vehicleLd = ({ name, brand, model, image, transmission, fuelType, modelYear, color, dailyPrice, path, locale = "tr" }) => ({
   "@context": "https://schema.org",
   "@type": "Car",
   name,
@@ -146,6 +146,7 @@ const vehicleLd = ({ name, brand, model, image, transmission, fuelType, modelYea
     "@type": "Offer",
     availability: "https://schema.org/InStock",
     priceCurrency: "TRY",
+    ...(dailyPrice ? { price: dailyPrice } : {}),
     businessFunction: "https://schema.org/LeaseOut",
     seller: { "@id": ORG_ID },
   },
@@ -400,6 +401,8 @@ const VEHICLE_DETAIL_COPY = {
     modelLabel: "Model",
     transmissionLabel: "Vites",
     fuelLabel: "Yakıt Tipi",
+    dailyPriceLabel: "Günlük Fiyat",
+    monthlyPriceLabel: "Aylık Fiyat",
     relatedTitle: "Benzer Araçlar",
     description: ({ brand, model, transmission, fuel }) =>
       `${brand} ${model}, Rentwin filosunda ${transmission} vites ve ${fuel} yakıt seçeneğiyle hizmetinizde. Aliağa ve İzmir genelinde teslim alınabilen bu araç, bakımları tamamlanmış ve kullanıma hazır durumdadır.`,
@@ -411,6 +414,8 @@ const VEHICLE_DETAIL_COPY = {
     modelLabel: "Model",
     transmissionLabel: "Transmission",
     fuelLabel: "Fuel Type",
+    dailyPriceLabel: "Daily Price",
+    monthlyPriceLabel: "Monthly Price",
     relatedTitle: "Similar Vehicles",
     description: ({ brand, model, transmission, fuel }) =>
       `The ${brand} ${model} is part of the Rentwin fleet, available with ${transmission} transmission and ${fuel} fuel. Available for pickup across Aliağa and İzmir, this vehicle is fully serviced and ready to drive.`,
@@ -444,6 +449,14 @@ const renderVehicleDetailBody = ({ vehicle, related = [] }, locale = "tr") => {
         )
         .join("")}</ul>`
     : "";
+  const priceItems =
+    (vehicle.dailyPrice
+      ? `<li>${htmlEsc(copy.dailyPriceLabel)}: ${htmlEsc(`${Number(vehicle.dailyPrice).toLocaleString("tr-TR")} TL`)}</li>`
+      : "") +
+    (vehicle.monthlyPrice
+      ? `<li>${htmlEsc(copy.monthlyPriceLabel)}: ${htmlEsc(`${Number(vehicle.monthlyPrice).toLocaleString("tr-TR")} TL`)}</li>`
+      : "");
+
   return (
     `<main><h1>${htmlEsc(vehicle.name)}</h1>` +
     `<p>${htmlEsc(description)}</p>` +
@@ -452,6 +465,7 @@ const renderVehicleDetailBody = ({ vehicle, related = [] }, locale = "tr") => {
     `<li>${htmlEsc(copy.modelLabel)}: ${htmlEsc(`${vehicle.brand} ${vehicle.model}`.trim())}</li>` +
     `<li>${htmlEsc(copy.transmissionLabel)}: ${htmlEsc(transmissionLabel)}</li>` +
     `<li>${htmlEsc(copy.fuelLabel)}: ${htmlEsc(fuelLabel)}</li>` +
+    priceItems +
     "</ul>" +
     relatedList +
     "</main>"

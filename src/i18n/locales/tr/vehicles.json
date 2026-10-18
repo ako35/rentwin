@@ -43,7 +43,8 @@
     "doors": "kapı",
     "seats": "koltuk",
     "rentNow": "Şimdi Kirala",
-    "quoteHint": "Fiyat için teklif alın"
+    "quoteHint": "Fiyat için teklif alın",
+    "perDay": "/ gün"
   },
   "details": {
     "pricePerHour": "{{price}} $ / saat",
@@ -55,6 +56,8 @@
     "transmission": "Vites",
     "airConditioning": "Klima",
     "fuelType": "Yakıt Tipi",
+    "dailyPrice": "Günlük Fiyat",
+    "monthlyPrice": "Aylık Fiyat",
     "age": "Yaş",
     "yes": "Evet",
     "no": "Hayır",

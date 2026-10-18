@@ -59,7 +59,18 @@ const VehicleGridCard = ({ listView, ...props }) => {
         </ul>
 
         <div className="vehicle-grid-card__foot">
-          <span className="vehicle-grid-card__quote">{t("card.quoteHint")}</span>
+          <span className="vehicle-grid-card__quote">
+            {props.dailyPrice ? (
+              <>
+                <strong className="vehicle-grid-card__price">
+                  {Number(props.dailyPrice).toLocaleString("tr-TR")} TL
+                </strong>{" "}
+                {t("card.perDay")}
+              </>
+            ) : (
+              t("card.quoteHint")
+            )}
+          </span>
           <span className="vehicle-grid-card__cta">
             {t("card.rentNow")} <BsArrowRight />
           </span>

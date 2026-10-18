@@ -129,6 +129,7 @@ const VehicleDetailsPage = () => {
               fuelType: vehicle.fuelType,
               modelYear: vehicle.modelYear,
               color: vehicle.color,
+              dailyPrice: vehicle.dailyPrice,
               path: `/vehicles/${vehicleId}`,
             })}
           />

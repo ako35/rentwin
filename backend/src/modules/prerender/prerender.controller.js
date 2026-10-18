@@ -191,6 +191,8 @@ const resolvePath = async (reqPath) => {
         fuelType: vehicle.fuelType,
         modelYear: vehicle.modelYear,
         color: vehicle.color,
+        dailyPrice: vehicle.dailyPrice,
+        monthlyPrice: vehicle.monthlyPrice,
       },
       related,
     };
