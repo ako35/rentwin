@@ -1289,6 +1289,7 @@
     "vehicleModelImages": "Model Images & Info",
     "vehicleStatusBoard": "Vehicle Status Board",
     "extras": "Extras",
+    "priceList": "Price List",
     "reservations": "Reservation",
     "contracts": "Contract",
     "addReservation": "New Reservation",
@@ -1494,6 +1495,21 @@
       "deleteError": "There was an error while deleting the extra.",
       "deleteConfirm": "Are you sure you want to delete this extra?",
       "deleteConfirmText": "You won't be able to revert this action!"
+    }
+  },
+  "priceList": {
+    "pageTitle": "Price List",
+    "intro": "Edit the daily and monthly price for each vehicle here.",
+    "vehicle": "Vehicle",
+    "plate": "Plate",
+    "dailyPrice": "Daily Price (TL)",
+    "monthlyPrice": "Monthly Price (TL)",
+    "actions": "Action",
+    "save": "Save",
+    "empty": "No vehicles on record",
+    "toasts": {
+      "saveSuccess": "Price updated.",
+      "saveError": "There was an error while updating the price."
     }
   },
   "branches": {

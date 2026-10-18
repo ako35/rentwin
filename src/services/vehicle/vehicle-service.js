@@ -112,6 +112,10 @@ export const getVehiclesByPageAdmin = async (
   const response = await axios.get(`${API_URL}/car/admin/pages/auth?${params}`, services.authHeader());
   return response.data;
 };
+export const getPriceList = async () => {
+  const response = await axios.get(`${API_URL}/car/admin/price-list/auth`, services.authHeader());
+  return response.data;
+};
 export const getFleetStats = async (branchId) => {
   const response = await axios.get(
     `${API_URL}/car/admin/fleet-stats/auth${branchId ? `?branchId=${branchId}` : ""}`,

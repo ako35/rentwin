@@ -1,0 +1,21 @@
+@use '../../../styles/variables' as v;
+
+.admin-price-list-page {
+    &__toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+
+        h2 {
+            font-size: 1.3rem;
+            color: v.$color1;
+            margin: 0;
+        }
+    }
+
+    &__intro {
+        color: #6b7280;
+        margin-bottom: 1rem;
+    }
+}

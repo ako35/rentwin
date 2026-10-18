@@ -263,6 +263,27 @@ const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
   );
 });
 
+// Fiyat Listesi admin page: every live-fleet vehicle (sold ones excluded, same
+// as the rest of the admin fleet) with just the columns that page needs.
+// Price edits themselves go through the existing updateVehicle endpoint
+// (PUT /car/admin/auth?id=..., body { dailyPrice, monthlyPrice }).
+const getPriceList = asyncHandler(async (req, res) => {
+  const vehicles = await prisma.vehicle.findMany({
+    where: { soldAt: null },
+    select: {
+      id: true,
+      brand: true,
+      model: true,
+      licensePlate: true,
+      modelYear: true,
+      dailyPrice: true,
+      monthlyPrice: true,
+    },
+    orderBy: [{ brand: "asc" }, { model: "asc" }],
+  });
+  res.json(vehicles);
+});
+
 const addVehicle = asyncHandler(async (req, res) => {
   let vehicle;
   try {
@@ -422,6 +443,7 @@ module.exports = {
   getAllVehicles,
   getVehiclesByPage,
   getVehiclesByPageAdmin,
+  getPriceList,
   addVehicle,
   updateVehicle,
   markVehicleSold,

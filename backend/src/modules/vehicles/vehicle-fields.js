@@ -21,6 +21,8 @@ const VEHICLE_FIELDS = [
   "registrationSerialNo",
   "registrationDate",
   "color",
+  "dailyPrice",
+  "monthlyPrice",
   "notes",
 ];
 
@@ -32,6 +34,8 @@ const NULLABLE_NUMBER_FIELDS = [
   "currentFuelEighths",
   "maintenanceIntervalKm",
   "nextMaintenanceKm",
+  "dailyPrice",
+  "monthlyPrice",
 ];
 // Optional string/enum columns: an empty-string form value must land as null.
 const NULLABLE_STRING_FIELDS = [

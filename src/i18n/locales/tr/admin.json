@@ -1289,6 +1289,7 @@
     "vehicleModelImages": "Model Görselleri ve Bilgileri",
     "vehicleStatusBoard": "Araç Durum Tablosu",
     "extras": "Ekstralar",
+    "priceList": "Fiyat Listesi",
     "reservations": "Rezervasyon",
     "contracts": "Kontrat",
     "addReservation": "Yeni Rezervasyon",
@@ -1494,6 +1495,21 @@
       "deleteError": "Ekstra silinirken bir hata oluştu.",
       "deleteConfirm": "Bu ekstrayı silmek istediğinizden emin misiniz?",
       "deleteConfirmText": "Bu işlemi geri alamazsınız!"
+    }
+  },
+  "priceList": {
+    "pageTitle": "Fiyat Listesi",
+    "intro": "Her araç için günlük ve aylık fiyatı buradan düzenleyebilirsiniz.",
+    "vehicle": "Araç",
+    "plate": "Plaka",
+    "dailyPrice": "Günlük Fiyat (TL)",
+    "monthlyPrice": "Aylık Fiyat (TL)",
+    "actions": "İşlem",
+    "save": "Kaydet",
+    "empty": "Kayıtlı araç yok",
+    "toasts": {
+      "saveSuccess": "Fiyat güncellendi.",
+      "saveError": "Fiyat güncellenirken bir hata oluştu."
     }
   },
   "branches": {

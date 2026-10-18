@@ -103,7 +103,13 @@ const AdminTopNav = () => {
                 <BsListUl className="admin-top-nav__item-icon" /> {t("topNav.customerList")}
               </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown title={t("topNav.price")} active={pathname.startsWith(routes.adminExtras)}>
+            <NavDropdown
+              title={t("topNav.price")}
+              active={pathname.startsWith(routes.adminExtras) || pathname.startsWith(routes.adminPriceList)}
+            >
+              <NavDropdown.Item as={Link} to={routes.adminPriceList}>
+                <BsListUl className="admin-top-nav__item-icon" /> {t("topNav.priceList")}
+              </NavDropdown.Item>
               <NavDropdown.Item as={Link} to={routes.adminExtras}>
                 <BsTag className="admin-top-nav__item-icon" /> {t("topNav.extras")}
               </NavDropdown.Item>

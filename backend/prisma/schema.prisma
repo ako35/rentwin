@@ -195,6 +195,8 @@ model Vehicle {
   registrationSerialNo String?
   registrationDate     DateTime?
   color                String?
+  dailyPrice           Float? // Fiyat Listesi (admin/price-list) — list price per rental day
+  monthlyPrice         Float? // Fiyat Listesi (admin/price-list) — list price per rental month
   notes                String?
   images               VehicleImage[]
   reservations         Reservation[]

@@ -8,6 +8,7 @@ const {
   getAllVehicles,
   getVehiclesByPage,
   getVehiclesByPageAdmin,
+  getPriceList,
   addVehicle,
   updateVehicle,
   markVehicleSold,
@@ -34,6 +35,7 @@ router.get("/car/visitors/pages", getVehiclesByPage);
 router.get("/car/visitors/:id", getVehicleById);
 
 router.get("/car/admin/pages/auth", authenticate, requireAdmin, getVehiclesByPageAdmin);
+router.get("/car/admin/price-list/auth", authenticate, requireAdmin, getPriceList);
 router.get("/car/admin/fleet-stats/auth", authenticate, requireAdmin, getFleetStats);
 router.get("/car/admin/expiry-alerts/auth", authenticate, requireAdmin, getExpiryAlerts);
 router.get("/car/admin/fleet-status-board/auth", authenticate, requireAdmin, getFleetStatusBoard);
