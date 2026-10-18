@@ -67,7 +67,10 @@
     "pickUpTimeRequired": "Select a pick-up time",
     "dropOffDateRequired": "Select a drop-off date",
     "dropOffTimeRequired": "Select a drop-off time",
-    "dropOffAfterPickUp": "Drop-off must be after pick-up"
+    "dropOffAfterPickUp": "Drop-off must be after pick-up",
+    "monthsRequired": "Enter the number of months",
+    "monthsMin": "Select at least 1 month",
+    "monthsMax": "You can select up to 36 months"
   },
   "booking": {
     "pickUpLocationRequired": "Enter your pick up location",

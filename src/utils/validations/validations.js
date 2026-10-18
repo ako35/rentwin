@@ -92,6 +92,7 @@ export const reviewFormValidationSchema = Yup.object({
 const tSearch = (key) => () => i18n.t(`reservationSearch.${key}`, { ns: "validation" });
 
 export const reservationSearchValidationSchema = Yup.object({
+    rentalType: Yup.string().oneOf(["DAILY", "MONTHLY"]),
     pickUpLocation: Yup.string().trim().required(tSearch("pickUpLocationRequired")),
     differentDropOff: Yup.boolean(),
     dropOffLocation: Yup.string().trim().when("differentDropOff", {
@@ -101,14 +102,27 @@ export const reservationSearchValidationSchema = Yup.object({
     }),
     pickUpDate: Yup.string().required(tSearch("pickUpDateRequired")),
     pickUpTime: Yup.string().required(tSearch("pickUpTimeRequired")),
-    dropOffDate: Yup.string().required(tSearch("dropOffDateRequired")),
-    dropOffTime: Yup.string()
-        .required(tSearch("dropOffTimeRequired"))
-        .test("after-pickup", tSearch("dropOffAfterPickUp"), function () {
-            const { pickUpDate, pickUpTime, dropOffDate, dropOffTime } = this.parent;
-            if (!pickUpDate || !pickUpTime || !dropOffDate || !dropOffTime) return true;
-            return new Date(`${dropOffDate}T${dropOffTime}`) > new Date(`${pickUpDate}T${pickUpTime}`);
-        }),
+    // Drop-off date/time only apply to the DAILY tab — MONTHLY uses `months` below instead.
+    dropOffDate: Yup.string().when("rentalType", {
+        is: (v) => v !== "MONTHLY",
+        then: (s) => s.required(tSearch("dropOffDateRequired")),
+        otherwise: (s) => s.notRequired(),
+    }),
+    dropOffTime: Yup.string().when("rentalType", {
+        is: (v) => v !== "MONTHLY",
+        then: (s) =>
+            s.required(tSearch("dropOffTimeRequired")).test("after-pickup", tSearch("dropOffAfterPickUp"), function () {
+                const { pickUpDate, pickUpTime, dropOffDate, dropOffTime } = this.parent;
+                if (!pickUpDate || !pickUpTime || !dropOffDate || !dropOffTime) return true;
+                return new Date(`${dropOffDate}T${dropOffTime}`) > new Date(`${pickUpDate}T${pickUpTime}`);
+            }),
+        otherwise: (s) => s.notRequired(),
+    }),
+    months: Yup.number().when("rentalType", {
+        is: "MONTHLY",
+        then: (s) => s.min(1, tSearch("monthsMin")).max(36, tSearch("monthsMax")).required(tSearch("monthsRequired")),
+        otherwise: (s) => s.notRequired(),
+    }),
 });
 
 // BOOKING FORM

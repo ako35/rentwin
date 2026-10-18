@@ -15,10 +15,12 @@ const API_URL = import.meta.env.VITE_APP_API_URL;
 // `listView` (only passed from the /araclar catalogue, one-result-per-row
 // layout) switches the card to image-left/details-right above 640px — the
 // homepage rail keeps the plain stacked card either way.
-const VehicleGridCard = ({ listView, ...props }) => {
+const VehicleGridCard = ({ listView, rentalType, ...props }) => {
   const { t } = useTranslation("vehicles");
   const { t: tCommon } = useTranslation("common");
   const name = [props.brand, props.model].filter(Boolean).join(" ");
+  const isMonthly = rentalType === "MONTHLY";
+  const price = isMonthly ? props.monthlyPrice : props.dailyPrice;
 
   const specs = [
     { icon: <GiGearStick />, label: tCommon(`options.transmissionTypes.${props.transmission}`) },
@@ -60,12 +62,12 @@ const VehicleGridCard = ({ listView, ...props }) => {
 
         <div className="vehicle-grid-card__foot">
           <span className="vehicle-grid-card__quote">
-            {props.dailyPrice ? (
+            {price ? (
               <>
                 <strong className="vehicle-grid-card__price">
-                  {Number(props.dailyPrice).toLocaleString("tr-TR")} TL
+                  {Number(price).toLocaleString("tr-TR")} TL
                 </strong>{" "}
-                {t("card.perDay")}
+                {isMonthly ? t("card.plusVatPerMonth") : t("card.perDay")}
               </>
             ) : (
               t("card.quoteHint")

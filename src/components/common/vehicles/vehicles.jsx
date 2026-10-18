@@ -147,10 +147,12 @@ const Vehicles = () => {
                 : ""}
             </span>
             <span className="vehicles__search-summary-range">
-              {t("searchSummary.range", {
-                pickUp: fmt(searchCriteria.pickUpDate, searchCriteria.pickUpTime),
-                dropOff: fmt(searchCriteria.dropOffDate, searchCriteria.dropOffTime),
-              })}
+              {searchCriteria.rentalType === "MONTHLY"
+                ? t("searchSummary.monthsRange", { months: searchCriteria.months || 1 })
+                : t("searchSummary.range", {
+                    pickUp: fmt(searchCriteria.pickUpDate, searchCriteria.pickUpTime),
+                    dropOff: fmt(searchCriteria.dropOffDate, searchCriteria.dropOffTime),
+                  })}
             </span>
           </div>
           <Button variant="outline-secondary" size="sm" onClick={() => dispatch(clearSearchCriteria())}>
@@ -192,7 +194,7 @@ const Vehicles = () => {
             ) : (
               <div className="vehicles__grid">
                 {pagedVehicles.map((item) => (
-                  <VehicleGridCard key={item.id} {...item} listView />
+                  <VehicleGridCard key={item.id} {...item} listView rentalType={searchCriteria?.rentalType} />
                 ))}
               </div>
             )}

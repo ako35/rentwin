@@ -19,6 +19,7 @@
   "searchSummary": {
     "title": "Arama kriterlerin",
     "range": "{{pickUp}} → {{dropOff}}",
+    "monthsRange": "{{months}} aylık kiralama",
     "clear": "Temizle",
     "hint": "Bir araç seç, rezervasyon formu bu bilgilerle dolacak.",
     "noResults": "Seçtiğiniz tarih aralığında müsait araç bulunamadı.",
@@ -44,7 +45,8 @@
     "seats": "koltuk",
     "rentNow": "Şimdi Kirala",
     "quoteHint": "Fiyat için teklif alın",
-    "perDay": "/ gün"
+    "perDay": "/ gün",
+    "plusVatPerMonth": "+ KDV / ay"
   },
   "details": {
     "pricePerHour": "{{price}} $ / saat",
@@ -58,6 +60,7 @@
     "fuelType": "Yakıt Tipi",
     "dailyPrice": "Günlük Fiyat",
     "monthlyPrice": "Aylık Fiyat",
+    "plusVat": "+ KDV",
     "age": "Yaş",
     "yes": "Evet",
     "no": "Hayır",

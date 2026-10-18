@@ -41,6 +41,7 @@ export const reviewFormInitialValues = {
 
 // HOMEPAGE RESERVATION SEARCH
 export const reservationSearchInitialValues = () => ({
+    rentalType: "DAILY", // "DAILY" | "MONTHLY" — picks which tab/fields render
     pickUpLocation: "Aliağa",
     dropOffLocation: "Aliağa",
     differentDropOff: false,
@@ -48,6 +49,7 @@ export const reservationSearchInitialValues = () => ({
     pickUpTime: "10:00",
     dropOffDate: moment().add(3, "days").format("YYYY-MM-DD"),
     dropOffTime: "10:00",
+    months: 1, // MONTHLY only
 });
 
 // BOOKING FORM

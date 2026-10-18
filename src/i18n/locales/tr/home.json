@@ -4,6 +4,8 @@
     "description": "Rentwin ile Aliağa ve İzmir'de bakımlı filodan uygun fiyatlı araç kiralayın. Ek ücret sürprizi yok, sorunsuz teslimat, dakikalar içinde online rezervasyon."
   },
   "reservationSearch": {
+    "dailyTab": "Günlük Araç Kiralama",
+    "monthlyTab": "Aylık Araç Kiralama",
     "pickUpLocationLabel": "Alış Yeri",
     "pickUpLocationPlaceholder": "Lokasyon seçin",
     "dropOffLocationLabel": "Bırakış Yeri",
@@ -12,6 +14,7 @@
     "pickUpTime": "Alış Saati",
     "dropOffDate": "Bırakış Tarihi",
     "dropOffTime": "Bırakış Saati",
+    "monthsLabel": "Ay",
     "differentDropOff": "Farklı bir yerde bırakmak istiyorum",
     "submit": "Araç Ara"
   },

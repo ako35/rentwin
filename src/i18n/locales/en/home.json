@@ -4,6 +4,8 @@
     "description": "Rent a well-maintained car in Aliağa and İzmir with Rentwin. No hidden fees, smooth handover, book online in minutes."
   },
   "reservationSearch": {
+    "dailyTab": "Daily Car Rental",
+    "monthlyTab": "Monthly Car Rental",
     "pickUpLocationLabel": "Pick-up Location",
     "pickUpLocationPlaceholder": "Select location",
     "dropOffLocationLabel": "Drop-off Location",
@@ -12,6 +14,7 @@
     "pickUpTime": "Pick-up Time",
     "dropOffDate": "Drop-off Date",
     "dropOffTime": "Drop-off Time",
+    "monthsLabel": "Months",
     "differentDropOff": "Return to a different location",
     "submit": "Search"
   },

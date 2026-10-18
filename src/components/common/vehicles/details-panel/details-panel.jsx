@@ -48,7 +48,7 @@ const DetailsPanel = () => {
       id: 5,
       title: t("details.monthlyPrice"),
       icon: <BsCashStack />,
-      info: `${Number(vehicle.monthlyPrice).toLocaleString("tr-TR")} TL`,
+      info: `${Number(vehicle.monthlyPrice).toLocaleString("tr-TR")} TL ${t("details.plusVat")}`,
     });
   }
 

@@ -403,6 +403,7 @@ const VEHICLE_DETAIL_COPY = {
     fuelLabel: "Yakıt Tipi",
     dailyPriceLabel: "Günlük Fiyat",
     monthlyPriceLabel: "Aylık Fiyat",
+    vatSuffix: "+ KDV",
     relatedTitle: "Benzer Araçlar",
     description: ({ brand, model, transmission, fuel }) =>
       `${brand} ${model}, Rentwin filosunda ${transmission} vites ve ${fuel} yakıt seçeneğiyle hizmetinizde. Aliağa ve İzmir genelinde teslim alınabilen bu araç, bakımları tamamlanmış ve kullanıma hazır durumdadır.`,
@@ -416,6 +417,7 @@ const VEHICLE_DETAIL_COPY = {
     fuelLabel: "Fuel Type",
     dailyPriceLabel: "Daily Price",
     monthlyPriceLabel: "Monthly Price",
+    vatSuffix: "+ VAT",
     relatedTitle: "Similar Vehicles",
     description: ({ brand, model, transmission, fuel }) =>
       `The ${brand} ${model} is part of the Rentwin fleet, available with ${transmission} transmission and ${fuel} fuel. Available for pickup across Aliağa and İzmir, this vehicle is fully serviced and ready to drive.`,
@@ -454,7 +456,7 @@ const renderVehicleDetailBody = ({ vehicle, related = [] }, locale = "tr") => {
       ? `<li>${htmlEsc(copy.dailyPriceLabel)}: ${htmlEsc(`${Number(vehicle.dailyPrice).toLocaleString("tr-TR")} TL`)}</li>`
       : "") +
     (vehicle.monthlyPrice
-      ? `<li>${htmlEsc(copy.monthlyPriceLabel)}: ${htmlEsc(`${Number(vehicle.monthlyPrice).toLocaleString("tr-TR")} TL`)}</li>`
+      ? `<li>${htmlEsc(copy.monthlyPriceLabel)}: ${htmlEsc(`${Number(vehicle.monthlyPrice).toLocaleString("tr-TR")} TL ${copy.vatSuffix}`)}</li>`
       : "");
 
   return (

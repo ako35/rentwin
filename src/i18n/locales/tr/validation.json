@@ -67,7 +67,10 @@
     "pickUpTimeRequired": "Alış saatini seçin",
     "dropOffDateRequired": "Bırakış tarihini seçin",
     "dropOffTimeRequired": "Bırakış saatini seçin",
-    "dropOffAfterPickUp": "Bırakış zamanı alıştan sonra olmalıdır"
+    "dropOffAfterPickUp": "Bırakış zamanı alıştan sonra olmalıdır",
+    "monthsRequired": "Ay sayısını girin",
+    "monthsMin": "En az 1 ay seçmelisiniz",
+    "monthsMax": "En fazla 36 ay seçebilirsiniz"
   },
   "booking": {
     "pickUpLocationRequired": "Alış konumunuzu girin",

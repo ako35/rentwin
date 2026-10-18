@@ -3,12 +3,59 @@
 
 $breakpoint: 992px;
 
+// Wrapper holding the DAILY/MONTHLY tab strip (sits directly on the dark
+// hero, no background of its own) above the white search card. Carries the
+// negative top margin that makes the whole block float over the hero's
+// lower edge — the card itself used to own this margin before the tabs
+// were added above it.
+.reservation-search-wrap {
+    position: relative;
+    z-index: 2;
+    margin: -0.5rem 0 2.25rem;
+
+    @media (max-width: $breakpoint) {
+        margin: 0.75rem 0 1.5rem;
+    }
+}
+
+.reservation-search__tabs {
+    display: flex;
+    gap: 0.4rem;
+    padding: 0 0.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.reservation-search__tab {
+    @include m.flexbox(row, center, center, 0.4rem);
+    padding: 0.6rem 1.1rem;
+    border: none;
+    border-radius: 14px;
+    background-color: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+
+    svg { font-size: 1rem; }
+
+    &:hover { background-color: rgba(255, 255, 255, 0.24); }
+
+    &.is-active {
+        background-color: #fff;
+        color: v.$color5;
+        box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.35);
+    }
+
+    @media (max-width: $breakpoint) {
+        flex: 1 1 0;
+    }
+}
+
 .reservation-search {
     // White card sitting low on the dark emerald hero, just above its lower
     // edge. Heavy elevation so it clearly floats off the dark anchor block.
     position: relative;
-    z-index: 2;
-    margin: -0.5rem 0 2.25rem;
 
     display: flex;
     flex-direction: column;
@@ -24,7 +71,6 @@ $breakpoint: 992px;
         0 8px 18px -8px rgba(0, 0, 0, 0.22);
 
     @media (max-width: $breakpoint) {
-        margin: 0.75rem 0 1.5rem;
         border-color: v.$color3;
         box-shadow:
             0 2px 6px -2px rgba(15, 23, 42, 0.1),
@@ -81,6 +127,10 @@ $breakpoint: 992px;
         &--pickUpDate,
         &--dropOffDate {
             flex: 1.2 1 145px;
+        }
+
+        &--months {
+            flex: 0.6 1 90px;
         }
 
         @media (max-width: $breakpoint) {

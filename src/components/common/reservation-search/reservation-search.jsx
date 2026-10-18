@@ -3,6 +3,8 @@ import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { BsCalendarEvent, BsClock, BsGeoAlt } from "react-icons/bs";
+import { FaCar } from "react-icons/fa";
+import moment from "moment/moment";
 import { utils } from "../../../utils";
 import { services } from "../../../services";
 import { constants } from "../../../constants";
@@ -30,14 +32,24 @@ const ReservationSearch = () => {
     validationSchema: utils.validations.reservationSearchValidationSchema,
     onSubmit: (values) => {
       const pickUpLocation = values.pickUpLocation.trim();
+      const isMonthly = values.rentalType === "MONTHLY";
+      // MONTHLY has no drop-off date/time field of its own — the window the
+      // availability check (and the search-summary banner) needs is derived
+      // from pick-up + the chosen month count instead.
+      const dropOffDate = isMonthly
+        ? moment(values.pickUpDate).add(Number(values.months) || 1, "months").format("YYYY-MM-DD")
+        : values.dropOffDate;
+      const dropOffTime = isMonthly ? values.pickUpTime : values.dropOffTime;
       dispatch(
         setSearchCriteria({
+          rentalType: values.rentalType,
           pickUpLocation,
           dropOffLocation: values.differentDropOff ? values.dropOffLocation.trim() : pickUpLocation,
           pickUpDate: values.pickUpDate,
           pickUpTime: values.pickUpTime,
-          dropOffDate: values.dropOffDate,
-          dropOffTime: values.dropOffTime,
+          dropOffDate,
+          dropOffTime,
+          ...(isMonthly ? { months: Number(values.months) || 1 } : {}),
         })
       );
       navigate(routes.vehicles);
@@ -87,42 +99,75 @@ const ReservationSearch = () => {
     </div>
   );
 
-  return (
-    <form className="reservation-search" onSubmit={formik.handleSubmit} noValidate>
-      <label className="reservation-search__toggle">
-        <input
-          type="checkbox"
-          checked={formik.values.differentDropOff}
-          onChange={(e) => formik.setFieldValue("differentDropOff", e.target.checked)}
-        />
-        {t("reservationSearch.differentDropOff")}
-      </label>
+  const isMonthly = formik.values.rentalType === "MONTHLY";
+  const selectTab = (rentalType) => () => formik.setFieldValue("rentalType", rentalType);
 
-      <div className="reservation-search__row">
-        {locationField("pickUpLocation", "pickUpLocationLabel", "pickUpLocationPlaceholder")}
-        {formik.values.differentDropOff &&
-          locationField("dropOffLocation", "dropOffLocationLabel", "dropOffLocationPlaceholder")}
-        {field("pickUpDate", "pickUpDate", <BsCalendarEvent className="reservation-search__icon" />, {
-          type: "date",
-          min: utils.functions.getCurrentDate(),
-        })}
-        {field("pickUpTime", "pickUpTime", <BsClock className="reservation-search__icon" />, {
-          type: "time",
-        })}
-        {field("dropOffDate", "dropOffDate", <BsCalendarEvent className="reservation-search__icon" />, {
-          type: "date",
-          min: formik.values.pickUpDate || utils.functions.getCurrentDate(),
-        })}
-        {field("dropOffTime", "dropOffTime", <BsClock className="reservation-search__icon" />, {
-          type: "time",
-        })}
-        <button type="submit" className="reservation-search__submit">
-          {t("reservationSearch.submit")}
+  return (
+    <div className="reservation-search-wrap">
+      <div className="reservation-search__tabs">
+        <button
+          type="button"
+          className={`reservation-search__tab${!isMonthly ? " is-active" : ""}`}
+          onClick={selectTab("DAILY")}
+        >
+          <FaCar /> {t("reservationSearch.dailyTab")}
+        </button>
+        <button
+          type="button"
+          className={`reservation-search__tab${isMonthly ? " is-active" : ""}`}
+          onClick={selectTab("MONTHLY")}
+        >
+          <FaCar /> {t("reservationSearch.monthlyTab")}
         </button>
       </div>
 
-      {firstError && <p className="reservation-search__error">{formik.errors[firstError]}</p>}
-    </form>
+      <form className="reservation-search" onSubmit={formik.handleSubmit} noValidate>
+        <label className="reservation-search__toggle">
+          <input
+            type="checkbox"
+            checked={formik.values.differentDropOff}
+            onChange={(e) => formik.setFieldValue("differentDropOff", e.target.checked)}
+          />
+          {t("reservationSearch.differentDropOff")}
+        </label>
+
+        <div className="reservation-search__row">
+          {locationField("pickUpLocation", "pickUpLocationLabel", "pickUpLocationPlaceholder")}
+          {formik.values.differentDropOff &&
+            locationField("dropOffLocation", "dropOffLocationLabel", "dropOffLocationPlaceholder")}
+          {field("pickUpDate", "pickUpDate", <BsCalendarEvent className="reservation-search__icon" />, {
+            type: "date",
+            min: utils.functions.getCurrentDate(),
+          })}
+          {field("pickUpTime", "pickUpTime", <BsClock className="reservation-search__icon" />, {
+            type: "time",
+          })}
+          {isMonthly
+            ? field("months", "monthsLabel", <BsCalendarEvent className="reservation-search__icon" />, {
+                type: "number",
+                min: 1,
+                max: 36,
+                step: 1,
+              })
+            : (
+              <>
+                {field("dropOffDate", "dropOffDate", <BsCalendarEvent className="reservation-search__icon" />, {
+                  type: "date",
+                  min: formik.values.pickUpDate || utils.functions.getCurrentDate(),
+                })}
+                {field("dropOffTime", "dropOffTime", <BsClock className="reservation-search__icon" />, {
+                  type: "time",
+                })}
+              </>
+            )}
+          <button type="submit" className="reservation-search__submit">
+            {t("reservationSearch.submit")}
+          </button>
+        </div>
+
+        {firstError && <p className="reservation-search__error">{formik.errors[firstError]}</p>}
+      </form>
+    </div>
   );
 };
 

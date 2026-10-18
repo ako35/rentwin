@@ -19,6 +19,7 @@
   "searchSummary": {
     "title": "Your search",
     "range": "{{pickUp}} → {{dropOff}}",
+    "monthsRange": "{{months}}-month rental",
     "clear": "Clear",
     "hint": "Pick a vehicle and the booking form will be pre-filled.",
     "noResults": "No vehicles are available for the selected date range.",
@@ -44,7 +45,8 @@
     "seats": "seats",
     "rentNow": "Rent Now",
     "quoteHint": "Request a quote",
-    "perDay": "/ day"
+    "perDay": "/ day",
+    "plusVatPerMonth": "+ VAT / month"
   },
   "details": {
     "pricePerHour": "${{price}} / hour",
@@ -58,6 +60,7 @@
     "fuelType": "Fuel Type",
     "dailyPrice": "Daily Price",
     "monthlyPrice": "Monthly Price",
+    "plusVat": "+ VAT",
     "age": "Age",
     "yes": "Yes",
     "no": "No",
