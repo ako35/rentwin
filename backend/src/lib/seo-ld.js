@@ -564,6 +564,141 @@ const renderBlogPostBody = ({ post }, locale = "tr") => {
   );
 };
 
+/* -------------------------- /vehicles, /lokasyonlar, /blog list bodies  */
+// Mirrors each page's own intro copy + (for /vehicles) its "about" section,
+// plus the same links already summarized in that route's ItemList JSON-LD —
+// a crawler that never runs the client fetch still gets a real path to
+// every item.
+
+const htmlLink = (url, label) => `<li><a href="${htmlEsc(url)}">${htmlEsc(label)}</a></li>`;
+
+const VEHICLES_LIST_COPY = {
+  tr: {
+    intro: "Aliağa ve İzmir'de günlük ve uzun dönem araç kiralama — bakımlı, tam sigortalı filo ve şeffaf fiyatlandırma.",
+    aboutTitle: "Rentwin ile Araç Kiralama",
+    aboutParagraphs: [
+      "Filomuz hatchback ve sedanlardan ferah SUV ve ticari araçlara kadar farklı ihtiyaçlara yanıt verir. Aracınızı marka, vites ve yakıt tipine göre filtreleyerek şehir içi kullanım, iş seyahati veya tatil için en uygun seçeneği hızlıca bulabilirsiniz.",
+      "Araçları Aliağa ofisimizden veya İzmir Adnan Menderes Havalimanı'ndan teslim alabilir, dilerseniz farklı bir noktada bırakabilirsiniz. Havalimanı karşılama hizmetini rezervasyon sırasında belirtmeniz yeterli.",
+      "Depozito talep etmiyoruz; kilometre limiti, yakıt politikası ve HGS geçişleri sözleşmede açıkça yazılıdır. Rezervasyonunuzu dakikalar içinde online oluşturabilir, alış saatine 24 saatten fazla varken ücretsiz iptal edebilirsiniz.",
+    ],
+  },
+  en: {
+    intro: "Daily and long-term car rental in Aliağa and İzmir — a well-maintained, fully insured fleet with transparent pricing.",
+    aboutTitle: "Renting a Car with Rentwin",
+    aboutParagraphs: [
+      "Our fleet covers everything from hatchbacks and sedans to roomy SUVs and vans. Filter by brand, transmission, and fuel type to quickly find the right car for city driving, a business trip, or a holiday.",
+      "Pick your car up at our Aliağa office or at İzmir Adnan Menderes Airport, and drop it off at a different location if you need to. Just request the airport meet-and-greet when you book.",
+      "We ask for no deposit; the mileage limit, fuel policy, and toll (HGS) charges are all stated clearly in the contract. Book online in minutes and cancel free of charge up to 24 hours before pick-up.",
+    ],
+  },
+};
+
+// vehicles: [{ id, brand, model }]
+const renderVehiclesListBody = (vehicles = [], locale = "tr") => {
+  const copy = VEHICLES_LIST_COPY[locale];
+  const links = vehicles
+    .map((v) => htmlLink(`${SITE_URL}${localizePath(`/vehicles/${v.id}`, locale)}`, `${(v.brand || "").trim()} ${(v.model || "").trim()}`.trim()))
+    .join("");
+  return (
+    `<main><p>${htmlEsc(copy.intro)}</p>` +
+    (links ? `<ul>${links}</ul>` : "") +
+    `<h2>${htmlEsc(copy.aboutTitle)}</h2>` +
+    copy.aboutParagraphs.map((p) => `<p>${htmlEsc(p)}</p>`).join("") +
+    "</main>"
+  );
+};
+
+const LOCATIONS_LIST_COPY = {
+  tr: { intro: "Rentwin olarak aşağıdaki lokasyonlarda araç kiralama hizmeti veriyoruz. Bölgenizi seçin, o noktadan teslim alabileceğiniz araçları ve şartları görün." },
+  en: { intro: "Rentwin offers car rental at the locations below. Choose your area to see the vehicles you can pick up there and the terms that apply." },
+};
+
+// locations: [{ name }]
+const renderLocationsListBody = (locations = [], locale = "tr") => {
+  const links = locations
+    .map((l) => htmlLink(`${SITE_URL}${localizePath(`/lokasyonlar/${slugify(l.name)}`, locale)}`, l.name))
+    .join("");
+  return `<main><p>${htmlEsc(LOCATIONS_LIST_COPY[locale].intro)}</p>${links ? `<ul>${links}</ul>` : ""}</main>`;
+};
+
+const BLOG_LIST_COPY = {
+  tr: { intro: "Araç kiralama rehberleri, seyahat önerileri ve Rentwin'den güncel bilgiler. Aliağa ve İzmir'de araç kiralarken bilmeniz gerekenler." },
+  en: { intro: "Car rental guides, travel tips and the latest news from Rentwin. What to know when renting a car in Aliağa and İzmir." },
+};
+
+// posts: [{ slug, title }]
+const renderBlogListBody = (posts = [], locale = "tr") => {
+  const links = posts.map((p) => htmlLink(`${SITE_URL}${localizePath(`/blog/${p.slug}`, locale)}`, p.title)).join("");
+  return `<main><p>${htmlEsc(BLOG_LIST_COPY[locale].intro)}</p>${links ? `<ul>${links}</ul>` : ""}</main>`;
+};
+
+/* ---------------------------------------------- /sss crawler body  */
+// Reuses FAQ_ITEMS below rather than a separate copy — it's already the
+// exact Q&A content this page shows (and what faqLd() turns into FAQPage
+// JSON-LD), so there's nothing to duplicate a second time.
+const FAQ_INTRO = {
+  tr: "Araç kiralama sürecine dair en çok sorulan soruların yanıtlarını burada topladık. Aradığınızı bulamazsanız İletişim sayfasından bize ulaşabilirsiniz.",
+  en: "We've gathered the answers to the questions we hear most about renting a car. If you can't find what you're looking for, reach us from the Contact page.",
+};
+const renderFaqBody = (locale = "tr") =>
+  `<main><p>${htmlEsc(FAQ_INTRO[locale])}</p>` +
+  FAQ_ITEMS[locale].map((item) => `<h2>${htmlEsc(item.q)}</h2><p>${htmlEsc(item.a)}</p>`).join("") +
+  "</main>";
+
+/* -------------------------------------------- /about crawler body  */
+// Mirrors src/pages/common/about/page.jsx + locales/{tr,en}/about.json `whoWeAre`.
+const ABOUT_COPY = {
+  tr: {
+    heading: "Güvenli, Şeffaf ve Yenilikçi Araç Kiralama Deneyimi",
+    desc: [
+      "Rentwin, araç kiralama ve filo yönetimi süreçlerini karmaşadan uzaklaştırarak hem bireysel hem de kurumsal müşterilerimize hızlı, güvenilir ve dijital çözümler sunmak amacıyla yola çıktı.",
+      "Sektördeki operasyonel tecrübemizi modern yazılım teknolojileriyle birleştirerek; rezervasyondan araç teslimine, faturalandırmadan teknik desteğe kadar tüm süreçleri zahmetsiz hale getiriyoruz. Geniş araç filomuz, bakımlı araç garantimiz ve müşteri odaklı hizmet anlayışımızla yolculuğunuzun her anında yanınızdayız.",
+    ],
+    mission: { title: "Misyonumuz", text: "Araç kiralamayı şeffaf, hızlı ve öngörülebilir bir deneyime dönüştürmek; her müşterimize bakımlı araç ve zamanında hizmet güvencesi vermek." },
+    vision: { title: "Vizyonumuz", text: "Türkiye'nin dijital altyapısı en güçlü, müşteri memnuniyeti en yüksek araç kiralama ve filo yönetimi markası olmak." },
+  },
+  en: {
+    heading: "A Safe, Transparent and Modern Car Rental Experience",
+    desc: [
+      "Rentwin set out to take the friction out of car rental and fleet management, giving both individual and corporate customers fast, reliable and fully digital solutions.",
+      "By pairing hands-on operational experience with modern software, we make every step effortless — from reservation to hand-over, from invoicing to technical support. With a wide fleet, a well-maintained-vehicle guarantee and a customer-first approach, we are with you at every point of the journey.",
+    ],
+    mission: { title: "Our Mission", text: "To turn car rental into a transparent, fast and predictable experience, and to give every customer a well-maintained vehicle and on-time service." },
+    vision: { title: "Our Vision", text: "To be the car rental and fleet-management brand with the strongest digital backbone and the highest customer satisfaction in Türkiye." },
+  },
+};
+const renderAboutBody = (locale = "tr") => {
+  const c = ABOUT_COPY[locale];
+  return (
+    `<main><h1>${htmlEsc(c.heading)}</h1>` +
+    c.desc.map((p) => `<p>${htmlEsc(p)}</p>`).join("") +
+    `<h2>${htmlEsc(c.mission.title)}</h2><p>${htmlEsc(c.mission.text)}</p>` +
+    `<h2>${htmlEsc(c.vision.title)}</h2><p>${htmlEsc(c.vision.text)}</p>` +
+    "</main>"
+  );
+};
+
+/* ------------------------------------------ /contact crawler body  */
+// Mirrors src/pages/common/contact/page.jsx + locales/{tr,en}/contact.json —
+// the form itself isn't content, only the intro + the real NAP details
+// (already real values, same as business.* above) are worth rendering here.
+const CONTACT_COPY = {
+  tr: { desc: "Rentwin'de, size yardımcı olmak için her zaman hazırız. Müşteri hizmetleri ekibimiz sorularınız, rezervasyonlarınız ve geri bildirimleriniz için 7/24 hizmetinizdedir. Aşağıdaki kanallardan bize ulaşabilir veya formu doldurarak talebinizi iletebilirsiniz.", phone: "Telefon", email: "E-posta", address: "Adres" },
+  en: { desc: "At Rentwin, we're always ready to assist you. Our customer service team is available 24/7 for your questions, bookings and feedback. Reach us through any of the channels below, or send your request using the form.", phone: "Phone", email: "Email", address: "Address" },
+};
+const renderContactBody = (locale = "tr") => {
+  const c = CONTACT_COPY[locale];
+  const addr = `${business.streetAddress}, ${business.addressLocality} / ${business.addressRegion}`;
+  return (
+    `<main><p>${htmlEsc(c.desc)}</p>` +
+    "<ul>" +
+    `<li>${htmlEsc(c.phone)}: ${htmlEsc(business.phoneE164)}</li>` +
+    `<li>${htmlEsc(c.email)}: ${htmlEsc(business.email)}</li>` +
+    `<li>${htmlEsc(c.address)}: ${htmlEsc(addr)}</li>` +
+    "</ul></main>"
+  );
+};
+
 // path → { title, description, jsonLd(locale) } per locale. Keyed by the
 // canonical (unprefixed/TR-shaped) path in both maps.
 const STATIC_META = {
@@ -872,32 +1007,38 @@ const buildHead = ({
       jsonLd: meta.jsonLd(locale),
     };
 
-    if (canonicalPath === "/vehicles" && vehicles && vehicles.length) {
-      head.jsonLd.push(
-        itemListLd({
-          name: ITEM_LIST_NAMES.vehicles[locale],
-          itemListElement: vehicles.slice(0, 100).map((v, i) => ({
-            "@type": "ListItem",
-            position: i + 1,
-            name: `${(v.brand || "").trim()} ${(v.model || "").trim()}`.trim(),
-            url: `${SITE_URL}${localizePath(`/vehicles/${v.id}`, locale)}`,
-          })),
-        })
-      );
+    if (canonicalPath === "/vehicles") {
+      if (vehicles && vehicles.length) {
+        head.jsonLd.push(
+          itemListLd({
+            name: ITEM_LIST_NAMES.vehicles[locale],
+            itemListElement: vehicles.slice(0, 100).map((v, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              name: `${(v.brand || "").trim()} ${(v.model || "").trim()}`.trim(),
+              url: `${SITE_URL}${localizePath(`/vehicles/${v.id}`, locale)}`,
+            })),
+          })
+        );
+      }
+      head.bodyHtml = renderVehiclesListBody(vehicles || [], locale);
     }
 
-    if (canonicalPath === "/lokasyonlar" && locations && locations.length) {
-      head.jsonLd.push(
-        itemListLd({
-          name: ITEM_LIST_NAMES.locations[locale],
-          itemListElement: locations.map((l, i) => ({
-            "@type": "ListItem",
-            position: i + 1,
-            name: l.name,
-            url: `${SITE_URL}${localizePath(`/lokasyonlar/${slugify(l.name)}`, locale)}`,
-          })),
-        })
-      );
+    if (canonicalPath === "/lokasyonlar") {
+      if (locations && locations.length) {
+        head.jsonLd.push(
+          itemListLd({
+            name: ITEM_LIST_NAMES.locations[locale],
+            itemListElement: locations.map((l, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              name: l.name,
+              url: `${SITE_URL}${localizePath(`/lokasyonlar/${slugify(l.name)}`, locale)}`,
+            })),
+          })
+        );
+      }
+      head.bodyHtml = renderLocationsListBody(locations || [], locale);
     }
 
     if (canonicalPath === "/kampanyalar") {
@@ -917,23 +1058,30 @@ const buildHead = ({
       head.bodyHtml = renderCampaignsBody(list, locale);
     }
 
-    if (canonicalPath === "/blog" && posts && posts.length) {
-      head.jsonLd.push(
-        itemListLd({
-          name: ITEM_LIST_NAMES.blog[locale],
-          itemListElement: posts.map((p, i) => ({
-            "@type": "ListItem",
-            position: i + 1,
-            name: p.title,
-            url: `${SITE_URL}${localizePath(`/blog/${p.slug}`, locale)}`,
-          })),
-        })
-      );
+    if (canonicalPath === "/blog") {
+      if (posts && posts.length) {
+        head.jsonLd.push(
+          itemListLd({
+            name: ITEM_LIST_NAMES.blog[locale],
+            itemListElement: posts.map((p, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              name: p.title,
+              url: `${SITE_URL}${localizePath(`/blog/${p.slug}`, locale)}`,
+            })),
+          })
+        );
+      }
+      head.bodyHtml = renderBlogListBody(posts || [], locale);
     }
 
     if (canonicalPath === "/" || canonicalPath === "/yorumlar") {
       head.jsonLd.push(autoRentalLd({ reviewSummary, reviews }));
     }
+
+    if (canonicalPath === "/sss") head.bodyHtml = renderFaqBody(locale);
+    if (canonicalPath === "/about") head.bodyHtml = renderAboutBody(locale);
+    if (canonicalPath === "/contact") head.bodyHtml = renderContactBody(locale);
 
     return head;
   }
