@@ -346,7 +346,13 @@ const extractInvoiceDocument = (buffer, mimeType) =>
 
 // Override with CLAUDE_RESEARCH_MODEL without a redeploy. A plain text+tool
 // task (no vision), so this doesn't need to match CLAUDE_VISION_MODEL.
-const RESEARCH_MODEL = process.env.CLAUDE_RESEARCH_MODEL || "claude-sonnet-5-5";
+// 2026-10-18: Haiku over Sonnet — this is "research + summarize web search
+// results into a suggested price", not fine-detail document reading (the
+// accuracy ceiling that pushed the vision extractors to Sonnet). The admin
+// reviews every suggestion with its sources before applying it, so a
+// cheaper model here is an easy cost win (web search's own per-search fee
+// is unchanged either way).
+const RESEARCH_MODEL = process.env.CLAUDE_RESEARCH_MODEL || "claude-haiku-5-5";
 
 const priceResearchPrompt = ({ brand, model, modelYear }) => {
   const name = `${brand} ${model}`.trim();
