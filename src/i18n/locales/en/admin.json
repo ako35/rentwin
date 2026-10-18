@@ -1510,6 +1510,21 @@
     "toasts": {
       "saveSuccess": "Price updated.",
       "saveError": "There was an error while updating the price."
+    },
+    "research": {
+      "button": "Research with AI",
+      "modalTitle": "Market Price Research",
+      "confidence": "Confidence",
+      "confidence_low": "Low",
+      "confidence_medium": "Medium",
+      "confidence_high": "High",
+      "sourcesTitle": "Sources",
+      "sourceLink": "View Source",
+      "apply": "Apply to Prices",
+      "close": "Close",
+      "toasts": {
+        "error": "There was an error while researching the price. This runs a live web search, so it can take a bit — try again in a few minutes."
+      }
     }
   },
   "branches": {

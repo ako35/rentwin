@@ -1510,6 +1510,21 @@
     "toasts": {
       "saveSuccess": "Fiyat güncellendi.",
       "saveError": "Fiyat güncellenirken bir hata oluştu."
+    },
+    "research": {
+      "button": "Yapay Zeka ile Araştır",
+      "modalTitle": "Piyasa Fiyat Araştırması",
+      "confidence": "Güven Düzeyi",
+      "confidence_low": "Düşük",
+      "confidence_medium": "Orta",
+      "confidence_high": "Yüksek",
+      "sourcesTitle": "Kaynaklar",
+      "sourceLink": "Kaynağı Görüntüle",
+      "apply": "Fiyatlara Uygula",
+      "close": "Kapat",
+      "toasts": {
+        "error": "Fiyat araştırması sırasında bir hata oluştu. Bu işlem canlı web araması yaptığı için biraz sürebilir, birkaç dakika sonra tekrar deneyin."
+      }
     }
   },
   "branches": {

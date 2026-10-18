@@ -116,6 +116,17 @@ export const getPriceList = async () => {
   const response = await axios.get(`${API_URL}/car/admin/price-list/auth`, services.authHeader());
   return response.data;
 };
+// Web search can take a while (multiple live queries in one API call) — a
+// longer client timeout than the default so a legitimately slow-but-working
+// research call isn't cut off before the server responds.
+export const researchVehiclePrice = async (vehicleId) => {
+  const response = await axios.post(
+    `${API_URL}/car/admin/${vehicleId}/research-price/auth`,
+    {},
+    { ...services.authHeader(), timeout: 100000 }
+  );
+  return response.data;
+};
 export const getFleetStats = async (branchId) => {
   const response = await axios.get(
     `${API_URL}/car/admin/fleet-stats/auth${branchId ? `?branchId=${branchId}` : ""}`,

@@ -9,7 +9,7 @@ import { getContractPhotos, deleteContractPhoto } from "./contract/contract-phot
 
 import { createUserAdmin, deleteUser, downloadUserReports, extractCustomerDocument, getUser, getUserAdmin, getUsersByPage, login, register, updatePassword, updateUser, updateUserAdmin } from "./user/user-service";
 
-import { addVehicle, deleteVehicle, downloadVehicleReports, extractRegistration, extractInsurance, extractInspection, getExpiryAlerts, getFleetStats, getFleetStatusBoard, getPriceList, getVehicleById, getVehicleByIdAdmin, getVehicles, getVehiclesByPage, getVehiclesByPageAdmin, markVehicleSold, unmarkVehicleSold, markVehiclePassive, unmarkVehiclePassive, updateVehicle } from "./vehicle/vehicle-service";
+import { addVehicle, deleteVehicle, downloadVehicleReports, extractRegistration, extractInsurance, extractInspection, getExpiryAlerts, getFleetStats, getFleetStatusBoard, getPriceList, getVehicleById, getVehicleByIdAdmin, getVehicles, getVehiclesByPage, getVehiclesByPageAdmin, markVehicleSold, unmarkVehicleSold, markVehiclePassive, unmarkVehiclePassive, researchVehiclePrice, updateVehicle } from "./vehicle/vehicle-service";
 
 import { addVehicleRecord, deleteVehicleRecord, getVehicleRecords, updateVehicleRecord } from "./vehicle/vehicle-records-service";
 import { deleteModelImage, generateModelImage, listModelImages, renameModelGroup, uploadModelImage } from "./vehicle/vehicle-model-image-service";
@@ -131,6 +131,7 @@ export const services = {
         getFleetStatusBoard,
         getVehiclesByPageAdmin,
         getPriceList,
+        researchVehiclePrice,
         updateVehicle,
         extractRegistration,
         extractInsurance,
