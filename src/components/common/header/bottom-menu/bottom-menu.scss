@@ -1,7 +1,11 @@
 @use '../../../../styles/variables' as v;
 @use '../../../../styles/mixins' as m;
 
-$breakpoint: 992px;
+// Matches Navbar's expand='xxl' in bottom-menu.jsx (Bootstrap's xxl = 1400px)
+// — below this, 9 nav links + language switcher + auth buttons don't fit
+// next to the logo and the row overflows backward under it, so the collapse
+// point was raised from the old lg (992px) to where content actually fits.
+$breakpoint: 1400px;
 $breakpointsm: 576px;
 
 .bottom-menu {

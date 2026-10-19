@@ -28,7 +28,7 @@ const BottomMenu = () => {
   const { t } = useTranslation("common");
   return (
     <div className="bottom-menu">
-      <Navbar expand='lg'>
+      <Navbar expand='xxl'>
         <Container className="p-0">
           <Navbar.Toggle aria-controls="toggle" />
           <Navbar.Collapse id="toggle">
