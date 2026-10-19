@@ -463,6 +463,39 @@ const unmarkVehiclePassive = asyncHandler(async (req, res) => {
   res.json({ ...serializeVehicle(vehicle, await loadModelImageMap()), status: getVehicleStatus(vehicle, rentedIds) });
 });
 
+// Which per-category tracking switch each request body key maps to — the
+// only fields this endpoint will ever write, regardless of what else is in
+// req.body.
+const TRACKING_FIELDS = [
+  "trackInsurance",
+  "trackKasko",
+  "trackTax",
+  "trackInspection",
+  "trackMaintenance",
+];
+
+// Toggles one or more per-category expiry/maintenance tracking switches
+// (Sigorta/Kasko/MTV/Muayene-Egzoz/Bakım) — independent from passiveAt: the
+// vehicle stays rentable, only that category's dashboard alerts go quiet.
+const updateVehicleTracking = asyncHandler(async (req, res) => {
+  const target = await prisma.vehicle.findUnique({ where: { id: req.params.id } });
+  if (!target) throw new HttpError(404, "Vehicle not found.");
+
+  const data = {};
+  for (const field of TRACKING_FIELDS) {
+    if (field in req.body) data[field] = !!req.body[field];
+  }
+  if (!Object.keys(data).length) throw new HttpError(400, "No tracking field given.");
+
+  const vehicle = await prisma.vehicle.update({
+    where: { id: target.id },
+    data,
+    include: IMAGES_AND_BRANCH_INCLUDE,
+  });
+  const rentedIds = await getRentedVehicleIds([vehicle.id]);
+  res.json({ ...serializeVehicle(vehicle, await loadModelImageMap()), status: getVehicleStatus(vehicle, rentedIds) });
+});
+
 const deleteVehicle = asyncHandler(async (req, res) => {
   const target = await prisma.vehicle.findUnique({
     where: { id: req.params.id },
@@ -504,5 +537,6 @@ module.exports = {
   unmarkVehicleSold,
   markVehiclePassive,
   unmarkVehiclePassive,
+  updateVehicleTracking,
   deleteVehicle,
 };

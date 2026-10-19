@@ -235,6 +235,7 @@ const AdminVehicleDetailsPage = () => {
           formik={formik}
           vehicleId={vehicleId}
           vehicle={vehicle}
+          onVehicleChange={setVehicle}
           disabled={formik.values.builtIn || sold}
           builtInWarning={formik.values.builtIn}
         >

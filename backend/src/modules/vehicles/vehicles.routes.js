@@ -15,6 +15,7 @@ const {
   unmarkVehicleSold,
   markVehiclePassive,
   unmarkVehiclePassive,
+  updateVehicleTracking,
   deleteVehicle,
 } = require("./vehicles.controller");
 const { getFleetStats, getExpiryAlerts, getFleetStatusBoard } = require("./vehicles.dashboard.controller");
@@ -67,6 +68,7 @@ router.post(`/car/admin/:id${ID}/sold/auth`, authenticate, requireAdmin, markVeh
 router.delete(`/car/admin/:id${ID}/sold/auth`, authenticate, requireAdmin, unmarkVehicleSold);
 router.post(`/car/admin/:id${ID}/passive/auth`, authenticate, requireAdmin, markVehiclePassive);
 router.delete(`/car/admin/:id${ID}/passive/auth`, authenticate, requireAdmin, unmarkVehiclePassive);
+router.patch(`/car/admin/:id${ID}/tracking/auth`, authenticate, requireAdmin, updateVehicleTracking);
 router.post(`/car/admin/:id${ID}/research-price/auth`, authenticate, requireAdmin, researchPrice);
 router.delete(`/car/admin/:id${ID}/auth`, authenticate, requireAdmin, deleteVehicle);
 

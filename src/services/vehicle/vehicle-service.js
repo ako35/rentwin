@@ -79,6 +79,14 @@ export const unmarkVehiclePassive = async (id) => {
   );
   return response.data;
 };
+export const updateVehicleTracking = async (id, payload) => {
+  const response = await axios.patch(
+    `${API_URL}/car/admin/${id}/tracking/auth`,
+    payload,
+    services.authHeader()
+  );
+  return response.data;
+};
 export const downloadVehicleReports = async() => {
   const token = services.encryptedLocalStorage.getItem("rentwintoken");
   const response = await axios.get(`${API_URL}/excel/download/cars`, {

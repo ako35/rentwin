@@ -203,6 +203,19 @@
       "removeSuccess": "Document removed.",
       "error": "Couldn't complete the action, please try again."
     },
+    "tracking": {
+      "active": "Active",
+      "passive": "Inactive",
+      "fields": {
+        "trackInsurance": "Traffic Insurance Tracking",
+        "trackKasko": "Kasko Tracking",
+        "trackTax": "Vehicle Tax Tracking",
+        "trackInspection": "Inspection / Emission Tracking",
+        "trackMaintenance": "Maintenance Tracking"
+      },
+      "toastSuccess": "Tracking status updated.",
+      "toastError": "Couldn't update tracking status, please try again."
+    },
     "sections": {
       "identity": "Vehicle Details",
       "registration": "Registration & Ownership"

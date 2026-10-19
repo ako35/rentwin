@@ -22,6 +22,7 @@ const VehicleForm = ({
   vehicle,
   disabled = false,
   builtInWarning = false,
+  onVehicleChange,
   children,
 }) => {
   const { t } = useTranslation("admin");
@@ -121,7 +122,13 @@ const VehicleForm = ({
         {RECORD_TABS.map(
           (key) =>
             tab === key && (
-              <RecordsPanel key={key} vehicleId={vehicleId} config={RECORD_CONFIGS[key]} />
+              <RecordsPanel
+                key={key}
+                vehicleId={vehicleId}
+                config={RECORD_CONFIGS[key]}
+                vehicle={vehicle}
+                onVehicleChange={onVehicleChange}
+              />
             )
         )}
 

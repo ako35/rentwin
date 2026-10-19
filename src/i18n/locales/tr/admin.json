@@ -203,6 +203,19 @@
       "removeSuccess": "Evrak silindi.",
       "error": "İşlem tamamlanamadı, lütfen tekrar deneyin."
     },
+    "tracking": {
+      "active": "Aktif",
+      "passive": "Pasif",
+      "fields": {
+        "trackInsurance": "Trafik Sigortası Takibi",
+        "trackKasko": "Kasko Takibi",
+        "trackTax": "MTV Takibi",
+        "trackInspection": "Muayene / Egzoz Takibi",
+        "trackMaintenance": "Bakım / Tamir Takibi"
+      },
+      "toastSuccess": "Takip durumu güncellendi.",
+      "toastError": "Takip durumu güncellenemedi, lütfen tekrar deneyin."
+    },
     "sections": {
       "identity": "Araç Bilgileri",
       "registration": "Ruhsat & Sahiplik"

@@ -21,6 +21,11 @@ export const RECORD_CONFIGS = {
       { key: "sigorta", type: "Traffic" },
       { key: "kasko", type: "Kasko" },
     ],
+    // Sigorta ve Kasko'nun dashboard uyarı takibi ayrı ayrı kapatılabilir.
+    trackToggles: [
+      { key: "sigorta", field: "trackInsurance" },
+      { key: "kasko", field: "trackKasko" },
+    ],
     listColumns: [
       { key: "policyNo" },
       { key: "startDate", kind: "date" },
@@ -51,6 +56,7 @@ export const RECORD_CONFIGS = {
     tabKey: "tax",
     initialValues: utils.initialValues.vehicleTaxInitialValues,
     schema: utils.validations.vehicleTaxValidationSchema,
+    trackToggles: [{ key: "tax", field: "trackTax" }],
     columns: [
       { key: "period" },
       { key: "installment" },
@@ -85,6 +91,9 @@ export const RECORD_CONFIGS = {
       { key: "tire", type: "Tire" },
       { key: "other", type: "Other" },
     ],
+    // Bakım tek bir alert kategorisi — alt tiplere (periyodik/tamir/lastik/
+    // diğer) ayrı ayrı değil, tüm sekme için tek anahtar.
+    trackToggles: [{ key: "maintenance", field: "trackMaintenance" }],
     listColumns: [
       { key: "date", kind: "date" },
       { key: "odometer", kind: "number" },
@@ -128,6 +137,9 @@ export const RECORD_CONFIGS = {
       { key: "periodic", type: "Periodic" },
       { key: "emission", type: "Emission" },
     ],
+    // Muayene + Egzoz tek bir alert kategorisi (settings'teki tek ortak
+    // uyarı penceresiyle aynı), bu yüzden tek anahtar.
+    trackToggles: [{ key: "inspection", field: "trackInspection" }],
     listColumns: [
       { key: "date", kind: "date" },
       { key: "result", kind: "option", optionNs: "inspectionResults" },

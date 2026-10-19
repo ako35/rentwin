@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
-import { Alert } from "react-bootstrap";
+import { Alert, Form } from "react-bootstrap";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
 import { dateFieldNames } from "./record-configs";
@@ -9,7 +9,7 @@ import RecordsTableView from "./records-table-view";
 import RecordsTwoPaneView from "./records-two-pane-view";
 import RecordDocumentsModal from "./record-documents-modal";
 
-const RecordsPanel = ({ vehicleId, config }) => {
+const RecordsPanel = ({ vehicleId, config, vehicle, onVehicleChange }) => {
   const { t } = useTranslation("admin");
   const { t: tCommon, i18n } = useTranslation("common");
 
@@ -155,6 +155,16 @@ const RecordsPanel = ({ vehicleId, config }) => {
         : String(option.name),
     }));
 
+  const toggleTrack = async (field, nextValue) => {
+    try {
+      const updated = await services.vehicle.updateVehicleTracking(vehicleId, { [field]: nextValue });
+      onVehicleChange?.(updated);
+      utils.functions.swalToast(t("vehicles.tracking.toastSuccess"), "success");
+    } catch (error) {
+      utils.functions.swalToast(t("vehicles.tracking.toastError"), "error");
+    }
+  };
+
   if (!vehicleId) {
     return (
       <Alert variant="secondary" className="mb-0">
@@ -174,6 +184,26 @@ const RecordsPanel = ({ vehicleId, config }) => {
 
   return (
     <>
+      {vehicle && config.trackToggles && (
+        <div className="records-panel__tracking">
+          {config.trackToggles.map(({ key, field }) => {
+            const active = vehicle[field] !== false;
+            return (
+              <Form.Check
+                key={key}
+                type="switch"
+                id={`track-${config.tabKey}-${key}`}
+                className="records-panel__tracking-switch"
+                label={`${t(`vehicles.tracking.fields.${field}`)}: ${
+                  active ? t("vehicles.tracking.active") : t("vehicles.tracking.passive")
+                }`}
+                checked={active}
+                onChange={(e) => toggleTrack(field, e.target.checked)}
+              />
+            );
+          })}
+        </div>
+      )}
       {config.twoPane ? <RecordsTwoPaneView {...view} /> : <RecordsTableView {...view} />}
       <RecordDocumentsModal
         show={!!docsRow}

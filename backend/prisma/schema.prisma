@@ -196,6 +196,15 @@ model Vehicle {
                                   // reversible any time by clearing it. Excluded from listings/availability the
                                   // same way outOfService is.
   passiveNote          String? // free-text reason captured when marking passive
+  // Per-category tracking switches — unlike passiveAt (whole vehicle pulled
+  // from the rentable fleet), these only silence that one category's
+  // dashboard/expiry-alert nagging; the vehicle stays fully rentable. Default
+  // true so every existing vehicle keeps being tracked exactly as before.
+  trackInsurance       Boolean              @default(true) // Trafik sigortası
+  trackKasko           Boolean              @default(true)
+  trackTax             Boolean              @default(true) // MTV
+  trackInspection      Boolean              @default(true) // Muayene + Egzoz (one shared alert window)
+  trackMaintenance     Boolean              @default(true) // Bakım/Tamir
   branchId             String?
   branch               Branch?              @relation(fields: [branchId], references: [id], onDelete: SetNull)
   nextMaintenanceDate  DateTime?

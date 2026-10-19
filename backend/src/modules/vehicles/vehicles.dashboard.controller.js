@@ -25,6 +25,8 @@ const getFleetStats = asyncHandler(async (req, res) => {
       passiveAt: true,
       nextMaintenanceDate: true,
       nextInspectionDate: true,
+      trackMaintenance: true,
+      trackInspection: true,
     },
   });
 
@@ -46,8 +48,12 @@ const getFleetStats = asyncHandler(async (req, res) => {
   // A passive vehicle is temporarily pulled from the fleet by an admin
   // decision — its legal-deadline nags should stop too while it's parked,
   // the same way it already drops out of the rented/available tiles above.
-  const maintenanceDue = vehicles.filter((v) => !v.passiveAt && isDueSoon(v.nextMaintenanceDate)).length;
-  const inspectionDue = vehicles.filter((v) => !v.passiveAt && isDueSoon(v.nextInspectionDate)).length;
+  const maintenanceDue = vehicles.filter(
+    (v) => !v.passiveAt && v.trackMaintenance !== false && isDueSoon(v.nextMaintenanceDate)
+  ).length;
+  const inspectionDue = vehicles.filter(
+    (v) => !v.passiveAt && v.trackInspection !== false && isDueSoon(v.nextInspectionDate)
+  ).length;
 
   res.json({
     total,
@@ -106,7 +112,20 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
   // with a set/unpaid date) so the same query can tell "expiring soon" apart
   // from "no record was ever entered" for that vehicle.
   const [allVehicles, insurances, inspections, taxes, maintenances] = await Promise.all([
-    prisma.vehicle.findMany({ where: vehicleWhere, select: { id: true, licensePlate: true, brand: true, model: true } }),
+    prisma.vehicle.findMany({
+      where: vehicleWhere,
+      select: {
+        id: true,
+        licensePlate: true,
+        brand: true,
+        model: true,
+        trackInsurance: true,
+        trackKasko: true,
+        trackTax: true,
+        trackInspection: true,
+        trackMaintenance: true,
+      },
+    }),
     prisma.vehicleInsurance.findMany({
       where: { vehicle: vehicleWhere },
       select: { vehicleId: true, type: true, endDate: true, vehicle: carSelect },
@@ -153,7 +172,10 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
 
   // A vehicle with zero records of a type at all never shows up in that
   // type's rows, so it needs its own pass over the full fleet per category.
-  const missingItemsFor = (haveIds) => allVehicles.filter((v) => !haveIds.has(v.id)).map(missingItem);
+  // A vehicle whose tracking is switched off for this category never counts
+  // as "missing" either — that's exactly what turning tracking off means.
+  const missingItemsFor = (haveIds, trackField) =>
+    allVehicles.filter((v) => v[trackField] !== false && !haveIds.has(v.id)).map(missingItem);
 
   // Keep only the most recent record per vehicle (a renewal pushes the date out);
   // alert when that latest date still falls inside the window / is overdue.
@@ -174,27 +196,36 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
   );
 
   const categories = { insurance: [], kasko: [], tax: [], inspection: [], maintenance: [] };
+  const vehicleById = new Map(allVehicles.map((v) => [v.id, v]));
 
   for (const row of insuranceLatest) {
     const bucket = row.type === "Kasko" ? "kasko" : "insurance";
+    const trackField = bucket === "kasko" ? "trackKasko" : "trackInsurance";
+    if (vehicleById.get(row.vehicleId)?.[trackField] === false) continue;
     if (new Date(row.endDate) <= thresholds[bucket]) {
       categories[bucket].push(toItem(row.vehicle, row.endDate));
     }
   }
-  categories.insurance.push(...missingItemsFor(new Set(insurances.filter((r) => r.type === "Traffic").map((r) => r.vehicleId))));
-  categories.kasko.push(...missingItemsFor(new Set(insurances.filter((r) => r.type === "Kasko").map((r) => r.vehicleId))));
+  categories.insurance.push(
+    ...missingItemsFor(new Set(insurances.filter((r) => r.type === "Traffic").map((r) => r.vehicleId)), "trackInsurance")
+  );
+  categories.kasko.push(
+    ...missingItemsFor(new Set(insurances.filter((r) => r.type === "Kasko").map((r) => r.vehicleId)), "trackKasko")
+  );
 
   const inspectionsWithDate = inspections.filter((r) => r.expiryDate);
   for (const row of latestPerVehicle(inspectionsWithDate, "expiryDate")) {
+    if (vehicleById.get(row.vehicleId)?.trackInspection === false) continue;
     if (new Date(row.expiryDate) <= thresholds.inspection) {
       categories.inspection.push(toItem(row.vehicle, row.expiryDate));
     }
   }
-  categories.inspection.push(...missingItemsFor(new Set(inspections.map((r) => r.vehicleId))));
+  categories.inspection.push(...missingItemsFor(new Set(inspections.map((r) => r.vehicleId)), "trackInspection"));
 
   // Purely km-based: how far the vehicle's current odometer is from its most
   // recent Periyodik record's planned next-service reading.
   for (const row of latestPerVehicle(maintenances, "date")) {
+    if (vehicleById.get(row.vehicleId)?.trackMaintenance === false) continue;
     const kmLeft =
       row.nextOdometer != null && row.vehicle.currentKm != null
         ? row.nextOdometer - row.vehicle.currentKm
@@ -215,6 +246,7 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
   const unpaidTaxes = taxes.filter((r) => r.paidDate == null && r.dueDate);
   const taxByVehicle = new Map();
   for (const row of unpaidTaxes) {
+    if (vehicleById.get(row.vehicleId)?.trackTax === false) continue;
     if (new Date(row.dueDate) > thresholds.tax) continue;
     const current = taxByVehicle.get(row.vehicleId);
     if (!current || new Date(row.dueDate) < new Date(current.dueDate)) taxByVehicle.set(row.vehicleId, row);
@@ -222,7 +254,7 @@ const getExpiryAlerts = asyncHandler(async (req, res) => {
   for (const row of taxByVehicle.values()) {
     categories.tax.push(toItem(row.vehicle, row.dueDate));
   }
-  categories.tax.push(...missingItemsFor(new Set(taxes.map((r) => r.vehicleId))));
+  categories.tax.push(...missingItemsFor(new Set(taxes.map((r) => r.vehicleId)), "trackTax"));
 
   // Missing-record rows have no date to sort by — surface them ahead of the
   // merely-expiring-soon ones (having nothing on file is the worse state).
