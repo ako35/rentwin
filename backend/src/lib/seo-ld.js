@@ -715,6 +715,48 @@ const renderContactBody = (locale = "tr") => {
   );
 };
 
+/* ------------------------------------------ /yorumlar crawler body  */
+// Mirrors src/pages/common/reviews/page.jsx + locales/{tr,en}/reviews.json
+// (pageTitle/intro/summary/empty — form isn't content, not duplicated here).
+// reviewSummary/reviews come from the same loadReviewSeoData() query the
+// JSON-LD below it uses, so the two never drift.
+const REVIEWS_COPY = {
+  tr: {
+    pageTitle: "Müşteri Yorumları",
+    intro: "Rentwin müşterilerinin gerçek yorumları ve puanları. Siz de deneyiminizi paylaşabilirsiniz.",
+    summary: (count, average) => `${count} yorum, ortalama ${average} yıldız`,
+    empty: "Henüz yayınlanmış bir yorum bulunmuyor.",
+  },
+  en: {
+    pageTitle: "Customer Reviews",
+    intro: "Real reviews and ratings from Rentwin customers. You can share your own experience too.",
+    summary: (count, average) => `${count} reviews, ${average} average rating`,
+    empty: "No reviews have been published yet.",
+  },
+};
+const renderReviewsBody = (reviewSummary, reviews = [], locale = "tr") => {
+  const c = REVIEWS_COPY[locale];
+  const dateLocale = locale === "en" ? "en-GB" : "tr-TR";
+  const items = reviews
+    .map((r) => {
+      const stars = "★".repeat(r.rating) + "☆".repeat(5 - r.rating);
+      const dateStr = new Date(r.createdAt).toLocaleDateString(dateLocale);
+      return (
+        `<li><strong>${htmlEsc(stars)}</strong> — ${htmlEsc(dateStr)}` +
+        `<p>${htmlEsc(r.body)}</p>` +
+        `<span>${htmlEsc(r.name)}</span></li>`
+      );
+    })
+    .join("");
+  return (
+    `<main><h1>${htmlEsc(c.pageTitle)}</h1>` +
+    `<p>${htmlEsc(c.intro)}</p>` +
+    (reviewSummary ? `<p>${htmlEsc(c.summary(reviewSummary.count, reviewSummary.average))}</p>` : "") +
+    (items ? `<ul>${items}</ul>` : `<p>${htmlEsc(c.empty)}</p>`) +
+    "</main>"
+  );
+};
+
 // path → { title, description, jsonLd(locale) } per locale. Keyed by the
 // canonical (unprefixed/TR-shaped) path in both maps.
 const STATIC_META = {
@@ -1094,6 +1136,9 @@ const buildHead = ({
     if (canonicalPath === "/" || canonicalPath === "/yorumlar") {
       head.jsonLd.push(autoRentalLd({ reviewSummary, reviews }));
     }
+    // "/" keeps its static hero snapshot (index.html) — only /yorumlar needs
+    // its #root filled in here (it has no such snapshot of its own).
+    if (canonicalPath === "/yorumlar") head.bodyHtml = renderReviewsBody(reviewSummary, reviews, locale);
 
     if (canonicalPath === "/sss") head.bodyHtml = renderFaqBody(locale);
     if (canonicalPath === "/about") head.bodyHtml = renderAboutBody(locale);
