@@ -13,7 +13,7 @@ const prisma = require("../../lib/prisma");
 const { SITE_URL, slugify, localizePath, stripLocalePrefix } = require("../../lib/site");
 const { buildHead } = require("../../lib/seo-ld");
 const { modelImageKey } = require("../../lib/serializers");
-const { loadModelImageMap } = require("../vehicles/vehicles.shared");
+const { loadModelImageMap, findCanonicalVehicleId } = require("../vehicles/vehicles.shared");
 const { loadReviewSeoData } = require("../reviews/reviews.shared");
 
 const SHELL_URL = process.env.PRERENDER_SHELL_URL || `${SITE_URL}/index.html`;
@@ -169,6 +169,7 @@ const resolvePath = async (reqPath) => {
     // different pages for the same URL: out-of-service still renders, but a
     // sold vehicle is retired from the fleet and 404s on both.
     if (!vehicle || vehicle.soldAt) return { path: reqPath, vehicleMissing: true };
+    const canonicalVehicleId = await findCanonicalVehicleId(vehicle);
     const image =
       modelImages.get(modelImageKey(vehicle.brand, vehicle.model))?.blobUrl ||
       vehicle.images[0]?.blobUrl ||
@@ -195,6 +196,7 @@ const resolvePath = async (reqPath) => {
         monthlyPrice: vehicle.monthlyPrice,
       },
       related,
+      canonicalVehicleId,
     };
   }
 

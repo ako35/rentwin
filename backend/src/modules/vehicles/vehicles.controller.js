@@ -13,6 +13,7 @@ const {
   getRentedVehicleIds,
   getVehicleStatus,
   getActiveRentalContractId,
+  findCanonicalVehicleId,
 } = require("./vehicles.shared");
 const { pickVehicleFields } = require("./vehicle-fields");
 
@@ -34,7 +35,10 @@ const getVehicleById = asyncHandler(async (req, res) => {
   // A sold vehicle is retired from the fleet — treat it as gone on the public
   // detail route (matches the browse list, the sitemap and the bot prerender).
   if (!vehicle || vehicle.soldAt) throw new HttpError(404, "Vehicle not found.");
-  res.json(serializeVehicle(vehicle, modelImages));
+  // null when this vehicle IS the canonical one for its spec cluster — see
+  // vehicles.shared.findCanonicalVehicleId.
+  const canonicalId = await findCanonicalVehicleId(vehicle);
+  res.json({ ...serializeVehicle(vehicle, modelImages), canonicalId });
 });
 
 // Admin single-vehicle fetch — unlike the public route this still returns a

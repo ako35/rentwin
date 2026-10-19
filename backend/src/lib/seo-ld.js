@@ -928,6 +928,7 @@ const noindex = (head) => ({ ...head, canonical: null, robots: "noindex, nofollo
  * @param {object} [args.vehicle] { id, name, brand, model, image, transmission, fuelType, modelYear, color } or null
  * @param {boolean} [args.vehicleMissing]  path was /vehicles/:id but no such vehicle
  * @param {object[]} [args.related]        [{ id, name }] a few other in-service vehicles, for the vehicle detail body
+ * @param {string} [args.canonicalVehicleId]  another vehicle's id to canonicalize to instead of self — set when this vehicle shares brand/model/year/transmission/fuel with a sibling (see vehicles.shared.findCanonicalVehicleId)
  * @param {string} [args.locationName]     resolved Location.name for /lokasyonlar/:slug
  * @param {string} [args.slug]             the raw /lokasyonlar/:slug param (keys LOCATION_LOCAL_COPY)
  * @param {boolean} [args.locationMissing] path was /lokasyonlar/:slug but no match
@@ -946,6 +947,7 @@ const buildHead = ({
   vehicle,
   vehicleMissing,
   related,
+  canonicalVehicleId,
   locationName,
   slug,
   locationMissing,
@@ -971,8 +973,17 @@ const buildHead = ({
       });
     }
     const name = vehicle.name;
+    // A sibling vehicle shares this exact templated title/description (same
+    // brand/model/year/transmission/fuel) — point canonical at it instead of
+    // self so the two don't compete as duplicate content (robots stays
+    // index,follow: this is Google's own recommended consolidation signal,
+    // not a reason to noindex).
+    const canonical = canonicalVehicleId
+      ? `${SITE_URL}${localizePath(`/vehicles/${canonicalVehicleId}`, locale)}`
+      : `${SITE_URL}${localizePath(canonicalPath, locale)}`;
     return {
       ...base(path),
+      canonical,
       title:
         locale === "en" ? `Rent a ${name} | Rentwin` : `${name} Kiralama | Rentwin`,
       description:

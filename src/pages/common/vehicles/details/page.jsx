@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 import { setVehicle } from "../../../../store";
 import { usePageMeta } from "../../../../hooks/use-page-meta";
 import { breadcrumbLd, vehicleLd } from "../../../../utils/seo";
+import { localeFromPath, localizePath } from "../../../../i18n/locale-routing";
 import "./style.scss";
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
@@ -41,11 +42,21 @@ const VehicleDetailsPage = () => {
   const vehicleName = vehicle ? `${vehicle.brand} ${vehicle.model}`.trim() : "";
   const imageId = Array.isArray(vehicle?.image) ? vehicle.image[0] : vehicle?.image;
   const imageUrl = imageId ? `${API_URL}/files/display/${imageId}` : undefined;
+  // Several fleet units can share the exact same brand/model/year/transmission/
+  // fuel (and so the exact same templated title+description) — the backend
+  // picks one of that cluster as canonical; every sibling points here instead
+  // of at itself, so Google consolidates them deliberately rather than picking
+  // one at random (Search Console: "Duplicate, Google chose different
+  // canonical than user" — see vehicles.shared.findCanonicalVehicleId).
+  const canonicalPath = vehicle?.canonicalId
+    ? localizePath(`/vehicles/${vehicle.canonicalId}`, localeFromPath(window.location.pathname))
+    : undefined;
 
   usePageMeta({
     title: vehicleName ? t("seoDetailsTitle", { name: vehicleName }) : t("detailsPageTitle"),
     description: vehicleName ? t("seoDetailsDescription", { name: vehicleName }) : undefined,
     image: imageUrl,
+    canonical: canonicalPath,
     type: "product",
     noindex: notFound,
     statusCode: notFound ? 404 : undefined,

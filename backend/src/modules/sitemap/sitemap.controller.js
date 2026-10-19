@@ -1,7 +1,7 @@
 const prisma = require("../../lib/prisma");
 const asyncHandler = require("../../middleware/async-handler");
 const { modelImageKey } = require("../../lib/serializers");
-const { loadModelImageMap } = require("../vehicles/vehicles.shared");
+const { loadModelImageMap, buildCanonicalVehicleMap } = require("../vehicles/vehicles.shared");
 const { SITE_URL, slugify, localizePath } = require("../../lib/site");
 
 const STATIC_ROUTES = [
@@ -74,6 +74,10 @@ const getSitemap = asyncHandler(async (req, res) => {
         id: true,
         brand: true,
         model: true,
+        modelYear: true,
+        transmission: true,
+        fuelType: true,
+        createdAt: true,
         updatedAt: true,
         images: { select: { blobUrl: true }, orderBy: { createdAt: "asc" }, take: 1 },
       },
@@ -90,6 +94,14 @@ const getSitemap = asyncHandler(async (req, res) => {
 
   const vehicleImage = (v) =>
     modelImages.get(modelImageKey(v.brand, v.model))?.blobUrl || v.images[0]?.blobUrl;
+
+  // A sitemap should only ever list canonical URLs — a sibling that shares
+  // another vehicle's brand/model/year/transmission/fuel (and so its exact
+  // templated content) points `rel=canonical` elsewhere and has no business
+  // being submitted here under its own URL (see vehicles.shared.
+  // buildCanonicalVehicleMap / findCanonicalVehicleId).
+  const canonicalVehicleMap = buildCanonicalVehicleMap(vehicles);
+  const canonicalVehicles = vehicles.filter((v) => canonicalVehicleMap.get(v.id) == null);
 
   const campaignImageIds = campaigns.map((c) => c.imageId).filter(Boolean);
   const postImageIds = posts.map((p) => p.imageId).filter(Boolean);
@@ -128,7 +140,7 @@ const getSitemap = asyncHandler(async (req, res) => {
         ...(r.path === "/kampanyalar" && campaignImageUrls.length ? { images: campaignImageUrls } : {}),
       })
     ),
-    ...vehicles.flatMap((v) =>
+    ...canonicalVehicles.flatMap((v) =>
       withEnglishTwin({
         path: `/vehicles/${v.id}`,
         lastmod: v.updatedAt,
