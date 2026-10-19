@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useFormik } from "formik";
 import { Button, Form, Modal, Spinner } from "react-bootstrap";
@@ -16,10 +16,19 @@ import "./new-customer-modal.scss";
 // its customer list and selects the new record.
 const NewCustomerModal = ({ show, onHide, onCreated }) => {
   const { t } = useTranslation("admin");
+  // Set by "Belgeden Doldur" when the scanned photo/PDF is still pending a
+  // save — attached as the new customer's own document right after create,
+  // so the admin never has to upload it a second time.
+  const [pendingScanFile, setPendingScanFile] = useState(null);
 
   const onSubmit = async (values) => {
     try {
       const created = await services.user.createUserAdmin({ ...values });
+      if (pendingScanFile) {
+        // Best-effort — the customer itself already saved; a failed attach
+        // shouldn't read as the whole save having failed.
+        await services.user.addUserDocument(created.id, { file: pendingScanFile }).catch(() => {});
+      }
       utils.functions.swalToast(t("newCustomer.success"), "success");
       onCreated(created);
     } catch (error) {
@@ -39,7 +48,10 @@ const NewCustomerModal = ({ show, onHide, onCreated }) => {
   });
 
   useEffect(() => {
-    if (show) formik.resetForm({ values: EMPTY_NEW_CUST });
+    if (show) {
+      formik.resetForm({ values: EMPTY_NEW_CUST });
+      setPendingScanFile(null);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show]);
 
@@ -137,7 +149,10 @@ const NewCustomerModal = ({ show, onHide, onCreated }) => {
             <h3>{isCorporate ? t("users.form.groups.company") : t("users.form.groups.identity")}</h3>
             <DocumentScan
               customerType={formik.values.customerType}
-              onExtracted={(fields) => applyExtractedCustomerFields(formik, fields)}
+              onExtracted={(fields, file) => {
+                applyExtractedCustomerFields(formik, fields);
+                setPendingScanFile(file);
+              }}
             />
             <div className="customer-form__grid">
               {identityFields.map((item) => (

@@ -134,6 +134,22 @@ model User {
   referenceContracts Contract[]    @relation("ContractReferenceCustomer")
   ledgerEntries      LedgerEntry[] @relation("UserLedger")
   contractPhotos     ContractPhoto[]
+  documents          UserDocument[]
+}
+
+// Scanned ehliyet/kimlik/pasaport (individual) or kaşe/vergi levhası (corporate)
+// documents — the same photo "Belgeden Doldur" already reads to prefill the
+// customer form is kept here too, so the admin never has to upload it again.
+model UserDocument {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  blobUrl   String
+  pathname  String
+  mimeType  String?
+  size      Int?
+  createdAt DateTime @default(now())
 }
 
 model VehicleImage {

@@ -1055,7 +1055,8 @@
     "builtInWarning": "Yerleşik hesaplar silinemez veya güncellenemez.",
     "tabs": {
       "info": "Bilgiler",
-      "contracts": "Kiralamalar"
+      "contracts": "Kiralamalar",
+      "documents": "Belgeler"
     },
     "contractsTab": {
       "title": "Kiralama Geçmişi",
@@ -1066,6 +1067,18 @@
       "amount": "Tutar",
       "status": "Durum",
       "empty": "Bu müşteriye ait kontrat bulunmuyor."
+    },
+    "documentsTab": {
+      "namePlaceholder": "Evrak adı (ör. Ehliyet)",
+      "upload": "Evrak Yükle",
+      "name": "Evrak Adı",
+      "uploadedAt": "Yüklenme Tarihi",
+      "actions": "İşlem",
+      "empty": "Bu müşteriye ait evrak bulunmuyor.",
+      "uploadSuccess": "Evrak yüklendi.",
+      "removeConfirm": "{{name}} evrakı silinsin mi?",
+      "removeSuccess": "Evrak silindi.",
+      "error": "İşlem tamamlanamadı, lütfen tekrar deneyin."
     },
     "documentScan": {
       "buttonIndividual": "Ehliyet / Kimlik / Pasaporttan Doldur",

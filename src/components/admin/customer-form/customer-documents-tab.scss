@@ -1,0 +1,26 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+.customer-documents-tab {
+  padding: 1.5rem;
+
+  &__upload {
+    @include m.flexbox(row, flex-start, center, 0.75rem);
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+
+    .form-control {
+      max-width: 320px;
+    }
+  }
+
+  &__table {
+    font-size: 0.88rem;
+
+    th {
+      white-space: nowrap;
+      color: var(--rw-ink-muted);
+      font-weight: 600;
+    }
+  }
+}

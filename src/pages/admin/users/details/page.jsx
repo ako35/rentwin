@@ -8,6 +8,7 @@ import { utils } from "../../../../utils";
 import { CustomForm, Loading } from "../../../../components";
 import DocumentScan from "../../../../components/admin/customer-form/document-scan";
 import { applyExtractedCustomerFields } from "../../../../components/admin/customer-form/apply-extracted";
+import CustomerDocumentsTab from "../../../../components/admin/customer-form/customer-documents-tab";
 import CustomerContractsTab from "./customer-contracts-tab";
 import { services } from "../../../../services";
 import { TR_PROVINCES, TR_DISTRICTS } from "../../../../constants/tr-geo";
@@ -173,9 +174,13 @@ const AdminUserDetailsPage = () => {
         <Nav.Item>
           <Nav.Link eventKey="contracts">{t("users.tabs.contracts")}</Nav.Link>
         </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey="documents">{t("users.tabs.documents")}</Nav.Link>
+        </Nav.Item>
       </Nav>
 
       {tab === "contracts" && <CustomerContractsTab userId={userId} />}
+      {tab === "documents" && <CustomerDocumentsTab userId={userId} />}
 
       {tab === "info" && (
         <Form noValidate onSubmit={formik.handleSubmit}>
@@ -206,7 +211,13 @@ const AdminUserDetailsPage = () => {
               <h3>{isCorporate ? t("users.form.groups.company") : t("users.form.groups.identity")}</h3>
               <DocumentScan
                 customerType={formik.values.customerType}
-                onExtracted={(fields) => applyExtractedCustomerFields(formik, fields)}
+                onExtracted={(fields, file) => {
+                  applyExtractedCustomerFields(formik, fields);
+                  // The customer already exists here (unlike the new-customer
+                  // forms), so the scanned file can be attached right away —
+                  // best-effort, a failed attach shouldn't block the prefill.
+                  if (file) services.user.addUserDocument(userId, { file }).catch(() => {});
+                }}
               />
               <div className="customer-form__grid">
                 {identityFields.map((item) => (

@@ -6,6 +6,7 @@ const helmet = require("helmet");
 
 const authRoutes = require("./modules/auth/auth.routes");
 const usersRoutes = require("./modules/users/users.routes");
+const userDocumentsRoutes = require("./modules/user-documents/user-documents.routes");
 const vehiclesRoutes = require("./modules/vehicles/vehicles.routes");
 const vehicleModelImagesRoutes = require("./modules/vehicle-model-images/vehicle-model-images.routes");
 const vehicleDocumentsRoutes = require("./modules/vehicle-documents/vehicle-documents.routes");
@@ -82,6 +83,7 @@ api.get("/cron/purge-sold-vehicles", purgeSoldVehicles);
 
 api.use(authRoutes);
 api.use(usersRoutes);
+api.use(userDocumentsRoutes);
 api.use(vehiclesRoutes);
 api.use(vehicleModelImagesRoutes);
 api.use(vehicleDocumentsRoutes);

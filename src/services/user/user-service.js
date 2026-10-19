@@ -83,3 +83,27 @@ export const extractCustomerDocument = async (file, kind) => {
     );
     return response.data;
 };
+
+// Scanned customer documents kept as a permanent list per customer — the
+// same file "Belgeden Doldur" already read is attached here, no second upload.
+export const getUserDocuments = async (userId) => {
+    const response = await axios.get(`${API_URL}/user/${userId}/documents/auth`, services.authHeader());
+    return response.data;
+};
+
+export const addUserDocument = async (userId, { name, file }) => {
+    const formData = new FormData();
+    if (name) formData.append("name", name);
+    formData.append("file", file);
+    const response = await axios.post(
+        `${API_URL}/user/${userId}/documents/auth`,
+        formData,
+        services.authHeader()
+    );
+    return response.data;
+};
+
+export const deleteUserDocument = async (id) => {
+    const response = await axios.delete(`${API_URL}/user/documents/${id}/auth`, services.authHeader());
+    return response.data;
+};

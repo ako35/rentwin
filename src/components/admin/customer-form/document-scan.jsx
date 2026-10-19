@@ -9,7 +9,9 @@ import { utils } from "../../../utils";
 // foreign customer, who has no T.C. kimlik no), a company stamp or tax
 // registration for a corporate customer — Claude reads it server-side and the
 // extracted fields are handed back up to prefill the form. The admin still
-// reviews before saving.
+// reviews before saving. The scanned file itself is handed back too (2nd arg)
+// so the caller can also save it as the customer's own document, without a
+// second upload.
 // Claude returns 200 + documentDetected:false (wrong/unreadable document) or,
 // more rarely, documentDetected:true with every specific field still null (a
 // genuine document it just couldn't read anything off) — either way there is
@@ -45,7 +47,7 @@ const DocumentScan = ({ customerType, onExtracted }) => {
         utils.functions.swalToast(tr("notDetected"), "error");
         return;
       }
-      onExtracted(fields);
+      onExtracted(fields, prepared);
       utils.functions.swalToast(tr("success"), "success");
     } catch (error) {
       const status = error?.response?.status;

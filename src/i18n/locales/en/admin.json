@@ -1055,7 +1055,8 @@
     "builtInWarning": "Built-in accounts cannot ve deleted or updated.",
     "tabs": {
       "info": "Info",
-      "contracts": "Rentals"
+      "contracts": "Rentals",
+      "documents": "Documents"
     },
     "contractsTab": {
       "title": "Rental History",
@@ -1066,6 +1067,18 @@
       "amount": "Amount",
       "status": "Status",
       "empty": "No contracts for this customer yet."
+    },
+    "documentsTab": {
+      "namePlaceholder": "Document name (e.g. Driving licence)",
+      "upload": "Upload Document",
+      "name": "Document Name",
+      "uploadedAt": "Uploaded At",
+      "actions": "Actions",
+      "empty": "No documents for this customer yet.",
+      "uploadSuccess": "Document uploaded.",
+      "removeConfirm": "Delete document {{name}}?",
+      "removeSuccess": "Document deleted.",
+      "error": "The operation could not be completed, please try again."
     },
     "documentScan": {
       "buttonIndividual": "Fill from Licence / ID / Passport",
