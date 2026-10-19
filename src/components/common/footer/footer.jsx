@@ -74,6 +74,11 @@ const Footer = () => {
 
         <div className="site-footer__bottom">
           <p className="site-footer__copyright">© {year} {t("copyright")}</p>
+          <p className="site-footer__credit">
+            <a href="https://storyset.com/transport" target="_blank" rel="noopener noreferrer">
+              Transport illustrations by Storyset
+            </a>
+          </p>
         </div>
       </Container>
     </footer>
