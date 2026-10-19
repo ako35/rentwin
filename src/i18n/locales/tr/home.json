@@ -85,28 +85,11 @@
   ],
   "team": [
     {
-      "id": 1,
-      "image": "patron.jpg",
-      "name": "ÇAĞATAY ALTUNTAŞ",
-      "title": "Kurucu Ortak ve İcra Kurulu Başkanı",
-      "desc": "Otomotiv mühendisliği ve iş dünyası geçmişiyle Rentwin'i 2014'te kurdu. Şirketin stratejisini ve filo kalitesini yönetiyor.",
-      "linkedin": ""
-    },
-    {
       "id": 2,
       "image": "ali-kocan.png",
       "name": "ALİ KOÇAN",
       "title": "Teknoloji Direktörü",
       "desc": "Rentwin'in çevrimiçi rezervasyon sistemini ve dijital altyapısını yönetiyor; müşteri odaklı teknoloji çözümleri geliştiriyor.",
-      "linkedin": ""
-    },
-    {
-      "id": 3,
-      "image": "emre-can-cetin.jpg",
-      "imagePos": "center 25%",
-      "name": "EMRE CAN ÇETİN",
-      "title": "Operasyon Direktörü",
-      "desc": "Filo operasyonlarını ve şube süreçlerini yönetiyor; kiralama deneyimini uçtan uca sadeleştirmeye odaklanıyor.",
       "linkedin": ""
     }
   ],
