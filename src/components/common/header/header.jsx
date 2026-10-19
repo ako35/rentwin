@@ -13,7 +13,7 @@ const Header = () => {
         <Container className="px-0 site-header__row">
           <AppLink to="/" title={t("goToHomepage")} className="site-header__brand">
             <span className="site-header__logo">
-              RENT<span>WIN</span>
+              rent<span>win</span>
             </span>
             <span className="site-header__tagline">{t("slogan")}</span>
           </AppLink>
