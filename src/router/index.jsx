@@ -214,6 +214,29 @@ const router = createBrowserRouter([
   { path: "*", element: <ErrorPage /> },
 ]);
 
+// GA4's own automatic page_view only fires once, for the initial document
+// load (index.html sets send_page_view: false) — a client-side route change
+// here is invisible to it otherwise. Reporting it centrally via the router's
+// subscribe() means every route is covered without touching each page.
+let lastGaPath = null;
+const reportPageView = (location) => {
+  const path = location.pathname + location.search;
+  if (path === lastGaPath) return;
+  lastGaPath = path;
+  if (typeof window.gtag !== "function") return;
+  // Deferred a tick so the new route's usePageMeta effect has already set
+  // document.title by the time we read it.
+  setTimeout(() => {
+    window.gtag("event", "page_view", {
+      page_path: path,
+      page_location: window.location.href,
+      page_title: document.title,
+    });
+  }, 0);
+};
+reportPageView(router.state.location);
+router.subscribe((state) => reportPageView(state.location));
+
 const AppRouter = () => <RouterProvider router={router} />;
 
 export default AppRouter;

@@ -3,6 +3,16 @@
 
 <head>
   <meta charset="UTF-8" />
+  <!-- Google tag (gtag.js) — GA4. send_page_view is off here because this is
+       an SPA; src/router/index.jsx fires the page_view for every route,
+       including the first, in one place instead of per-page. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LSJD7QPJJ8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LSJD7QPJJ8', { send_page_view: false });
+  </script>
   <link rel="icon" type="image/x-icon" href="/icon/favicon.ico" sizes="16x16 32x32 48x48" />
   <link rel="icon" type="image/svg+xml" href="/icon/favicon.svg" />
   <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96" />
