@@ -61,7 +61,14 @@ $breakpointsm: 576px;
     @media (max-width: $breakpoint) {
         flex-basis: auto;
 
-        .navbar { justify-content: flex-end; }
+        // The toggler is .navbar's only visible child at this width (the
+        // collapsed .navbar-collapse is display:none), so justify-content
+        // on .navbar itself has nothing to distribute — it's .navbar's own
+        // inner .container (Bootstrap's own justify-content:space-between)
+        // that actually lays the toggler out, and with one child that
+        // collapses to flex-start. Target it directly to push the toggler
+        // to the right instead of leaving it stuck next to the logo.
+        .navbar > .container { justify-content: flex-end; }
 
         .navbar-collapse {
             width: 100%;
