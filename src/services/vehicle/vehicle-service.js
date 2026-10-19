@@ -23,13 +23,15 @@ export const getVehiclesByPage = async (
   size = 6,
   sort = "model",
   direction = "ASC",
-  availability
+  availability,
+  distinctModel = false
 ) => {
   const params = new URLSearchParams({ page, size, sort, direction });
   if (availability?.pickUpTime && availability?.dropOffTime) {
     params.set("pickUpTime", availability.pickUpTime);
     params.set("dropOffTime", availability.dropOffTime);
   }
+  if (distinctModel) params.set("distinctModel", "1");
   const response = await axios.get(`${API_URL}/car/visitors/pages?${params.toString()}`);
   return response.data;
 };

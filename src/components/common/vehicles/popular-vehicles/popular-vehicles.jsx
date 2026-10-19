@@ -12,7 +12,7 @@ const PopularVehicles = () => {
 
   const loadData = async () => {
     try {
-      const vehicleData = await services.vehicle.getVehiclesByPage();
+      const vehicleData = await services.vehicle.getVehiclesByPage(0, 8, "model", "ASC", undefined, true);
       const { content } = vehicleData;
       setVehicles(content);
     } catch (error) {

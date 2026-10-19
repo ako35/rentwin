@@ -81,6 +81,60 @@ const getVehiclesByPage = asyncHandler(async (req, res) => {
     if (busyIds.size) where.id = { notIn: [...busyIds] };
   }
 
+  // Homepage "Popular Cars": one card per brand+model, ranked by how many
+  // contracts have ever been created for that model (most-rented first) —
+  // several identical fleet cars of the same model no longer crowd out other
+  // models, and the ranking reflects real demand instead of alphabetical order.
+  if (req.query.distinctModel === "1") {
+    const [activeVehicles, contractCounts, modelImages] = await Promise.all([
+      prisma.vehicle.findMany({ where, include: IMAGES_AND_BRANCH_INCLUDE }),
+      prisma.contract.groupBy({ by: ["carId"], _count: { carId: true } }),
+      loadModelImageMap(),
+    ]);
+
+    const contractCountByCarId = new Map(
+      contractCounts.map((row) => [row.carId, row._count.carId])
+    );
+
+    // Group currently-active vehicles by brand+model; within a group, keep the
+    // single most-booked vehicle as the card's representative, and sum every
+    // group member's contract count for the ranking itself.
+    const groups = new Map();
+    for (const vehicle of activeVehicles) {
+      const key = `${vehicle.brand}::${vehicle.model}`;
+      const ownCount = contractCountByCarId.get(vehicle.id) || 0;
+      const existing = groups.get(key);
+      if (!existing) {
+        groups.set(key, { vehicle, repCount: ownCount, total: ownCount });
+      } else {
+        existing.total += ownCount;
+        if (ownCount > existing.repCount) {
+          existing.vehicle = vehicle;
+          existing.repCount = ownCount;
+        }
+      }
+    }
+
+    const ranked = [...groups.values()].sort((a, b) => {
+      if (b.total !== a.total) return b.total - a.total;
+      return a.vehicle.model.localeCompare(b.vehicle.model, "tr");
+    });
+
+    const totalElements = ranked.length;
+    const content = ranked.slice(page * size, page * size + size).map((g) => g.vehicle);
+
+    res.json(
+      buildPageResponse({
+        content: content.map((vehicle) => serializeVehicle(vehicle, modelImages)),
+        totalElements,
+        page,
+        size,
+        sortField,
+      })
+    );
+    return;
+  }
+
   const [content, totalElements, modelImages] = await Promise.all([
     prisma.vehicle.findMany({
       where,
