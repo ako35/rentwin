@@ -11,7 +11,7 @@
 // `display`) keep working unchanged regardless of which provider wrote them.
 const { S3Client, PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
-const { randomUUID } = require("crypto");
+const { randomUUID, createHash } = require("crypto");
 
 const client = new S3Client({
   region: "auto",
@@ -20,6 +20,7 @@ const client = new S3Client({
     accessKeyId: process.env.R2_ACCESS_KEY_ID,
     secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
   },
+  requestChecksumCalculation: "WHEN_REQUIRED",
 });
 
 const uploadImage = async (file, prefix = "vehicles") => {
@@ -30,6 +31,13 @@ const uploadImage = async (file, prefix = "vehicles") => {
       Key: pathname,
       Body: file.buffer,
       ContentType: file.mimetype,
+      // This SDK version hardcodes PutObject as requiring a flexible checksum
+      // (x-amz-checksum-*) regardless of the client's requestChecksumCalculation
+      // setting above, and R2 rejects that header with a 401 — breaking every
+      // upload. Supplying our own SHA256 here satisfies the SDK (it skips
+      // auto-injecting one once this field is set) using the one checksum
+      // style R2 actually accepts.
+      ChecksumSHA256: createHash("sha256").update(file.buffer).digest("base64"),
     })
   );
 
