@@ -50,7 +50,7 @@
   },
   "details": {
     "pricePerHour": "${{price}} / hour",
-    "propertyHighlights": "Property Higlights",
+    "propertyHighlights": "Key Features",
     "model": "Model",
     "doors": "Doors",
     "seats": "Seats",

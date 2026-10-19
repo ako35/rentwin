@@ -411,7 +411,7 @@ const VEHICLE_DETAIL_COPY = {
       `${year} model ${brand} ${model}, Rentwin filosunda ${transmission} vites ve ${fuel} yakıt seçeneğiyle hizmetinizde. Aliağa ve İzmir genelinde teslim alınabilen bu araç, bakımları tamamlanmış ve kullanıma hazır durumdadır.`,
   },
   en: {
-    highlightsTitle: "Property Higlights",
+    highlightsTitle: "Key Features",
     modelLabel: "Model",
     transmissionLabel: "Transmission",
     fuelLabel: "Fuel Type",
