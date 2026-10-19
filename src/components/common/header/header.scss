@@ -47,12 +47,12 @@ $bpsm: 576px;
 
     &__tagline {
         margin-top: 0.2rem;
-        font-size: 0.64rem;
+        font-size: 0.77rem;
         font-weight: 600;
         letter-spacing: 0.04em;
         white-space: nowrap;
         color: v.$color5_3;
 
-        @media (max-width: $bpsm) { font-size: 0.56rem; letter-spacing: 0.02em; }
+        @media (max-width: $bpsm) { font-size: 0.67rem; letter-spacing: 0.02em; }
     }
 }
