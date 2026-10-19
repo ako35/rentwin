@@ -85,11 +85,25 @@
   ],
   "team": [
     {
+      "id": 1,
+      "name": "ÇAĞATAY ALTUNTAŞ",
+      "title": "Co-Founder and Chief Executive Officer",
+      "desc": "Founded Rentwin in 2014 with a background in automotive engineering and business. Leads company strategy and fleet quality.",
+      "linkedin": ""
+    },
+    {
       "id": 2,
       "image": "ali-kocan.png",
       "name": "ALİ KOÇAN",
       "title": "Chief Technology Officer",
       "desc": "Runs Rentwin's online reservation system and digital infrastructure, building customer-focused technology solutions.",
+      "linkedin": ""
+    },
+    {
+      "id": 3,
+      "name": "EMRE CAN ÇETİN",
+      "title": "Chief Operations Officer",
+      "desc": "Runs fleet operations and branch processes, focused on streamlining the rental experience end to end.",
       "linkedin": ""
     }
   ],
