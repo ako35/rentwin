@@ -10,7 +10,7 @@ const Header = () => {
     <header className="site-header fixed-top">
       <TopMenu />
       <div className="site-header__bar">
-        <Container className="p-0 site-header__row">
+        <Container className="px-0 site-header__row">
           <AppLink to="/" title={t("goToHomepage")} className="site-header__brand">
             <span className="site-header__logo">
               RENT<span>WIN</span>
