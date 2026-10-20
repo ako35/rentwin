@@ -2,16 +2,22 @@
 // verifies the copy, removes the public copy, and clears the stale public URL
 // from the database. Dry-run unless --apply is passed. Safe to rerun after a
 // partial failure.
+const fs = require("fs");
+const path = require("path");
+const envLocal = path.resolve(__dirname, "../.env.local");
+if (fs.existsSync(envLocal)) {
+  require("dotenv").config({ path: envLocal });
+}
 require("dotenv").config();
 
 const prisma = require("../src/lib/prisma");
 const { copyPublicFileToPrivate, migratePublicFileToPrivate } = require("../src/lib/storage");
 
 const collections = [
-  { model: "userDocument", urlField: "blobUrl", label: "customer documents" },
-  { model: "vehicleDocument", urlField: "blobUrl", label: "vehicle documents" },
-  { model: "contractPhoto", urlField: "blobUrl", label: "contract photos" },
-  { model: "invoice", pathField: "pdfPathname", urlField: "pdfUrl", label: "invoice PDFs" },
+  { model: "userDocument", urlField: "blobUrl", label: "customer documents", nullable: false },
+  { model: "vehicleDocument", urlField: "blobUrl", label: "vehicle documents", nullable: false },
+  { model: "contractPhoto", urlField: "blobUrl", label: "contract photos", nullable: false },
+  { model: "invoice", pathField: "pdfPathname", urlField: "pdfUrl", label: "invoice PDFs", nullable: true },
 ];
 
 const main = async () => {
@@ -35,8 +41,9 @@ const main = async () => {
   let failed = 0;
   for (const collection of collections) {
     const pathField = collection.pathField || "pathname";
+    const where = collection.nullable ? { [pathField]: { not: null } } : {};
     const rows = await prisma[collection.model].findMany({
-      where: { [pathField]: { not: null } },
+      where,
       select: { id: true, [pathField]: true, [collection.urlField]: true },
     });
     console.log(`${collection.label}: ${rows.length} record(s)`);
