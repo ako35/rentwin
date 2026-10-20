@@ -2,7 +2,6 @@
 // Plus Jakarta Sans is loaded from index.html (<link> + preconnect) — a CSS
 // @import here would block stylesheet parsing and skips the preconnect.
 @import "bootstrap/scss/bootstrap";
-@import "sweetalert2/src/variables";
 @import "sweetalert2/src/sweetalert2";
 
 // Admin-panel colour-scheme tokens + the dark-theme override layer.
