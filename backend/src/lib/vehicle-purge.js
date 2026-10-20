@@ -1,4 +1,5 @@
 const prisma = require("./prisma");
+const { deletePrivateFile } = require("./storage");
 
 // Hard-delete a vehicle and every piece of rental paperwork tied to it:
 // contracts (cascade takes their invoices, drivers, payments, extras, return
@@ -24,6 +25,17 @@ const purgeVehicle = async (vehicleId) => {
   });
   if (!vehicle) return { purged: false, reason: "not-found" };
 
+  const [contractsWithFiles, vehicleDocuments] = await Promise.all([
+    prisma.contract.findMany({
+      where: { carId: vehicleId },
+      select: {
+        photos: { select: { pathname: true } },
+        invoices: { select: { pdfPathname: true } },
+      },
+    }),
+    prisma.vehicleDocument.findMany({ where: { vehicleId }, select: { pathname: true } }),
+  ]);
+
   await prisma.$transaction(async (tx) => {
     const contracts = await tx.contract.findMany({
       where: { carId: vehicleId },
@@ -44,6 +56,15 @@ const purgeVehicle = async (vehicleId) => {
     await tx.reservation.deleteMany({ where: { carId: vehicleId } });
     await tx.vehicle.delete({ where: { id: vehicleId } });
   });
+
+  const paths = [
+    ...contractsWithFiles.flatMap((contract) => [
+      ...contract.photos.map((photo) => photo.pathname),
+      ...contract.invoices.map((invoice) => invoice.pdfPathname),
+    ]),
+    ...vehicleDocuments.map((document) => document.pathname),
+  ].filter(Boolean);
+  await Promise.all(paths.map((pathname) => deletePrivateFile(pathname).catch(() => {})));
 
   return { purged: true, vehicle };
 };

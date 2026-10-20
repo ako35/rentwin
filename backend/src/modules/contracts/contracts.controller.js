@@ -1,6 +1,6 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
-const { uploadImage, deleteImage } = require("../../lib/storage");
+const { uploadPrivateFile, deletePrivateFile, getPrivateDownloadUrl } = require("../../lib/storage");
 const { parseFrontendDateTime, round2 } = require("../../lib/dates");
 const { checkAvailability } = require("../../lib/availability");
 const { serializeContract, serializeUser } = require("../../lib/serializers");
@@ -10,6 +10,13 @@ const { CAR_INCLUDE } = require("./contracts.shared");
 const { num, pickContractFields, rentalTerm } = require("./contract-fields");
 const { recomputeContractFinancials, contractUnitPrice } = require("./contract-financials");
 const { kbsStamp } = require("./kbs");
+
+const invoiceWithDownloadUrl = async (invoice) => ({
+  ...invoice,
+  pdfUrl: invoice.pdfPathname
+    ? await getPrivateDownloadUrl(invoice.pdfPathname, { filename: `${invoice.number}.pdf` })
+    : null,
+});
 
 // The contract detail screen's write paths: patch the contract, read it back
 // in full, extend the drop-off, and issue the invoice.
@@ -139,7 +146,10 @@ const getContractByIdAdmin = asyncHandler(async (req, res) => {
   const t = totals[contract.userId] || { debit: 0, credit: 0 };
 
   res.json({
-    ...serializeContract(rest),
+    ...serializeContract({
+      ...rest,
+      invoices: await Promise.all((rest.invoices || []).map(invoiceWithDownloadUrl)),
+    }),
     carId: contract.carId,
     userId: contract.userId,
     collected: ledgerEntries.reduce((s, e) => s + e.amount, 0),
@@ -371,7 +381,7 @@ const listInvoices = asyncHandler(async (req, res) => {
     where: { contractId: contract.id },
     orderBy: { issuedAt: "desc" },
   });
-  res.json(invoices);
+  res.json(await Promise.all(invoices.map(invoiceWithDownloadUrl)));
 });
 
 const createInvoice = asyncHandler(async (req, res) => {
@@ -437,7 +447,7 @@ const createInvoice = asyncHandler(async (req, res) => {
   } catch (err) {
     P2002(err);
   }
-  res.status(201).json(invoice);
+  res.status(201).json(await invoiceWithDownloadUrl(invoice));
 });
 
 const updateInvoice = asyncHandler(async (req, res) => {
@@ -474,13 +484,13 @@ const updateInvoice = asyncHandler(async (req, res) => {
   } catch (err) {
     P2002(err);
   }
-  res.json(updated);
+  res.json(await invoiceWithDownloadUrl(updated));
 });
 
 const deleteInvoice = asyncHandler(async (req, res) => {
   const invoice = await prisma.invoice.findUnique({ where: { id: req.params.invoiceId } });
   if (!invoice) throw new HttpError(404, "Invoice not found.");
-  if (invoice.pdfPathname) await deleteImage(invoice.pdfPathname).catch(() => {});
+  if (invoice.pdfPathname) await deletePrivateFile(invoice.pdfPathname).catch(() => {});
   await prisma.invoice.delete({ where: { id: invoice.id } });
   res.json({ ok: true });
 });
@@ -492,15 +502,15 @@ const uploadInvoicePdf = asyncHandler(async (req, res) => {
   if (!invoice) throw new HttpError(404, "Invoice not found.");
   if (!req.file) throw new HttpError(400, "Dosya yüklenmedi.");
 
-  const { blobUrl, pathname } = await uploadImage(req.file, "invoices");
+  const { pathname } = await uploadPrivateFile(req.file, "invoices");
 
   const updated = await prisma.invoice.update({
     where: { id: invoice.id },
-    data: { pdfUrl: blobUrl, pdfPathname: pathname },
+    data: { pdfUrl: null, pdfPathname: pathname },
   });
-  if (invoice.pdfPathname) await deleteImage(invoice.pdfPathname).catch(() => {});
+  if (invoice.pdfPathname) await deletePrivateFile(invoice.pdfPathname).catch(() => {});
 
-  res.status(201).json(updated);
+  res.status(201).json(await invoiceWithDownloadUrl(updated));
 });
 
 const deleteInvoicePdf = asyncHandler(async (req, res) => {
@@ -508,7 +518,7 @@ const deleteInvoicePdf = asyncHandler(async (req, res) => {
   if (!invoice) throw new HttpError(404, "Invoice not found.");
   if (!invoice.pdfPathname) return res.json(invoice);
 
-  await deleteImage(invoice.pdfPathname).catch(() => {});
+  await deletePrivateFile(invoice.pdfPathname).catch(() => {});
   const updated = await prisma.invoice.update({
     where: { id: invoice.id },
     data: { pdfUrl: null, pdfPathname: null },

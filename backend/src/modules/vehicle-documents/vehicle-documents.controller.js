@@ -1,7 +1,14 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const asyncHandler = require("../../middleware/async-handler");
-const { uploadImage, deleteImage } = require("../../lib/storage");
+const { uploadPrivateFile, deletePrivateFile, getPrivateDownloadUrl } = require("../../lib/storage");
+
+const withDownloadUrls = (documents) => Promise.all(documents.map(async (document) => ({
+  ...document,
+  blobUrl: document.pathname
+    ? await getPrivateDownloadUrl(document.pathname, { filename: document.name })
+    : null,
+})));
 
 // Maps the URL's :resource segment (shared with vehicle-records.controller.js)
 // to the Prisma model that owns the record and the VehicleDocument column that
@@ -29,7 +36,7 @@ const listDocuments = asyncHandler(async (req, res) => {
     where: { vehicleId },
     orderBy: { createdAt: "desc" },
   });
-  res.json(documents);
+  res.json(await withDownloadUrls(documents));
 });
 
 const uploadDocument = asyncHandler(async (req, res) => {
@@ -40,13 +47,13 @@ const uploadDocument = asyncHandler(async (req, res) => {
   if (!vehicle) throw new HttpError(404, "Vehicle not found.");
 
   const name = (req.body.name || "").trim() || req.file.originalname;
-  const { blobUrl, pathname } = await uploadImage(req.file, "vehicle-documents");
+  const { pathname } = await uploadPrivateFile(req.file, "vehicle-documents");
 
   const document = await prisma.vehicleDocument.create({
     data: {
       vehicleId,
       name,
-      blobUrl,
+      blobUrl: null,
       pathname,
       mimeType: req.file.mimetype,
       size: req.file.size,
@@ -59,7 +66,7 @@ const deleteDocument = asyncHandler(async (req, res) => {
   const document = await prisma.vehicleDocument.findUnique({ where: { id: req.params.id } });
   if (!document) throw new HttpError(404, "Document not found.");
 
-  await deleteImage(document.pathname).catch(() => {});
+  await deletePrivateFile(document.pathname).catch(() => {});
   await prisma.vehicleDocument.delete({ where: { id: document.id } });
   res.json({ message: "Document deleted." });
 });
@@ -77,7 +84,7 @@ const listRecordDocuments = asyncHandler(async (req, res) => {
     where: { [link.field]: recordId },
     orderBy: { createdAt: "desc" },
   });
-  res.json(documents);
+  res.json(await withDownloadUrls(documents));
 });
 
 const uploadRecordDocument = asyncHandler(async (req, res) => {
@@ -92,14 +99,14 @@ const uploadRecordDocument = asyncHandler(async (req, res) => {
   if (!record) throw new HttpError(404, "Record not found.");
 
   const name = (req.body.name || "").trim() || req.file.originalname;
-  const { blobUrl, pathname } = await uploadImage(req.file, "vehicle-documents");
+  const { pathname } = await uploadPrivateFile(req.file, "vehicle-documents");
 
   const document = await prisma.vehicleDocument.create({
     data: {
       vehicleId: record.vehicleId,
       [link.field]: recordId,
       name,
-      blobUrl,
+      blobUrl: null,
       pathname,
       mimeType: req.file.mimetype,
       size: req.file.size,

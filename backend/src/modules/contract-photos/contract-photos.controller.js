@@ -2,7 +2,12 @@ const { randomUUID } = require("crypto");
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const asyncHandler = require("../../middleware/async-handler");
-const { deleteImage, getUploadUrl } = require("../../lib/storage");
+const {
+  deletePrivateFile,
+  getPrivateUploadUrl,
+  getPrivateDownloadUrl,
+  headPrivateFile,
+} = require("../../lib/storage");
 
 // Kept as literal lists (not read off the Prisma client) — same pattern as
 // vehicle-documents.controller's RESOURCE_LINKS map — so a bad value from a
@@ -27,28 +32,31 @@ const requestUpload = asyncHandler(async (req, res) => {
   const contractId = req.params.id;
   const { stage, angle, mimeType } = req.body;
   assertStageAngle(stage, angle);
-  if (!mimeType || !String(mimeType).startsWith("image/")) {
+  if (!["image/jpeg", "image/png", "image/webp"].includes(mimeType)) {
     throw new HttpError(400, "Geçersiz dosya türü.");
   }
   await findContract(contractId);
 
-  const pathname = `contract-photos/${contractId}/${randomUUID()}.jpg`;
-  const uploadUrl = await getUploadUrl(pathname, mimeType);
-  const blobUrl = `${process.env.R2_PUBLIC_URL}/${pathname}`;
-  res.json({ uploadUrl, pathname, blobUrl });
+  const extension = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" }[mimeType];
+  const pathname = `contract-photos/${contractId}/${randomUUID()}.${extension}`;
+  const uploadUrl = await getPrivateUploadUrl(pathname, mimeType);
+  res.json({ uploadUrl, pathname });
 });
 
 // Mobile app step 2, only called after the direct-to-R2 PUT above returned
 // 200 — a DB row is never created for bytes that never actually landed.
 const confirmUpload = asyncHandler(async (req, res) => {
   const contractId = req.params.id;
-  const { stage, angle, pathname, blobUrl, mimeType, size } = req.body;
+  const { stage, angle, pathname, mimeType } = req.body;
   assertStageAngle(stage, angle);
   if (!pathname || !pathname.startsWith(`contract-photos/${contractId}/`)) {
     throw new HttpError(400, "Geçersiz dosya anahtarı.");
   }
-  if (!blobUrl) throw new HttpError(400, "blobUrl eksik.");
   await findContract(contractId);
+  const uploaded = await headPrivateFile(pathname);
+  if (!String(uploaded.ContentType || "").startsWith("image/")) {
+    throw new HttpError(400, "Yüklenen dosya bir görsel değil.");
+  }
 
   const photo = await prisma.contractPhoto.create({
     data: {
@@ -56,9 +64,9 @@ const confirmUpload = asyncHandler(async (req, res) => {
       stage,
       angle,
       pathname,
-      blobUrl,
+      blobUrl: null,
       mimeType: mimeType || null,
-      size: size != null ? Number(size) : null,
+      size: uploaded.ContentLength != null ? Number(uploaded.ContentLength) : null,
       takenById: req.user.id,
     },
   });
@@ -77,14 +85,19 @@ const listPhotos = asyncHandler(async (req, res) => {
     orderBy: [{ stage: "asc" }, { angle: "asc" }, { createdAt: "asc" }],
     include: { takenBy: { select: { firstName: true, lastName: true } } },
   });
-  res.json(photos);
+  res.json(await Promise.all(photos.map(async (photo) => ({
+    ...photo,
+    blobUrl: photo.pathname
+      ? await getPrivateDownloadUrl(photo.pathname, { inline: true })
+      : null,
+  }))));
 });
 
 const deletePhoto = asyncHandler(async (req, res) => {
   const photo = await prisma.contractPhoto.findUnique({ where: { id: req.params.id } });
   if (!photo) throw new HttpError(404, "Photo not found.");
 
-  await deleteImage(photo.pathname).catch(() => {});
+  await deletePrivateFile(photo.pathname).catch(() => {});
   await prisma.contractPhoto.delete({ where: { id: photo.id } });
   res.json({ message: "Photo deleted." });
 });

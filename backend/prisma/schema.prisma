@@ -145,7 +145,7 @@ model UserDocument {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name      String
-  blobUrl   String
+  blobUrl   String?
   pathname  String
   mimeType  String?
   size      Int?
@@ -319,7 +319,7 @@ model VehicleDocument {
   inspectionId  String?
   inspection    VehicleInspection?  @relation(fields: [inspectionId], references: [id], onDelete: Cascade)
   name          String
-  blobUrl       String
+  blobUrl       String?
   pathname      String
   mimeType      String?
   size          Int?
@@ -354,7 +354,7 @@ model ContractPhoto {
   contract   Contract           @relation(fields: [contractId], references: [id], onDelete: Cascade)
   stage      ContractPhotoStage
   angle      ContractPhotoAngle
-  blobUrl    String
+  blobUrl    String?
   pathname   String
   mimeType   String?
   size       Int?

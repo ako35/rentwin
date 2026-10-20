@@ -73,7 +73,7 @@ const removeItem = async (id) => {
 };
 
 const uploadOne = async (item) => {
-  const { uploadUrl, pathname, blobUrl } = await requestPhotoUploadUrl(item.contractId, {
+  const { uploadUrl, pathname } = await requestPhotoUploadUrl(item.contractId, {
     stage: item.stage,
     angle: item.angle,
     mimeType: item.mimeType,
@@ -84,9 +84,7 @@ const uploadOne = async (item) => {
     stage: item.stage,
     angle: item.angle,
     pathname,
-    blobUrl,
     mimeType: item.mimeType,
-    size: file.size,
   });
 };
 

@@ -9,6 +9,7 @@
     "postinstall": "prisma generate && node scripts/migrate-on-deploy.js && node scripts/backfill-recompute-contracts.js && node scripts/backfill-orphan-ledger.js",
     "migrate": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
+    "private-media:migrate": "node scripts/migrate-private-media.js",
     "seed": "node prisma/seed.js",
     "db:which": "node scripts/db-which.js"
   },

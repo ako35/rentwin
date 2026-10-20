@@ -1,7 +1,7 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const asyncHandler = require("../../middleware/async-handler");
-const { deleteImage } = require("../../lib/storage");
+const { deletePrivateFile } = require("../../lib/storage");
 
 // One generic CRUD surface for the vehicle sub-records shown on the kolayCAR-style
 // tabs (Sigorta/Kasko, MTV, Bakim/Tamir, Muayene/Egzoz). Each entry maps the URL
@@ -180,7 +180,7 @@ const deleteRecord = asyncHandler(async (req, res) => {
     where: { [resource.documentField]: id },
     select: { pathname: true },
   });
-  await Promise.all(documents.map((doc) => deleteImage(doc.pathname).catch(() => {})));
+  await Promise.all(documents.map((doc) => deletePrivateFile(doc.pathname).catch(() => {})));
 
   await prisma[resource.model].delete({ where: { id } });
   res.json({ message: "Record deleted." });

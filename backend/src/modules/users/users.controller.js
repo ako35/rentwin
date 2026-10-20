@@ -1,4 +1,5 @@
 const prisma = require("../../lib/prisma");
+const { deletePrivateFile } = require("../../lib/storage");
 const HttpError = require("../../lib/http-error");
 const { hashPassword, comparePassword } = require("../../lib/password");
 const { serializeUser } = require("../../lib/serializers");
@@ -199,11 +200,20 @@ const updateUserAdmin = asyncHandler(async (req, res) => {
 });
 
 const deleteUserAdmin = asyncHandler(async (req, res) => {
-  const target = await prisma.user.findUnique({ where: { id: req.params.id } });
+  const target = await prisma.user.findUnique({
+    where: { id: req.params.id },
+    include: { documents: { select: { pathname: true } } },
+  });
   if (!target) throw new HttpError(404, "User not found.");
   if (target.builtIn) throw new HttpError(403, "This user cannot be deleted.");
 
   await prisma.user.delete({ where: { id: target.id } });
+  await Promise.all(
+    target.documents
+      .map((document) => document.pathname)
+      .filter(Boolean)
+      .map((pathname) => deletePrivateFile(pathname).catch(() => {}))
+  );
   res.json({ message: "User deleted." });
 });
 

@@ -1,4 +1,5 @@
 const prisma = require("../../lib/prisma");
+const { deletePrivateFile } = require("../../lib/storage");
 const HttpError = require("../../lib/http-error");
 const { parseFrontendDateTime, resolveWindow } = require("../../lib/dates");
 const {
@@ -284,7 +285,13 @@ const getAvailableCarsAdmin = asyncHandler(async (req, res) => {
 });
 
 const deleteContract = asyncHandler(async (req, res) => {
-  const contract = await prisma.contract.findUnique({ where: { id: req.params.id } });
+  const contract = await prisma.contract.findUnique({
+    where: { id: req.params.id },
+    include: {
+      photos: { select: { pathname: true } },
+      invoices: { select: { pdfPathname: true } },
+    },
+  });
   if (!contract) throw new HttpError(404, "Contract not found.");
 
   // LedgerEntry.contract is SetNull, so a bare delete would leave the contract's
@@ -294,6 +301,11 @@ const deleteContract = asyncHandler(async (req, res) => {
     prisma.ledgerEntry.deleteMany({ where: { contractId: contract.id } }),
     prisma.contract.delete({ where: { id: contract.id } }),
   ]);
+  const paths = [
+    ...contract.photos.map((photo) => photo.pathname),
+    ...contract.invoices.map((invoice) => invoice.pdfPathname),
+  ].filter(Boolean);
+  await Promise.all(paths.map((pathname) => deletePrivateFile(pathname).catch(() => {})));
   res.json({ message: "Contract deleted." });
 });
 

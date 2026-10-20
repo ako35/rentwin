@@ -1,0 +1,3 @@
+ALTER TABLE "UserDocument" ALTER COLUMN "blobUrl" DROP NOT NULL;
+ALTER TABLE "VehicleDocument" ALTER COLUMN "blobUrl" DROP NOT NULL;
+ALTER TABLE "ContractPhoto" ALTER COLUMN "blobUrl" DROP NOT NULL;
