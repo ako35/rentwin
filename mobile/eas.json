@@ -29,6 +29,12 @@
         "track": "alpha",
         "serviceAccountKeyPath": "./google-service-account.json"
       }
+    },
+    "release": {
+      "android": {
+        "track": "production",
+        "serviceAccountKeyPath": "./google-service-account.json"
+      }
     }
   }
 }

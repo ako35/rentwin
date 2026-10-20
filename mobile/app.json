@@ -19,8 +19,7 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "permissions": [
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
+        "android.permission.CAMERA"
       ],
       "versionCode": 5
     },
@@ -33,7 +32,8 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Araç teslim/iade fotoğrafı çekmek için kameraya erişim gerekiyor."
+          "cameraPermission": "Araç teslim/iade fotoğrafı çekmek için kameraya erişim gerekiyor.",
+          "recordAudioAndroid": false
         }
       ]
     ],
