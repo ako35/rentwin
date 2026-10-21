@@ -28,6 +28,11 @@ const money = (v) =>
   v === null || v === undefined || v === ""
     ? null
     : Number(v).toLocaleString("tr-TR", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+const sanitizeFileName = (str) =>
+  (str || "")
+    .replace(/[\\/:*?"<>|]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 
 const ContractPrintPage = () => {
   const { contractId, docType } = useParams();
@@ -162,7 +167,11 @@ const ContractPrintPage = () => {
     try {
       const canvas = await html2canvas(sheetRef.current, { scale: 2, useCORS: true, backgroundColor: "#fff" });
       const link = document.createElement("a");
-      link.download = `${docType}-${data.contractNo}.png`;
+      const customer = data.customerName && data.customerName !== "—" ? sanitizeFileName(data.customerName) : "";
+      const plate = data.plate && data.plate !== "—" ? sanitizeFileName(data.plate) : "";
+      const contractNo = data.contractNo && data.contractNo !== "—" ? sanitizeFileName(data.contractNo) : "";
+      const parts = [docType, contractNo, customer, plate].filter(Boolean);
+      link.download = `${parts.join(" - ")}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     } catch (error) {
