@@ -18,7 +18,7 @@ import { Redirect, router, Stack, useLocalSearchParams } from "expo-router";
 import { useAuth } from "../../auth/AuthContext";
 import { getFieldContract, listPhotos } from "../../api/client";
 import { DAMAGE_ANGLE, REQUIRED_ANGLES, STAGE_LABEL } from "../../constants/checklist";
-import { CARD, COLORS, SCREEN_HEADER } from "../../constants/theme";
+import { CARD, COLORS } from "../../constants/theme";
 import { discardFailed, enqueueCapture, flushQueue, getQueue, subscribeQueue } from "../../queue/upload-queue";
 import FuelGauge from "../../components/FuelGauge";
 import PhotoCompare from "../../components/PhotoCompare";
@@ -245,7 +245,7 @@ export default function CaptureScreen() {
   return (
     <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       {/* headerShown: the camera view hides the header; restore it on the way back */}
-      <Stack.Screen options={{ ...SCREEN_HEADER, headerShown: true, title: `${plate || ""} · ${stageLabel}` }} />
+      <Stack.Screen options={{ headerShown: true, title: `${plate || ""} · ${stageLabel}` }} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {failedForContract.length > 0 && (
           <View style={styles.failBanner}>

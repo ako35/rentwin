@@ -38,14 +38,6 @@ export const login = (email, password) => http.post("/login", { email, password 
 
 export const getCurrentUser = () => http.get("/user").then((r) => r.data);
 
-// type: "departures" (pickups) | "returns". window="today" actually returns
-// everything still outstanding up to end of today, not just today's — see
-// backend/src/modules/contracts/contracts.admin.controller.js getAdminSchedule.
-export const getSchedule = (type) =>
-  http
-    .get("/contracts/admin/schedule/auth", { params: { type, window: "today", excludeCompleted: "true" } })
-    .then((r) => r.data);
-
 // { departures, returns } — rows carry bucket (overdue | today | tomorrow) and
 // done; see backend/src/modules/field/field.controller.js.
 export const getFieldSchedule = () => http.get("/field/schedule/auth").then((r) => r.data);

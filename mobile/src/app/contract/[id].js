@@ -15,7 +15,7 @@ import { useAuth } from "../../auth/AuthContext";
 import { getFieldContract } from "../../api/client";
 import { STAGE_LABEL } from "../../constants/checklist";
 import { FUEL_TYPE_LABEL, TRANSMISSION_LABEL } from "../../constants/labels";
-import { CARD, COLORS, SCREEN_HEADER } from "../../constants/theme";
+import { CARD, COLORS } from "../../constants/theme";
 import { discardFailed, flushQueue, getQueue, subscribeQueue } from "../../queue/upload-queue";
 import { formatKm, fuelLabel, groupThousands, wallDate, wallDayName, wallTime, whatsappNumber } from "../../utils/format";
 
@@ -74,7 +74,7 @@ export default function ContractScreen() {
 
   return (
     <View style={styles.screen}>
-      <Stack.Screen options={{ ...SCREEN_HEADER, title: contract?.contractNo || "Kontrat" }} />
+      <Stack.Screen options={{ title: contract?.contractNo || "Kontrat" }} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.green} />}

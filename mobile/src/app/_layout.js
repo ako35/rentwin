@@ -4,6 +4,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { Stack } from "expo-router";
 import { AuthProvider } from "../auth/AuthContext";
 import { reconcileQueueOnStart, flushQueue } from "../queue/upload-queue";
+import { COLORS, SCREEN_HEADER } from "../constants/theme";
 
 export default function RootLayout() {
   useEffect(() => {
@@ -24,10 +25,17 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <Stack screenOptions={{ headerTitleAlign: "center" }}>
+      <Stack
+        screenOptions={{
+          ...SCREEN_HEADER,
+          headerTitleAlign: "center",
+          contentStyle: { backgroundColor: COLORS.canvas },
+        }}
+      >
         <Stack.Screen name="login" options={{ headerShown: false }} />
-        <Stack.Screen name="index" options={{ title: "Rentwin Saha" }} />
-        <Stack.Screen name="contract/[id]" options={{ title: "Araç Fotoğrafları" }} />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="contract/[id]" options={{ title: "Kontrat" }} />
+        <Stack.Screen name="capture/[id]" options={{ title: "Fotoğraflar" }} />
       </Stack>
     </AuthProvider>
   );
