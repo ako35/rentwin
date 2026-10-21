@@ -11,6 +11,36 @@ import SaveFirstHint from "./SaveFirstHint";
 const emptyExtForm = () => ({ date: "", time: moment().format("HH:mm"), extraAmount: "", note: "" });
 const day = (d) => (d ? moment.utc(d).format("DD.MM.YYYY") : "—");
 
+const extDuration = (ext, isMonthly, c) => {
+  const start = moment.utc(ext.previousDropOff);
+  const end = moment.utc(ext.newDropOff);
+  if (!start.isValid() || !end.isValid()) {
+    if (ext.months && ext.extraDays) {
+      return `${c("extension.months", { n: ext.months })} ${c("extension.days", { count: ext.extraDays })}`;
+    }
+    if (ext.months) return c("extension.months", { n: ext.months });
+    if (ext.extraDays) return c("extension.days", { count: ext.extraDays });
+    return "";
+  }
+
+  if (isMonthly) {
+    const s = moment(start.format("YYYY-MM-DD"), "YYYY-MM-DD");
+    const e = moment(end.format("YYYY-MM-DD"), "YYYY-MM-DD");
+    let months = 0;
+    while (s.clone().add(months + 1, "month").isSameOrBefore(e, "day")) months += 1;
+    const cursor = s.clone().add(months, "month");
+    const days = Math.max(0, e.diff(cursor, "days"));
+
+    const parts = [];
+    if (months > 0) parts.push(c("extension.months", { n: months }));
+    if (days > 0) parts.push(c("extension.days", { count: days }));
+    return parts.join(" ") || (ext.extraDays ? c("extension.days", { count: ext.extraDays }) : "");
+  }
+
+  const days = ext.extraDays || Math.max(1, Math.ceil(end.diff(start, "hours") / 24));
+  return c("extension.days", { count: days });
+};
+
 // Sub tab: contract extensions. Each extension pushes the drop-off out and adds
 // one flat, operator-entered amount (NET; system adds VAT for monthly) to the
 // contract total — nothing is re-priced. Blank amount auto-fills monthlyPrice ×
@@ -91,35 +121,38 @@ const ExtensionTab = ({ isCreate, contractId, minDate, extensions = [], isMonthl
         </div>
       </div>
 
-      {extensions.map((ext) => (
-        <div className="contract-page__ro contract-page__ro--ext" key={ext.id}>
-          <span>
-            {day(ext.previousDropOff)} → {day(ext.newDropOff)}
-            {ext.months ? ` · ${c("extension.months", { n: ext.months })}` : ""}
-            {ext.note ? ` · ${ext.note}` : ""}
-            {isMonthly && ext.extraAmountNet != null ? (
-              <span className="contract-page__ro-sub">
-                {c("extension.rowVat", {
-                  net: money(ext.extraAmountNet),
-                  gross: money(ext.extraAmount),
-                })}
-              </span>
-            ) : null}
-          </span>
-          <span className="contract-page__ro-end">
-            <strong>{money(ext.extraAmount)} TL</strong>
-            <Button
-              type="button"
-              size="sm"
-              variant="outline-danger"
-              disabled={removingId === ext.id}
-              onClick={() => remove(ext)}
-            >
-              {removingId === ext.id ? <Spinner animation="border" size="sm" /> : c("extension.delete")}
-            </Button>
-          </span>
-        </div>
-      ))}
+      {extensions.map((ext) => {
+        const duration = extDuration(ext, isMonthly, c);
+        return (
+          <div className="contract-page__ro contract-page__ro--ext" key={ext.id}>
+            <span>
+              {day(ext.previousDropOff)} → {day(ext.newDropOff)}
+              {duration ? ` · ${duration}` : ""}
+              {ext.note ? ` · ${ext.note}` : ""}
+              {isMonthly && ext.extraAmountNet != null ? (
+                <span className="contract-page__ro-sub">
+                  {c("extension.rowVat", {
+                    net: money(ext.extraAmountNet),
+                    gross: money(ext.extraAmount),
+                  })}
+                </span>
+              ) : null}
+            </span>
+            <span className="contract-page__ro-end">
+              <strong>{money(ext.extraAmount)} TL</strong>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline-danger"
+                disabled={removingId === ext.id}
+                onClick={() => remove(ext)}
+              >
+                {removingId === ext.id ? <Spinner animation="border" size="sm" /> : c("extension.delete")}
+              </Button>
+            </span>
+          </div>
+        );
+      })}
     </>
   );
 };

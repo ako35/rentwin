@@ -178,11 +178,10 @@ const extendContract = asyncHandler(async (req, res) => {
   const vatRate = contract.vatRate ?? 20;
   const isMonthly = contract.rentalType === "MONTHLY";
   const { months, days } = rentalTerm(contract.dropOffTime, newDropOff);
-  const chargeMonths = isMonthly ? Math.max(1, months) : 0;
 
   const typedNet = num(req.body.extraAmount);
   const autoNet = isMonthly
-    ? round2((contract.monthlyPrice || 0) * chargeMonths)
+    ? round2((contract.monthlyPrice || 0) * months + days * round2((contract.monthlyPrice || 0) / 30))
     : round2((contract.dailyPrice || 0) * days);
   const extraNet = typedNet != null ? typedNet : autoNet;
   const extraGross = isMonthly ? round2(extraNet * (1 + vatRate / 100)) : round2(extraNet);
@@ -194,7 +193,7 @@ const extendContract = asyncHandler(async (req, res) => {
         previousDropOff: contract.dropOffTime,
         newDropOff,
         extraDays: days,
-        months: chargeMonths,
+        months,
         extraAmount: extraGross,
         extraAmountNet: extraNet,
         note: req.body.note || null,
