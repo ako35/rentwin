@@ -21,7 +21,7 @@
       "permissions": [
         "android.permission.CAMERA"
       ],
-      "versionCode": 5,
+      "versionCode": 6,
       "runtimeVersion": {
         "policy": "appVersion"
       }
