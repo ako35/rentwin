@@ -17,6 +17,7 @@ import { getFieldSchedule } from "../api/client";
 import { getQueue, subscribeQueue } from "../queue/upload-queue";
 import { COLORS } from "../constants/theme";
 import { wallDate, wallTime } from "../utils/format";
+import UpdateBanner from "../components/UpdateBanner";
 
 const TABS = {
   PICKUP: { key: "departures", label: "Teslim", empty: "Bugün ve yarın için teslim yok." },
@@ -188,6 +189,8 @@ export default function ScheduleScreen() {
           <Text style={styles.greeting}>{greeting}{firstName ? `, ${firstName}` : ""}</Text>
           <Text style={[styles.welcomeSub, overdueTotal > 0 && styles.welcomeSubAlert]}>{welcomeSub}</Text>
         </View>
+
+        <UpdateBanner />
 
         {/* The two counters double as the tab switch, so the numbers aren't repeated elsewhere. */}
         <View style={styles.summaryCard}>

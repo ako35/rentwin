@@ -21,7 +21,10 @@
       "permissions": [
         "android.permission.CAMERA"
       ],
-      "versionCode": 5
+      "versionCode": 5,
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -44,6 +47,9 @@
         "projectId": "8afce014-50cf-4989-9b35-a9d2a3ddde58"
       }
     },
-    "owner": "alikcn35"
+    "owner": "alikcn35",
+    "updates": {
+      "url": "https://u.expo.dev/8afce014-50cf-4989-9b35-a9d2a3ddde58"
+    }
   }
 }
