@@ -16,6 +16,7 @@ const reservationsRoutes = require("./modules/reservations/reservations.routes")
 const contractsRoutes = require("./modules/contracts/contracts.routes");
 const contractRecordsRoutes = require("./modules/contract-records/contract-records.routes");
 const contractPhotosRoutes = require("./modules/contract-photos/contract-photos.routes");
+const fieldRoutes = require("./modules/field/field.routes");
 const contactMessagesRoutes = require("./modules/contact-messages/contact-messages.routes");
 const excelRoutes = require("./modules/excel/excel.routes");
 const branchesRoutes = require("./modules/branches/branches.routes");
@@ -96,6 +97,7 @@ api.use(contractsRoutes);
 // pattern as vehicle-documents vs. vehicle-records).
 api.use(contractPhotosRoutes);
 api.use(contractRecordsRoutes);
+api.use(fieldRoutes);
 api.use(contactMessagesRoutes);
 api.use(excelRoutes);
 api.use(branchesRoutes);
