@@ -1,11 +1,22 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { File } from "expo-file-system";
-import { requestPhotoUploadUrl, confirmPhotoUpload } from "../api/client";
+import { requestPhotoUploadUrl, confirmPhotoUpload, saveReadings } from "../api/client";
 
 // Deliberately simple: one JSON array in AsyncStorage, flushed sequentially.
 // No WatermelonDB/background job library — a photo checklist is a handful
 // of items at a time, so a persisted array + a re-entrancy guard is enough.
+// Items are photos (kind absent, the original format) or km/fuel readings
+// (kind: "readings") so readings taken offline at the car wait with the photos.
 const QUEUE_KEY = "rentwin-staff-upload-queue-v1";
+
+const newItem = (item) => ({
+  id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  status: "pending", // pending | uploading | failed
+  attempts: 0,
+  lastError: null,
+  createdAt: new Date().toISOString(),
+  ...item,
+});
 
 let listeners = [];
 let flushing = false;
@@ -43,23 +54,38 @@ export const reconcileQueueOnStart = async () => {
   return writeQueue(fixed);
 };
 
-// items: [{ contractId, stage, angle, localUri, mimeType }]
-export const enqueuePhotos = async (items) => {
+// photos: [{ contractId, stage, angle, localUri, mimeType }]
+// readings (optional): { contractId, stage, km, fuelEighths } — replaces any
+// not-yet-sent readings for the same contract+stage, since only the latest
+// value means anything.
+export const enqueueCapture = async ({ photos = [], readings = null }) => {
   const queue = await readQueue();
+  const kept = readings
+    ? queue.filter(
+        (q) =>
+          !(
+            q.kind === "readings" &&
+            q.contractId === readings.contractId &&
+            q.stage === readings.stage &&
+            q.status !== "uploading"
+          )
+      )
+    : queue;
   const next = [
-    ...queue,
-    ...items.map((item) => ({
-      id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      status: "pending", // pending | uploading | failed
-      attempts: 0,
-      lastError: null,
-      createdAt: new Date().toISOString(),
-      ...item,
-    })),
+    ...kept,
+    ...photos.map(newItem),
+    ...(readings ? [newItem({ kind: "readings", ...readings })] : []),
   ];
   await writeQueue(next);
   flushQueue();
   return next;
+};
+
+// "Vazgeç" on a failure banner: drops a contract's failed items for good
+// (e.g. readings the server rejected — retrying would only fail again).
+export const discardFailed = async (contractId) => {
+  const queue = await readQueue();
+  return writeQueue(queue.filter((q) => !(q.contractId === contractId && q.status === "failed")));
 };
 
 const updateItem = async (id, patch) => {
@@ -73,6 +99,10 @@ const removeItem = async (id) => {
 };
 
 const uploadOne = async (item) => {
+  if (item.kind === "readings") {
+    await saveReadings(item.contractId, { stage: item.stage, km: item.km, fuelEighths: item.fuelEighths });
+    return;
+  }
   const { uploadUrl, pathname } = await requestPhotoUploadUrl(item.contractId, {
     stage: item.stage,
     angle: item.angle,
@@ -108,7 +138,9 @@ export const flushQueue = async () => {
         await updateItem(item.id, {
           status: "failed",
           attempts: item.attempts + 1,
-          lastError: expired ? "Oturum süresi doldu, tekrar giriş yapın." : error?.message || "Yükleme başarısız.",
+          lastError: expired
+            ? "Oturum süresi doldu, tekrar giriş yapın."
+            : error?.response?.data?.message || error?.message || "Yükleme başarısız.",
         });
         if (expired) break;
       }

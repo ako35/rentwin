@@ -17,6 +17,11 @@ export const AuthProvider = ({ children }) => {
     })();
   }, []);
 
+  useEffect(() => {
+    api.setSessionExpiredHandler(() => setUser(null));
+    return () => api.setSessionExpiredHandler(null);
+  }, []);
+
   const login = async (email, password) => {
     const { token } = await api.login(email, password);
     // Stash the token first — getCurrentUser() reads it via the axios

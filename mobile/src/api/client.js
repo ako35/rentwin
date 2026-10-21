@@ -6,6 +6,13 @@ const API_URL = Constants.expoConfig.extra.apiUrl;
 
 const http = axios.create({ baseURL: API_URL });
 
+// AuthContext registers this so a dead token anywhere sends the user back to
+// the login screen instead of leaving them on a screen whose requests all fail.
+let onSessionExpired = null;
+export const setSessionExpiredHandler = (handler) => {
+  onSessionExpired = handler;
+};
+
 http.interceptors.request.use(async (config) => {
   const token = await getToken();
   if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -19,7 +26,10 @@ http.interceptors.request.use(async (config) => {
 http.interceptors.response.use(
   (res) => res,
   async (error) => {
-    if (error.response?.status === 401) await clearSession();
+    if (error.response?.status === 401) {
+      await clearSession();
+      onSessionExpired?.();
+    }
     return Promise.reject(error);
   }
 );
@@ -35,6 +45,20 @@ export const getSchedule = (type) =>
   http
     .get("/contracts/admin/schedule/auth", { params: { type, window: "today", excludeCompleted: "true" } })
     .then((r) => r.data);
+
+// { departures, returns } — rows carry bucket (overdue | today | tomorrow) and
+// done; see backend/src/modules/field/field.controller.js.
+export const getFieldSchedule = () => http.get("/field/schedule/auth").then((r) => r.data);
+
+export const getFieldContract = (contractId) =>
+  http.get(`/field/contracts/${contractId}/auth`).then((r) => r.data);
+
+export const saveReadings = (contractId, { stage, km, fuelEighths }) =>
+  http.put(`/field/contracts/${contractId}/readings/auth`, { stage, km, fuelEighths }).then((r) => r.data);
+
+// Photos already uploaded for a contract, with short-lived signed blobUrls.
+export const listPhotos = (contractId, stage) =>
+  http.get(`/contracts/admin/${contractId}/photos/auth`, { params: { stage } }).then((r) => r.data);
 
 export const requestPhotoUploadUrl = (contractId, { stage, angle, mimeType }) =>
   http
