@@ -241,15 +241,29 @@ export const hgsRangesCoverPeriod = (rows, startStr, endStr) => {
 
 // True when this contract is missing an invoice it should already have —
 // mirrors backend contracts.admin.controller.getInvoicePendingContracts:
-//   • DAILY is invoiced once, at return — only "missing" once closed (DONE)
-//     with zero invoices; an open DAILY isn't due yet.
-//   • MONTHLY is invoiced periodically — pending whenever the invoiced
-//     periods (union of periodFrom/periodTo) don't yet cover pick-up -> today,
-//     for any still-open contract. CANCELLED is never pending.
+//   • DAILY/MONTHLY closed (DONE): pending if invoices don't fully cover
+//     pickUpDate → dropOffDate (extension periods included). Zero invoices
+//     is an automatic miss; ad-hoc invoices without periodFrom/periodTo are
+//     ignored in the coverage check (assumed intentional).
+//   • MONTHLY still-open: pending whenever the invoiced periods
+//     (union of periodFrom/periodTo) don't yet cover pick-up → today.
+//   • CANCELLED is never pending.
 // Feeds the "Fatura" tab's red flag on the contract detail screen.
 export const isInvoicePending = (values, invoices = []) => {
   if (!values.status || values.status === "CANCELLED") return false;
-  if (values.status === "DONE") return invoices.length === 0;
+
+  if (values.status === "DONE") {
+    if (invoices.length === 0) return true; // no invoice at all
+    const dated = invoices.filter((i) => i.periodFrom && i.periodTo);
+    if (dated.length === 0) return false; // only ad-hoc invoices — assume intentional
+    const end = values.dropOffDate; // dropOffDate reflects final return date incl. extensions
+    return !hgsRangesCoverPeriod(
+      dated.map((i) => ({ rangeFrom: i.periodFrom, rangeTo: i.periodTo })),
+      values.pickUpDate,
+      end
+    );
+  }
+
   if (values.rentalType !== "MONTHLY") return false;
   const dated = invoices.filter((i) => i.periodFrom && i.periodTo);
   return !hgsRangesCoverPeriod(

@@ -576,10 +576,11 @@ const getInvoicePendingContracts = asyncHandler(async (req, res) => {
   const branchWhere = branchId ? { car: { branchId } } : {};
   const rowInclude = { car: { include: { branch: true } }, user: true };
 
-  const [closedNoInvoice, openMonthly] = await Promise.all([
+  const [closedContracts, openMonthly] = await Promise.all([
+    // Fetch ALL DONE contracts with their invoices so we can check coverage
     prisma.contract.findMany({
-      where: { status: "DONE", invoices: { none: {} }, ...branchWhere },
-      include: rowInclude,
+      where: { status: "DONE", ...branchWhere },
+      include: { ...rowInclude, invoices: { select: { periodFrom: true, periodTo: true } } },
     }),
     prisma.contract.findMany({
       where: { status: { notIn: ["CANCELLED", "DONE"] }, rentalType: "MONTHLY", ...branchWhere },
@@ -588,6 +589,26 @@ const getInvoicePendingContracts = asyncHandler(async (req, res) => {
   ]);
 
   const now = new Date();
+
+  // A closed contract is pending if:
+  //   (a) it has zero invoices, OR
+  //   (b) its dated invoices don't fully cover pickUpTime → returnedAt/dropOffTime
+  const closedPending = closedContracts.filter((c) => {
+    if (c.invoices.length === 0) return true; // no invoice at all
+    // periodFrom/periodTo are optional on Invoice (an ad-hoc one may carry
+    // neither) — drop those before the coverage check, since isoDay(null)
+    // resolves to the epoch rather than "no claim" and would otherwise poison
+    // the whole union with a bogus 1970 interval that breaks the real ones.
+    const dated = c.invoices.filter((i) => i.periodFrom && i.periodTo);
+    if (dated.length === 0) return false; // only ad-hoc invoices — assume intentional
+    const end = c.returnedAt || c.dropOffTime;
+    return !hgsRangesCoverPeriod(
+      dated.map((i) => ({ rangeFrom: i.periodFrom, rangeTo: i.periodTo })),
+      c.pickUpTime,
+      end
+    );
+  });
+
   const openPending = openMonthly.filter((c) => {
     // periodFrom/periodTo are optional on Invoice (an ad-hoc one may carry
     // neither) — drop those before the coverage check, since isoDay(null)
@@ -601,7 +622,7 @@ const getInvoicePendingContracts = asyncHandler(async (req, res) => {
     );
   });
 
-  const rows = [...closedNoInvoice, ...openPending].sort(
+  const rows = [...closedPending, ...openPending].sort(
     (a, b) => new Date(a.returnedAt || a.pickUpTime) - new Date(b.returnedAt || b.pickUpTime)
   );
 
