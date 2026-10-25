@@ -29,6 +29,14 @@ const CATEGORIES = [
 const PERIOD_CATEGORY = "HGS_OGS";
 const EMPTY = { category: "", description: "", amount: "", periodFrom: "", periodTo: "", applyVat: false };
 
+const latestHgsCheckedDate = (checks) => {
+  const latest = (Array.isArray(checks) ? checks : []).reduce((max, row) => {
+    const checkedTo = moment(row.rangeTo).startOf("day");
+    return checkedTo.isValid() && (!max || checkedTo.isAfter(max)) ? checkedTo : max;
+  }, null);
+  return latest?.format("YYYY-MM-DD") || "";
+};
+
 // Gross amount actually reflected in the total: VAT added on top of the
 // entered amount only when the line is flagged for it.
 const lineGross = (row, vatRate) => {
@@ -124,8 +132,8 @@ const ReturnExtraTab = ({
     });
   };
 
-  // Picking HGS/OGS pre-fills the range from the rental window; any other
-  // category drops the range entirely.
+  // Picking HGS/OGS pre-fills the range from the latest HGS check through the
+  // rental end; any other category drops the range entirely.
   const pickCategory = (category) => {
     if (category !== PERIOD_CATEGORY) {
       setForm({ ...form, category, periodFrom: "", periodTo: "" });
@@ -139,9 +147,19 @@ const ReturnExtraTab = ({
     });
   };
 
-  const startAdd = () => {
+  const startAdd = async () => {
     setEditing(null);
-    setForm(EMPTY);
+    let periodFrom = rentalStart || "";
+    // Read the audit log when the form is opened so checks added moments ago
+    // are reflected here too. HGS check ranges are inclusive, so the next toll
+    // period starts on the last checked-through date.
+    try {
+      const checks = await services.contract.getRecords(contractId, "hgsChecks");
+      periodFrom = latestHgsCheckedDate(checks) || periodFrom;
+    } catch {
+      // The rental start remains a safe default if the audit log is unavailable.
+    }
+    setForm({ ...EMPTY, periodFrom });
     setOpen(true);
   };
 
