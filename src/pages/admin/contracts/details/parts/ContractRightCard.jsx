@@ -168,6 +168,7 @@ const ContractRightCard = ({
               isCreate={isCreate}
               contractId={contractId}
               contractStatus={formik.values.status}
+              extensions={extensions}
               onChange={loadData}
               money={money}
               rentalStart={formik.values.pickUpDate}

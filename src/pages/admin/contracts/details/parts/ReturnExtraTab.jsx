@@ -29,12 +29,13 @@ const CATEGORIES = [
 const PERIOD_CATEGORY = "HGS_OGS";
 const EMPTY = { category: "", description: "", amount: "", periodFrom: "", periodTo: "", applyVat: false };
 
-const latestHgsCheckedDate = (checks) => {
-  const latest = (Array.isArray(checks) ? checks : []).reduce((max, row) => {
-    const checkedTo = moment(row.rangeTo).startOf("day");
-    return checkedTo.isValid() && (!max || checkedTo.isAfter(max)) ? checkedTo : max;
+const hgsDefaultStartDate = (extensions, rentalEnd) => {
+  const latestExtensionEnd = (Array.isArray(extensions) ? extensions : []).reduce((max, extension) => {
+    const extensionEnd = moment.utc(extension.newDropOff).startOf("day");
+    return extensionEnd.isValid() && (!max || extensionEnd.isAfter(max)) ? extensionEnd : max;
   }, null);
-  return latest?.format("YYYY-MM-DD") || "";
+  const periodEnd = latestExtensionEnd || (rentalEnd ? moment.utc(rentalEnd, "YYYY-MM-DD").startOf("day") : null);
+  return periodEnd?.isValid() ? periodEnd.clone().subtract(1, "month").format("YYYY-MM-DD") : "";
 };
 
 // Gross amount actually reflected in the total: VAT added on top of the
@@ -52,7 +53,7 @@ const fmtRange = (from, to) => {
 };
 
 const ReturnExtraTab = ({
-  isCreate, contractId, contractStatus, onChange, money, rentalStart, rentalEnd, vatRate = 20,
+  isCreate, contractId, contractStatus, extensions = [], onChange, money, rentalStart, rentalEnd, vatRate = 20,
 }) => {
   const { t } = useTranslation("admin");
   const c = (key, opts) => t(`reservations.contract.returnCharges.${key}`, opts);
@@ -132,8 +133,8 @@ const ReturnExtraTab = ({
     });
   };
 
-  // Picking HGS/OGS pre-fills the range from the latest HGS check through the
-  // rental end; any other category drops the range entirely.
+  // Picking HGS/OGS pre-fills the range from one month before the latest
+  // extension's new end date through the rental end. The period stays editable.
   const pickCategory = (category) => {
     if (category !== PERIOD_CATEGORY) {
       setForm({ ...form, category, periodFrom: "", periodTo: "" });
@@ -147,18 +148,9 @@ const ReturnExtraTab = ({
     });
   };
 
-  const startAdd = async () => {
+  const startAdd = () => {
     setEditing(null);
-    let periodFrom = rentalStart || "";
-    // Read the audit log when the form is opened so checks added moments ago
-    // are reflected here too. HGS check ranges are inclusive, so the next toll
-    // period starts on the last checked-through date.
-    try {
-      const checks = await services.contract.getRecords(contractId, "hgsChecks");
-      periodFrom = latestHgsCheckedDate(checks) || periodFrom;
-    } catch {
-      // The rental start remains a safe default if the audit log is unavailable.
-    }
+    const periodFrom = hgsDefaultStartDate(extensions, rentalEnd) || rentalStart || "";
     setForm({ ...EMPTY, periodFrom });
     setOpen(true);
   };
