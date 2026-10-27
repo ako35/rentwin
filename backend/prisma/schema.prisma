@@ -797,6 +797,7 @@ model Setting {
   // Dashboard "yaklaşan/süresi geçmiş" alert panel window, per category — null
   // means "use the 15-day default" (see vehicles.dashboard.controller.js).
   alertWindowInspectionDays Int?
+  inspectionAppointmentReminderDays Int?
   alertWindowInsuranceDays  Int?
   alertWindowKaskoDays      Int?
   alertWindowTaxDays        Int?

@@ -18,6 +18,8 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [fleetStats, setFleetStats] = useState(null);
   const [expiryAlerts, setExpiryAlerts] = useState(null);
+  const [inspectionAppointments, setInspectionAppointments] = useState([]);
+  const [appointmentReminderDays, setAppointmentReminderDays] = useState(7);
   const [hgsPending, setHgsPending] = useState([]);
   const [invoicePending, setInvoicePending] = useState([]);
   const [kbsPending, setKbsPending] = useState([]);
@@ -26,9 +28,11 @@ const AdminDashboard = () => {
 
   const loadData = async () => {
     try {
-      const [stats, alerts, hgs, invoices, kbs, kbsRelease, sign] = await Promise.all([
+      const [stats, alerts, appointments, settings, hgs, invoices, kbs, kbsRelease, sign] = await Promise.all([
         services.vehicle.getFleetStats(branchId),
         services.vehicle.getExpiryAlerts(branchId),
+        services.vehicle.getInspectionAppointments(branchId).catch(() => []),
+        services.settings.getSettings().catch(() => null),
         services.contract.getHgsPendingContracts({ branchId }).catch(() => []),
         services.contract.getInvoicePendingContracts({ branchId }).catch(() => []),
         services.contract.getKbsPendingContracts({ branchId }).catch(() => []),
@@ -37,6 +41,8 @@ const AdminDashboard = () => {
       ]);
       setFleetStats(stats);
       setExpiryAlerts(alerts);
+      setInspectionAppointments(Array.isArray(appointments) ? appointments : []);
+      setAppointmentReminderDays(settings?.inspectionAppointmentReminderDays || 7);
       setHgsPending(Array.isArray(hgs) ? hgs : []);
       setInvoicePending(Array.isArray(invoices) ? invoices : []);
       setKbsPending(Array.isArray(kbs) ? kbs : []);
@@ -82,6 +88,8 @@ const AdminDashboard = () => {
 
           <MaintenanceAlertBar
             alerts={expiryAlerts}
+            inspectionAppointments={inspectionAppointments}
+            appointmentReminderDays={appointmentReminderDays}
             hgsPending={hgsPending}
             invoicePending={invoicePending}
             kbsPending={kbsPending}

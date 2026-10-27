@@ -1257,10 +1257,11 @@
     },
     "alertWindows": {
       "title": "Alert Windows",
-      "hint": "Set how many days ahead the dashboard's \"upcoming / overdue\" alert for Insurance/Kasko/MTV/Inspection should start warning, and how many km ahead it should for Maintenance. A field left blank uses the 15-day default (1000 km for Maintenance).",
+      "hint": "Set the inspection / emission expiry alert and appointment reminder window separately. You can also set the other expiry alert windows and the maintenance km window here. A blank appointment reminder uses 7 days; other day fields default to 15 days and maintenance to 1000 km.",
       "suffix": "days",
       "suffixKm": "km",
       "alertWindowInspectionDays": "Inspection / Emissions",
+      "inspectionAppointmentReminderDays": "Inspection / Emission appointment reminders",
       "alertWindowInsuranceDays": "Traffic Insurance",
       "alertWindowKaskoDays": "Kasko",
       "alertWindowTaxDays": "Vehicle Tax (MTV)",
@@ -1399,6 +1400,10 @@
   "alertBar": {
     "maintenance": "Maintenance",
     "inspection": "Inspection / Exhaust",
+    "inspectionAppointments": "Inspection appointments",
+    "inspectionAppointmentsHead": "Overdue, today, and appointments in the next {{days}} days",
+    "inspectionAppointmentsNone": "No appointments in the reminder window.",
+    "appointmentToday": "Today",
     "insurance": "Insurance",
     "kasko": "Comprehensive",
     "tax": "Road Tax",
@@ -1431,7 +1436,11 @@
       "customer": "Customer",
       "closedAt": "Closed On",
       "pickUpDate": "Pick-up Date",
-      "status": "Status"
+      "status": "Status",
+      "appointmentType": "Service",
+      "appointmentDate": "Appointment date",
+      "station": "Station",
+      "appointmentStatus": "Status"
     }
   },
   "footer": {

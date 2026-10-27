@@ -34,6 +34,7 @@ const FIELDS = [
 // its own unit/placeholder instead of the shared "gün" suffix.
 const ALERT_FIELDS = [
   { name: "alertWindowInspectionDays", unit: "days", placeholder: "15" },
+  { name: "inspectionAppointmentReminderDays", unit: "days", placeholder: "7" },
   { name: "alertWindowInsuranceDays", unit: "days", placeholder: "15" },
   { name: "alertWindowKaskoDays", unit: "days", placeholder: "15" },
   { name: "alertWindowTaxDays", unit: "days", placeholder: "15" },

@@ -1257,10 +1257,11 @@
     },
     "alertWindows": {
       "title": "Uyarı Süreleri",
-      "hint": "Panoda Sigorta/Kasko/MTV/Muayene için \"yaklaşan / süresi geçmiş\" uyarısının kaç gün öncesinden başlayacağını, Bakım için ise kaç km kala başlayacağını buradan ayarlayın. Boş bırakılan alan gün alanlarında 15, Bakım'da 1000 km varsayılanını kullanır.",
+      "hint": "Muayene / Egzoz geçerlilik uyarısı ile randevu hatırlatma süresini ayrı ayrı belirleyin. Diğer geçerlilik uyarılarının gün aralığını ve bakımın km aralığını da buradan ayarlayın. Boş bırakılan randevu hatırlatması 7 gün, diğer gün alanları 15 gün ve bakım 1000 km varsayılanını kullanır.",
       "suffix": "gün",
       "suffixKm": "km",
       "alertWindowInspectionDays": "Muayene / Egzoz",
+      "inspectionAppointmentReminderDays": "Muayene / Egzoz randevu hatırlatması",
       "alertWindowInsuranceDays": "Trafik Sigortası",
       "alertWindowKaskoDays": "Kasko",
       "alertWindowTaxDays": "MTV",
@@ -1399,6 +1400,10 @@
   "alertBar": {
     "maintenance": "Bakım",
     "inspection": "Muayene / Egzoz",
+    "inspectionAppointments": "Muayene randevuları",
+    "inspectionAppointmentsHead": "Geciken, bugün ve sonraki {{days}} gün içindeki randevular",
+    "inspectionAppointmentsNone": "Hatırlatma penceresinde randevu yok.",
+    "appointmentToday": "Bugün",
     "insurance": "Sigorta",
     "kasko": "Kasko",
     "tax": "MTV",
@@ -1431,7 +1436,11 @@
       "customer": "Müşteri",
       "closedAt": "Kapanış Tarihi",
       "pickUpDate": "Alış Tarihi",
-      "status": "Durum"
+      "status": "Durum",
+      "appointmentType": "İşlem",
+      "appointmentDate": "Randevu tarihi",
+      "station": "İstasyon",
+      "appointmentStatus": "Durum"
     }
   },
   "footer": {

@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { GiCarWheel, GiMechanicGarage } from "react-icons/gi";
+import moment from "moment/moment";
 import {
+  BsCalendar2Week,
   BsShieldCheck,
   BsShield,
   BsReceipt,
@@ -28,6 +30,7 @@ const HGS_KEY = "hgsPending";
 const INVOICE_KEY = "invoicePending";
 const KBS_KEY = "kbsPending";
 const SIGN_KEY = "signPending";
+const APPOINTMENT_KEY = "inspectionAppointments";
 
 // Maps an alert category to the vehicle-detail record tab it belongs to —
 // Sigorta and Kasko are both entries on the vehicle form's single "insurance"
@@ -121,14 +124,21 @@ const MaintenanceAlertBar = ({
   kbsPending = [],
   kbsReleasePending = [],
   signPending = [],
+  inspectionAppointments = [],
+  appointmentReminderDays = 7,
 }) => {
   const { t, i18n } = useTranslation("admin");
   const [open, setOpen] = useState(null);
 
   const categories = alerts?.categories || {};
   const isSpecialTab = (key) =>
-    key === HGS_KEY || key === INVOICE_KEY || key === KBS_KEY || key === SIGN_KEY;
+    key === HGS_KEY || key === INVOICE_KEY || key === KBS_KEY || key === SIGN_KEY || key === APPOINTMENT_KEY;
   const kbsCount = kbsPending.length + kbsReleasePending.length;
+  const appointmentReminders = inspectionAppointments.filter((row) => {
+    if (row.status !== "SCHEDULED") return false;
+    const daysUntil = moment(row.appointmentAt).startOf("day").diff(moment().startOf("day"), "days");
+    return daysUntil <= appointmentReminderDays;
+  });
 
   const activeList = open && !isSpecialTab(open) ? categories[open] || [] : [];
 
@@ -202,6 +212,17 @@ const MaintenanceAlertBar = ({
             <BsPen /> {t("alertBar.signPending")} ({signPending.length})
           </button>
         </div>
+        <button
+          type="button"
+          className={
+            "maintenance-alert-bar__tab" +
+            (appointmentReminders.length ? " maintenance-alert-bar__tab--due maintenance-alert-bar__tab--overdue" : "") +
+            (open === APPOINTMENT_KEY ? " maintenance-alert-bar__tab--active" : "")
+          }
+          onClick={() => setOpen(open === APPOINTMENT_KEY ? null : APPOINTMENT_KEY)}
+        >
+          <BsCalendar2Week /> {t("alertBar.inspectionAppointments")} ({appointmentReminders.length})
+        </button>
       </div>
 
       {open && !isSpecialTab(open) && (
@@ -260,6 +281,44 @@ const MaintenanceAlertBar = ({
             <div className="maintenance-alert-bar__empty">{t("alertBar.hgsNone")}</div>
           ) : (
             <MixedStatusTable rows={hgsPending} />
+          )}
+        </div>
+      )}
+
+      {open === APPOINTMENT_KEY && (
+        <div className="maintenance-alert-bar__panel">
+          <div className="maintenance-alert-bar__panel-head">
+            {t("alertBar.inspectionAppointmentsHead", { days: appointmentReminderDays })}
+          </div>
+          {appointmentReminders.length === 0 ? (
+            <div className="maintenance-alert-bar__empty">{t("alertBar.inspectionAppointmentsNone")}</div>
+          ) : (
+            <table className="maintenance-alert-bar__table">
+              <thead><tr>
+                <th>{t("alertBar.col.plate")}</th>
+                <th>{t("alertBar.col.appointmentType")}</th>
+                <th>{t("alertBar.col.appointmentDate")}</th>
+                <th>{t("alertBar.col.station")}</th>
+                <th>{t("alertBar.col.appointmentStatus")}</th>
+              </tr></thead>
+              <tbody>{appointmentReminders.map((row) => {
+                const daysUntil = moment(row.appointmentAt).startOf("day").diff(moment().startOf("day"), "days");
+                const typeKey = row.type === "Emission" ? "emission" : "periodic";
+                return (
+                  <tr key={row.id}>
+                    <td className="maintenance-alert-bar__plate">
+                      <Link to={constants.routes.adminInspectionAppointments}>{row.vehicle?.licensePlate || "—"}</Link>
+                    </td>
+                    <td>{t(`inspectionAppointments.types.${typeKey}`)}</td>
+                    <td>{utils.functions.getDate(row.appointmentAt)}</td>
+                    <td>{row.station || "—"}</td>
+                    <td>{daysUntil < 0
+                      ? t("alertBar.daysOverdue", { days: Math.abs(daysUntil) })
+                      : daysUntil === 0 ? t("alertBar.appointmentToday") : t("alertBar.daysLeft", { days: daysUntil })}</td>
+                  </tr>
+                );
+              })}</tbody>
+            </table>
           )}
         </div>
       )}
