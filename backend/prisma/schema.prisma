@@ -81,6 +81,12 @@ enum InspectionResult {
   Defective
 }
 
+enum InspectionAppointmentStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
 enum LedgerDirection {
   DEBIT
   CREDIT
@@ -106,35 +112,35 @@ enum LedgerCategory {
 }
 
 model User {
-  id                 String        @id @default(uuid())
-  firstName          String
-  lastName           String
-  email              String
-  passwordHash       String
-  phoneNumber        String
-  address            String
-  zipCode            String
-  roles              Role[]        @default([Customer])
-  builtIn            Boolean       @default(false)
-  customerType       String        @default("Bireysel")
-  customerCode       String?       @unique
-  companyTitle       String?
-  taxOffice          String?
-  nationalId         String?
+  id                   String          @id @default(uuid())
+  firstName            String
+  lastName             String
+  email                String
+  passwordHash         String
+  phoneNumber          String
+  address              String
+  zipCode              String
+  roles                Role[]          @default([Customer])
+  builtIn              Boolean         @default(false)
+  customerType         String          @default("Bireysel")
+  customerCode         String?         @unique
+  companyTitle         String?
+  taxOffice            String?
+  nationalId           String?
   authorizedNationalId String? // Kurumsal only: the authorized (contact) person's own T.C. kimlik no, distinct from the company's VKN in nationalId
-  birthDate          DateTime? // Bireysel only — the customer's own date of birth
-  city               String?
-  district           String?
-  active             Boolean       @default(true)
-  notes              String?
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
-  reservations       Reservation[] @relation("ReservationCustomer")
-  contracts          Contract[]    @relation("ContractCustomer")
-  referenceContracts Contract[]    @relation("ContractReferenceCustomer")
-  ledgerEntries      LedgerEntry[] @relation("UserLedger")
-  contractPhotos     ContractPhoto[]
-  documents          UserDocument[]
+  birthDate            DateTime? // Bireysel only — the customer's own date of birth
+  city                 String?
+  district             String?
+  active               Boolean         @default(true)
+  notes                String?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  reservations         Reservation[]   @relation("ReservationCustomer")
+  contracts            Contract[]      @relation("ContractCustomer")
+  referenceContracts   Contract[]      @relation("ContractReferenceCustomer")
+  ledgerEntries        LedgerEntry[]   @relation("UserLedger")
+  contractPhotos       ContractPhoto[]
+  documents            UserDocument[]
 }
 
 // Scanned ehliyet/kimlik/pasaport (individual) or kaşe/vergi levhası (corporate)
@@ -180,65 +186,66 @@ model VehicleModelImage {
 }
 
 model Vehicle {
-  id                   String               @id @default(uuid())
-  brand                String
-  model                String
-  licensePlate         String               @unique
-  transmission         Transmission
-  fuelType             FuelType
-  bodyType             VehicleBodyType      @default(BINEK)
-  outOfService         Boolean              @default(false)
-  builtIn              Boolean              @default(false)
-  soldAt               DateTime? // set = vehicle sold and retired from the fleet; auto-purged 5 years later
-  saleNote             String? // free-text note captured at sale time
-  passiveAt            DateTime? // set = temporarily pulled from the active fleet by an admin decision — distinct
-                                  // from outOfService (mechanical/maintenance) and from soldAt (permanent, purged);
-                                  // reversible any time by clearing it. Excluded from listings/availability the
-                                  // same way outOfService is.
-  passiveNote          String? // free-text reason captured when marking passive
+  id                     String                         @id @default(uuid())
+  brand                  String
+  model                  String
+  licensePlate           String                         @unique
+  transmission           Transmission
+  fuelType               FuelType
+  bodyType               VehicleBodyType                @default(BINEK)
+  outOfService           Boolean                        @default(false)
+  builtIn                Boolean                        @default(false)
+  soldAt                 DateTime? // set = vehicle sold and retired from the fleet; auto-purged 5 years later
+  saleNote               String? // free-text note captured at sale time
+  passiveAt              DateTime? // set = temporarily pulled from the active fleet by an admin decision — distinct
+  // from outOfService (mechanical/maintenance) and from soldAt (permanent, purged);
+  // reversible any time by clearing it. Excluded from listings/availability the
+  // same way outOfService is.
+  passiveNote            String? // free-text reason captured when marking passive
   // Per-category tracking switches — unlike passiveAt (whole vehicle pulled
   // from the rentable fleet), these only silence that one category's
   // dashboard/expiry-alert nagging; the vehicle stays fully rentable. Default
   // true so every existing vehicle keeps being tracked exactly as before.
-  trackInsurance       Boolean              @default(true) // Trafik sigortası
-  trackKasko           Boolean              @default(true)
-  trackTax             Boolean              @default(true) // MTV
-  trackInspection      Boolean              @default(true) // Muayene + Egzoz (one shared alert window)
-  trackMaintenance     Boolean              @default(true) // Bakım/Tamir
-  branchId             String?
-  branch               Branch?              @relation(fields: [branchId], references: [id], onDelete: SetNull)
-  nextMaintenanceDate  DateTime?
-  nextInspectionDate   DateTime?
-  maintenanceIntervalKm Int? // periodic maintenance km interval the operator plans around, e.g. 10000
-  nextMaintenanceKm    Int? // synced from the latest logged maintenance record's planned "next odometer"
-  modelYear            Int?
-  chassisNo            String?
-  engineNo             String?
-  currentKm            Int?
-  currentFuelPercent   Int? // deprecated — replaced by currentFuelEighths; kept nullable until a later cleanup migration
-  currentFuelEighths   Int? // fuel / charge gauge reading, 0-8
-  registrationSerialNo String?
-  registrationDate     DateTime?
-  color                String?
-  dailyPrice           Float? // Fiyat Listesi (admin/price-list) — list price per rental day
-  monthlyPrice         Float? // Fiyat Listesi (admin/price-list) — list price per rental month
-  notes                String?
-  images               VehicleImage[]
-  reservations         Reservation[]
-  contracts            Contract[]
-  insurances           VehicleInsurance[]
-  taxes                VehicleTax[]
-  maintenances         VehicleMaintenance[]
-  inspections          VehicleInspection[]
-  documents            VehicleDocument[]
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime             @updatedAt
+  trackInsurance         Boolean                        @default(true) // Trafik sigortası
+  trackKasko             Boolean                        @default(true)
+  trackTax               Boolean                        @default(true) // MTV
+  trackInspection        Boolean                        @default(true) // Muayene + Egzoz (one shared alert window)
+  trackMaintenance       Boolean                        @default(true) // Bakım/Tamir
+  branchId               String?
+  branch                 Branch?                        @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  nextMaintenanceDate    DateTime?
+  nextInspectionDate     DateTime?
+  maintenanceIntervalKm  Int? // periodic maintenance km interval the operator plans around, e.g. 10000
+  nextMaintenanceKm      Int? // synced from the latest logged maintenance record's planned "next odometer"
+  modelYear              Int?
+  chassisNo              String?
+  engineNo               String?
+  currentKm              Int?
+  currentFuelPercent     Int? // deprecated — replaced by currentFuelEighths; kept nullable until a later cleanup migration
+  currentFuelEighths     Int? // fuel / charge gauge reading, 0-8
+  registrationSerialNo   String?
+  registrationDate       DateTime?
+  color                  String?
+  dailyPrice             Float? // Fiyat Listesi (admin/price-list) — list price per rental day
+  monthlyPrice           Float? // Fiyat Listesi (admin/price-list) — list price per rental month
+  notes                  String?
+  images                 VehicleImage[]
+  reservations           Reservation[]
+  contracts              Contract[]
+  insurances             VehicleInsurance[]
+  taxes                  VehicleTax[]
+  maintenances           VehicleMaintenance[]
+  inspections            VehicleInspection[]
+  inspectionAppointments VehicleInspectionAppointment[]
+  documents              VehicleDocument[]
+  createdAt              DateTime                       @default(now())
+  updatedAt              DateTime                       @updatedAt
 }
 
 model VehicleInsurance {
-  id        String        @id @default(uuid())
+  id        String            @id @default(uuid())
   vehicleId String
-  vehicle   Vehicle       @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  vehicle   Vehicle           @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   type      InsuranceType
   company   String
   policyNo  String
@@ -247,14 +254,14 @@ model VehicleInsurance {
   premium   Float?
   notes     String?
   documents VehicleDocument[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
 }
 
 model VehicleTax {
-  id          String    @id @default(uuid())
+  id          String            @id @default(uuid())
   vehicleId   String
-  vehicle     Vehicle   @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  vehicle     Vehicle           @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   period      Int
   installment Int
   amount      Float?
@@ -262,15 +269,15 @@ model VehicleTax {
   paidDate    DateTime?
   notes       String?
   documents   VehicleDocument[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 }
 
 model VehicleMaintenance {
-  id           String          @id @default(uuid())
+  id           String            @id @default(uuid())
   vehicleId    String
-  vehicle      Vehicle         @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  type         MaintenanceType @default(Periodic)
+  vehicle      Vehicle           @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  type         MaintenanceType   @default(Periodic)
   date         DateTime
   odometer     Int?
   vendor       String?
@@ -279,24 +286,43 @@ model VehicleMaintenance {
   nextDate     DateTime?
   nextOdometer Int?
   documents    VehicleDocument[]
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 }
 
 model VehicleInspection {
-  id         String           @id @default(uuid())
+  id         String            @id @default(uuid())
   vehicleId  String
-  vehicle    Vehicle          @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  type       InspectionType   @default(Periodic)
+  vehicle    Vehicle           @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  type       InspectionType    @default(Periodic)
   date       DateTime
-  result     InspectionResult @default(Pass)
+  result     InspectionResult  @default(Pass)
   expiryDate DateTime?
   station    String?
   cost       Float?
   notes      String?
   documents  VehicleDocument[]
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @updatedAt
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+}
+
+model VehicleInspectionAppointment {
+  id            String                      @id @default(uuid())
+  vehicleId     String
+  vehicle       Vehicle                     @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  type          InspectionType
+  appointmentAt DateTime
+  station       String?
+  bookingCode   String?
+  cost          Float?
+  notes         String?
+  status        InspectionAppointmentStatus @default(SCHEDULED)
+  completedAt   DateTime?
+  createdAt     DateTime                    @default(now())
+  updatedAt     DateTime                    @updatedAt
+
+  @@index([vehicleId, appointmentAt])
+  @@index([status, appointmentAt])
 }
 
 // General-purpose evrak (ruhsat, plaka fotoğrafı vb.) attached to a vehicle —
@@ -456,24 +482,24 @@ model Reservation {
 // The full rental agreement — pricing, extras, drivers, payments, invoice.
 // May be created directly (walk-in) or converted from a Reservation.
 model Contract {
-  id                String              @id @default(uuid())
-  contractNo        String?             @unique
+  id                String                  @id @default(uuid())
+  contractNo        String?                 @unique
   pickUpLocation    String
   dropOffLocation   String
   pickUpTime        DateTime
   dropOffTime       DateTime
   totalPrice        Float
-  status            ContractStatus      @default(CREATED)
+  status            ContractStatus          @default(CREATED)
   userId            String
-  user              User                @relation("ContractCustomer", fields: [userId], references: [id])
+  user              User                    @relation("ContractCustomer", fields: [userId], references: [id])
   referenceUserId   String?
-  referenceUser     User?               @relation("ContractReferenceCustomer", fields: [referenceUserId], references: [id], onDelete: SetNull)
+  referenceUser     User?                   @relation("ContractReferenceCustomer", fields: [referenceUserId], references: [id], onDelete: SetNull)
   carId             String
-  car               Vehicle             @relation(fields: [carId], references: [id], onDelete: Restrict)
+  car               Vehicle                 @relation(fields: [carId], references: [id], onDelete: Restrict)
   corporateId       String?
-  corporate         Corporate?          @relation(fields: [corporateId], references: [id], onDelete: SetNull)
-  reservationId     String?             @unique
-  reservation       Reservation?        @relation("ContractFromReservation", fields: [reservationId], references: [id], onDelete: SetNull)
+  corporate         Corporate?              @relation(fields: [corporateId], references: [id], onDelete: SetNull)
+  reservationId     String?                 @unique
+  reservation       Reservation?            @relation("ContractFromReservation", fields: [reservationId], references: [id], onDelete: SetNull)
   customerNote      String?
   adminNote         String?
   adminNoteAt       DateTime? // when adminNote was last written/changed, stamped server-side
@@ -488,14 +514,14 @@ model Contract {
   returnKm          Int? // odometer at return (set by the vehicle-return flow)
   returnFuelEighths Int? // fuel / charge gauge at return, 0-8
   returnedAt        DateTime? // when the vehicle-return was processed
-  rentalType        String              @default("DAILY") // "DAILY" | "MONTHLY" — drives the rental-amount formula
+  rentalType        String                  @default("DAILY") // "DAILY" | "MONTHLY" — drives the rental-amount formula
   dailyPrice        Float? // used when rentalType = DAILY
   monthlyPrice      Float? // used when rentalType = MONTHLY (30-day fixed month + prorated days)
   extrasTotal       Float?
   oneWayFee         Float?
   discount          Float?
-  discountIsPercent Boolean             @default(false)
-  discountDailyOnly Boolean             @default(true)
+  discountIsPercent Boolean                 @default(false)
+  discountDailyOnly Boolean                 @default(true)
   deposit           Float?
   damageDeductible  Float? // Kasko muafiyeti: kaza başına KİRACI'nın karşılayacağı tutar; boşsa basılı sözleşmenin Madde 4 metni varsayılan (15.000 ₺) ifadesini kullanır
   returnExtraAmount Float?
@@ -504,8 +530,8 @@ model Contract {
   monthlyKmLimit    Int? // km allowance per 30-day month
   kmOverageFee      Float? // TL charged per excess km at return
   fuelFeePerEighth  Float? // TL charged per missing 1/8 tank at return
-  unlimitedKm       Boolean             @default(true)
-  vatRate           Float               @default(20)
+  unlimitedKm       Boolean                 @default(true)
+  vatRate           Float                   @default(20)
   kbsNotifiedAt     DateTime? // when the rental was filed in KABİS (Kimlik Bildirme Sistemi); null = not filed
   kbsNotifiedBy     String? // display name of the admin who filed it, stamped on the null -> set transition
   kbsReleasedAt     DateTime? // when the KABİS record was released (çıkış); requires kbsNotifiedAt to be set
@@ -519,7 +545,7 @@ model Contract {
   hgsCheckedFrom    DateTime? // DEPRECATED
   hgsCheckedTo      DateTime? // DEPRECATED
   hgsAmount         Float? // DEPRECATED — toll amounts live on the Dönüş Ekstra tab
-  hgsReflected      Boolean             @default(false) // DEPRECATED
+  hgsReflected      Boolean                 @default(false) // DEPRECATED
   drivers           ContractDriver[]
   payments          ContractPayment[]
   extras            ContractExtra[]
@@ -529,8 +555,8 @@ model Contract {
   invoices          Invoice[]
   ledgerEntries     LedgerEntry[]
   photos            ContractPhoto[]
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
 }
 
 // A contract extension: pushes the drop-off out and adds an operator-entered
@@ -576,22 +602,22 @@ model ContractVehicleChange {
 // invoices, corrections, extra charges billed separately). Numbers are globally
 // unique, auto-assigned RW-YYYY-NNNNN when the operator leaves the field blank.
 model Invoice {
-  id            String   @id @default(uuid())
+  id            String    @id @default(uuid())
   contractId    String
-  contract      Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
-  number        String   @unique
-  issuedAt      DateTime @default(now())
+  contract      Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  number        String    @unique
+  issuedAt      DateTime  @default(now())
   periodFrom    DateTime? // billing period this invoice covers (e.g. one month of a monthly rental)
   periodTo      DateTime?
-  netAmount     Float    @default(0)
-  taxAmount     Float    @default(0)
-  grossAmount   Float    @default(0)
+  netAmount     Float     @default(0)
+  taxAmount     Float     @default(0)
+  grossAmount   Float     @default(0)
   customerTitle String?
   taxNo         String?
   note          String?
   pdfUrl        String? // the actual issued invoice, scanned/exported as a PDF
   pdfPathname   String?
-  createdAt     DateTime @default(now())
+  createdAt     DateTime  @default(now())
 }
 
 // Additional named drivers on a rental contract.
@@ -692,20 +718,20 @@ model ContractHgsCheck {
 }
 
 model ContractReturnCharge {
-  id            String   @id @default(uuid())
+  id            String    @id @default(uuid())
   contractId    String
-  contract      Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  contract      Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
   category      String // HGS_OGS | KM_EXCESS | DAMAGE | ROADSIDE | CLEANING | FUEL | DEPOSIT | OTHER
   description   String?
-  amount        Float    @default(0)
-  quantity      Int      @default(1)
+  amount        Float     @default(0)
+  quantity      Int       @default(1)
   periodFrom    DateTime? // HGS_OGS: first travel date the reflected toll covers
   periodTo      DateTime? // HGS_OGS: last travel date the reflected toll covers
-  applyVat      Boolean  @default(false) // true = amount is net, VAT (at the contract's vatRate) is added on top when reflected in the total
-  autoGenerated Boolean  @default(false) // true = created by an auto-sync flow (RETURN or HGS)
-  source        String   @default("MANUAL") // MANUAL | RETURN (return-modal km/fuel) | HGS (toll check)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  applyVat      Boolean   @default(false) // true = amount is net, VAT (at the contract's vatRate) is added on top when reflected in the total
+  autoGenerated Boolean   @default(false) // true = created by an auto-sync flow (RETURN or HGS)
+  source        String    @default("MANUAL") // MANUAL | RETURN (return-modal km/fuel) | HGS (toll check)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   @@index([contractId])
 }

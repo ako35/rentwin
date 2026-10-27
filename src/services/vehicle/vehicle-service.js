@@ -151,6 +151,29 @@ export const getExpiryAlerts = async (branchId) => {
   );
   return response.data;
 };
+export const getInspectionAppointments = async (branchId) => {
+  const response = await axios.get(
+    `${API_URL}/car/admin/inspection-appointments/auth${branchId ? `?branchId=${branchId}` : ""}`,
+    services.authHeader()
+  );
+  return response.data;
+};
+export const createInspectionAppointment = async (payload) => {
+  const response = await axios.post(
+    `${API_URL}/car/admin/inspection-appointments/auth`,
+    payload,
+    services.authHeader()
+  );
+  return response.data;
+};
+export const updateInspectionAppointment = async (appointmentId, payload) => {
+  const response = await axios.patch(
+    `${API_URL}/car/admin/inspection-appointments/${appointmentId}/auth`,
+    payload,
+    services.authHeader()
+  );
+  return response.data;
+};
 export const getFleetStatusBoard = async (branchId) => {
   const response = await axios.get(
     `${API_URL}/car/admin/fleet-status-board/auth${branchId ? `?branchId=${branchId}` : ""}`,

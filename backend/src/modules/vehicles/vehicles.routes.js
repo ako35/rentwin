@@ -20,6 +20,11 @@ const {
 } = require("./vehicles.controller");
 const { getFleetStats, getExpiryAlerts, getFleetStatusBoard } = require("./vehicles.dashboard.controller");
 const { extractRegistration, extractInsurance, extractInspection, researchPrice } = require("./vehicles.ai.controller");
+const {
+  listInspectionAppointments,
+  createInspectionAppointment,
+  updateInspectionAppointment,
+} = require("./inspection-appointments.controller");
 
 const router = Router();
 
@@ -40,6 +45,9 @@ router.get("/car/admin/price-list/auth", authenticate, requireAdmin, getPriceLis
 router.get("/car/admin/fleet-stats/auth", authenticate, requireAdmin, getFleetStats);
 router.get("/car/admin/expiry-alerts/auth", authenticate, requireAdmin, getExpiryAlerts);
 router.get("/car/admin/fleet-status-board/auth", authenticate, requireAdmin, getFleetStatusBoard);
+router.get("/car/admin/inspection-appointments/auth", authenticate, requireAdmin, listInspectionAppointments);
+router.post("/car/admin/inspection-appointments/auth", authenticate, requireAdmin, createInspectionAppointment);
+router.patch("/car/admin/inspection-appointments/:appointmentId/auth", authenticate, requireAdmin, updateInspectionAppointment);
 router.post(
   "/car/admin/extract-registration/auth",
   authenticate,

@@ -72,6 +72,9 @@ const AdminTopNav = () => {
               <NavDropdown.Item as={Link} to={routes.adminVehicleStatusBoard}>
                 <BsGrid3X3Gap className="admin-top-nav__item-icon" /> {t("topNav.vehicleStatusBoard")}
               </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminInspectionAppointments}>
+                <BsListUl className="admin-top-nav__item-icon" /> {t("topNav.inspectionAppointments")}
+              </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown
               title={t("topNav.reservations")}
