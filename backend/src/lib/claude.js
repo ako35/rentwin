@@ -22,7 +22,11 @@ let client = null;
 const getClient = () => {
   if (client) return client;
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error("ANTHROPIC_API_KEY tanımlı değil.");
+  if (!apiKey) {
+    const error = new Error("ANTHROPIC_API_KEY tanımlı değil.");
+    error.code = "AI_CONFIG";
+    throw error;
+  }
   // The SDK's own default (2) means a slow/overloaded call can retry twice,
   // each with its own fresh 15s timeout below — worst case ~45-50s of
   // wall-clock time for one admin click. Vercel's serverless function this
@@ -316,7 +320,22 @@ const claudeVisionJson = async (buffer, mimeType, prompt, schema) => {
       throw e;
     }
     if (err instanceof Anthropic.APIError) {
-      throw new Error(`Claude API hatası (${err.status}): ${err.message}`);
+      const code =
+        err.status === 401 || err.status === 403
+          ? "AI_CONFIG"
+          : err.status === 404
+            ? "AI_MODEL"
+            : err.status === 413
+              ? "AI_FILE"
+              : err.status === 429
+                ? "AI_QUOTA"
+                : err.status >= 500
+                  ? "AI_PROVIDER"
+                  : "AI_REQUEST";
+      const e = new Error(`Claude API hatası (${err.status}): ${err.message}`);
+      e.code = code;
+      e.upstreamStatus = err.status;
+      throw e;
     }
     throw err;
   }

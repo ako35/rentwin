@@ -524,7 +524,12 @@
           "error": "Couldn't read the invoice, please fill the fields manually.",
           "tooLarge": "File too large. Please upload a smaller image (max ~4 MB) or PDF.",
           "busy": "The AI service is busy right now. Please try again in a few seconds.",
-          "quota": "The AI document-reading service is busy right now (hit a temporary rate limit). Try again in a few minutes."
+          "quota": "The AI document-reading service is busy right now (hit a temporary rate limit). Try again in a few minutes.",
+          "config": "The AI service configuration is invalid. An administrator should check the service settings.",
+          "model": "The AI model is unavailable. Check the configured model.",
+          "timeout": "The invoice-reading request timed out. Try again with a smaller file.",
+          "provider": "The AI provider could not complete the request. Details were written to server logs.",
+          "request": "The provider rejected the invoice-reading request. Check server logs."
         }
       },
       "extrasFields": {

@@ -524,7 +524,12 @@
           "error": "Fatura okunamadı, lütfen alanları elle doldurun.",
           "tooLarge": "Dosya çok büyük. Lütfen daha küçük bir görsel (en fazla ~4 MB) veya PDF yükleyin.",
           "busy": "Yapay zeka servisi şu an yoğun. Lütfen birkaç saniye sonra tekrar deneyin.",
-          "quota": "Yapay zeka görsel okuma servisi şu anda yoğun (geçici bir hız sınırına takıldı). Birkaç dakika sonra tekrar deneyin."
+          "quota": "Yapay zeka görsel okuma servisi şu anda yoğun (geçici bir hız sınırına takıldı). Birkaç dakika sonra tekrar deneyin.",
+          "config": "Yapay zeka servisi yapılandırması geçersiz. Yönetici servis ayarlarını kontrol etmeli.",
+          "model": "Yapay zeka modeli kullanılamıyor. Model ayarını kontrol edin.",
+          "timeout": "Fatura okuma isteği zaman aşımına uğradı. Daha küçük bir dosyayla tekrar deneyin.",
+          "provider": "Yapay zeka sağlayıcısı isteği tamamlayamadı. Hata kaydı sunucu loglarına yazıldı.",
+          "request": "Fatura okuma isteği sağlayıcı tarafından reddedildi. Sunucu loglarını kontrol edin."
         }
       },
       "extrasFields": {

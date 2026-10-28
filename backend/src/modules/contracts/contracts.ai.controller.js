@@ -13,8 +13,18 @@ const extractInvoice = asyncHandler(async (req, res) => {
   try {
     fields = await extractInvoiceDocument(req.file.buffer, req.file.mimetype);
   } catch (error) {
-    if (error.code === "AI_QUOTA") throw new HttpError(429, error.message, "AI_QUOTA");
-    throw new HttpError(502, error.message);
+    const statusByCode = {
+      AI_CONFIG: 503,
+      AI_MODEL: 502,
+      AI_FILE: 413,
+      AI_QUOTA: 429,
+      AI_TIMEOUT: 504,
+      AI_PROVIDER: 502,
+      AI_REQUEST: 422,
+    };
+    const code = statusByCode[error.code] ? error.code : "AI_PROVIDER";
+    console.error("[invoice extract]", code, error.upstreamStatus || "", error.message);
+    throw new HttpError(statusByCode[code], error.message, code);
   }
 
   if (!fields.documentDetected) {

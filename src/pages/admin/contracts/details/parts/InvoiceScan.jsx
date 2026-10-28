@@ -43,14 +43,16 @@ const InvoiceScan = ({ onExtracted }) => {
     } catch (error) {
       const status = error?.response?.status;
       const code = error?.response?.data?.code;
-      const key =
-        code === "AI_QUOTA"
-          ? "quota"
-          : status === 502 || status === 503
-            ? "busy"
-            : status === 413
-              ? "tooLarge"
-              : "error";
+      const keyByCode = {
+        AI_QUOTA: "quota",
+        AI_CONFIG: "config",
+        AI_MODEL: "model",
+        AI_FILE: "tooLarge",
+        AI_TIMEOUT: "timeout",
+        AI_PROVIDER: "provider",
+        AI_REQUEST: "request",
+      };
+      const key = keyByCode[code] || (status === 413 ? "tooLarge" : status === 502 || status === 503 ? "busy" : "error");
       utils.functions.swalToast(tr(key), "error");
     } finally {
       setScanning(false);
