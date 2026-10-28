@@ -98,7 +98,8 @@
     },
     "registrationScan": {
       "button": "Ruhsattan Doldur",
-      "hint": "Ruhsat fotoğrafı veya PDF'i yükleyin, bilgiler otomatik doldurulsun.",
+      "hint": "Belge tarayıcınızda yerel olarak okunur; harici yapay zeka servisine gönderilmez.",
+      "reading": "Belge tarayıcıda okunuyor...",
       "success": "Ruhsat okundu, alanlar dolduruldu. Lütfen kontrol edin.",
       "notDetected": "Görselde bir ruhsat tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",
       "error": "Ruhsat okunamadı, lütfen alanları elle doldurun.",
@@ -108,7 +109,8 @@
     },
     "insuranceScan": {
       "button": "Poliçeden Doldur",
-      "hint": "Trafik sigortası veya kasko poliçesi fotoğrafı ya da PDF'i yükleyin, alanlar otomatik doldurulsun.",
+      "hint": "Poliçe tarayıcınızda yerel olarak okunur; harici yapay zeka servisine gönderilmez.",
+      "reading": "Poliçe tarayıcıda okunuyor...",
       "success": "Poliçe okundu, alanlar dolduruldu. Lütfen kontrol edin.",
       "notDetected": "Görselde bir sigorta/kasko poliçesi tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",
       "error": "Poliçe okunamadı, lütfen alanları elle doldurun.",
@@ -118,7 +120,8 @@
     },
     "inspectionScan": {
       "button": "Belgeden Doldur",
-      "hint": "Araç muayene raporu, egzoz emisyon belgesi ya da ruhsat fotoğrafı/PDF'i yükleyin, alanlar otomatik doldurulsun (ruhsattan yalnızca Bitiş Tarihi doldurulur).",
+      "hint": "Belge tarayıcınızda yerel olarak okunur; harici yapay zeka servisine gönderilmez. Ruhsattan yalnızca Bitiş Tarihi doldurulur.",
+      "reading": "Belge tarayıcıda okunuyor...",
       "success": "Belge okundu, alanlar dolduruldu. Lütfen kontrol edin.",
       "notDetected": "Görselde bir muayene/egzoz belgesi ya da ruhsat tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",
       "error": "Belge okunamadı, lütfen alanları elle doldurun.",
@@ -518,7 +521,8 @@
         "pdfSelected": "Seçilen dosya: {{name}} (kaydedince eklenecek)",
         "scan": {
           "button": "Faturadan Doldur",
-          "hint": "Fatura fotoğrafı ya da PDF'i yükleyin, alanlar otomatik doldurulsun.",
+          "hint": "Fatura tarayıcınızda yerel olarak okunur; harici yapay zeka servisine gönderilmez.",
+          "reading": "Fatura tarayıcıda okunuyor...",
           "success": "Fatura okundu, alanlar dolduruldu. Lütfen kontrol edin.",
           "notDetected": "Görselde bir fatura tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",
           "error": "Fatura okunamadı, lütfen alanları elle doldurun.",
@@ -1101,8 +1105,9 @@
     "documentScan": {
       "buttonIndividual": "Ehliyet / Kimlik / Pasaporttan Doldur",
       "buttonCorporate": "Kaşe / Vergi Levhasından Doldur",
-      "hintIndividual": "Ehliyet, kimlik veya pasaport fotoğrafı/PDF'i yükleyin, ad-soyad ve TC/pasaport no otomatik dolsun.",
-      "hintCorporate": "Kaşe veya vergi levhası fotoğrafı/PDF'i yükleyin, unvan, vergi no ve adres otomatik dolsun.",
+      "hintIndividual": "Belge tarayıcınızda yerel olarak okunur; harici yapay zeka servisine gönderilmez.",
+      "hintCorporate": "Belge tarayıcınızda yerel olarak okunur; harici yapay zeka servisine gönderilmez.",
+      "reading": "Belge tarayıcıda okunuyor...",
       "success": "Belge okundu, alanlar dolduruldu. Lütfen kontrol edin.",
       "notDetected": "Görselde beklenen belge tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",
       "error": "Belge okunamadı, lütfen alanları elle doldurun.",

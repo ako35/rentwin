@@ -1,12 +1,12 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
-import { services } from "../../../services";
 import { utils } from "../../../utils";
+import { extractLocalDocument } from "../../../utils/local-document-reader";
 
 // "Belgeden Doldur": same pattern as InsuranceScan (see that file for the full
 // rationale) — admin picks a photo/PDF of a TÜVTÜRK araç muayene raporu or an
-// egzoz emisyon ölçüm belgesi, Claude reads it server-side and we hand
+// egzoz emisyon ölçüm belgesi and we hand
 // {type, date, result, expiryDate, station, cost} back up to prefill the
 // Muayene/Egzoz add-record form. The scanned file is handed back too (2nd
 // arg) so the caller can attach it as the record's own document on save.
@@ -33,25 +33,16 @@ const InspectionScan = ({ onExtracted }) => {
         utils.functions.swalToast(tr("tooLarge"), "error");
         return;
       }
-      const fields = await services.vehicle.extractInspection(prepared);
-      if (!hasExtractedFields(fields)) {
+      const fields = await extractLocalDocument(prepared, "inspection");
+      if (!fields.documentDetected || !hasExtractedFields(fields)) {
         utils.functions.swalToast(tr("notDetected"), "error");
         return;
       }
       onExtracted(fields, prepared);
       utils.functions.swalToast(tr("success"), "success");
     } catch (error) {
-      const status = error?.response?.status;
-      const code = error?.response?.data?.code;
-      const key =
-        code === "AI_QUOTA"
-          ? "quota"
-          : status === 502 || status === 503
-            ? "busy"
-            : status === 413
-              ? "tooLarge"
-              : "error";
-      utils.functions.swalToast(tr(key), "error");
+      console.warn("Local inspection OCR failed", error);
+      utils.functions.swalToast(tr("error"), "error");
     } finally {
       setScanning(false);
       e.target.value = "";
@@ -71,7 +62,7 @@ const InspectionScan = ({ onExtracted }) => {
       />
       <Button as={Form.Label} htmlFor="selectInspectionDocument" variant="outline-secondary" size="sm" disabled={scanning}>
         {scanning && <Spinner animation="border" size="sm" className="me-1" />}
-        {tr("button")}
+        {scanning ? tr("reading") : tr("button")}
       </Button>
     </Form.Group>
   );

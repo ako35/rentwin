@@ -1,11 +1,11 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
-import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
+import { extractLocalDocument } from "../../../../../utils/local-document-reader";
 
-// "Faturadan Doldur": admin picks a photo/PDF of the issued invoice, Claude
-// reads it server-side and hands back {number, issuedAt, periodFrom,
+// "Faturadan Doldur": admin picks a photo/PDF of the issued invoice, local OCR
+// reads it in the browser and hands back {number, issuedAt, periodFrom,
 // periodTo, grossAmount, customerTitle, taxNo} to prefill the Fatura form —
 // the same file also becomes the invoice's stored PDF once saved (see
 // InvoiceTab's onExtracted). Same "nothing extracted" guard as the other
@@ -33,27 +33,16 @@ const InvoiceScan = ({ onExtracted }) => {
         utils.functions.swalToast(tr("tooLarge"), "error");
         return;
       }
-      const fields = await services.contract.extractInvoice(prepared);
-      if (!hasExtractedFields(fields)) {
+      const fields = await extractLocalDocument(prepared, "invoice");
+      if (!fields.documentDetected || !hasExtractedFields(fields)) {
         utils.functions.swalToast(tr("notDetected"), "error");
         return;
       }
       onExtracted(fields, prepared);
       utils.functions.swalToast(tr("success"), "success");
     } catch (error) {
-      const status = error?.response?.status;
-      const code = error?.response?.data?.code;
-      const keyByCode = {
-        AI_QUOTA: "quota",
-        AI_CONFIG: "config",
-        AI_MODEL: "model",
-        AI_FILE: "tooLarge",
-        AI_TIMEOUT: "timeout",
-        AI_PROVIDER: "provider",
-        AI_REQUEST: "request",
-      };
-      const key = keyByCode[code] || (status === 413 ? "tooLarge" : status === 502 || status === 503 ? "busy" : "error");
-      utils.functions.swalToast(tr(key), "error");
+      console.warn("Local invoice OCR failed", error);
+      utils.functions.swalToast(tr("error"), "error");
     } finally {
       setScanning(false);
       e.target.value = "";
@@ -73,7 +62,7 @@ const InvoiceScan = ({ onExtracted }) => {
       />
       <Button as={Form.Label} htmlFor="selectInvoiceDoc" variant="outline-secondary" size="sm" disabled={scanning}>
         {scanning && <Spinner animation="border" size="sm" className="me-1" />}
-        {tr("button")}
+        {scanning ? tr("reading") : tr("button")}
       </Button>
     </Form.Group>
   );

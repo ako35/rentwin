@@ -1,22 +1,19 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
-import { services } from "../../../services";
 import { utils } from "../../../utils";
+import { extractLocalDocument } from "../../../utils/local-document-reader";
 
 // "Belgeden Doldur": the admin picks a photo/PDF of a customer document —
 // a driving licence / ID / passport for an individual (a passport covers a
 // foreign customer, who has no T.C. kimlik no), a company stamp or tax
-// registration for a corporate customer — Claude reads it server-side and the
+// registration for a corporate customer — local OCR reads it in the browser and the
 // extracted fields are handed back up to prefill the form. The admin still
 // reviews before saving. The scanned file itself is handed back too (2nd arg)
 // so the caller can also save it as the customer's own document, without a
 // second upload.
-// Claude returns 200 + documentDetected:false (wrong/unreadable document) or,
-// more rarely, documentDetected:true with every specific field still null (a
-// genuine document it just couldn't read anything off) — either way there is
-// nothing to prefill. Without this check the UI showed "success" and silently
-// filled in nothing, which read as "the button doesn't do anything".
+// Wrong or unreadable documents are reported as not detected instead of showing
+// success without filling any fields.
 const hasExtractedFields = (fields) =>
   !!fields &&
   Object.entries(fields).some(
@@ -42,25 +39,16 @@ const DocumentScan = ({ customerType, onExtracted }) => {
         utils.functions.swalToast(tr("tooLarge"), "error");
         return;
       }
-      const fields = await services.user.extractCustomerDocument(prepared, kind);
-      if (!hasExtractedFields(fields)) {
+      const fields = await extractLocalDocument(prepared, kind);
+      if (!fields.documentDetected || !hasExtractedFields(fields)) {
         utils.functions.swalToast(tr("notDetected"), "error");
         return;
       }
       onExtracted(fields, prepared);
       utils.functions.swalToast(tr("success"), "success");
     } catch (error) {
-      const status = error?.response?.status;
-      const code = error?.response?.data?.code;
-      const key =
-        code === "AI_QUOTA"
-          ? "quota"
-          : status === 502 || status === 503
-            ? "busy"
-            : status === 413
-              ? "tooLarge"
-              : "error";
-      utils.functions.swalToast(tr(key), "error");
+      console.warn("Local customer document OCR failed", error);
+      utils.functions.swalToast(tr("error"), "error");
     } finally {
       setScanning(false);
       e.target.value = "";
@@ -86,7 +74,7 @@ const DocumentScan = ({ customerType, onExtracted }) => {
         disabled={scanning}
       >
         {scanning && <Spinner animation="border" size="sm" className="me-1" />}
-        {tr(isCorporate ? "buttonCorporate" : "buttonIndividual")}
+        {scanning ? tr("reading") : tr(isCorporate ? "buttonCorporate" : "buttonIndividual")}
       </Button>
       <span className="text-muted">{tr(isCorporate ? "hintCorporate" : "hintIndividual")}</span>
     </Form.Group>

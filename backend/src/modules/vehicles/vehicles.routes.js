@@ -1,7 +1,6 @@
 const { Router } = require("express");
 const authenticate = require("../../middleware/authenticate");
 const requireAdmin = require("../../middleware/require-admin");
-const upload = require("../../middleware/upload");
 const {
   getVehicleById,
   getVehicleByIdAdmin,
@@ -19,7 +18,7 @@ const {
   deleteVehicle,
 } = require("./vehicles.controller");
 const { getFleetStats, getExpiryAlerts, getFleetStatusBoard } = require("./vehicles.dashboard.controller");
-const { extractRegistration, extractInsurance, extractInspection, researchPrice } = require("./vehicles.ai.controller");
+const { researchPrice } = require("./vehicles.ai.controller");
 const {
   listInspectionAppointments,
   createInspectionAppointment,
@@ -48,27 +47,6 @@ router.get("/car/admin/fleet-status-board/auth", authenticate, requireAdmin, get
 router.get("/car/admin/inspection-appointments/auth", authenticate, requireAdmin, listInspectionAppointments);
 router.post("/car/admin/inspection-appointments/auth", authenticate, requireAdmin, createInspectionAppointment);
 router.patch("/car/admin/inspection-appointments/:appointmentId/auth", authenticate, requireAdmin, updateInspectionAppointment);
-router.post(
-  "/car/admin/extract-registration/auth",
-  authenticate,
-  requireAdmin,
-  upload.single("file"),
-  extractRegistration
-);
-router.post(
-  "/car/admin/extract-insurance/auth",
-  authenticate,
-  requireAdmin,
-  upload.single("file"),
-  extractInsurance
-);
-router.post(
-  "/car/admin/extract-inspection/auth",
-  authenticate,
-  requireAdmin,
-  upload.single("file"),
-  extractInspection
-);
 router.get(`/car/admin/:id${ID}/auth`, authenticate, requireAdmin, getVehicleByIdAdmin);
 router.post("/car/admin/add", authenticate, requireAdmin, addVehicle);
 router.put("/car/admin/auth", authenticate, requireAdmin, updateVehicle);

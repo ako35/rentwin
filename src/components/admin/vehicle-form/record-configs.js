@@ -15,7 +15,7 @@ export const RECORD_CONFIGS = {
     twoPane: true,
     typeField: "type",
     totalField: "premium",
-    // Shows "Poliçeden Doldur" (Claude AI scan) above the form — see InsuranceScan.
+    // Shows "Poliçeden Doldur" (local OCR) above the form — see InsuranceScan.
     aiScan: "insurance",
     groups: [
       { key: "sigorta", type: "Traffic" },
@@ -131,7 +131,7 @@ export const RECORD_CONFIGS = {
     twoPane: true,
     typeField: "type",
     totalField: "cost",
-    // Shows "Belgeden Doldur" (Claude AI scan) above the form — see InspectionScan.
+    // Shows "Belgeden Doldur" (local OCR) above the form — see InspectionScan.
     aiScan: "inspection",
     groups: [
       { key: "periodic", type: "Periodic" },

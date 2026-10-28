@@ -1,6 +1,6 @@
 // Google Gemini image generation ("Nano Banana"): produce a studio catalog
-// photo of a vehicle from its make/model/colour. Document vision extraction
-// (ruhsat/ehliyet/sigorta) moved to Claude — see lib/claude.js.
+// photo of a vehicle from its make/model/colour. Document reading runs in
+// the browser with local OCR and does not use Gemini or Claude.
 const API_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 
 // Image generation has NO free-tier quota — the project behind GEMINI_API_KEY

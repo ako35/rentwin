@@ -2,14 +2,14 @@ import { deleteMessage, getMessage, getMessagesByPage, sendMessage } from "./con
 
 import { cancelReservation, confirmReservation, convertReservationToContract, createReservation, createReservationAdmin, getReservationById, getReservationByIdAdmin, getReservationSchedule, getReservationsByPage, getReservationsByPageAdmin, isVehicleAvailable, updateReservationAdmin } from "./reservation/reservation-service";
 
-import { cancelContract, changeVehicle, createContract, createInvoice, deleteContract, deleteExtension, deleteInvoice, deleteInvoicePdf, downloadContractReports, extendContract, extractInvoice, getAdminSchedule, getAvailableCars, getContractByIdAdmin, getContractsByPage, getContractsByUser, getContractsByVehicle, getHgsPendingContracts, getInvoicePendingContracts, getInvoices, getKbsPendingContracts, getKbsReleasePendingContracts, getSignPendingContracts, reopenContract, returnContract, updateContract, updateInvoice, uploadInvoicePdf } from "./contract/contract-service";
+import { cancelContract, changeVehicle, createContract, createInvoice, deleteContract, deleteExtension, deleteInvoice, deleteInvoicePdf, downloadContractReports, extendContract, getAdminSchedule, getAvailableCars, getContractByIdAdmin, getContractsByPage, getContractsByUser, getContractsByVehicle, getHgsPendingContracts, getInvoicePendingContracts, getInvoices, getKbsPendingContracts, getKbsReleasePendingContracts, getSignPendingContracts, reopenContract, returnContract, updateContract, updateInvoice, uploadInvoicePdf } from "./contract/contract-service";
 
 import { addContractRecord, deleteContractRecord, getContractRecords, updateContractRecord } from "./contract/contract-record-service";
 import { getContractPhotos, deleteContractPhoto } from "./contract/contract-photo-service";
 
-import { addUserDocument, createUserAdmin, deleteUser, deleteUserDocument, downloadUserReports, extractCustomerDocument, getUser, getUserAdmin, getUserDocuments, getUsersByPage, login, register, updatePassword, updateUser, updateUserAdmin } from "./user/user-service";
+import { addUserDocument, createUserAdmin, deleteUser, deleteUserDocument, downloadUserReports, getUser, getUserAdmin, getUserDocuments, getUsersByPage, login, register, updatePassword, updateUser, updateUserAdmin } from "./user/user-service";
 
-import { addVehicle, createInspectionAppointment, deleteVehicle, downloadVehicleReports, extractRegistration, extractInsurance, extractInspection, getExpiryAlerts, getFleetStats, getFleetStatusBoard, getInspectionAppointments, getPriceList, getVehicleById, getVehicleByIdAdmin, getVehicles, getVehiclesByPage, getVehiclesByPageAdmin, markVehicleSold, unmarkVehicleSold, markVehiclePassive, unmarkVehiclePassive, updateInspectionAppointment, updateVehicleTracking, researchVehiclePrice, updateVehicle } from "./vehicle/vehicle-service";
+import { addVehicle, createInspectionAppointment, deleteVehicle, downloadVehicleReports, getExpiryAlerts, getFleetStats, getFleetStatusBoard, getInspectionAppointments, getPriceList, getVehicleById, getVehicleByIdAdmin, getVehicles, getVehiclesByPage, getVehiclesByPageAdmin, markVehicleSold, unmarkVehicleSold, markVehiclePassive, unmarkVehiclePassive, updateInspectionAppointment, updateVehicleTracking, researchVehiclePrice, updateVehicle } from "./vehicle/vehicle-service";
 
 import { addVehicleRecord, deleteVehicleRecord, getVehicleRecords, updateVehicleRecord } from "./vehicle/vehicle-records-service";
 import { deleteModelImage, generateModelImage, listModelImages, renameModelGroup, uploadModelImage } from "./vehicle/vehicle-model-image-service";
@@ -79,7 +79,6 @@ export const services = {
         deleteInvoice,
         uploadInvoicePdf,
         deleteInvoicePdf,
-        extractInvoice,
         getAvailableCars,
         getAdminSchedule,
         getHgsPendingContracts,
@@ -107,7 +106,6 @@ export const services = {
         createUserAdmin,
         deleteUser,
         downloadUserReports,
-        extractCustomerDocument,
         getUserAdmin,
         getUsersByPage,
         updateUserAdmin,
@@ -140,9 +138,6 @@ export const services = {
         getPriceList,
         researchVehiclePrice,
         updateVehicle,
-        extractRegistration,
-        extractInsurance,
-        extractInspection,
         // MODEL IMAGE LIBRARY (marka+model başına tek görsel)
         listModelImages,
         uploadModelImage,

@@ -1,12 +1,12 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
-import { services } from "../../../services";
 import { utils } from "../../../utils";
+import { extractLocalDocument } from "../../../utils/local-document-reader";
 
 // "Poliçeden Doldur": admin picks a photo/PDF of a trafik sigortası or kasko
-// poliçesi, Claude reads it server-side and we hand {type, company, policyNo,
-// startDate, endDate, premium} back up so the caller can prefill the
+// poliçesi and we hand {type, company, policyNo, startDate, endDate, premium}
+// back up so the caller can prefill the
 // Sigorta/Kasko add-record form — the admin still reviews/corrects before
 // saving. The scanned file itself is handed back too (2nd arg) so the caller
 // can also attach it as the record's own document on save, without a second
@@ -35,25 +35,16 @@ const InsuranceScan = ({ onExtracted }) => {
         utils.functions.swalToast(tr("tooLarge"), "error");
         return;
       }
-      const fields = await services.vehicle.extractInsurance(prepared);
-      if (!hasExtractedFields(fields)) {
+      const fields = await extractLocalDocument(prepared, "insurance");
+      if (!fields.documentDetected || !hasExtractedFields(fields)) {
         utils.functions.swalToast(tr("notDetected"), "error");
         return;
       }
       onExtracted(fields, prepared);
       utils.functions.swalToast(tr("success"), "success");
     } catch (error) {
-      const status = error?.response?.status;
-      const code = error?.response?.data?.code;
-      const key =
-        code === "AI_QUOTA"
-          ? "quota"
-          : status === 502 || status === 503
-            ? "busy"
-            : status === 413
-              ? "tooLarge"
-              : "error";
-      utils.functions.swalToast(tr(key), "error");
+      console.warn("Local insurance OCR failed", error);
+      utils.functions.swalToast(tr("error"), "error");
     } finally {
       setScanning(false);
       e.target.value = "";
@@ -73,7 +64,7 @@ const InsuranceScan = ({ onExtracted }) => {
       />
       <Button as={Form.Label} htmlFor="selectInsurancePolicy" variant="outline-secondary" size="sm" disabled={scanning}>
         {scanning && <Spinner animation="border" size="sm" className="me-1" />}
-        {tr("button")}
+        {scanning ? tr("reading") : tr("button")}
       </Button>
     </Form.Group>
   );

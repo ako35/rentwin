@@ -98,7 +98,8 @@
     },
     "registrationScan": {
       "button": "Fill from Registration",
-      "hint": "Upload a photo or PDF of the registration certificate to auto-fill the fields.",
+      "hint": "The document is read locally in your browser and is not sent to an external AI service.",
+      "reading": "Reading document in browser...",
       "success": "Registration read successfully — please review the fields.",
       "notDetected": "Couldn't recognize a registration document in the photo, or nothing on it was readable. Try a clearer/brighter photo, or fill in the fields manually.",
       "error": "Could not read the registration document, please fill in manually.",
@@ -108,7 +109,8 @@
     },
     "insuranceScan": {
       "button": "Fill from Policy",
-      "hint": "Upload a photo or PDF of the traffic insurance or kasko policy to auto-fill the fields.",
+      "hint": "The policy is read locally in your browser and is not sent to an external AI service.",
+      "reading": "Reading policy in browser...",
       "success": "Policy read successfully — please review the fields.",
       "notDetected": "Couldn't recognize an insurance/kasko policy in the photo, or nothing on it was readable. Try a clearer/brighter photo, or fill in the fields manually.",
       "error": "Could not read the policy document, please fill in manually.",
@@ -118,7 +120,8 @@
     },
     "inspectionScan": {
       "button": "Fill from Document",
-      "hint": "Upload a photo or PDF of the vehicle inspection report, emission test certificate, or registration document to auto-fill the fields (a registration document only fills in the Expiry Date).",
+      "hint": "The document is read locally in your browser and is not sent to an external AI service. A registration document only fills in the Expiry Date.",
+      "reading": "Reading document in browser...",
       "success": "Document read successfully — please review the fields.",
       "notDetected": "Couldn't recognize an inspection/emission document or registration document in the photo, or nothing on it was readable. Try a clearer/brighter photo, or fill in the fields manually.",
       "error": "Could not read the document, please fill in manually.",
@@ -518,7 +521,8 @@
         "pdfSelected": "Selected file: {{name}} (will be attached on save)",
         "scan": {
           "button": "Fill from Invoice",
-          "hint": "Upload a photo or PDF of the invoice to auto-fill the fields.",
+          "hint": "The invoice is read locally in your browser and is not sent to an external AI service.",
+          "reading": "Reading invoice in browser...",
           "success": "Invoice read, fields filled in. Please double-check.",
           "notDetected": "Couldn't recognize an invoice in the image, or no field could be read reliably. Try a clearer/brighter photo or fill the fields manually.",
           "error": "Couldn't read the invoice, please fill the fields manually.",
@@ -1101,8 +1105,9 @@
     "documentScan": {
       "buttonIndividual": "Fill from Licence / ID / Passport",
       "buttonCorporate": "Fill from Stamp / Tax Registration",
-      "hintIndividual": "Upload a photo or PDF of a driving licence, ID or passport to auto-fill name and national ID / passport number.",
-      "hintCorporate": "Upload a photo or PDF of a company stamp or tax registration to auto-fill title, tax no and address.",
+      "hintIndividual": "The document is read locally in your browser and is not sent to an external AI service.",
+      "hintCorporate": "The document is read locally in your browser and is not sent to an external AI service.",
+      "reading": "Reading document in browser...",
       "success": "Document read — please review the fields.",
       "notDetected": "Couldn't recognize the expected document in the photo, or nothing on it was readable. Try a clearer/brighter photo, or fill in the fields manually.",
       "error": "Could not read the document, please fill in manually.",

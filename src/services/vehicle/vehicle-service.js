@@ -181,36 +181,3 @@ export const getFleetStatusBoard = async (branchId) => {
   );
   return response.data;
 };
-export const extractRegistration = async (file) => {
-  const formData = new FormData();
-  formData.append("file", file);
-  const response = await axios.post(`${API_URL}/car/admin/extract-registration/auth`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${services.encryptedLocalStorage.getItem("rentwintoken")}`,
-    },
-  });
-  return response.data;
-};
-export const extractInsurance = async (file) => {
-  const formData = new FormData();
-  formData.append("file", file);
-  const response = await axios.post(`${API_URL}/car/admin/extract-insurance/auth`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${services.encryptedLocalStorage.getItem("rentwintoken")}`,
-    },
-  });
-  return response.data;
-};
-export const extractInspection = async (file) => {
-  const formData = new FormData();
-  formData.append("file", file);
-  const response = await axios.post(`${API_URL}/car/admin/extract-inspection/auth`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${services.encryptedLocalStorage.getItem("rentwintoken")}`,
-    },
-  });
-  return response.data;
-};
