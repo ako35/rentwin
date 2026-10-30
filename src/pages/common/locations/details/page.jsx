@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -22,14 +22,21 @@ const LocationDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [locations, setLocations] = useState([]);
   const [loadFailed, setLoadFailed] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
-  useEffect(() => {
+  const loadLocations = useCallback(() => {
+    setLoading(true);
+    setLoadFailed(false);
     services.location
       .getLocations()
       .then((data) => setLocations(data || []))
       .catch(() => setLoadFailed(true))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    loadLocations();
+  }, [loadLocations, retryCount]);
 
   const location = useMemo(
     () => locations.find((l) => utils.functions.slugify(l.name) === slug),
@@ -51,6 +58,24 @@ const LocationDetailPage = () => {
   });
 
   if (loading) return <Loading height={400} />;
+
+  if (loadFailed) {
+    return (
+      <Container className="locations-page">
+        <Spacer />
+        <p className="locations-page__empty">{t("detail.loadError")}</p>
+        <p className="text-center">
+          <button type="button" className="btn btn-primary" onClick={() => setRetryCount((count) => count + 1)}>
+            {t("detail.retry")}
+          </button>
+        </p>
+        <p className="text-center">
+          <AppLink to={routes.locations}>{t("detail.backToList")}</AppLink>
+        </p>
+        <Spacer />
+      </Container>
+    );
+  }
 
   if (!location) {
     return (

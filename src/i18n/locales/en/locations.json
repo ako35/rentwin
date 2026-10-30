@@ -30,6 +30,8 @@
     "reserveCta": "Book Now",
     "backToList": "All locations",
     "notFound": "The location you are looking for was not found.",
+    "loadError": "Location details could not be loaded right now. Please try again.",
+    "retry": "Try Again",
     "local": {
       "aliaga": {
         "title": "Renting a car in Aliağa",

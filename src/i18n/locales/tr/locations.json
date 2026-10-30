@@ -30,6 +30,8 @@
     "reserveCta": "Hemen Rezervasyon Yap",
     "backToList": "Tüm lokasyonlar",
     "notFound": "Aradığınız lokasyon bulunamadı.",
+    "loadError": "Lokasyon bilgileri şu anda yüklenemedi. Lütfen tekrar deneyin.",
+    "retry": "Tekrar Dene",
     "local": {
       "aliaga": {
         "title": "Aliağa'da araç kiralama hakkında",
