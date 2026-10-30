@@ -7,6 +7,11 @@
     { "path": "/api/cron/purge-sold-vehicles", "schedule": "0 3 * * *" }
   ],
   "routes": [
+    {
+      "src": "/araclar/ford-transit/?",
+      "status": 301,
+      "dest": "/vehicles/596138ec-c836-4fab-89c1-4a57fed75037"
+    },
     { "src": "/api/(.*)", "dest": "backend/api/index.js" },
     { "src": "/sitemap.xml", "dest": "backend/api/index.js" },
     {
