@@ -151,9 +151,14 @@ export const getExpiryAlerts = async (branchId) => {
   );
   return response.data;
 };
-export const getInspectionAppointments = async (branchId) => {
+export const getInspectionAppointments = async (branchId, vehicleId) => {
+  const params = new URLSearchParams();
+  if (branchId) params.set("branchId", branchId);
+  if (vehicleId) params.set("vehicleId", vehicleId);
+  const queryString = params.toString();
+  const query = queryString ? `?${queryString}` : "";
   const response = await axios.get(
-    `${API_URL}/car/admin/inspection-appointments/auth${branchId ? `?branchId=${branchId}` : ""}`,
+    `${API_URL}/car/admin/inspection-appointments/auth${query}`,
     services.authHeader()
   );
   return response.data;

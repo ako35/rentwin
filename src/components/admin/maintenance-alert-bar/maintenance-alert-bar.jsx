@@ -307,7 +307,9 @@ const MaintenanceAlertBar = ({
                 return (
                   <tr key={row.id}>
                     <td className="maintenance-alert-bar__plate">
-                      <Link to={constants.routes.adminInspectionAppointments}>{row.vehicle?.licensePlate || "—"}</Link>
+                      <Link to={`${constants.routes.adminVehicles}/${row.vehicle?.id}?tab=inspection`}>
+                        {row.vehicle?.licensePlate || "—"}
+                      </Link>
                     </td>
                     <td>{t(`inspectionAppointments.types.${typeKey}`)}</td>
                     <td>{utils.functions.getDate(row.appointmentAt)}</td>

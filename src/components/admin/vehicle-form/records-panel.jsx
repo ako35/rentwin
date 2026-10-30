@@ -8,6 +8,7 @@ import { dateFieldNames } from "./record-configs";
 import RecordsTableView from "./records-table-view";
 import RecordsTwoPaneView from "./records-two-pane-view";
 import RecordDocumentsModal from "./record-documents-modal";
+import InspectionAppointmentsPanel from "./inspection-appointments-panel";
 
 const RecordsPanel = ({ vehicleId, config, vehicle, onVehicleChange }) => {
   const { t } = useTranslation("admin");
@@ -205,6 +206,9 @@ const RecordsPanel = ({ vehicleId, config, vehicle, onVehicleChange }) => {
         </div>
       )}
       {config.twoPane ? <RecordsTwoPaneView {...view} /> : <RecordsTableView {...view} />}
+      {config.tabKey === "inspection" && (
+        <InspectionAppointmentsPanel vehicleId={vehicleId} vehicle={vehicle} />
+      )}
       <RecordDocumentsModal
         show={!!docsRow}
         onHide={() => setDocsRow(null)}

@@ -124,7 +124,6 @@ const routes = {
   adminVehicles: "/admin/vehicles",
   adminVehicleModelImages: "/admin/vehicles/model-images",
   adminVehicleStatusBoard: "/admin/vehicles/status",
-  adminInspectionAppointments: "/admin/vehicles/inspection-appointments",
   adminSettings: "/admin/settings",
 
   // COMMON ROUTES

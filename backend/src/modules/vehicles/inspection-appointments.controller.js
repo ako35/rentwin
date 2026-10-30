@@ -34,7 +34,12 @@ const parsePayload = (body, { partial = false } = {}) => {
 
 const listInspectionAppointments = asyncHandler(async (req, res) => {
   const where = {
-    ...(req.query.branchId ? { vehicle: { branchId: req.query.branchId } } : {}),
+    ...((req.query.branchId || req.query.vehicleId) ? {
+      vehicle: {
+        ...(req.query.branchId ? { branchId: req.query.branchId } : {}),
+        ...(req.query.vehicleId ? { id: req.query.vehicleId } : {}),
+      },
+    } : {}),
     ...(STATUSES.has(req.query.status) ? { status: req.query.status } : {}),
   };
   const rows = await prisma.vehicleInspectionAppointment.findMany({
