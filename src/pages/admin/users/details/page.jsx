@@ -10,6 +10,7 @@ import DocumentScan from "../../../../components/admin/customer-form/document-sc
 import { applyExtractedCustomerFields } from "../../../../components/admin/customer-form/apply-extracted";
 import CustomerDocumentsTab from "../../../../components/admin/customer-form/customer-documents-tab";
 import CustomerContractsTab from "./customer-contracts-tab";
+import CustomerScoreTab from "./customer-score-tab";
 import { services } from "../../../../services";
 import { TR_PROVINCES, TR_DISTRICTS } from "../../../../constants/tr-geo";
 import "./style.scss";
@@ -175,11 +176,15 @@ const AdminUserDetailsPage = () => {
           <Nav.Link eventKey="contracts">{t("users.tabs.contracts")}</Nav.Link>
         </Nav.Item>
         <Nav.Item>
+          <Nav.Link eventKey="score">{t("users.tabs.score")}</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
           <Nav.Link eventKey="documents">{t("users.tabs.documents")}</Nav.Link>
         </Nav.Item>
       </Nav>
 
       {tab === "contracts" && <CustomerContractsTab userId={userId} />}
+      {tab === "score" && <CustomerScoreTab userId={userId} />}
       {tab === "documents" && <CustomerDocumentsTab userId={userId} />}
 
       {tab === "info" && (

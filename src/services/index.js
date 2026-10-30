@@ -7,7 +7,7 @@ import { cancelContract, changeVehicle, createContract, createInvoice, deleteCon
 import { addContractRecord, deleteContractRecord, getContractRecords, updateContractRecord } from "./contract/contract-record-service";
 import { getContractPhotos, deleteContractPhoto } from "./contract/contract-photo-service";
 
-import { addUserDocument, createUserAdmin, deleteUser, deleteUserDocument, downloadUserReports, getUser, getUserAdmin, getUserDocuments, getUsersByPage, login, register, updatePassword, updateUser, updateUserAdmin } from "./user/user-service";
+import { addUserDocument, createUserAdmin, deleteUser, deleteUserDocument, downloadUserReports, getCustomerScoreAdmin, getUser, getUserAdmin, getUserDocuments, getUsersByPage, login, register, updatePassword, updateUser, updateUserAdmin } from "./user/user-service";
 
 import { addVehicle, createInspectionAppointment, deleteVehicle, downloadVehicleReports, getExpiryAlerts, getFleetStats, getFleetStatusBoard, getInspectionAppointments, getPriceList, getVehicleById, getVehicleByIdAdmin, getVehicles, getVehiclesByPage, getVehiclesByPageAdmin, markVehicleSold, unmarkVehicleSold, markVehiclePassive, unmarkVehiclePassive, updateInspectionAppointment, updateVehicleTracking, researchVehiclePrice, updateVehicle } from "./vehicle/vehicle-service";
 
@@ -107,6 +107,7 @@ export const services = {
         deleteUser,
         downloadUserReports,
         getUserAdmin,
+        getCustomerScoreAdmin,
         getUsersByPage,
         updateUserAdmin,
         getUserDocuments,

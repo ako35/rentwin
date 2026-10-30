@@ -6,6 +6,7 @@ const {
   updateCurrentUser,
   changePassword,
   getUserAdmin,
+  getCustomerScoreAdmin,
   getUsersByPageAdmin,
   createUserAdmin,
   updateUserAdmin,
@@ -20,6 +21,7 @@ router.patch("/user/auth", authenticate, changePassword);
 
 router.get("/user/auth/pages", authenticate, requireAdmin, getUsersByPageAdmin);
 router.post("/user/auth", authenticate, requireAdmin, createUserAdmin);
+router.get("/user/:id/score/auth", authenticate, requireAdmin, getCustomerScoreAdmin);
 router.get("/user/:id/auth", authenticate, requireAdmin, getUserAdmin);
 router.put("/user/:id/auth", authenticate, requireAdmin, updateUserAdmin);
 router.delete("/user/:id/auth", authenticate, requireAdmin, deleteUserAdmin);

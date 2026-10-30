@@ -5,6 +5,7 @@ const { hashPassword, comparePassword } = require("../../lib/password");
 const { serializeUser } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
+const { summarizeCustomerReturns } = require("./customer-score");
 const {
   nextCustomerCode,
   applyCustomerFields,
@@ -55,6 +56,21 @@ const getUserAdmin = asyncHandler(async (req, res) => {
   const user = await prisma.user.findUnique({ where: { id: req.params.id } });
   if (!user) throw new HttpError(404, "User not found.");
   res.json(serializeUser(user));
+});
+
+const getCustomerScoreAdmin = asyncHandler(async (req, res) => {
+  const user = await prisma.user.findUnique({
+    where: { id: req.params.id },
+    select: { id: true },
+  });
+  if (!user) throw new HttpError(404, "User not found.");
+
+  const contracts = await prisma.contract.findMany({
+    where: { userId: user.id },
+    select: { status: true, dropOffTime: true, returnedAt: true },
+  });
+
+  res.json(summarizeCustomerReturns(contracts));
 });
 
 const getUsersByPageAdmin = asyncHandler(async (req, res) => {
@@ -222,6 +238,7 @@ module.exports = {
   updateCurrentUser,
   changePassword,
   getUserAdmin,
+  getCustomerScoreAdmin,
   getUsersByPageAdmin,
   createUserAdmin,
   updateUserAdmin,

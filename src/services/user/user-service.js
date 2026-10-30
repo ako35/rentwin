@@ -50,6 +50,11 @@ export const getUserAdmin = async (id) => {
     return response.data;
 };
 
+export const getCustomerScoreAdmin = async (id) => {
+    const response = await axios.get(`${API_URL}/user/${id}/score/auth`, services.authHeader());
+    return response.data;
+};
+
 export const getUsersByPage = async (page = 0, size = 20, sort = "id", direction = "DESC", filters = {}) => {
     const params = new URLSearchParams({ page, size, sort, direction });
     if (filters.role) params.set("role", filters.role);

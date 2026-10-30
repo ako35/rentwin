@@ -1078,7 +1078,19 @@
     "tabs": {
       "info": "Info",
       "contracts": "Rentals",
+      "score": "Reliability",
       "documents": "Documents"
+    },
+    "scoreTab": {
+      "title": "Return performance summary",
+      "description": "This indicator shows the on-time return rate for completed rentals. A score is shown only after at least {{required}} completed rentals.",
+      "onTimeRate": "On-time return rate",
+      "insufficientHistory": "At least {{required}} completed rentals are needed to show a score. Current records: {{count}}.",
+      "completedRentals": "Completed rentals with a recorded return: {{count}}",
+      "onTimeReturns": "Returns no more than 1 hour late: {{count}}",
+      "lateReturns": "Returns more than 1 hour late: {{count}}",
+      "limitations": "This initial indicator evaluates only returns recorded under the primary customer on the contract. Payment due dates and verified damage data are not available, so they are excluded. Reference-customer records are excluded. The score does not automatically approve, reject, or change pricing or deposits.",
+      "error": "Could not load the customer reliability summary. Please try again."
     },
     "contractsTab": {
       "title": "Rental History",
