@@ -51,6 +51,9 @@
     "js-yaml": "^4.3.1",
     "brace-expansion": "^1.1.16",
     "immutable": "^4.3.9",
-    "quill": "2.0.2"
+    "quill": "2.0.2",
+    "react-data-table-component": {
+      "deepmerge": "4.1.1"
+    }
   }
 }
