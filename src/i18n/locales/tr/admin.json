@@ -12,6 +12,21 @@
     "logoutConfirmTitle": "Çıkış Yap",
     "logoutConfirmText": "Çıkış yapmak istediğinizden emin misiniz?"
   },
+  "documentAi": {
+    "errors": {
+      "generic": "Belge Gemini ile okunamadı. Lütfen tekrar deneyin.",
+      "notDetected": "Yüklenen dosya beklenen belge türü olarak tanınmadı. Lütfen doğru belgeyi ve net bir görüntüyü seçin.",
+      "tooLarge": "Dosya çok büyük veya biçimi desteklenmiyor. En fazla 4 MB boyutunda JPG, PNG ya da PDF yükleyin.",
+      "config": "Gemini API anahtarı veya proje erişimi sunucuda yapılandırılmamış.",
+      "billing": "Gemini API projesinde kullanılabilir kredi yok. Faturalandırma/kredi ayarını kontrol edin.",
+      "model": "Gemini belge okuma modeli kullanılamıyor. Sunucu model ayarını kontrol edin.",
+      "quota": "Gemini API kullanım kotası veya hız sınırı aşıldı. Biraz sonra tekrar deneyin.",
+      "timeout": "Gemini belgeyi zamanında işleyemedi. Daha küçük veya daha net bir dosyayla tekrar deneyin.",
+      "provider": "Gemini API isteği tamamlayamadı. Yönetici sunucu loglarındaki hata kodunu kontrol etmeli.",
+      "request": "Belge Gemini API tarafından kabul edilmedi. Dosya biçimini ve sunucu ayarlarını kontrol edin.",
+      "response": "Gemini belge için beklenen alanları döndürmedi. Daha net bir dosyayla tekrar deneyin."
+    }
+  },
   "dashboard": {
     "members": "Üyeler",
     "reservations": "Rezervasyonlar",
@@ -98,36 +113,36 @@
     },
     "registrationScan": {
       "button": "Ruhsattan Doldur",
-      "hint": "Belge tarayıcınızda yerel olarak okunur; harici yapay zeka servisine gönderilmez.",
-      "reading": "Belge tarayıcıda okunuyor...",
+      "hint": "Belge alanlarını çıkarmak için Google Gemini API'ye gönderilir. Kaydetmeden önce bilgileri kontrol edin.",
+      "reading": "Ruhsat Gemini ile okunuyor...",
       "success": "Ruhsat okundu, alanlar dolduruldu. Lütfen kontrol edin.",
-      "notDetected": "Görselde bir ruhsat tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",
+      "notDetected": "Dosyada bir ruhsat tanınamadı ya da alanlar net okunamadı. Daha net bir dosya deneyin veya alanları elle doldurun.",
       "error": "Ruhsat okunamadı, lütfen alanları elle doldurun.",
       "tooLarge": "Dosya çok büyük. Lütfen daha küçük bir görsel (en fazla ~4 MB) veya PDF yükleyin.",
-      "busy": "Yapay zeka servisi şu an yoğun. Lütfen birkaç saniye sonra tekrar deneyin.",
-      "quota": "Yapay zeka görsel okuma servisi şu anda yoğun (geçici bir hız sınırına takıldı). Birkaç dakika sonra tekrar deneyin."
+      "busy": "Gemini şu an yoğun. Lütfen biraz sonra tekrar deneyin.",
+      "quota": "Gemini API kullanım sınırı aşıldı. Birkaç dakika sonra tekrar deneyin."
     },
     "insuranceScan": {
       "button": "Poliçeden Doldur",
-      "hint": "Poliçe tarayıcınızda yerel olarak okunur; harici yapay zeka servisine gönderilmez.",
-      "reading": "Poliçe tarayıcıda okunuyor...",
+      "hint": "Belge alanlarını çıkarmak için Google Gemini API'ye gönderilir. Kaydetmeden önce bilgileri kontrol edin.",
+      "reading": "Poliçe Gemini ile okunuyor...",
       "success": "Poliçe okundu, alanlar dolduruldu. Lütfen kontrol edin.",
-      "notDetected": "Görselde bir sigorta/kasko poliçesi tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",
+      "notDetected": "Dosyada bir sigorta/kasko poliçesi tanınamadı ya da alanlar net okunamadı. Daha net bir dosya deneyin veya alanları elle doldurun.",
       "error": "Poliçe okunamadı, lütfen alanları elle doldurun.",
       "tooLarge": "Dosya çok büyük. Lütfen daha küçük bir görsel (en fazla ~4 MB) veya PDF yükleyin.",
-      "busy": "Yapay zeka servisi şu an yoğun. Lütfen birkaç saniye sonra tekrar deneyin.",
-      "quota": "Yapay zeka görsel okuma servisi şu anda yoğun (geçici bir hız sınırına takıldı). Birkaç dakika sonra tekrar deneyin."
+      "busy": "Gemini şu an yoğun. Lütfen biraz sonra tekrar deneyin.",
+      "quota": "Gemini API kullanım sınırı aşıldı. Birkaç dakika sonra tekrar deneyin."
     },
     "inspectionScan": {
       "button": "Belgeden Doldur",
-      "hint": "Belge tarayıcınızda yerel olarak okunur; harici yapay zeka servisine gönderilmez. Ruhsattan yalnızca Bitiş Tarihi doldurulur.",
-      "reading": "Belge tarayıcıda okunuyor...",
+      "hint": "Belge alanlarını çıkarmak için Google Gemini API'ye gönderilir. Ruhsattan yalnızca bitiş tarihi doldurulur. Kaydetmeden önce kontrol edin.",
+      "reading": "Belge Gemini ile okunuyor...",
       "success": "Belge okundu, alanlar dolduruldu. Lütfen kontrol edin.",
-      "notDetected": "Görselde bir muayene/egzoz belgesi ya da ruhsat tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",
+      "notDetected": "Dosyada bir muayene/egzoz belgesi ya da ruhsat tanınamadı ya da alanlar net okunamadı. Daha net bir dosya deneyin veya alanları elle doldurun.",
       "error": "Belge okunamadı, lütfen alanları elle doldurun.",
       "tooLarge": "Dosya çok büyük. Lütfen daha küçük bir görsel (en fazla ~4 MB) veya PDF yükleyin.",
-      "busy": "Yapay zeka servisi şu an yoğun. Lütfen birkaç saniye sonra tekrar deneyin.",
-      "quota": "Yapay zeka görsel okuma servisi şu anda yoğun (geçici bir hız sınırına takıldı). Birkaç dakika sonra tekrar deneyin."
+      "busy": "Gemini şu an yoğun. Lütfen biraz sonra tekrar deneyin.",
+      "quota": "Gemini API kullanım sınırı aşıldı. Birkaç dakika sonra tekrar deneyin."
     },
     "modelImages": {
       "title": "Model Görselleri ve Bilgileri",
@@ -521,14 +536,14 @@
         "pdfSelected": "Seçilen dosya: {{name}} (kaydedince eklenecek)",
         "scan": {
           "button": "Faturadan Doldur",
-          "hint": "Fatura tarayıcınızda yerel olarak okunur; harici yapay zeka servisine gönderilmez.",
-          "reading": "Fatura tarayıcıda okunuyor...",
+          "hint": "Fatura alanlarını çıkarmak için Google Gemini API'ye gönderilir. Kaydetmeden önce bilgileri kontrol edin.",
+          "reading": "Fatura Gemini ile okunuyor...",
           "success": "Fatura okundu, alanlar dolduruldu. Lütfen kontrol edin.",
-          "notDetected": "Görselde bir fatura tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",
+          "notDetected": "Dosyada bir fatura tanınamadı ya da alanlar net okunamadı. Daha net bir dosya deneyin veya alanları elle doldurun.",
           "error": "Fatura okunamadı, lütfen alanları elle doldurun.",
           "tooLarge": "Dosya çok büyük. Lütfen daha küçük bir görsel (en fazla ~4 MB) veya PDF yükleyin.",
-          "busy": "Yapay zeka servisi şu an yoğun. Lütfen birkaç saniye sonra tekrar deneyin.",
-          "quota": "Yapay zeka görsel okuma servisi şu anda yoğun (geçici bir hız sınırına takıldı). Birkaç dakika sonra tekrar deneyin.",
+          "busy": "Gemini şu an yoğun. Lütfen biraz sonra tekrar deneyin.",
+          "quota": "Gemini API kullanım sınırı aşıldı. Birkaç dakika sonra tekrar deneyin.",
           "config": "Yapay zeka servisi yapılandırması geçersiz. Yönetici servis ayarlarını kontrol etmeli.",
           "model": "Yapay zeka modeli kullanılamıyor. Model ayarını kontrol edin.",
           "timeout": "Fatura okuma isteği zaman aşımına uğradı. Daha küçük bir dosyayla tekrar deneyin.",
@@ -1118,11 +1133,11 @@
     "documentScan": {
       "buttonIndividual": "Ehliyet / Kimlik / Pasaporttan Doldur",
       "buttonCorporate": "Kaşe / Vergi Levhasından Doldur",
-      "hintIndividual": "Belge tarayıcınızda yerel olarak okunur; harici yapay zeka servisine gönderilmez.",
-      "hintCorporate": "Belge tarayıcınızda yerel olarak okunur; harici yapay zeka servisine gönderilmez.",
-      "reading": "Belge tarayıcıda okunuyor...",
+      "hintIndividual": "Belge alanlarını çıkarmak için Google Gemini API'ye gönderilir. Kaydetmeden önce bilgileri kontrol edin.",
+      "hintCorporate": "Belge alanlarını çıkarmak için Google Gemini API'ye gönderilir. Kaydetmeden önce bilgileri kontrol edin.",
+      "reading": "Belge Gemini ile okunuyor...",
       "success": "Belge okundu, alanlar dolduruldu. Lütfen kontrol edin.",
-      "notDetected": "Görselde beklenen belge tanınamadı ya da hiçbir alan net okunamadı. Daha net/aydınlık bir fotoğraf deneyin veya alanları elle doldurun.",
+      "notDetected": "Dosyada beklenen belge tanınamadı ya da alanlar net okunamadı. Daha net bir dosya deneyin veya alanları elle doldurun.",
       "error": "Belge okunamadı, lütfen alanları elle doldurun.",
       "tooLarge": "Dosya çok büyük. Lütfen daha küçük bir görsel (en fazla ~4 MB) veya PDF yükleyin.",
       "busy": "Yapay zeka servisi şu an yoğun. Lütfen birkaç saniye sonra tekrar deneyin.",

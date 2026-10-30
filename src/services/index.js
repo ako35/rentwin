@@ -30,11 +30,15 @@ import { getSettings, updateSettings } from "./settings/settings-service";
 import { getKabisSystems, addKabisSystem, deleteKabisSystem } from "./kabis-system/kabis-system-service";
 
 import { addLedgerEntry, deleteLedgerEntry, getUserLedger, updateLedgerEntry } from "./ledger/ledger-service";
+import { extractDocument } from "./document-ai/document-ai-service";
 
 import { encryptedLocalStorage } from "./encrypt-storage/encrypt-storage";
 import { authHeader } from "./auth-header/auth-header";
 
 export const services = {
+    documentAi: {
+        extractDocument,
+    },
     contact: {
         // COMMON ENDPOINTS
         sendMessage,

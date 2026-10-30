@@ -2,7 +2,8 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { utils } from "../../../utils";
-import { extractLocalDocument } from "../../../utils/local-document-reader";
+import { getDocumentAiErrorKey } from "../../../utils/document-ai-error";
+import { services } from "../../../services";
 
 // "Poliçeden Doldur": admin picks a photo/PDF of a trafik sigortası or kasko
 // poliçesi and we hand {type, company, policyNo, startDate, endDate, premium}
@@ -35,7 +36,7 @@ const InsuranceScan = ({ onExtracted }) => {
         utils.functions.swalToast(tr("tooLarge"), "error");
         return;
       }
-      const fields = await extractLocalDocument(prepared, "insurance");
+      const fields = await services.documentAi.extractDocument(prepared, "insurance");
       if (!fields.documentDetected || !hasExtractedFields(fields)) {
         utils.functions.swalToast(tr("notDetected"), "error");
         return;
@@ -43,8 +44,8 @@ const InsuranceScan = ({ onExtracted }) => {
       onExtracted(fields, prepared);
       utils.functions.swalToast(tr("success"), "success");
     } catch (error) {
-      console.warn("Local insurance OCR failed", error);
-      utils.functions.swalToast(tr("error"), "error");
+      console.warn("Gemini insurance extraction failed", error?.response?.data?.code || error.message);
+      utils.functions.swalToast(t(getDocumentAiErrorKey(error)), "error");
     } finally {
       setScanning(false);
       e.target.value = "";
@@ -66,6 +67,7 @@ const InsuranceScan = ({ onExtracted }) => {
         {scanning && <Spinner animation="border" size="sm" className="me-1" />}
         {scanning ? tr("reading") : tr("button")}
       </Button>
+      <span className="text-muted small">{tr("hint")}</span>
     </Form.Group>
   );
 };

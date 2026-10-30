@@ -2,10 +2,11 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { utils } from "../../../utils";
-import { extractLocalDocument } from "../../../utils/local-document-reader";
+import { getDocumentAiErrorKey } from "../../../utils/document-ai-error";
+import { services } from "../../../services";
 
 // "Ruhsattan Doldur": admin picks a photo of the registration certificate,
-// Local OCR reads the document in the browser; the admin reviews fields before saving.
+// Gemini extracts the fields on the server; the admin reviews them before saving.
 const hasExtractedFields = (fields) =>
   !!fields &&
   Object.entries(fields).some(
@@ -29,7 +30,7 @@ const RegistrationScan = ({ onExtracted }) => {
         utils.functions.swalToast(tr("tooLarge"), "error");
         return;
       }
-      const fields = await extractLocalDocument(prepared, "registration");
+      const fields = await services.documentAi.extractDocument(prepared, "registration");
       if (!fields.documentDetected || !hasExtractedFields(fields)) {
         utils.functions.swalToast(tr("notDetected"), "error");
         return;
@@ -37,8 +38,8 @@ const RegistrationScan = ({ onExtracted }) => {
       onExtracted(fields);
       utils.functions.swalToast(tr("success"), "success");
     } catch (error) {
-      console.warn("Local registration OCR failed", error);
-      utils.functions.swalToast(tr("error"), "error");
+      console.warn("Gemini registration extraction failed", error?.response?.data?.code || error.message);
+      utils.functions.swalToast(t(getDocumentAiErrorKey(error)), "error");
     } finally {
       setScanning(false);
       e.target.value = "";
@@ -60,6 +61,7 @@ const RegistrationScan = ({ onExtracted }) => {
         {scanning && <Spinner animation="border" size="sm" className="me-1" />}
         {scanning ? tr("reading") : t("vehicles.registrationScan.button")}
       </Button>
+      <span className="text-muted small">{tr("hint")}</span>
     </Form.Group>
   );
 };

@@ -12,6 +12,21 @@
     "logoutConfirmTitle": "Logout",
     "logoutConfirmText": "Are you sure you want to logout?"
   },
+  "documentAi": {
+    "errors": {
+      "generic": "Gemini couldn't read the document. Please try again.",
+      "notDetected": "The uploaded file was not recognized as the expected document type. Select the correct document and a clear image.",
+      "tooLarge": "The file is too large or unsupported. Upload a JPG, PNG, or PDF up to 4 MB.",
+      "config": "The Gemini API key or project access is not configured on the server.",
+      "billing": "The Gemini API project has no available credit. Check billing or credit settings.",
+      "model": "The Gemini document model is unavailable. Check the server model setting.",
+      "quota": "The Gemini API quota or rate limit was exceeded. Try again shortly.",
+      "timeout": "Gemini could not process the document in time. Try a smaller or clearer file.",
+      "provider": "Gemini could not complete the request. An administrator should check the server log error code.",
+      "request": "Gemini did not accept the document request. Check the file format and server settings.",
+      "response": "Gemini did not return the expected document fields. Try a clearer file."
+    }
+  },
   "dashboard": {
     "members": "Members",
     "reservations": "Reservations",
@@ -98,36 +113,36 @@
     },
     "registrationScan": {
       "button": "Fill from Registration",
-      "hint": "The document is read locally in your browser and is not sent to an external AI service.",
-      "reading": "Reading document in browser...",
+      "hint": "The document is sent to the Google Gemini API to extract fields. Review the values before saving.",
+      "reading": "Reading registration with Gemini...",
       "success": "Registration read successfully — please review the fields.",
-      "notDetected": "Couldn't recognize a registration document in the photo, or nothing on it was readable. Try a clearer/brighter photo, or fill in the fields manually.",
+      "notDetected": "Couldn't recognize a registration document in the file or read its fields clearly. Try a clearer file or fill in the fields manually.",
       "error": "Could not read the registration document, please fill in manually.",
       "tooLarge": "File is too large. Please upload a smaller image (about 4 MB max) or a PDF.",
-      "busy": "The AI service is busy right now. Please try again in a few seconds.",
-      "quota": "The AI document-reading service is busy right now (hit a temporary rate limit). Try again in a few minutes."
+      "busy": "Gemini is busy right now. Please try again shortly.",
+      "quota": "The Gemini API usage limit was reached. Try again in a few minutes."
     },
     "insuranceScan": {
       "button": "Fill from Policy",
-      "hint": "The policy is read locally in your browser and is not sent to an external AI service.",
-      "reading": "Reading policy in browser...",
+      "hint": "The document is sent to the Google Gemini API to extract fields. Review the values before saving.",
+      "reading": "Reading policy with Gemini...",
       "success": "Policy read successfully — please review the fields.",
-      "notDetected": "Couldn't recognize an insurance/kasko policy in the photo, or nothing on it was readable. Try a clearer/brighter photo, or fill in the fields manually.",
+      "notDetected": "Couldn't recognize an insurance/kasko policy in the file or read its fields clearly. Try a clearer file or fill in the fields manually.",
       "error": "Could not read the policy document, please fill in manually.",
       "tooLarge": "File is too large. Please upload a smaller image (about 4 MB max) or a PDF.",
-      "busy": "The AI service is busy right now. Please try again in a few seconds.",
-      "quota": "The AI document-reading service is busy right now (hit a temporary rate limit). Try again in a few minutes."
+      "busy": "Gemini is busy right now. Please try again shortly.",
+      "quota": "The Gemini API usage limit was reached. Try again in a few minutes."
     },
     "inspectionScan": {
       "button": "Fill from Document",
-      "hint": "The document is read locally in your browser and is not sent to an external AI service. A registration document only fills in the Expiry Date.",
-      "reading": "Reading document in browser...",
+      "hint": "The document is sent to the Google Gemini API to extract fields. A registration document only fills in the expiry date. Review before saving.",
+      "reading": "Reading document with Gemini...",
       "success": "Document read successfully — please review the fields.",
-      "notDetected": "Couldn't recognize an inspection/emission document or registration document in the photo, or nothing on it was readable. Try a clearer/brighter photo, or fill in the fields manually.",
+      "notDetected": "Couldn't recognize an inspection/emission document or registration document in the file, or read its fields clearly. Try a clearer file or fill in the fields manually.",
       "error": "Could not read the document, please fill in manually.",
       "tooLarge": "File is too large. Please upload a smaller image (about 4 MB max) or a PDF.",
-      "busy": "The AI service is busy right now. Please try again in a few seconds.",
-      "quota": "The AI document-reading service is busy right now (hit a temporary rate limit). Try again in a few minutes."
+      "busy": "Gemini is busy right now. Please try again shortly.",
+      "quota": "The Gemini API usage limit was reached. Try again in a few minutes."
     },
     "modelImages": {
       "title": "Model Images & Info",
@@ -521,14 +536,14 @@
         "pdfSelected": "Selected file: {{name}} (will be attached on save)",
         "scan": {
           "button": "Fill from Invoice",
-          "hint": "The invoice is read locally in your browser and is not sent to an external AI service.",
-          "reading": "Reading invoice in browser...",
+          "hint": "The invoice is sent to the Google Gemini API to extract fields. Review the values before saving.",
+          "reading": "Reading invoice with Gemini...",
           "success": "Invoice read, fields filled in. Please double-check.",
-          "notDetected": "Couldn't recognize an invoice in the image, or no field could be read reliably. Try a clearer/brighter photo or fill the fields manually.",
+          "notDetected": "Couldn't recognize an invoice in the file or read its fields clearly. Try a clearer file or fill the fields manually.",
           "error": "Couldn't read the invoice, please fill the fields manually.",
           "tooLarge": "File too large. Please upload a smaller image (max ~4 MB) or PDF.",
-          "busy": "The AI service is busy right now. Please try again in a few seconds.",
-          "quota": "The AI document-reading service is busy right now (hit a temporary rate limit). Try again in a few minutes.",
+          "busy": "Gemini is busy right now. Please try again shortly.",
+          "quota": "The Gemini API usage limit was reached. Try again in a few minutes.",
           "config": "The AI service configuration is invalid. An administrator should check the service settings.",
           "model": "The AI model is unavailable. Check the configured model.",
           "timeout": "The invoice-reading request timed out. Try again with a smaller file.",
@@ -1118,11 +1133,11 @@
     "documentScan": {
       "buttonIndividual": "Fill from Licence / ID / Passport",
       "buttonCorporate": "Fill from Stamp / Tax Registration",
-      "hintIndividual": "The document is read locally in your browser and is not sent to an external AI service.",
-      "hintCorporate": "The document is read locally in your browser and is not sent to an external AI service.",
-      "reading": "Reading document in browser...",
+      "hintIndividual": "The document is sent to the Google Gemini API to extract fields. Review the values before saving.",
+      "hintCorporate": "The document is sent to the Google Gemini API to extract fields. Review the values before saving.",
+      "reading": "Reading document with Gemini...",
       "success": "Document read — please review the fields.",
-      "notDetected": "Couldn't recognize the expected document in the photo, or nothing on it was readable. Try a clearer/brighter photo, or fill in the fields manually.",
+      "notDetected": "Couldn't recognize the expected document in the file or read its fields clearly. Try a clearer file or fill in the fields manually.",
       "error": "Could not read the document, please fill in manually.",
       "tooLarge": "File is too large. Please upload a smaller image (about 4 MB max) or a PDF.",
       "busy": "The AI service is busy right now. Please try again in a few seconds.",

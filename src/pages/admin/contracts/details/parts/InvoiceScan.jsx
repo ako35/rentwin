@@ -2,10 +2,10 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { utils } from "../../../../../utils";
-import { extractLocalDocument } from "../../../../../utils/local-document-reader";
+import { getDocumentAiErrorKey } from "../../../../../utils/document-ai-error";
+import { services } from "../../../../../services";
 
-// "Faturadan Doldur": admin picks a photo/PDF of the issued invoice, local OCR
-// reads it in the browser and hands back {number, issuedAt, periodFrom,
+// "Faturadan Doldur": Gemini reads the issued invoice and returns {number, issuedAt, periodFrom,
 // periodTo, grossAmount, customerTitle, taxNo} to prefill the Fatura form —
 // the same file also becomes the invoice's stored PDF once saved (see
 // InvoiceTab's onExtracted). Same "nothing extracted" guard as the other
@@ -33,7 +33,7 @@ const InvoiceScan = ({ onExtracted }) => {
         utils.functions.swalToast(tr("tooLarge"), "error");
         return;
       }
-      const fields = await extractLocalDocument(prepared, "invoice");
+      const fields = await services.documentAi.extractDocument(prepared, "invoice");
       if (!fields.documentDetected || !hasExtractedFields(fields)) {
         utils.functions.swalToast(tr("notDetected"), "error");
         return;
@@ -41,8 +41,8 @@ const InvoiceScan = ({ onExtracted }) => {
       onExtracted(fields, prepared);
       utils.functions.swalToast(tr("success"), "success");
     } catch (error) {
-      console.warn("Local invoice OCR failed", error);
-      utils.functions.swalToast(tr("error"), "error");
+      console.warn("Gemini invoice extraction failed", error?.response?.data?.code || error.message);
+      utils.functions.swalToast(t(getDocumentAiErrorKey(error)), "error");
     } finally {
       setScanning(false);
       e.target.value = "";
@@ -64,6 +64,7 @@ const InvoiceScan = ({ onExtracted }) => {
         {scanning && <Spinner animation="border" size="sm" className="me-1" />}
         {scanning ? tr("reading") : tr("button")}
       </Button>
+      <span className="text-muted small">{tr("hint")}</span>
     </Form.Group>
   );
 };

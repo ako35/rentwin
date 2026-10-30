@@ -5,6 +5,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 
 const authRoutes = require("./modules/auth/auth.routes");
+const documentAiRoutes = require("./modules/document-ai/document-ai.routes");
 const usersRoutes = require("./modules/users/users.routes");
 const userDocumentsRoutes = require("./modules/user-documents/user-documents.routes");
 const vehiclesRoutes = require("./modules/vehicles/vehicles.routes");
@@ -83,6 +84,7 @@ api.get("/health", (req, res) => res.json({ status: "ok" }));
 api.get("/cron/purge-sold-vehicles", purgeSoldVehicles);
 
 api.use(authRoutes);
+api.use(documentAiRoutes);
 api.use(usersRoutes);
 api.use(userDocumentsRoutes);
 api.use(vehiclesRoutes);
