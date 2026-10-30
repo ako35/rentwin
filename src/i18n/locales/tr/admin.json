@@ -1078,13 +1078,14 @@
     "tabs": {
       "info": "Bilgiler",
       "contracts": "Kiralamalar",
-      "score": "Güvenilirlik",
       "documents": "Belgeler"
     },
     "scoreTab": {
-      "title": "İade performansı özeti",
+      "ratingTitle": "Müşteri skoru",
       "description": "Bu gösterge, tamamlanmış kiralamalardaki zamanında iade oranını gösterir. Puan yalnızca en az {{required}} tamamlanmış kiralama olduğunda hesaplanır.",
       "onTimeRate": "Zamanında iade oranı",
+      "shortHistory": "{{count}} / {{required}} kiralama",
+      "loading": "Müşteri skoru yükleniyor",
       "insufficientHistory": "Puan göstermek için en az {{required}} tamamlanmış kiralama gerekir. Mevcut kayıt: {{count}}.",
       "completedRentals": "Tamamlanmış ve iade kaydı bulunan kiralama: {{count}}",
       "onTimeReturns": "En fazla 1 saat geciken iadeler dahil zamanında iade: {{count}}",

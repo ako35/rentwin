@@ -10,7 +10,7 @@ import DocumentScan from "../../../../components/admin/customer-form/document-sc
 import { applyExtractedCustomerFields } from "../../../../components/admin/customer-form/apply-extracted";
 import CustomerDocumentsTab from "../../../../components/admin/customer-form/customer-documents-tab";
 import CustomerContractsTab from "./customer-contracts-tab";
-import CustomerScoreTab from "./customer-score-tab";
+import CustomerScoreRating from "./customer-score-rating";
 import { services } from "../../../../services";
 import { TR_PROVINCES, TR_DISTRICTS } from "../../../../constants/tr-geo";
 import "./style.scss";
@@ -168,6 +168,12 @@ const AdminUserDetailsPage = () => {
 
   return (
     <div className="customer-form">
+      <div className="customer-form__topbar">
+        <CustomerScoreRating userId={userId} />
+        <Link to={`${routes.adminFinance}/cari/${userId}`} className="customer-form__ledger-link">
+          {t("finance.openStatement")}
+        </Link>
+      </div>
       <Nav variant="tabs" className="customer-form__tabs" activeKey={tab} onSelect={(k) => k && setTab(k)}>
         <Nav.Item>
           <Nav.Link eventKey="info">{t("users.tabs.info")}</Nav.Link>
@@ -176,24 +182,15 @@ const AdminUserDetailsPage = () => {
           <Nav.Link eventKey="contracts">{t("users.tabs.contracts")}</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="score">{t("users.tabs.score")}</Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
           <Nav.Link eventKey="documents">{t("users.tabs.documents")}</Nav.Link>
         </Nav.Item>
       </Nav>
 
       {tab === "contracts" && <CustomerContractsTab userId={userId} />}
-      {tab === "score" && <CustomerScoreTab userId={userId} />}
       {tab === "documents" && <CustomerDocumentsTab userId={userId} />}
 
       {tab === "info" && (
         <Form noValidate onSubmit={formik.handleSubmit}>
-          <div className="customer-form__topbar">
-            <Link to={`${routes.adminFinance}/cari/${userId}`} className="customer-form__ledger-link">
-              {t("finance.openStatement")}
-            </Link>
-          </div>
           <fieldset disabled={disabled} className="customer-form__fieldset">
             <div className="customer-form__segmented" role="tablist">
               <button

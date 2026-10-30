@@ -1,1 +1,54 @@
 @use '../../../../styles/customer-form';
+@use '../../../../styles/variables' as v;
+
+.customer-score-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid v.$color3;
+  border-radius: 10px;
+  background: #fff;
+  color: v.$color5;
+
+  &--loading {
+    min-width: 7rem;
+    min-height: 2.8rem;
+    justify-content: center;
+  }
+
+  &__value {
+    color: v.$color1;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.12rem;
+    font-size: 0.72rem;
+    line-height: 1.2;
+
+    strong { font-size: 0.78rem; }
+  }
+
+  &__error {
+    max-width: 18rem;
+    margin: 0;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+  }
+}
+
+.customer-form__topbar {
+  gap: 0.75rem;
+}
+
+@media (max-width: 575px) {
+  .customer-form__topbar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+}

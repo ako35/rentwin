@@ -1078,13 +1078,14 @@
     "tabs": {
       "info": "Info",
       "contracts": "Rentals",
-      "score": "Reliability",
       "documents": "Documents"
     },
     "scoreTab": {
-      "title": "Return performance summary",
+      "ratingTitle": "Customer score",
       "description": "This indicator shows the on-time return rate for completed rentals. A score is shown only after at least {{required}} completed rentals.",
       "onTimeRate": "On-time return rate",
+      "shortHistory": "{{count}} / {{required}} rentals",
+      "loading": "Loading customer score",
       "insufficientHistory": "At least {{required}} completed rentals are needed to show a score. Current records: {{count}}.",
       "completedRentals": "Completed rentals with a recorded return: {{count}}",
       "onTimeReturns": "Returns no more than 1 hour late: {{count}}",
