@@ -301,9 +301,11 @@ const renderPage = async (req, res) => {
   try {
     const [shell, data] = await Promise.all([getShell(), resolvePath(reqPath)]);
     const head = buildHead(data);
+    const statusCode =
+      data.vehicleMissing || data.locationMissing || data.postMissing ? 404 : 200;
     res.set("Content-Type", "text/html; charset=utf-8");
     res.set("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
-    return res.status(200).send(inject(shell, head));
+    return res.status(statusCode).send(inject(shell, head));
   } catch (err) {
     // Never fail a crawler. Try once more for the plain shell; if even that is
     // unavailable, hand back a minimal but valid document with the right head.
