@@ -134,11 +134,6 @@ const MaintenanceAlertBar = ({
   const isSpecialTab = (key) =>
     key === HGS_KEY || key === INVOICE_KEY || key === KBS_KEY || key === SIGN_KEY || key === APPOINTMENT_KEY;
   const kbsCount = kbsPending.length + kbsReleasePending.length;
-  const appointmentReminders = inspectionAppointments.filter((row) => {
-    if (row.status !== "SCHEDULED") return false;
-    const daysUntil = moment(row.appointmentAt).startOf("day").diff(moment().startOf("day"), "days");
-    return daysUntil <= appointmentReminderDays;
-  });
 
   const activeList = open && !isSpecialTab(open) ? categories[open] || [] : [];
 
@@ -216,12 +211,12 @@ const MaintenanceAlertBar = ({
           type="button"
           className={
             "maintenance-alert-bar__tab" +
-            (appointmentReminders.length ? " maintenance-alert-bar__tab--due maintenance-alert-bar__tab--overdue" : "") +
+            (inspectionAppointments.length ? " maintenance-alert-bar__tab--due" : "") +
             (open === APPOINTMENT_KEY ? " maintenance-alert-bar__tab--active" : "")
           }
           onClick={() => setOpen(open === APPOINTMENT_KEY ? null : APPOINTMENT_KEY)}
         >
-          <BsCalendar2Week /> {t("alertBar.inspectionAppointments")} ({appointmentReminders.length})
+          <BsCalendar2Week /> {t("alertBar.inspectionAppointments")} ({inspectionAppointments.length})
         </button>
       </div>
 
@@ -290,7 +285,7 @@ const MaintenanceAlertBar = ({
           <div className="maintenance-alert-bar__panel-head">
             {t("alertBar.inspectionAppointmentsHead", { days: appointmentReminderDays })}
           </div>
-          {appointmentReminders.length === 0 ? (
+          {inspectionAppointments.length === 0 ? (
             <div className="maintenance-alert-bar__empty">{t("alertBar.inspectionAppointmentsNone")}</div>
           ) : (
             <table className="maintenance-alert-bar__table">
@@ -301,9 +296,10 @@ const MaintenanceAlertBar = ({
                 <th>{t("alertBar.col.station")}</th>
                 <th>{t("alertBar.col.appointmentStatus")}</th>
               </tr></thead>
-              <tbody>{appointmentReminders.map((row) => {
-                const daysUntil = moment(row.appointmentAt).startOf("day").diff(moment().startOf("day"), "days");
+              <tbody>{inspectionAppointments.map((row) => {
+                const overdue = row.status === "SCHEDULED" && moment(row.appointmentAt).isBefore(moment(), "day");
                 const typeKey = row.type === "Emission" ? "emission" : "periodic";
+                const statusKey = overdue ? "overdue" : (row.status || "SCHEDULED").toLowerCase();
                 return (
                   <tr key={row.id}>
                     <td className="maintenance-alert-bar__plate">
@@ -312,11 +308,9 @@ const MaintenanceAlertBar = ({
                       </Link>
                     </td>
                     <td>{t(`inspectionAppointments.types.${typeKey}`)}</td>
-                    <td>{utils.functions.getDate(row.appointmentAt)}</td>
+                    <td>{moment(row.appointmentAt).format("DD.MM.YYYY HH:mm")}</td>
                     <td>{row.station || "—"}</td>
-                    <td>{daysUntil < 0
-                      ? t("alertBar.daysOverdue", { days: Math.abs(daysUntil) })
-                      : daysUntil === 0 ? t("alertBar.appointmentToday") : t("alertBar.daysLeft", { days: daysUntil })}</td>
+                    <td>{t(`inspectionAppointments.statuses.${statusKey}`)}</td>
                   </tr>
                 );
               })}</tbody>
