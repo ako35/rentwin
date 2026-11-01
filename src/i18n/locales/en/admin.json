@@ -1348,6 +1348,11 @@
   },
   "inspectionAppointments": {
     "newAppointment": "Create Appointment",
+    "scanButton": "Auto-fill from Image",
+    "scanning": "Reading image...",
+    "scanHint": "Upload the appointment confirmation or receipt. Review the details before saving.",
+    "scanSuccess": "Image read and available fields filled in. Please review them.",
+    "scanNotDetected": "No inspection or emission appointment document was recognized, or its details could not be read. Try a clearer image or fill in the fields manually.",
     "summary": { "scheduled": "Scheduled" },
     "appointmentsTitle": "Appointment tracker",
     "vehicleDescription": "Plan and track this vehicle's inspection and emission appointments here.",

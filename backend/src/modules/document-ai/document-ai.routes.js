@@ -6,6 +6,7 @@ const {
   extractRegistration,
   extractInsurance,
   extractInspection,
+  extractInspectionAppointment,
   extractInvoice,
   extractCustomerDocument,
 } = require("./document-ai.controller");
@@ -32,6 +33,13 @@ router.post(
   requireAdmin,
   upload.single("file"),
   extractInspection
+);
+router.post(
+  "/car/admin/extract-inspection-appointment/auth",
+  authenticate,
+  requireAdmin,
+  upload.single("file"),
+  extractInspectionAppointment
 );
 router.post(
   "/user/auth/extract-document",

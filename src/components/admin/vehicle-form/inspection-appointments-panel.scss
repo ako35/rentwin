@@ -115,6 +115,18 @@
     gap: 0.8rem;
   }
 
+  &__scan {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+
+    span {
+      color: var(--rw-ink-muted);
+      font-size: 0.76rem;
+    }
+  }
+
   &__vehicle {
     display: flex;
     flex-direction: column;

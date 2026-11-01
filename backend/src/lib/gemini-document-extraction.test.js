@@ -54,6 +54,46 @@ test("sends the document to Gemini and parses structured fields", async () => {
   });
 });
 
+test("extracts appointment details from an appointment confirmation", async () => {
+  await withGeminiConfig(async () => {
+    const appointment = {
+      documentDetected: true,
+      type: "Emission",
+      appointmentDate: "2026-11-12",
+      appointmentTime: "14:30",
+      station: "İzmir Egzoz İstasyonu",
+      bookingCode: "RND-123",
+      cost: 450,
+    };
+    global.fetch = async (_url, options) => {
+      const request = JSON.parse(options.body);
+      assert.match(request.contents[0].parts[1].text, /randevu onayını/i);
+      assert.equal(
+        request.generationConfig.responseSchema.properties.appointmentTime.type,
+        "STRING"
+      );
+      assert.deepEqual(
+        request.generationConfig.responseSchema.properties.type.enum,
+        ["Periodic", "Emission"]
+      );
+      return {
+        ok: true,
+        json: async () => ({
+          candidates: [{ content: { parts: [{ text: JSON.stringify(appointment) }] } }],
+        }),
+      };
+    };
+
+    const result = await extractDocumentWithGemini({
+      buffer: Buffer.from("appointment confirmation"),
+      mimeType: "image/jpeg",
+      kind: "inspectionAppointment",
+    });
+
+    assert.deepEqual(result, appointment);
+  });
+});
+
 test("rejects unsupported kinds and empty files before making a request", async () => {
   await assert.rejects(
     extractDocumentWithGemini({ buffer: Buffer.from("x"), mimeType: "image/png", kind: "unknown" }),

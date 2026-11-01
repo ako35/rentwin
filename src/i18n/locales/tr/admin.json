@@ -1348,6 +1348,11 @@
   },
   "inspectionAppointments": {
     "newAppointment": "Randevu Oluştur",
+    "scanButton": "Görselden Otomatik Doldur",
+    "scanning": "Görsel okunuyor...",
+    "scanHint": "Randevu onayı veya fişini yükleyin. Kaydetmeden önce bilgileri kontrol edin.",
+    "scanSuccess": "Görsel okundu; bulunan alanlar dolduruldu. Lütfen kontrol edin.",
+    "scanNotDetected": "Görselde bir muayene veya egzoz randevu belgesi tanınamadı ya da randevu bilgileri okunamadı. Daha net bir görsel deneyin veya alanları elle doldurun.",
     "summary": { "scheduled": "Planlı randevu" },
     "appointmentsTitle": "Randevu takibi",
     "vehicleDescription": "Bu aracın muayene ve egzoz randevularını buradan planlayıp takip edin.",

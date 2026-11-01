@@ -20,7 +20,7 @@ const extractFor = (resolveKind) =>
     if (!req.file) throw new HttpError(400, "Belge dosyası yüklenmedi.", "AI_FILE");
 
     const kind = resolveKind(req);
-    if (!kind || !["registration", "insurance", "inspection", "individual", "corporate", "invoice"].includes(kind)) {
+    if (!kind || !["registration", "insurance", "inspection", "inspectionAppointment", "individual", "corporate", "invoice"].includes(kind)) {
       throw new HttpError(400, "Desteklenmeyen belge türü.", "AI_REQUEST");
     }
     if (!MIME_TYPES.has(req.file.mimetype)) {
@@ -54,6 +54,7 @@ const extractFor = (resolveKind) =>
 const extractRegistration = extractFor(() => "registration");
 const extractInsurance = extractFor(() => "insurance");
 const extractInspection = extractFor(() => "inspection");
+const extractInspectionAppointment = extractFor(() => "inspectionAppointment");
 const extractInvoice = extractFor(() => "invoice");
 const extractCustomerDocument = extractFor((req) => req.body?.kind);
 
@@ -61,6 +62,7 @@ module.exports = {
   extractRegistration,
   extractInsurance,
   extractInspection,
+  extractInspectionAppointment,
   extractInvoice,
   extractCustomerDocument,
 };

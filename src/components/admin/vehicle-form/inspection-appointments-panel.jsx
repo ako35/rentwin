@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Modal, Spinner, Table } from "react-bootstrap";
 import moment from "moment/moment";
-import { BsCalendar2Week, BsCheck2, BsPlusLg, BsXLg } from "react-icons/bs";
+import { BsCalendar2Week, BsCheck2, BsPlusLg, BsStars, BsXLg } from "react-icons/bs";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
+import { getDocumentAiErrorKey } from "../../../utils/document-ai-error";
 import "./inspection-appointments-panel.scss";
 
 const EMPTY_FORM = () => ({
@@ -27,9 +28,11 @@ const STATUS_KEYS = {
 const InspectionAppointmentsPanel = ({ vehicleId, vehicle }) => {
   const { t, i18n } = useTranslation("admin");
   const tr = useCallback((key, options) => t(`inspectionAppointments.${key}`, options), [t]);
+  const appointmentFileRef = useRef(null);
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [scanning, setScanning] = useState(false);
   const [changingStatus, setChangingStatus] = useState(false);
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [showModal, setShowModal] = useState(false);
@@ -88,6 +91,45 @@ const InspectionAppointmentsPanel = ({ vehicleId, vehicle }) => {
 
   const setField = (field) => (event) => {
     setForm((current) => ({ ...current, [field]: event.target.value }));
+  };
+
+  const scanAppointmentDocument = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setScanning(true);
+    try {
+      const prepared = await utils.functions.downscaleImage(file);
+      if (prepared.size > 4 * 1024 * 1024) {
+        utils.functions.swalToast(t("documentAi.errors.tooLarge"), "error");
+        return;
+      }
+
+      const extracted = await services.documentAi.extractDocument(prepared, "inspectionAppointment");
+      const hasAppointmentFields = ["appointmentDate", "appointmentTime", "station", "bookingCode", "cost"]
+        .some((key) => extracted[key] !== null && extracted[key] !== undefined && extracted[key] !== "");
+      if (!extracted.documentDetected || !hasAppointmentFields) {
+        utils.functions.swalToast(tr("scanNotDetected"), "error");
+        return;
+      }
+
+      setForm((current) => ({
+        ...current,
+        ...(extracted.type === "Periodic" || extracted.type === "Emission" ? { type: extracted.type } : {}),
+        ...(extracted.appointmentDate ? { date: extracted.appointmentDate } : {}),
+        ...(extracted.appointmentTime ? { time: extracted.appointmentTime } : {}),
+        ...(extracted.station ? { station: extracted.station } : {}),
+        ...(extracted.bookingCode ? { bookingCode: extracted.bookingCode } : {}),
+        ...(extracted.cost != null ? { cost: String(extracted.cost) } : {}),
+      }));
+      utils.functions.swalToast(tr("scanSuccess"), "success");
+    } catch (error) {
+      console.warn("Gemini inspection appointment extraction failed", error?.response?.data?.code || error.message);
+      utils.functions.swalToast(t(getDocumentAiErrorKey(error)), "error");
+    } finally {
+      setScanning(false);
+      event.target.value = "";
+    }
   };
 
   const save = async (event) => {
@@ -249,12 +291,35 @@ const InspectionAppointmentsPanel = ({ vehicleId, vehicle }) => {
         </Table>
       )}
 
-      <Modal show={showModal} onHide={() => !saving && setShowModal(false)} centered>
+      <Modal show={showModal} onHide={() => !saving && !scanning && setShowModal(false)} centered>
         <Form onSubmit={save}>
           <Modal.Header closeButton>
             <Modal.Title>{tr(editing ? "editTitle" : "newAppointment")}</Modal.Title>
           </Modal.Header>
           <Modal.Body className="vehicle-appointments__form">
+            {!editing && (
+              <div className="vehicle-appointments__scan">
+                <Form.Control
+                  ref={appointmentFileRef}
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.pdf"
+                  className="d-none"
+                  onChange={scanAppointmentDocument}
+                  disabled={scanning}
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline-primary"
+                  disabled={scanning}
+                  onClick={() => appointmentFileRef.current?.click()}
+                >
+                  {scanning ? <Spinner animation="border" size="sm" /> : <BsStars />}
+                  {" "}{scanning ? tr("scanning") : tr("scanButton")}
+                </Button>
+                <span>{tr("scanHint")}</span>
+              </div>
+            )}
             <div className="vehicle-appointments__vehicle">
               <span>{tr("fields.vehicle")}</span>
               <strong>{vehicle?.licensePlate} · {[vehicle?.brand, vehicle?.model].filter(Boolean).join(" ")}</strong>
@@ -294,10 +359,10 @@ const InspectionAppointmentsPanel = ({ vehicleId, vehicle }) => {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button type="button" variant="outline-secondary" disabled={saving} onClick={() => setShowModal(false)}>
+            <Button type="button" variant="outline-secondary" disabled={saving || scanning} onClick={() => setShowModal(false)}>
               {tr("close")}
             </Button>
-            <Button type="submit" disabled={saving || !form.date || !form.time}>
+            <Button type="submit" disabled={saving || scanning || !form.date || !form.time}>
               {saving && <Spinner size="sm" animation="border" />} {tr("save")}
             </Button>
           </Modal.Footer>

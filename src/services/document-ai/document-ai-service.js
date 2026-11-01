@@ -6,6 +6,7 @@ const ENDPOINTS = {
   registration: "/car/admin/extract-registration/auth",
   insurance: "/car/admin/extract-insurance/auth",
   inspection: "/car/admin/extract-inspection/auth",
+  inspectionAppointment: "/car/admin/extract-inspection-appointment/auth",
   individual: "/user/auth/extract-document",
   corporate: "/user/auth/extract-document",
   invoice: "/contracts/admin/invoice/extract/auth",

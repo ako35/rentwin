@@ -75,6 +75,20 @@ const DOCUMENTS = {
     prompt:
       "Türkiye araç muayene raporu, egzoz emisyon belgesi veya araç ruhsatını incele. TÜVTÜRK/periyodik muayene türünü Periodic, egzoz ölçümünü Emission olarak yaz. Muayene tarihi, sonucu (Pass/Fail/Defective), sonraki muayene/geçerlilik tarihi, istasyon ve açıkça yazılı ücreti çıkar. Ruhsatta yalnızca muayene geçerlilik tarihini doldur; ruhsatta bulunmayan muayene tarihi, sonuç, istasyon ve ücret alanlarını null bırak. Tarihleri YYYY-MM-DD biçiminde ver, tahmin etme.",
   },
+  inspectionAppointment: {
+    schema: documentSchema({
+      type: field("STRING", "Araç muayenesi için Periodic, egzoz emisyon randevusu için Emission.", {
+        enum: ENUMS.inspectionType,
+      }),
+      appointmentDate: field("STRING", "Randevu tarihi, YYYY-MM-DD."),
+      appointmentTime: field("STRING", "Randevu saati, 24 saat biçiminde HH:mm."),
+      station: field("STRING", "Randevunun alındığı istasyon veya ölçüm merkezi."),
+      bookingCode: field("STRING", "Randevu numarası veya rezervasyon kodu."),
+      cost: field("NUMBER", "Randevu belgesinde açıkça yazan ücret; yalnızca sayı."),
+    }),
+    prompt:
+      "Türkiye araç muayene veya egzoz emisyon randevu onayını, randevu fişini ya da randevu ekran görüntüsünü incele. Yalnızca planlanmış bir randevuya ait belgeyi tanınmış say; tamamlanmış muayene raporu, ruhsat, poliçe veya başka belge için documentDetected=false döndür. TÜVTÜRK/periyodik araç muayenesini Periodic, egzoz emisyon randevusunu Emission olarak belirle. Randevu tarihini YYYY-MM-DD, saatini 24 saat biçiminde HH:mm olarak çıkar. İstasyon/ölçüm merkezi, açıkça yazılı randevu numarası ve ücreti varsa çıkar. Birbirine yakın oluşturulma/ödeme tarihi ile gerçek randevu tarihini karıştırma; belgeden kesin ayırt edilemiyorsa ilgili alanı null bırak. Alanları asla tahmin etme.",
+  },
   individual: {
     schema: documentSchema({
       firstName: field("STRING", "Bireyin adı/adları; soyadıyla karıştırma."),
