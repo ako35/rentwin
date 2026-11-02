@@ -18,6 +18,14 @@
 // only the surrounding page chrome (titles, labels, breadcrumbs) is bilingual.
 
 const { SITE_URL, business, slugify, localeFromPath, localizePath, stripLocalePrefix } = require("./site");
+const HOME_COPY = {
+  tr: require("../../../src/i18n/locales/tr/home.json"),
+  en: require("../../../src/i18n/locales/en/home.json"),
+};
+const PRIVACY_POLICY_COPY = {
+  tr: require("../../../src/i18n/locales/tr/common.json").privacyPolicy,
+  en: require("../../../src/i18n/locales/en/common.json").privacyPolicy,
+};
 
 const ORG_ID = `${SITE_URL}/#organization`;
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`;
@@ -711,6 +719,42 @@ const renderAboutBody = (locale = "tr") => {
   );
 };
 
+const renderHomeBody = (locale = "tr") => {
+  const c = HOME_COPY[locale];
+  return (
+    `<main><h1>${htmlEsc(c.hero.title)}</h1>` +
+    `<p>${htmlEsc(c.hero.lead)}</p>` +
+    `<ul>${c.hero.trust.map((item) => `<li>${htmlEsc(item)}</li>`).join("")}</ul>` +
+    `<h2>${htmlEsc(c.sections.popularCars.title1)} ${htmlEsc(c.sections.popularCars.title2)}</h2>` +
+    `<p>${htmlEsc(c.sections.popularCars.desc)}</p>` +
+    `<h2>${htmlEsc(c.whatWeDo.title)}</h2><p>${htmlEsc(c.whatWeDo.desc)}</p>` +
+    `<ul>${c.whatWeDo.services.map((service) => `<li>${htmlEsc(service.title)}</li>`).join("")}</ul>` +
+    `<p><a href="${htmlEsc(localizePath("/vehicles", locale))}">${htmlEsc(c.hero.browseCta)}</a></p>` +
+    "</main>"
+  );
+};
+
+const renderPrivacyPolicyBody = (locale = "tr") => {
+  const copy = PRIVACY_POLICY_COPY[locale];
+  const sections = copy.sections
+    .map(
+      (section) =>
+        `<section><h2>${htmlEsc(section.heading)}</h2>` +
+        (section.paragraphs || []).map((paragraph) => `<p>${htmlEsc(paragraph)}</p>`).join("") +
+        (section.list
+          ? `<ul>${section.list.map((item) => `<li>${htmlEsc(item)}</li>`).join("")}</ul>`
+          : "") +
+        "</section>"
+    )
+    .join("");
+  return (
+    `<main><h1>${htmlEsc(copy.title)}</h1>` +
+    `<p>${htmlEsc(copy.intro)}</p><p>${htmlEsc(copy.updated)}</p>` +
+    sections +
+    "</main>"
+  );
+};
+
 /* ------------------------------------------ /contact crawler body  */
 // Mirrors src/pages/common/contact/page.jsx + locales/{tr,en}/contact.json —
 // the form itself isn't content, only the intro + the real NAP details
@@ -1171,6 +1215,8 @@ const buildHead = ({
     if (canonicalPath === "/sss") head.bodyHtml = renderFaqBody(locale);
     if (canonicalPath === "/about") head.bodyHtml = renderAboutBody(locale);
     if (canonicalPath === "/contact") head.bodyHtml = renderContactBody(locale);
+    if (canonicalPath === "/privacy-policy") head.bodyHtml = renderPrivacyPolicyBody(locale);
+    if (canonicalPath === "/" && path !== "/") head.bodyHtml = renderHomeBody(locale);
 
     return head;
   }

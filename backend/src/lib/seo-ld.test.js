@@ -13,6 +13,9 @@ const cases = [
   { path: "/en/sss", heading: "Frequently Asked Questions" },
   { path: "/contact", heading: "İletişim" },
   { path: "/en/contact", heading: "Contact Us" },
+  { path: "/en", heading: "Car Rental in Aliağa" },
+  { path: "/privacy-policy", heading: "Gizlilik ve Kişisel Verilerin Korunması Politikası" },
+  { path: "/en/privacy-policy", heading: "Privacy &amp; Personal Data Protection Policy" },
 ];
 
 for (const { path, heading } of cases) {
@@ -21,5 +24,13 @@ for (const { path, heading } of cases) {
     const headings = bodyHtml.match(/<h1>/g) || [];
     assert.equal(headings.length, 1);
     assert.ok(bodyHtml.includes(`<h1>${heading}</h1>`));
+  });
+}
+
+for (const path of ["/en", "/privacy-policy", "/en/privacy-policy"]) {
+  test(`crawler body for ${path} includes meaningful page content`, () => {
+    const { bodyHtml } = buildHead({ path });
+    assert.ok(bodyHtml.length > 500);
+    assert.match(bodyHtml, /<p>[^<]{40,}<\/p>/);
   });
 }
