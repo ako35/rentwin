@@ -590,6 +590,7 @@ const htmlLink = (url, label) => `<li><a href="${htmlEsc(url)}">${htmlEsc(label)
 
 const VEHICLES_LIST_COPY = {
   tr: {
+    heading: "Araçlarımız",
     intro: "Aliağa ve İzmir'de günlük ve uzun dönem araç kiralama — bakımlı, tam sigortalı filo ve şeffaf fiyatlandırma.",
     aboutTitle: "Rentwin ile Araç Kiralama",
     aboutParagraphs: [
@@ -599,6 +600,7 @@ const VEHICLES_LIST_COPY = {
     ],
   },
   en: {
+    heading: "Our Vehicles",
     intro: "Daily and long-term car rental in Aliağa and İzmir — a well-maintained, fully insured fleet with transparent pricing.",
     aboutTitle: "Renting a Car with Rentwin",
     aboutParagraphs: [
@@ -616,7 +618,7 @@ const renderVehiclesListBody = (vehicles = [], locale = "tr") => {
     .map((v) => htmlLink(`${SITE_URL}${localizePath(`/vehicles/${v.id}`, locale)}`, `${(v.brand || "").trim()} ${(v.model || "").trim()}`.trim()))
     .join("");
   return (
-    `<main><p>${htmlEsc(copy.intro)}</p>` +
+    `<main><h1>${htmlEsc(copy.heading)}</h1><p>${htmlEsc(copy.intro)}</p>` +
     (links ? `<ul>${links}</ul>` : "") +
     `<h2>${htmlEsc(copy.aboutTitle)}</h2>` +
     copy.aboutParagraphs.map((p) => `<p>${htmlEsc(p)}</p>`).join("") +
@@ -625,8 +627,14 @@ const renderVehiclesListBody = (vehicles = [], locale = "tr") => {
 };
 
 const LOCATIONS_LIST_COPY = {
-  tr: { intro: "Rentwin olarak aşağıdaki lokasyonlarda araç kiralama hizmeti veriyoruz. Bölgenizi seçin, o noktadan teslim alabileceğiniz araçları ve şartları görün." },
-  en: { intro: "Rentwin offers car rental at the locations below. Choose your area to see the vehicles you can pick up there and the terms that apply." },
+  tr: {
+    heading: "Lokasyonlarımız",
+    intro: "Rentwin olarak aşağıdaki lokasyonlarda araç kiralama hizmeti veriyoruz. Bölgenizi seçin, o noktadan teslim alabileceğiniz araçları ve şartları görün.",
+  },
+  en: {
+    heading: "Our Locations",
+    intro: "Rentwin offers car rental at the locations below. Choose your area to see the vehicles you can pick up there and the terms that apply.",
+  },
 };
 
 // locations: [{ name }]
@@ -634,18 +642,26 @@ const renderLocationsListBody = (locations = [], locale = "tr") => {
   const links = locations
     .map((l) => htmlLink(`${SITE_URL}${localizePath(`/lokasyonlar/${slugify(l.name)}`, locale)}`, l.name))
     .join("");
-  return `<main><p>${htmlEsc(LOCATIONS_LIST_COPY[locale].intro)}</p>${links ? `<ul>${links}</ul>` : ""}</main>`;
+  const copy = LOCATIONS_LIST_COPY[locale];
+  return `<main><h1>${htmlEsc(copy.heading)}</h1><p>${htmlEsc(copy.intro)}</p>${links ? `<ul>${links}</ul>` : ""}</main>`;
 };
 
 const BLOG_LIST_COPY = {
-  tr: { intro: "Araç kiralama rehberleri, seyahat önerileri ve Rentwin'den güncel bilgiler. Aliağa ve İzmir'de araç kiralarken bilmeniz gerekenler." },
-  en: { intro: "Car rental guides, travel tips and the latest news from Rentwin. What to know when renting a car in Aliağa and İzmir." },
+  tr: {
+    heading: "Blog",
+    intro: "Araç kiralama rehberleri, seyahat önerileri ve Rentwin'den güncel bilgiler. Aliağa ve İzmir'de araç kiralarken bilmeniz gerekenler.",
+  },
+  en: {
+    heading: "Blog",
+    intro: "Car rental guides, travel tips and the latest news from Rentwin. What to know when renting a car in Aliağa and İzmir.",
+  },
 };
 
 // posts: [{ slug, title }]
 const renderBlogListBody = (posts = [], locale = "tr") => {
   const links = posts.map((p) => htmlLink(`${SITE_URL}${localizePath(`/blog/${p.slug}`, locale)}`, p.title)).join("");
-  return `<main><p>${htmlEsc(BLOG_LIST_COPY[locale].intro)}</p>${links ? `<ul>${links}</ul>` : ""}</main>`;
+  const copy = BLOG_LIST_COPY[locale];
+  return `<main><h1>${htmlEsc(copy.heading)}</h1><p>${htmlEsc(copy.intro)}</p>${links ? `<ul>${links}</ul>` : ""}</main>`;
 };
 
 /* ---------------------------------------------- /sss crawler body  */
@@ -657,7 +673,8 @@ const FAQ_INTRO = {
   en: "We've gathered the answers to the questions we hear most about renting a car. If you can't find what you're looking for, reach us from the Contact page.",
 };
 const renderFaqBody = (locale = "tr") =>
-  `<main><p>${htmlEsc(FAQ_INTRO[locale])}</p>` +
+  `<main><h1>${htmlEsc(locale === "en" ? "Frequently Asked Questions" : "Sıkça Sorulan Sorular")}</h1>` +
+  `<p>${htmlEsc(FAQ_INTRO[locale])}</p>` +
   FAQ_ITEMS[locale].map((item) => `<h2>${htmlEsc(item.q)}</h2><p>${htmlEsc(item.a)}</p>`).join("") +
   "</main>";
 
@@ -706,7 +723,7 @@ const renderContactBody = (locale = "tr") => {
   const c = CONTACT_COPY[locale];
   const addr = `${business.streetAddress}, ${business.addressLocality} / ${business.addressRegion}`;
   return (
-    `<main><p>${htmlEsc(c.desc)}</p>` +
+    `<main><h1>${htmlEsc(locale === "en" ? "Contact Us" : "İletişim")}</h1><p>${htmlEsc(c.desc)}</p>` +
     "<ul>" +
     `<li>${htmlEsc(c.phone)}: ${htmlEsc(business.phoneE164)}</li>` +
     `<li>${htmlEsc(c.email)}: ${htmlEsc(business.email)}</li>` +
