@@ -1,7 +1,7 @@
 {
   "seo": {
-    "title": "Rentwin | Car Rental in Aliağa & İzmir — Transparent Pricing",
-    "description": "Rent a well-maintained car in Aliağa and İzmir with Rentwin. No hidden fees, smooth handover, book online in minutes."
+    "title": "Car Rental in Aliağa | Rentwin — Aliağa & İzmir",
+    "description": "Daily and monthly car rental in Aliağa. Request vehicle delivery and meet-and-greet at İzmir Adnan Menderes Airport, and book online."
   },
   "reservationSearch": {
     "dailyTab": "Daily Car Rental",
@@ -109,7 +109,7 @@
   ],
   "whatWeDo": {
     "title": "What We Do",
-    "desc": "At Rentwin we offer round-the-clock rentals from a large, well-maintained fleet built for both personal and corporate needs — from compact city cars to rugged off-road SUVs, backed by a state-of-the-art booking system.",
+    "desc": "Rent a car by the day or month from our Aliağa office, or request delivery and meet-and-greet at İzmir Adnan Menderes Airport. Explore maintained vehicles for personal, corporate, and long-term fleet needs.",
     "services": [
       { "id": 1, "title": "Individual Vehicle Rental" },
       { "id": 2, "title": "Corporate Fleet Solutions" },

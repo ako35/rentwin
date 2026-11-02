@@ -24,9 +24,8 @@ const business = {
   postalCode: "35800",
   addressCountry: "TR",
   mapUrl: MAPS_URL,
-  // TODO: re-geocode for the corrected streetAddress above — still the old
-  // "Kültür Mah." coordinates. Keep in sync with src/constants/index.js `website.geo`.
-  geo: { latitude: 38.8020867, longitude: 26.9715113 },
+  // Keep in sync with src/constants/index.js `website.geo` and the confirmed address.
+  geo: { latitude: 38.7928859, longitude: 26.9683881 },
   // Verified public profiles only — an unverifiable sameAs hurts rich results.
   sameAs: [MAPS_URL],
   openingHours: [

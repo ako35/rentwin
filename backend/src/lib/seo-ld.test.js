@@ -1,6 +1,10 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { buildHead } = require("./seo-ld");
+const { autoRentalLd, buildHead } = require("./seo-ld");
+const trHomeCopy = require("../../../src/i18n/locales/tr/home.json");
+const enHomeCopy = require("../../../src/i18n/locales/en/home.json");
+const trVehiclesCopy = require("../../../src/i18n/locales/tr/vehicles.json");
+const enVehiclesCopy = require("../../../src/i18n/locales/en/vehicles.json");
 
 const cases = [
   { path: "/vehicles", heading: "Araçlarımız" },
@@ -34,3 +38,55 @@ for (const path of ["/en", "/privacy-policy", "/en/privacy-policy"]) {
     assert.match(bodyHtml, /<p>[^<]{40,}<\/p>/);
   });
 }
+
+for (const [path, locale] of [
+  ["/lokasyonlar/aliaga", "tr"],
+  ["/en/lokasyonlar/aliaga", "en"],
+  ["/lokasyonlar/izmir-havalimani", "tr"],
+  ["/en/lokasyonlar/izmir-havalimani", "en"],
+]) {
+  test(`crawler location body for ${path} includes localized local guidance`, () => {
+    const slug = path.includes("izmir-havalimani") ? "izmir-havalimani" : "aliaga";
+    const name = slug === "aliaga" ? "Aliağa" : "İzmir Havalimanı";
+    const { bodyHtml } = buildHead({ path, locationName: name, slug });
+    const expectedTitle =
+      slug === "aliaga"
+        ? locale === "en"
+          ? "Renting a car in Aliağa"
+          : "Aliağa'da araç kiralama hakkında"
+        : locale === "en"
+          ? "Car rental at İzmir Adnan Menderes Airport"
+          : "İzmir Adnan Menderes Havalimanı araç kiralama";
+    assert.ok(bodyHtml.includes(expectedTitle));
+    if (slug === "aliaga") assert.ok(bodyHtml.includes("356 Sk."));
+  });
+}
+
+test("business structured data uses the confirmed Aliağa address coordinates", () => {
+  assert.deepEqual(autoRentalLd().geo, {
+    "@type": "GeoCoordinates",
+    latitude: 38.7928859,
+    longitude: 26.9683881,
+  });
+});
+
+test("home and vehicle metadata target local rental searches in both languages", () => {
+  const trHome = buildHead({ path: "/" });
+  const enHome = buildHead({ path: "/en" });
+  const trVehicles = buildHead({ path: "/vehicles" });
+  const enVehicles = buildHead({ path: "/en/vehicles" });
+
+  assert.equal(trHome.title, trHomeCopy.seo.title);
+  assert.equal(enHome.title, enHomeCopy.seo.title);
+  assert.equal(trHome.description, trHomeCopy.seo.description);
+  assert.equal(enHome.description, enHomeCopy.seo.description);
+  assert.equal(trVehicles.title, trVehiclesCopy.seoTitle);
+  assert.equal(enVehicles.title, enVehiclesCopy.seoTitle);
+  assert.equal(trVehicles.description, trVehiclesCopy.seoDescription);
+  assert.equal(enVehicles.description, enVehiclesCopy.seoDescription);
+  assert.match(trHome.title, /Aliağa Araç Kiralama/);
+  assert.match(enHome.title, /Car Rental in Aliağa/);
+  for (const page of [trHome, enHome, trVehicles, enVehicles]) {
+    assert.match(page.description, /Adnan Menderes Airport|Adnan Menderes Havalimanı/);
+  }
+});

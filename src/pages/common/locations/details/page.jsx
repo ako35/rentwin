@@ -90,7 +90,10 @@ const LocationDetailPage = () => {
     );
   }
 
-  const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(`${name} İzmir`)}&output=embed`;
+  const mapSrc =
+    slug === "aliaga"
+      ? constants.website.mapEmbedUrl
+      : `https://www.google.com/maps?q=${encodeURIComponent(`${name} İzmir`)}&output=embed`;
   const bullets = t("detail.why", { name, returnObjects: true });
   const steps = t("detail.how", { name, returnObjects: true });
   const local = t(`detail.local.${slug}`, { returnObjects: true, defaultValue: null });

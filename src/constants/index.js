@@ -151,10 +151,8 @@ const routes = {
 // address-verification issue.
 const rentwinAddress = "ATATÜRK MAH. 356 SK. NO: 16/31 ALİAĞA / İZMİR";
 
-// TODO: update once re-geocoded for the corrected address above — these still
-// point at the old "Kültür Mah." location (originally resolved from the
-// Google Business Profile's maps.app.goo.gl/r7VLYXKt7nJjXPuFA short link).
-const rentwinGeo = { latitude: 38.8020867, longitude: 26.9715113 };
+// Geocoded from the confirmed Atatürk Mah. 356 Sk. No: 16/31 address.
+const rentwinGeo = { latitude: 38.7928859, longitude: 26.9683881 };
 const rentwinMapsUrl = "https://maps.google.com/?cid=3109543909970773042";
 
 const website = {

@@ -1,7 +1,7 @@
 {
   "seo": {
-    "title": "Rentwin | Aliağa & İzmir Araç Kiralama — Şeffaf Fiyat",
-    "description": "Rentwin ile Aliağa ve İzmir'de bakımlı filodan uygun fiyatlı araç kiralayın. Ek ücret sürprizi yok, sorunsuz teslimat, dakikalar içinde online rezervasyon."
+    "title": "Aliağa Araç Kiralama | Rentwin — Aliağa ve İzmir",
+    "description": "Aliağa'da günlük ve aylık araç kiralama. İzmir Adnan Menderes Havalimanı'nda teslim ve karşılama; bakımlı filoyu inceleyip online rezervasyon yapın."
   },
   "reservationSearch": {
     "dailyTab": "Günlük Araç Kiralama",
@@ -109,7 +109,7 @@
   ],
   "whatWeDo": {
     "title": "Ne Yapıyoruz",
-    "desc": "Rentwin olarak bireysel ve kurumsal ihtiyaçlara özel, bakımlı ve geniş bir filoyla 7/24 kesintisiz kiralama hizmeti sunuyoruz. Şehir içi kompakt araçlardan arazi SUV'larına kadar her yolculuğa uygun çözüm ve son teknoloji rezervasyon sistemi.",
+    "desc": "Aliağa'daki ofisimizden günlük ve aylık araç kiralayın; İzmir Adnan Menderes Havalimanı'nda teslim ve karşılama talep edin. Bireysel, kurumsal ve uzun dönem filo ihtiyaçları için bakımlı araç seçeneklerimizi inceleyin.",
     "services": [
       { "id": 1, "title": "Bireysel Araç Kiralama" },
       { "id": 2, "title": "Kurumsal Filo Çözümleri" },

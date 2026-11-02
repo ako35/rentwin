@@ -532,8 +532,15 @@ const LOCATION_LOCAL_COPY = {
     aliaga: {
       title: "Aliağa'da araç kiralama hakkında",
       paragraphs: [
-        "Aliağa; STAR Rafineri, Petkim petrokimya kompleksi ve liman tesisleriyle İzmir'in önemli sanayi merkezlerinden biri. İş seyahati, fabrika ziyaretleri veya vardiya değişimleri için araç kiralamak isteyenler Rentwin'in Atatürk Mahallesi'ndeki ofisinden dakikalar içinde araç teslim alabilir.",
-        "Aliağa merkezden Foça, Yeni Foça ve Çandarlı'daki tatil beldelerine kolayca ulaşabilir, İzmir Adnan Menderes Havalimanı'na teslim ve karşılama hizmetimizden yararlanabilirsiniz. Ofisimiz haftanın 7 günü açık: Pazartesi–Cuma 09:00–21:00, Cumartesi 09:00–19:00, Pazar 09:00–17:00.",
+        "Aliağa'daki Rentwin ofisi Atatürk Mah. 356 Sk. No: 16/31, 35800 Aliağa/İzmir adresindedir. STAR Rafineri, Petkim ve liman tesislerine iş seyahati için gelenler, rezervasyonla araç teslim alabilir.",
+        "Aliağa'dan Foça, Yeni Foça ve Çandarlı yönüne seyahat edebilir; İzmir Adnan Menderes Havalimanı'nda teslim ve karşılama talep edebilirsiniz. Ofis saatleri: Pazartesi–Cuma 09:00–21:00, Cumartesi 09:00–19:00, Pazar 09:00–17:00.",
+      ],
+    },
+    "izmir-havalimani": {
+      title: "İzmir Adnan Menderes Havalimanı araç kiralama",
+      paragraphs: [
+        "İzmir Adnan Menderes Havalimanı'nda Rentwin araç teslimi ve karşılama hizmeti rezervasyon sırasında talep edilebilir. Alış tarih ve saatinizi seçip havalimanı teslim isteğinizi ekibimize iletin; teslim ayrıntılarını rezervasyon teyidinde netleştirin.",
+        "Havalimanından Aliağa'ya, İzmir merkezine veya çevre ilçelere devam edeceğiniz yolculuk için günlük ya da aylık kiralama seçeneklerini inceleyin. Uygun araçları görmek ve rezervasyon başlatmak için araç listemizi ziyaret edin.",
       ],
     },
   },
@@ -541,8 +548,15 @@ const LOCATION_LOCAL_COPY = {
     aliaga: {
       title: "Renting a car in Aliağa",
       paragraphs: [
-        "Aliağa is one of İzmir's key industrial hubs, home to the STAR Refinery, the Petkim petrochemical complex and major port facilities. If you're here for business travel, plant visits or shift changes, you can pick up a car from our office in Atatürk Mahallesi in minutes.",
-        "From central Aliağa you can easily reach nearby coastal towns like Foça, Yeni Foça and Çandarlı, and we also offer airport delivery and meet-and-greet at İzmir Adnan Menderes Airport. Our office is open 7 days a week: Monday–Friday 09:00–21:00, Saturday 09:00–19:00, Sunday 09:00–17:00.",
+        "Rentwin's Aliağa office is at Atatürk Mah. 356 Sk. No: 16/31, 35800 Aliağa/İzmir. Visitors travelling for business to STAR Refinery, Petkim, and the port facilities can arrange vehicle pick-up with a reservation.",
+        "Travel from Aliağa toward Foça, Yeni Foça, and Çandarlı, or request vehicle delivery and meet-and-greet at İzmir Adnan Menderes Airport. Office hours: Monday–Friday 09:00–21:00, Saturday 09:00–19:00, Sunday 09:00–17:00.",
+      ],
+    },
+    "izmir-havalimani": {
+      title: "Car rental at İzmir Adnan Menderes Airport",
+      paragraphs: [
+        "Vehicle delivery and meet-and-greet at İzmir Adnan Menderes Airport can be requested when you book. Select your pick-up date and time and send the airport request to our team; confirm handover details with your booking confirmation.",
+        "Explore daily and monthly rental options for trips from the airport to Aliağa, central İzmir, and nearby districts. Visit our vehicle list to check available cars and start a reservation.",
       ],
     },
   },
@@ -599,22 +613,22 @@ const htmlLink = (url, label) => `<li><a href="${htmlEsc(url)}">${htmlEsc(label)
 const VEHICLES_LIST_COPY = {
   tr: {
     heading: "Araçlarımız",
-    intro: "Aliağa ve İzmir'de günlük ve uzun dönem araç kiralama — bakımlı, tam sigortalı filo ve şeffaf fiyatlandırma.",
+    intro: "Aliağa'da günlük ve aylık araç kiralama; İzmir Adnan Menderes Havalimanı'nda teslim ve karşılama talebi. Bakımlı filo ve şeffaf kiralama koşulları.",
     aboutTitle: "Rentwin ile Araç Kiralama",
     aboutParagraphs: [
-      "Filomuz hatchback ve sedanlardan ferah SUV ve ticari araçlara kadar farklı ihtiyaçlara yanıt verir. Aracınızı marka, vites ve yakıt tipine göre filtreleyerek şehir içi kullanım, iş seyahati veya tatil için en uygun seçeneği hızlıca bulabilirsiniz.",
-      "Araçları Aliağa ofisimizden veya İzmir Adnan Menderes Havalimanı'ndan teslim alabilir, dilerseniz farklı bir noktada bırakabilirsiniz. Havalimanı karşılama hizmetini rezervasyon sırasında belirtmeniz yeterli.",
-      "Depozito talep etmiyoruz; kilometre limiti, yakıt politikası ve HGS geçişleri sözleşmede açıkça yazılıdır. Rezervasyonunuzu dakikalar içinde online oluşturabilir, alış saatine 24 saatten fazla varken ücretsiz iptal edebilirsiniz.",
+      "Rentwin'in Aliağa ve İzmir'deki araç filosunda hatchback, sedan, SUV ve ticari araç seçenekleri bulunur. Marka, vites ve yakıt tipine göre filtreleyerek günlük veya aylık kiralama için uygun aracı seçebilirsiniz.",
+      "Araç teslim noktası Aliağa ofisimiz veya talep üzerine İzmir Adnan Menderes Havalimanı olabilir. Havalimanı teslimi ve karşılama isteğinizi rezervasyon sırasında belirtin; farklı noktada iade seçeneklerini ekibimizle netleştirin.",
+      "Kurumsal ve uzun dönem filo ihtiyacınız için bizimle iletişime geçebilirsiniz. Kiralama koşulları, kilometre ve yakıt politikası sözleşmede açıklanır; rezervasyon öncesinde araç detaylarını ve uygunluk durumunu kontrol edin.",
     ],
   },
   en: {
     heading: "Our Vehicles",
-    intro: "Daily and long-term car rental in Aliağa and İzmir — a well-maintained, fully insured fleet with transparent pricing.",
+    intro: "Daily and monthly car rental in Aliağa, with airport delivery and meet-and-greet available on request at İzmir Adnan Menderes Airport.",
     aboutTitle: "Renting a Car with Rentwin",
     aboutParagraphs: [
-      "Our fleet covers everything from hatchbacks and sedans to roomy SUVs and vans. Filter by brand, transmission, and fuel type to quickly find the right car for city driving, a business trip, or a holiday.",
-      "Pick your car up at our Aliağa office or at İzmir Adnan Menderes Airport, and drop it off at a different location if you need to. Just request the airport meet-and-greet when you book.",
-      "We ask for no deposit; the mileage limit, fuel policy, and toll (HGS) charges are all stated clearly in the contract. Book online in minutes and cancel free of charge up to 24 hours before pick-up.",
+      "Rentwin's Aliağa and İzmir fleet includes hatchbacks, sedans, SUVs, and commercial vehicles. Filter by make, transmission, and fuel type to choose a car for a daily or monthly rental.",
+      "Pick-up can be arranged at our Aliağa office or, on request, at İzmir Adnan Menderes Airport. Mention airport delivery and meet-and-greet when booking; confirm any different return location with our team.",
+      "Contact us about corporate and long-term fleet needs. Rental terms, mileage, and fuel policies are explained in the contract; check vehicle details and availability before booking.",
     ],
   },
 };
@@ -823,15 +837,15 @@ const renderReviewsBody = (reviewSummary, reviews = [], locale = "tr") => {
 const STATIC_META = {
   tr: {
     "/": {
-      title: "Rentwin | Aliağa & İzmir Araç Kiralama — Şeffaf Fiyat",
+      title: "Aliağa Araç Kiralama | Rentwin — Aliağa ve İzmir",
       description:
-        "Rentwin ile Aliağa ve İzmir'de bakımlı filodan uygun fiyatlı araç kiralayın. Ek ücret sürprizi yok, sorunsuz teslimat, dakikalar içinde online rezervasyon.",
+        "Aliağa'da günlük ve aylık araç kiralama. İzmir Adnan Menderes Havalimanı'nda teslim ve karşılama; bakımlı filoyu inceleyip online rezervasyon yapın.",
       jsonLd: (locale) => [webSiteLd(locale)],
     },
     "/vehicles": {
-      title: "Kiralık Araçlar | Rentwin Araç Kiralama",
+      title: "Aliağa ve İzmir Araç Kiralama | Rentwin",
       description:
-        "Geniş kiralık araç filomuzu inceleyin: ekonomik, aile ve lüks segmentte güvenilir araçlar. Hemen uygun aracı seçin, online rezervasyon yapın.",
+        "Aliağa'da günlük ve aylık araç kiralama. İzmir Adnan Menderes Havalimanı'nda teslim ve karşılama talep edin; araçları inceleyip online rezervasyon yapın.",
       jsonLd: (locale) => [breadcrumbLd([{ name: NAV.tr.home, path: "/" }, { name: "Araçlarımız" }], locale)],
     },
     "/lokasyonlar": {
@@ -900,15 +914,15 @@ const STATIC_META = {
       jsonLd: (locale) => [breadcrumbLd([{ name: NAV.en.home, path: "/" }, { name: "Reviews" }], locale)],
     },
     "/": {
-      title: "Rentwin | Car Rental in Aliağa & İzmir — Transparent Pricing",
+      title: "Car Rental in Aliağa | Rentwin — Aliağa & İzmir",
       description:
-        "Rent a well-maintained car in Aliağa and İzmir with Rentwin. No hidden fees, smooth handover, book online in minutes.",
+        "Daily and monthly car rental in Aliağa. Request vehicle delivery and meet-and-greet at İzmir Adnan Menderes Airport, and book online.",
       jsonLd: (locale) => [webSiteLd(locale)],
     },
     "/vehicles": {
-      title: "Rental Cars | Rentwin Car Rental",
+      title: "Car Rental in Aliağa & İzmir | Rentwin",
       description:
-        "Browse our full rental fleet: reliable economy, family, and luxury vehicles. Pick the right car and book online in minutes.",
+        "Daily and monthly car rental in Aliağa. Request delivery and meet-and-greet at İzmir Adnan Menderes Airport, then book online.",
       jsonLd: (locale) => [breadcrumbLd([{ name: NAV.en.home, path: "/" }, { name: "Our Vehicles" }], locale)],
     },
     "/lokasyonlar": {
