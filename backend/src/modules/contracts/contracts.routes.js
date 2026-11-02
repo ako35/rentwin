@@ -26,6 +26,7 @@ const {
   deleteExtension,
   changeVehicle,
   listInvoices,
+  getInvoicePdfDownloadUrl,
   createInvoice,
   updateInvoice,
   deleteInvoice,
@@ -74,6 +75,12 @@ router.delete(
 );
 router.post("/contracts/admin/:id/change-vehicle/auth", authenticate, requireAdmin, changeVehicle);
 router.get("/contracts/admin/:id/invoices/auth", authenticate, requireAdmin, listInvoices);
+router.get(
+  "/contracts/admin/invoices/:invoiceId/pdf-url/auth",
+  authenticate,
+  requireAdmin,
+  getInvoicePdfDownloadUrl
+);
 router.post("/contracts/admin/:id/invoice/auth", authenticate, requireAdmin, createInvoice);
 router.put("/contracts/admin/invoices/:invoiceId/auth", authenticate, requireAdmin, updateInvoice);
 router.delete("/contracts/admin/invoices/:invoiceId/auth", authenticate, requireAdmin, deleteInvoice);

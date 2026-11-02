@@ -383,6 +383,20 @@ const listInvoices = asyncHandler(async (req, res) => {
   res.json(await Promise.all(invoices.map(invoiceWithDownloadUrl)));
 });
 
+const getInvoicePdfDownloadUrl = asyncHandler(async (req, res) => {
+  const invoice = await prisma.invoice.findUnique({
+    where: { id: req.params.invoiceId },
+    select: { number: true, pdfPathname: true },
+  });
+  if (!invoice) throw new HttpError(404, "Invoice not found.");
+  if (!invoice.pdfPathname) throw new HttpError(404, "Invoice PDF not found.");
+
+  const url = await getPrivateDownloadUrl(invoice.pdfPathname, {
+    filename: `${invoice.number}.pdf`,
+  });
+  res.json({ url });
+});
+
 const createInvoice = asyncHandler(async (req, res) => {
   const custSelect = {
     firstName: true,
@@ -532,6 +546,7 @@ module.exports = {
   deleteExtension,
   changeVehicle,
   listInvoices,
+  getInvoicePdfDownloadUrl,
   createInvoice,
   updateInvoice,
   deleteInvoice,

@@ -200,6 +200,26 @@ const InvoiceTab = ({
       });
   };
 
+  const openPdf = async (invoice) => {
+    const pdfWindow = window.open("about:blank", "_blank");
+    if (!pdfWindow) {
+      utils.functions.swalToast(c("invoice.pdfError"), "error");
+      return;
+    }
+
+    pdfWindow.opener = null;
+    setPdfBusyId(invoice.id);
+    try {
+      const url = await services.contract.getInvoicePdfDownloadUrl(invoice.id);
+      pdfWindow.location.href = url;
+    } catch {
+      pdfWindow.close();
+      utils.functions.swalToast(c("invoice.pdfError"), "error");
+    } finally {
+      setPdfBusyId(null);
+    }
+  };
+
   // Scanned field names (number/issuedAt/periodFrom/periodTo/grossAmount/
   // customerTitle/taxNo) already match the form's field names 1:1. The same
   // file that was scanned is also kept as the invoice's PDF once saved.
@@ -266,9 +286,14 @@ const InvoiceTab = ({
                   <Spinner animation="border" size="sm" />
                 ) : inv.pdfUrl ? (
                   <>
-                    <a href={inv.pdfUrl} target="_blank" rel="noreferrer" title={c("invoice.pdfView")}>
+                    <button
+                      type="button"
+                      className="contract-page__inv-pdf-view"
+                      onClick={() => openPdf(inv)}
+                      title={c("invoice.pdfView")}
+                    >
                       <BsFileEarmarkPdf /> {c("invoice.pdfView")}
-                    </a>
+                    </button>
                     <button type="button" onClick={() => removePdf(inv)} title={c("invoice.pdfRemove")}>
                       <BsTrash />
                     </button>
@@ -393,9 +418,13 @@ const InvoiceTab = ({
               {form.existingPdfUrl && !form.file && (
                 <Form.Text>
                   {c("invoice.pdfExisting")}{" "}
-                  <a href={form.existingPdfUrl} target="_blank" rel="noreferrer">
+                  <button
+                    type="button"
+                    className="btn btn-link p-0 align-baseline"
+                    onClick={() => openPdf({ id: form.id })}
+                  >
                     {c("invoice.pdfView")}
-                  </a>
+                  </button>
                 </Form.Text>
               )}
             </Form.Group>

@@ -124,6 +124,14 @@ export const getInvoices = async (id) => {
   return response.data;
 };
 
+export const getInvoicePdfDownloadUrl = async (invoiceId) => {
+  const response = await axios.get(
+    `${API_URL}/contracts/admin/invoices/${invoiceId}/pdf-url/auth`,
+    services.authHeader()
+  );
+  return response.data.url;
+};
+
 export const createInvoice = async (id, payload = {}) => {
   const response = await axios.post(
     `${API_URL}/contracts/admin/${id}/invoice/auth`,

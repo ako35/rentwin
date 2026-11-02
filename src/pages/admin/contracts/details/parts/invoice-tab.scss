@@ -92,10 +92,13 @@
     &-pdf {
       white-space: nowrap;
 
-      a {
+      &-view {
         display: inline-flex;
         align-items: center;
         gap: 0.25rem;
+        border: none;
+        background: none;
+        padding: 0;
         font-size: 0.78rem;
         font-weight: 600;
         color: v.$color1;
@@ -110,6 +113,11 @@
         margin-left: 0.45rem;
         color: #c0392b;
         vertical-align: middle;
+
+        &.contract-page__inv-pdf-view {
+          margin-left: 0;
+          color: v.$color1;
+        }
 
         &:hover { text-decoration: underline; }
       }
