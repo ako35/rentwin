@@ -6,8 +6,8 @@
 // We fetch the built index.html once (cached), swap the tags between the
 // <!--SEO:START--> / <!--SEO:END--> markers for this page's real title /
 // description / canonical / OG tags, drop the page's JSON-LD in after
-// <!--SEO:LD-->, and return it. Any failure falls back to the raw shell with a
-// 200 so a bot still gets a working page.
+// <!--SEO:LD-->, and return it. Temporary failures must not return an empty
+// shell with a 200, which search engines can classify as a soft 404.
 
 const prisma = require("../../lib/prisma");
 const { SITE_URL, slugify, localizePath, stripLocalePrefix } = require("../../lib/site");
@@ -307,23 +307,19 @@ const renderPage = async (req, res) => {
     res.set("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
     return res.status(statusCode).send(inject(shell, head));
   } catch (err) {
-    // Never fail a crawler. Try once more for the plain shell; if even that is
-    // unavailable, hand back a minimal but valid document with the right head.
-    console.error("prerender failed:", err.message);
+    console.error("prerender failed:", err);
     res.set("Content-Type", "text/html; charset=utf-8");
-    try {
-      return res.status(200).send(await getShell());
-    } catch {
-      const head = buildHead({ path: reqPath });
-      return res
-        .status(200)
-        .send(
-          `<!DOCTYPE html><html lang="${head.htmlLang}"><head><meta charset="UTF-8" />\n` +
-            `<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n` +
-            `${renderHeadTags(head)}\n</head><body><div id="root"></div>` +
-            `<p><a href="${SITE_URL}${reqPath}">Rentwin</a></p></body></html>`
-        );
-    }
+    res.set("Cache-Control", "no-store");
+    res.set("Retry-After", "60");
+    return res
+      .status(503)
+      .send(
+        "<!DOCTYPE html><html lang=\"tr\"><head><meta charset=\"UTF-8\" />" +
+          '<meta name="robots" content="noindex, nofollow" />' +
+          "<title>Geçici olarak kullanılamıyor | Rentwin</title></head>" +
+          "<body><main><h1>Sayfa geçici olarak kullanılamıyor</h1>" +
+          "<p>Lütfen daha sonra tekrar deneyin.</p></main></body></html>"
+      );
   }
 };
 
