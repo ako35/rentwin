@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
+import { useLocalSearchParams, useFocusEffect } from "expo-router";
 import {
   ScrollView, View, Text, StyleSheet, Pressable, Alert, RefreshControl,
 } from "react-native";
@@ -176,3 +176,4 @@ const styles = StyleSheet.create({
   actionCancel:  { backgroundColor: COLORS.redSoft, borderColor: COLORS.red + "55" },
   actionBtnText: { fontSize: 15, fontWeight: "700", color: "#fff" },
 });
+

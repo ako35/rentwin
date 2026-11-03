@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator, Pressable, Modal, FlatList } from "react-native";
 import { COLORS } from "../../constants/theme";
 
 // ─── LoadingScreen ─────────────────────────────────────────────────────────
@@ -41,16 +41,89 @@ export function StatTile({ label, value, color, sub }) {
 }
 
 // ─── AlertPill ────────────────────────────────────────────────────────────
-export function AlertPill({ count, label, color = COLORS.red, bg }) {
+export function AlertPill({ count, label, color = COLORS.red, bg, onPress }) {
   if (!count) return null;
   const bgColor = bg || color + "22";
-  return (
+
+  const content = (
     <View style={[styles.alertPill, { borderColor: color + "55", backgroundColor: bgColor }]}>
       <View style={[styles.alertDot, { backgroundColor: color }]} />
       <Text style={[styles.alertText, { color }]}>
         {count} {label}
       </Text>
+      {onPress && <Text style={[styles.alertChevron, { color }]}>›</Text>}
     </View>
+  );
+
+  if (onPress) {
+    return (
+      <Pressable onPress={onPress} style={({ pressed }) => pressed && { opacity: 0.75 }}>
+        {content}
+      </Pressable>
+    );
+  }
+
+  return content;
+}
+
+// ─── BranchPickerModal ────────────────────────────────────────────────────
+export function BranchPickerModal({ visible, onClose, branches, selectedBranchId, onSelect }) {
+  return (
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+      <Pressable style={styles.modalOverlay} onPress={onClose}>
+        <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Şube Seçimi</Text>
+            <Pressable onPress={onClose} style={styles.modalCloseBtn}>
+              <Text style={styles.modalCloseText}>✕</Text>
+            </Pressable>
+          </View>
+
+          <Pressable
+            style={[
+              styles.branchOption,
+              selectedBranchId === null && styles.branchOptionActive,
+            ]}
+            onPress={() => {
+              onSelect(null);
+              onClose();
+            }}
+          >
+            <Text
+              style={[
+                styles.branchOptionText,
+                selectedBranchId === null && styles.branchOptionTextActive,
+              ]}
+            >
+              🏢 Tüm Şubeler
+            </Text>
+            {selectedBranchId === null && <Text style={styles.checkMark}>✓</Text>}
+          </Pressable>
+
+          <FlatList
+            data={branches}
+            keyExtractor={(b) => b.id}
+            renderItem={({ item }) => {
+              const active = selectedBranchId === item.id;
+              return (
+                <Pressable
+                  style={[styles.branchOption, active && styles.branchOptionActive]}
+                  onPress={() => {
+                    onSelect(item.id);
+                    onClose();
+                  }}
+                >
+                  <Text style={[styles.branchOptionText, active && styles.branchOptionTextActive]}>
+                    📍 {item.name}
+                  </Text>
+                  {active && <Text style={styles.checkMark}>✓</Text>}
+                </Pressable>
+              );
+            }}
+          />
+        </Pressable>
+      </Pressable>
+    </Modal>
   );
 }
 
@@ -123,8 +196,66 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     marginBottom: 8,
   },
-  alertDot:  { width: 7, height: 7, borderRadius: 4, marginRight: 7 },
-  alertText: { fontSize: 13, fontWeight: "600", flex: 1 },
+  alertDot:     { width: 7, height: 7, borderRadius: 4, marginRight: 7 },
+  alertText:    { fontSize: 13, fontWeight: "600", flex: 1 },
+  alertChevron: { fontSize: 16, fontWeight: "700", marginLeft: 6 },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    justifyContent: "center",
+    padding: 24,
+  },
+  modalContent: {
+    backgroundColor: COLORS.card,
+    borderRadius: 20,
+    padding: 20,
+    maxHeight: "75%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.line,
+    paddingBottom: 10,
+  },
+  modalTitle:     { fontSize: 17, fontWeight: "800", color: COLORS.ink },
+  modalCloseBtn:  { padding: 4 },
+  modalCloseText: { fontSize: 18, color: COLORS.muted, fontWeight: "700" },
+  branchOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    marginBottom: 6,
+    backgroundColor: COLORS.canvas,
+  },
+  branchOptionActive: {
+    backgroundColor: COLORS.greenSoft,
+  },
+  branchOptionText: {
+    fontSize: 14,
+    color: COLORS.ink,
+    fontWeight: "600",
+  },
+  branchOptionTextActive: {
+    color: COLORS.green,
+    fontWeight: "800",
+  },
+  checkMark: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: COLORS.green,
+  },
 
   statusBadge: { borderRadius: 8, paddingHorizontal: 9, paddingVertical: 4 },
   statusText:  { fontSize: 11, fontWeight: "700" },
@@ -134,3 +265,4 @@ const styles = StyleSheet.create({
   emptyTitle:  { fontSize: 16, fontWeight: "700", color: COLORS.ink },
   emptySub:    { fontSize: 12, color: COLORS.muted, marginTop: 6, textAlign: "center" },
 });
+

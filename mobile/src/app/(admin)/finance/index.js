@@ -1,13 +1,15 @@
 import { useState, useCallback } from "react";
 import {
-  ScrollView, View, Text, StyleSheet, RefreshControl,
+  ScrollView, View, Text, StyleSheet, RefreshControl, Pressable,
 } from "react-native";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, router } from "expo-router";
 import { getFleetStats, getInvoicePendingContracts, getHgsPendingContracts } from "../../../api/admin";
+import { useBranch } from "../../../context/BranchContext";
 import { LoadingScreen, ErrorBanner, SectionCard, StatTile } from "../../../components/admin";
 import { COLORS } from "../../../constants/theme";
 
 export default function FinanceScreen() {
+  const { selectedBranchId } = useBranch();
   const [loading, setLoading]     = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError]         = useState(false);
@@ -19,9 +21,9 @@ export default function FinanceScreen() {
     try {
       setError(false);
       const [stats, inv, hgs] = await Promise.all([
-        getFleetStats().catch(() => null),
-        getInvoicePendingContracts().catch(() => []),
-        getHgsPendingContracts().catch(() => []),
+        getFleetStats(selectedBranchId).catch(() => null),
+        getInvoicePendingContracts(selectedBranchId).catch(() => []),
+        getHgsPendingContracts(selectedBranchId).catch(() => []),
       ]);
       setFleetStats(stats);
       setInvoicePending(Array.isArray(inv) ? inv : []);
@@ -31,7 +33,7 @@ export default function FinanceScreen() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [selectedBranchId]);
 
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
@@ -41,7 +43,7 @@ export default function FinanceScreen() {
     setRefreshing(false);
   };
 
-  if (loading) return <LoadingScreen />;
+  if (loading && !fleetStats) return <LoadingScreen />;
 
   return (
     <ScrollView
@@ -66,7 +68,7 @@ export default function FinanceScreen() {
 
       {/* Fatura Bekleyenler */}
       <SectionCard>
-        <Text style={styles.sectionTitle}>Fatura Kesilecekler</Text>
+        <Text style={styles.sectionTitle}>Fatura Kesilecekler ({invoicePending.length})</Text>
         {invoicePending.length === 0 ? (
           <View style={styles.clearRow}>
             <Text style={styles.clearIcon}>✅</Text>
@@ -74,20 +76,27 @@ export default function FinanceScreen() {
           </View>
         ) : (
           invoicePending.map((c) => (
-            <View key={c.id} style={styles.pendingRow}>
-              <View>
+            <Pressable
+              key={c.id}
+              style={({ pressed }) => [styles.pendingRow, pressed && { opacity: 0.7 }]}
+              onPress={() => router.push(`/(admin)/contracts/${c.id}`)}
+            >
+              <View style={{ flex: 1 }}>
                 <Text style={styles.pendingPlate}>{c.car?.licensePlate || "—"}</Text>
                 <Text style={styles.pendingCustomer}>{c.user?.name || "—"}</Text>
               </View>
-              <Text style={styles.pendingNo}>{c.contractNo || c.id?.slice(0, 8)}</Text>
-            </View>
+              <View style={{ alignItems: "flex-end" }}>
+                <Text style={styles.pendingNo}>{c.contractNo || c.id?.slice(0, 8)}</Text>
+                <Text style={styles.pendingArrow}>›</Text>
+              </View>
+            </Pressable>
           ))
         )}
       </SectionCard>
 
       {/* HGS Bekleyenler */}
       <SectionCard>
-        <Text style={styles.sectionTitle}>HGS Bekleyenler</Text>
+        <Text style={styles.sectionTitle}>HGS Bekleyenler ({hgsPending.length})</Text>
         {hgsPending.length === 0 ? (
           <View style={styles.clearRow}>
             <Text style={styles.clearIcon}>✅</Text>
@@ -95,13 +104,20 @@ export default function FinanceScreen() {
           </View>
         ) : (
           hgsPending.map((c) => (
-            <View key={c.id} style={styles.pendingRow}>
-              <View>
+            <Pressable
+              key={c.id}
+              style={({ pressed }) => [styles.pendingRow, pressed && { opacity: 0.7 }]}
+              onPress={() => router.push(`/(admin)/contracts/${c.id}`)}
+            >
+              <View style={{ flex: 1 }}>
                 <Text style={styles.pendingPlate}>{c.car?.licensePlate || "—"}</Text>
                 <Text style={styles.pendingCustomer}>{c.user?.name || "—"}</Text>
               </View>
-              <Text style={styles.pendingNo}>{c.contractNo || c.id?.slice(0, 8)}</Text>
-            </View>
+              <View style={{ alignItems: "flex-end" }}>
+                <Text style={styles.pendingNo}>{c.contractNo || c.id?.slice(0, 8)}</Text>
+                <Text style={styles.pendingArrow}>›</Text>
+              </View>
+            </Pressable>
           ))
         )}
       </SectionCard>
@@ -129,4 +145,6 @@ const styles = StyleSheet.create({
   pendingPlate:    { fontSize: 14, fontWeight: "700", color: COLORS.ink },
   pendingCustomer: { fontSize: 12, color: COLORS.muted, marginTop: 2 },
   pendingNo:       { fontSize: 12, color: COLORS.subtle },
+  pendingArrow:    { fontSize: 18, color: COLORS.muted, marginTop: 2 },
 });
+

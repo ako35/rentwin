@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -11,13 +11,13 @@ import {
   View,
 } from "react-native";
 import { Redirect, router, Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { useAuth } from "../../auth/AuthContext";
-import { getFieldContract } from "../../api/client";
-import { STAGE_LABEL } from "../../constants/checklist";
-import { FUEL_TYPE_LABEL, TRANSMISSION_LABEL } from "../../constants/labels";
-import { CARD, COLORS } from "../../constants/theme";
-import { discardFailed, flushQueue, getQueue, subscribeQueue } from "../../queue/upload-queue";
-import { formatKm, fuelLabel, groupThousands, wallDate, wallDayName, wallTime, whatsappNumber } from "../../utils/format";
+import { useAuth } from "../../../auth/AuthContext";
+import { getFieldContract } from "../../../api/client";
+import { STAGE_LABEL } from "../../../constants/checklist";
+import { FUEL_TYPE_LABEL, TRANSMISSION_LABEL } from "../../../constants/labels";
+import { CARD, COLORS } from "../../../constants/theme";
+import { discardFailed, flushQueue, getQueue, subscribeQueue } from "../../../queue/upload-queue";
+import { formatKm, fuelLabel, groupThousands, wallDate, wallDayName, wallTime, whatsappNumber } from "../../../utils/format";
 
 // Contract detail ÔÇö everything the crew needs at the car before shooting:
 // the vehicle, who to call, when/where, notes, and per-stage progress.

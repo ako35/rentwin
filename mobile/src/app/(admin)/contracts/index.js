@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useFocusEffect, router } from "expo-router";
 import { getContractsByPage } from "../../../api/admin";
+import { useBranch } from "../../../context/BranchContext";
 import {
   LoadingScreen,
   ErrorBanner,
@@ -57,6 +58,7 @@ function ContractRow({ item, onPress }) {
 }
 
 export default function ContractsScreen() {
+  const { selectedBranchId } = useBranch();
   const [contracts, setContracts]   = useState([]);
   const [loading, setLoading]       = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -74,6 +76,7 @@ export default function ContractsScreen() {
         limit: 20,
         ...(search.trim() && { search: search.trim() }),
         ...(statusFilter && { status: statusFilter }),
+        ...(selectedBranchId && { branchId: selectedBranchId }),
       };
       const data = await getContractsByPage(params);
       // Backend genellikle { contracts, total, page } şeklinde döner
@@ -87,7 +90,7 @@ export default function ContractsScreen() {
     } finally {
       setLoading(false);
     }
-  }, [search, statusFilter]);
+  }, [search, statusFilter, selectedBranchId]);
 
   useFocusEffect(
     useCallback(() => {
@@ -213,3 +216,4 @@ const styles = StyleSheet.create({
   contractNo: { fontSize: 11, color: COLORS.muted, marginTop: 4 },
   dates:      { fontSize: 11, color: COLORS.subtle, marginTop: 2 },
 });
+

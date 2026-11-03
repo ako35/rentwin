@@ -155,3 +155,4 @@ const styles = StyleSheet.create({
   rowRight:   { alignItems: "flex-end", gap: 6 },
   resNo:      { fontSize: 11, color: COLORS.muted, marginTop: 4 },
 });
+

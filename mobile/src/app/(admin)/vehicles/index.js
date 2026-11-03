@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useFocusEffect, router } from "expo-router";
 import { getVehiclesByPage } from "../../../api/admin";
+import { useBranch } from "../../../context/BranchContext";
 import {
   LoadingScreen,
   ErrorBanner,
@@ -71,6 +72,7 @@ function VehicleRow({ item, onPress }) {
 }
 
 export default function VehiclesScreen() {
+  const { selectedBranchId } = useBranch();
   const [vehicles, setVehicles]   = useState([]);
   const [loading, setLoading]     = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -88,6 +90,7 @@ export default function VehiclesScreen() {
         limit: 20,
         ...(search.trim() && { search: search.trim() }),
         ...(statusFilter && { status: statusFilter }),
+        ...(selectedBranchId && { branchId: selectedBranchId }),
       };
       const data = await getVehiclesByPage(params);
       const rows = Array.isArray(data) ? data : (data.cars || data.vehicles || data.rows || []);
@@ -100,7 +103,7 @@ export default function VehiclesScreen() {
     } finally {
       setLoading(false);
     }
-  }, [search, statusFilter]);
+  }, [search, statusFilter, selectedBranchId]);
 
   useFocusEffect(
     useCallback(() => {
@@ -217,3 +220,4 @@ const styles = StyleSheet.create({
   name:      { fontSize: 12, color: COLORS.muted, marginTop: 4 },
   branch:    { fontSize: 11, color: COLORS.subtle, marginTop: 2 },
 });
+

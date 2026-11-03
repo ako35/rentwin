@@ -119,3 +119,4 @@ const styles = StyleSheet.create({
 
   version: { textAlign: "center", color: COLORS.subtle, fontSize: 11, marginTop: 20 },
 });
+

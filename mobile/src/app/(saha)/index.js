@@ -12,12 +12,12 @@ import {
   View,
 } from "react-native";
 import { Redirect, router, useFocusEffect } from "expo-router";
-import { useAuth } from "../auth/AuthContext";
-import { getFieldSchedule } from "../api/client";
-import { getQueue, subscribeQueue } from "../queue/upload-queue";
-import { COLORS } from "../constants/theme";
-import { wallDate, wallTime } from "../utils/format";
-import UpdateBanner from "../components/UpdateBanner";
+import { useAuth } from "../../auth/AuthContext";
+import { getFieldSchedule } from "../../api/client";
+import { getQueue, subscribeQueue } from "../../queue/upload-queue";
+import { COLORS } from "../../constants/theme";
+import { wallDate, wallTime } from "../../utils/format";
+import UpdateBanner from "../../components/UpdateBanner";
 
 const TABS = {
   PICKUP: { key: "departures", label: "Teslim", empty: "Bugün ve yarın için teslim yok." },

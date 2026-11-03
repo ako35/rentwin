@@ -36,6 +36,12 @@ export const getContractsByPage = (params) =>
 export const getContractById = (id) =>
   http.get(`/contracts/${id}/admin`).then((r) => r.data);
 
+export const extendContract = (id, payload) =>
+  http.post(`/contracts/admin/${id}/extend/auth`, payload).then((r) => r.data);
+
+export const deleteExtension = (id, extensionId) =>
+  http.delete(`/contracts/admin/${id}/extension/${extensionId}/auth`).then((r) => r.data);
+
 export const returnContract = (id, payload) =>
   http.post(`/contracts/admin/${id}/return/auth`, payload).then((r) => r.data);
 
@@ -62,6 +68,17 @@ export const getVehicleById = (id) =>
 export const getFleetStatusBoard = () =>
   http.get("/car/admin/fleet-status-board/auth").then((r) => r.data);
 
+export const markVehiclePassive = (id, payload) =>
+  http.post(`/car/admin/${id}/passive/auth`, payload).then((r) => r.data);
+
+export const unmarkVehiclePassive = (id) =>
+  http.delete(`/car/admin/${id}/passive/auth`).then((r) => r.data);
+
+// ─── Şubeler ─────────────────────────────────────────────────────────────────
+
+export const getAllBranches = () =>
+  http.get("/branches/admin/auth").then((r) => r.data);
+
 // ─── Rezervasyonlar ──────────────────────────────────────────────────────────
 
 export const getReservationsByPage = (params) =>
@@ -80,3 +97,4 @@ export const cancelReservation = (id) =>
 
 export const getUsersByPage = (params) =>
   http.get("/users/admin/all/auth", { params }).then((r) => r.data);
+

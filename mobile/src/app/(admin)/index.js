@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useFocusEffect, router } from "expo-router";
 import { useAuth } from "../../auth/AuthContext";
+import { useBranch } from "../../context/BranchContext";
 import {
   getFleetStats,
   getExpiryAlerts,
@@ -26,11 +27,12 @@ import {
   SectionCard,
   StatTile,
   AlertPill,
+  BranchPickerModal,
 } from "../../components/admin";
 import { COLORS } from "../../constants/theme";
 import UpdateBanner from "../../components/UpdateBanner";
 
-function GreetingHeader({ user }) {
+function GreetingHeader({ user, selectedBranch, onOpenBranchPicker }) {
   const hour = new Date().getHours();
   const greeting =
     hour < 12 ? "Günaydın" : hour < 18 ? "İyi günler" : "İyi akşamlar";
@@ -45,7 +47,7 @@ function GreetingHeader({ user }) {
     <View style={styles.header}>
       <StatusBar barStyle="light-content" />
       <View style={styles.headerTop}>
-        <View>
+        <View style={{ flex: 1 }}>
           <Text style={styles.greeting}>
             {greeting}, {name} 👋
           </Text>
@@ -55,6 +57,15 @@ function GreetingHeader({ user }) {
           <Text style={styles.adminBadgeText}>Admin</Text>
         </View>
       </View>
+
+      {/* Şube Seçici Butonu */}
+      <Pressable style={styles.branchPill} onPress={onOpenBranchPicker}>
+        <Text style={styles.branchPillEmoji}>🏢</Text>
+        <Text style={styles.branchPillText} numberOfLines={1}>
+          {selectedBranch ? selectedBranch.name : "Tüm Şubeler"}
+        </Text>
+        <Text style={styles.branchPillChevron}>▾</Text>
+      </Pressable>
     </View>
   );
 }
@@ -129,37 +140,44 @@ function AlertsSection({
           count={invoiceCount}
           label="fatura kesilecek kontrat"
           color={COLORS.red}
+          onPress={() => router.push("/(admin)/finance")}
         />
         <AlertPill
           count={hgsCount}
           label="HGS girilecek kontrat"
           color={COLORS.amber}
+          onPress={() => router.push("/(admin)/finance")}
         />
         <AlertPill
           count={kbsCount}
           label="KABİS bildirilecek kontrat"
           color={COLORS.amber}
+          onPress={() => router.push("/(admin)/contracts")}
         />
         <AlertPill
           count={kbsReleaseCount}
           label="KABİS çıkışı yapılacak kontrat"
           color={COLORS.muted}
+          onPress={() => router.push("/(admin)/contracts")}
         />
         <AlertPill
           count={signCount}
           label="imza bekleyen kontrat"
           color="#7c3aed"
           bg="#ede9fe"
+          onPress={() => router.push("/(admin)/contracts")}
         />
         <AlertPill
           count={maintenanceDue}
           label="bakım zamanı gelen araç"
           color={COLORS.amber}
+          onPress={() => router.push("/(admin)/vehicles")}
         />
         <AlertPill
           count={inspectionDue}
           label="muayene zamanı gelen araç"
           color={COLORS.amber}
+          onPress={() => router.push("/(admin)/vehicles")}
         />
       </View>
     </SectionCard>
@@ -238,6 +256,9 @@ function QuickActions() {
 
 export default function AdminDashboard() {
   const { user } = useAuth();
+  const { branches, selectedBranchId, selectedBranch, setSelectedBranchId } = useBranch();
+  const [branchModalOpen, setBranchModalOpen] = useState(false);
+
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(false);
@@ -255,13 +276,13 @@ export default function AdminDashboard() {
     try {
       setError(false);
       const [stats, alerts, hgsR, invR, kbsR, kbsRelR, signR, schR] = await Promise.all([
-        getFleetStats().catch(() => null),
-        getExpiryAlerts().catch(() => null),
-        getHgsPendingContracts().catch(() => []),
-        getInvoicePendingContracts().catch(() => []),
-        getKbsPendingContracts().catch(() => []),
-        getKbsReleasePendingContracts().catch(() => []),
-        getSignPendingContracts().catch(() => []),
+        getFleetStats(selectedBranchId).catch(() => null),
+        getExpiryAlerts(selectedBranchId).catch(() => null),
+        getHgsPendingContracts(selectedBranchId).catch(() => []),
+        getInvoicePendingContracts(selectedBranchId).catch(() => []),
+        getKbsPendingContracts(selectedBranchId).catch(() => []),
+        getKbsReleasePendingContracts(selectedBranchId).catch(() => []),
+        getSignPendingContracts(selectedBranchId).catch(() => []),
         getAdminSchedule().catch(() => null),
       ]);
       setFleetStats(stats);
@@ -277,7 +298,7 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [selectedBranchId]);
 
   useFocusEffect(
     useCallback(() => {
@@ -291,7 +312,7 @@ export default function AdminDashboard() {
     setRefreshing(false);
   };
 
-  if (loading) return <LoadingScreen />;
+  if (loading && !fleetStats) return <LoadingScreen />;
 
   return (
     <ScrollView
@@ -307,7 +328,11 @@ export default function AdminDashboard() {
       showsVerticalScrollIndicator={false}
     >
       <UpdateBanner />
-      <GreetingHeader user={user} />
+      <GreetingHeader
+        user={user}
+        selectedBranch={selectedBranch}
+        onOpenBranchPicker={() => setBranchModalOpen(true)}
+      />
 
       {error && (
         <ErrorBanner
@@ -334,6 +359,14 @@ export default function AdminDashboard() {
       <View style={styles.footer}>
         <Text style={styles.footerText}>Rentwin Admin</Text>
       </View>
+
+      <BranchPickerModal
+        visible={branchModalOpen}
+        onClose={() => setBranchModalOpen(false)}
+        branches={branches}
+        selectedBranchId={selectedBranchId}
+        onSelect={setSelectedBranchId}
+      />
     </ScrollView>
   );
 }
@@ -347,7 +380,7 @@ const styles = StyleSheet.create({
     marginHorizontal: -16,
     paddingHorizontal: 20,
     paddingTop: 56,
-    paddingBottom: 24,
+    paddingBottom: 20,
     marginBottom: 16,
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
@@ -361,6 +394,23 @@ const styles = StyleSheet.create({
   date:           { color: "#c7e3d2", fontSize: 13, marginTop: 3 },
   adminBadge:     { backgroundColor: "#ffffff22", borderRadius: 10, paddingHorizontal: 11, paddingVertical: 5 },
   adminBadgeText: { color: "#fff", fontSize: 12, fontWeight: "700" },
+
+  branchPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#ffffff26",
+    alignSelf: "flex-start",
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginTop: 14,
+    gap: 6,
+    borderWidth: 1,
+    borderColor: "#ffffff3d",
+  },
+  branchPillEmoji:   { fontSize: 13 },
+  branchPillText:    { color: "#fff", fontSize: 13, fontWeight: "700" },
+  branchPillChevron: { color: "#c7e3d2", fontSize: 14, fontWeight: "700" },
 
   sectionTitle: { color: COLORS.ink, fontSize: 15, fontWeight: "800", marginBottom: 12 },
 
@@ -411,3 +461,4 @@ const styles = StyleSheet.create({
   footer:     { alignItems: "center", marginTop: 12 },
   footerText: { color: COLORS.subtle, fontSize: 11 },
 });
+

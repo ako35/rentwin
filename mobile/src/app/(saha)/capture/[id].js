@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -15,14 +15,14 @@ import {
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { ImageManipulator, SaveFormat } from "expo-image-manipulator";
 import { Redirect, router, Stack, useLocalSearchParams } from "expo-router";
-import { useAuth } from "../../auth/AuthContext";
-import { getFieldContract, listPhotos } from "../../api/client";
-import { DAMAGE_ANGLE, REQUIRED_ANGLES, STAGE_LABEL } from "../../constants/checklist";
-import { CARD, COLORS } from "../../constants/theme";
-import { discardFailed, enqueueCapture, flushQueue, getQueue, subscribeQueue } from "../../queue/upload-queue";
-import FuelGauge from "../../components/FuelGauge";
-import PhotoCompare from "../../components/PhotoCompare";
-import { formatKm, fuelLabel, groupThousands, localStamp } from "../../utils/format";
+import { useAuth } from "../../../auth/AuthContext";
+import { getFieldContract, listPhotos } from "../../../api/client";
+import { DAMAGE_ANGLE, REQUIRED_ANGLES, STAGE_LABEL } from "../../../constants/checklist";
+import { CARD, COLORS } from "../../../constants/theme";
+import { discardFailed, enqueueCapture, flushQueue, getQueue, subscribeQueue } from "../../../queue/upload-queue";
+import FuelGauge from "../../../components/FuelGauge";
+import PhotoCompare from "../../../components/PhotoCompare";
+import { formatKm, fuelLabel, groupThousands, localStamp } from "../../../utils/format";
 
 // Shrinks + re-compresses a raw camera capture before it ever touches the
 // queue/upload path ÔÇö full-resolution phone photos are 3-8 MB, this keeps

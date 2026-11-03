@@ -8,8 +8,11 @@ import {
   Alert,
   RefreshControl,
   Linking,
+  Modal,
+  TextInput,
+  ActivityIndicator,
 } from "react-native";
-import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
+import { useLocalSearchParams, useFocusEffect } from "expo-router";
 import {
   getContractById,
   listInvoices,
@@ -17,6 +20,8 @@ import {
   returnContract,
   cancelContract,
   reopenContract,
+  extendContract,
+  deleteExtension,
 } from "../../../api/admin";
 import {
   LoadingScreen,
@@ -48,6 +53,19 @@ function fmt(dt) {
 function fmtDate(dt) {
   if (!dt) return "—";
   return new Date(dt).toLocaleDateString("tr-TR");
+}
+
+function formatExtensionDuration(ext, isMonthly) {
+  if (ext.months && ext.extraDays) {
+    return `${ext.months} ay ${ext.extraDays} gün`;
+  }
+  if (ext.months) return `${ext.months} ay`;
+  if (ext.extraDays) return `${ext.extraDays} gün`;
+
+  const s = new Date(ext.previousDropOff);
+  const e = new Date(ext.newDropOff);
+  const diffDays = Math.max(1, Math.round((e - s) / (1000 * 60 * 60 * 24)));
+  return `${diffDays} gün`;
 }
 
 function InvoiceCard({ invoice, onOpenPdf }) {
@@ -85,6 +103,14 @@ export default function ContractDetailScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError]         = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+
+  // Uzatma modal state
+  const [extendModalVisible, setExtendModalVisible] = useState(false);
+  const [extDate, setExtDate] = useState("");
+  const [extTime, setExtTime] = useState("12:00");
+  const [extAmount, setExtAmount] = useState("");
+  const [extNote, setExtNote] = useState("");
+  const [extSubmitting, setExtSubmitting] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -189,6 +215,74 @@ export default function ContractDetailScreen() {
     ]);
   };
 
+  const openExtendModal = () => {
+    if (contract?.dropOffTime) {
+      const d = new Date(contract.dropOffTime);
+      d.setDate(d.getDate() + 1);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      setExtDate(`${yyyy}-${mm}-${dd}`);
+      const hh = String(d.getHours()).padStart(2, "0");
+      const min = String(d.getMinutes()).padStart(2, "0");
+      setExtTime(`${hh}:${min}`);
+    } else {
+      setExtDate("");
+      setExtTime("12:00");
+    }
+    setExtAmount("");
+    setExtNote("");
+    setExtendModalVisible(true);
+  };
+
+  const submitExtension = async () => {
+    if (!extDate.trim()) {
+      Alert.alert("Uyarı", "Lütfen geçerli bir yeni bitiş tarihi girin (YYYY-AA-GG).");
+      return;
+    }
+    setExtSubmitting(true);
+    try {
+      const formattedDateTime = `${extDate.trim()} ${extTime.trim() || "12:00"}`;
+      await extendContract(id, {
+        newDropOff: formattedDateTime,
+        ...(extAmount.trim() ? { extraAmount: Number(extAmount.trim()) } : {}),
+        note: extNote.trim() || undefined,
+      });
+      setExtendModalVisible(false);
+      await load();
+      Alert.alert("Başarılı", "Kontrat süresi başarıyla uzatıldı.");
+    } catch (err) {
+      Alert.alert("Hata", err?.response?.data?.message || "Uzatma işlemi yapılamadı.");
+    } finally {
+      setExtSubmitting(false);
+    }
+  };
+
+  const handleDeleteExtension = (extId) => {
+    Alert.alert(
+      "Uzatmayı Sil",
+      "Bu uzatma kaydını silmek istediğinize emin misiniz? Bırakış tarihi önceki tarihe geri dönecektir.",
+      [
+        { text: "İptal", style: "cancel" },
+        {
+          text: "Sil",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              setActionLoading(true);
+              await deleteExtension(id, extId);
+              await load();
+            } catch (err) {
+              Alert.alert("Hata", err?.response?.data?.message || "Uzatma silinemedi.");
+            } finally {
+              setActionLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   if (loading) return <LoadingScreen />;
   if (error)   return <ErrorBanner message="Kontrat yüklenemedi." onRetry={load} />;
   if (!contract) return <EmptyState icon="📋" title="Kontrat bulunamadı" />;
@@ -199,6 +293,8 @@ export default function ContractDetailScreen() {
   const customer = c.user?.name || "—";
   const isActive = c.status === "ACTIVE";
   const isDone   = c.status === "DONE";
+  const isMonthly = c.rentalType === "MONTHLY";
+  const extensions = Array.isArray(c.extensions) ? c.extensions : [];
 
   return (
     <ScrollView
@@ -221,7 +317,7 @@ export default function ContractDetailScreen() {
       <SectionCard>
         <Text style={styles.sectionTitle}>Kontrat Bilgileri</Text>
         <InfoRow label="Kontrat No"   value={c.contractNo} mono />
-        <InfoRow label="Kiralama Tipi" value={c.rentalType === "MONTHLY" ? "Aylık" : "Günlük"} />
+        <InfoRow label="Kiralama Tipi" value={isMonthly ? "Aylık" : "Günlük"} />
         <InfoRow label="Teslim Tarihi" value={fmt(c.pickUpTime)} />
         <InfoRow label="İade Tarihi"   value={fmt(c.dropOffTime)} />
         {c.returnedAt && <InfoRow label="Fiili İade" value={fmt(c.returnedAt)} />}
@@ -230,11 +326,47 @@ export default function ContractDetailScreen() {
         <InfoRow label="Uçuş No"      value={c.flightNo} />
       </SectionCard>
 
+      {/* Uzatma Geçmişi */}
+      {extensions.length > 0 && (
+        <SectionCard>
+          <Text style={styles.sectionTitle}>Uzatma Geçmişi ({extensions.length})</Text>
+          {extensions.map((ext) => (
+            <View key={ext.id} style={styles.extRow}>
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                  <Text style={styles.extDate}>{fmt(ext.newDropOff)}</Text>
+                  <View style={styles.extDurationBadge}>
+                    <Text style={styles.extDurationText}>
+                      +{formatExtensionDuration(ext, isMonthly)}
+                    </Text>
+                  </View>
+                </View>
+                {ext.extraAmount != null && (
+                  <Text style={styles.extAmount}>
+                    Ek Tutar: ₺{Number(ext.extraAmount).toLocaleString("tr-TR")}
+                  </Text>
+                )}
+                {ext.note ? <Text style={styles.extNote}>{ext.note}</Text> : null}
+              </View>
+              {isActive && (
+                <Pressable
+                  style={styles.extDelBtn}
+                  onPress={() => handleDeleteExtension(ext.id)}
+                >
+                  <Text style={styles.extDelText}>✕</Text>
+                </Pressable>
+              )}
+            </View>
+          ))}
+        </SectionCard>
+      )}
+
       {/* Fiyatlar */}
       <SectionCard>
         <Text style={styles.sectionTitle}>Finansal Bilgiler</Text>
         <InfoRow label="Günlük Fiyat"   value={c.dailyPrice    != null ? `₺${Number(c.dailyPrice).toLocaleString("tr-TR")}` : null} />
         <InfoRow label="Aylık Fiyat"    value={c.monthlyPrice  != null ? `₺${Number(c.monthlyPrice).toLocaleString("tr-TR")}` : null} />
+        <InfoRow label="Toplam Tutar"   value={c.totalPrice    != null ? `₺${Number(c.totalPrice).toLocaleString("tr-TR")}` : null} />
         <InfoRow label="Depozito"        value={c.deposit       != null ? `₺${Number(c.deposit).toLocaleString("tr-TR")}` : null} />
         <InfoRow label="Hasar Muafiyeti" value={c.damageDeductible != null ? `₺${Number(c.damageDeductible).toLocaleString("tr-TR")}` : null} />
         <InfoRow label="KDV Oranı"       value={c.vatRate       != null ? `%${c.vatRate}` : null} />
@@ -283,6 +415,11 @@ export default function ContractDetailScreen() {
       {!actionLoading && (
         <View style={styles.actions}>
           {isActive && (
+            <Pressable style={[styles.actionBtn, styles.actionExtend]} onPress={openExtendModal}>
+              <Text style={styles.actionBtnText}>⏳  Süre Uzat</Text>
+            </Pressable>
+          )}
+          {isActive && (
             <Pressable style={[styles.actionBtn, styles.actionReturn]} onPress={handleReturn}>
               <Text style={styles.actionBtnText}>🔑  Araç İadesi Al</Text>
             </Pressable>
@@ -299,6 +436,70 @@ export default function ContractDetailScreen() {
           )}
         </View>
       )}
+
+      {/* Uzatma Modalı */}
+      <Modal visible={extendModalVisible} transparent animationType="slide" onRequestClose={() => setExtendModalVisible(false)}>
+        <Pressable style={styles.modalOverlay} onPress={() => setExtendModalVisible(false)}>
+          <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Kontrat Süresi Uzat</Text>
+              <Pressable onPress={() => setExtendModalVisible(false)}>
+                <Text style={styles.modalCloseText}>✕</Text>
+              </Pressable>
+            </View>
+
+            <Text style={styles.inputLabel}>Yeni Bitiş Tarihi (YYYY-AA-GG) *</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Örn: 2026-11-20"
+              placeholderTextColor={COLORS.subtle}
+              value={extDate}
+              onChangeText={setExtDate}
+            />
+
+            <Text style={styles.inputLabel}>Yeni Bitiş Saati (SS:DD)</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Örn: 12:00"
+              placeholderTextColor={COLORS.subtle}
+              value={extTime}
+              onChangeText={setExtTime}
+            />
+
+            <Text style={styles.inputLabel}>Ek Tutar (TL - Boş bırakılırsa otomatik hesaplanır)</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Otomatik"
+              placeholderTextColor={COLORS.subtle}
+              keyboardType="numeric"
+              value={extAmount}
+              onChangeText={setExtAmount}
+            />
+
+            <Text style={styles.inputLabel}>Not (Opsiyonel)</Text>
+            <TextInput
+              style={[styles.modalInput, { height: 60, textAlignVertical: "top" }]}
+              placeholder="Uzatma açıklaması..."
+              placeholderTextColor={COLORS.subtle}
+              multiline
+              value={extNote}
+              onChangeText={setExtNote}
+            />
+
+            <Pressable
+              style={[styles.submitBtn, extSubmitting && { opacity: 0.7 }]}
+              onPress={submitExtension}
+              disabled={extSubmitting}
+            >
+              {extSubmitting ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.submitBtnText}>Uzatmayı Kaydet</Text>
+              )}
+            </Pressable>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </ScrollView>
   );
 }
@@ -332,6 +533,22 @@ const styles = StyleSheet.create({
 
   noInvoice: { color: COLORS.muted, fontSize: 13, fontStyle: "italic" },
 
+  extRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.line,
+  },
+  extDate:          { fontSize: 14, fontWeight: "700", color: COLORS.ink },
+  extDurationBadge: { backgroundColor: COLORS.greenSoft, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 },
+  extDurationText:  { color: COLORS.green, fontSize: 11, fontWeight: "700" },
+  extAmount:        { fontSize: 12, color: COLORS.green, fontWeight: "700", marginTop: 3 },
+  extNote:          { fontSize: 11, color: COLORS.muted, marginTop: 2 },
+  extDelBtn:        { padding: 8, backgroundColor: COLORS.redSoft, borderRadius: 8 },
+  extDelText:       { color: COLORS.red, fontWeight: "800", fontSize: 12 },
+
   invoiceCard: {
     borderWidth: 1,
     borderColor: COLORS.line,
@@ -359,8 +576,53 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1.5,
   },
+  actionExtend:  { backgroundColor: "#3b82f6", borderColor: "#3b82f6" },
   actionReturn:  { backgroundColor: COLORS.green, borderColor: COLORS.green },
   actionCancel:  { backgroundColor: COLORS.redSoft, borderColor: COLORS.red + "55" },
   actionReopen:  { backgroundColor: COLORS.amberSoft, borderColor: COLORS.amber + "55" },
   actionBtnText: { fontSize: 15, fontWeight: "700", color: "#fff" },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    backgroundColor: COLORS.card,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 20,
+    paddingBottom: 36,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.line,
+    paddingBottom: 12,
+  },
+  modalTitle:     { fontSize: 18, fontWeight: "800", color: COLORS.ink },
+  modalCloseText: { fontSize: 18, color: COLORS.muted, fontWeight: "800" },
+  inputLabel:     { fontSize: 12, fontWeight: "700", color: COLORS.muted, marginBottom: 4, marginTop: 8 },
+  modalInput: {
+    backgroundColor: COLORS.canvas,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: COLORS.line,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 14,
+    color: COLORS.ink,
+  },
+  submitBtn: {
+    backgroundColor: COLORS.green,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  submitBtnText: { color: "#fff", fontSize: 15, fontWeight: "700" },
 });
+

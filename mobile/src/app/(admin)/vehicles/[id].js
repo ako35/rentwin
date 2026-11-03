@@ -1,11 +1,25 @@
 import { useState, useCallback } from "react";
 import {
-  ScrollView, View, Text, StyleSheet, Image, RefreshControl,
+  ScrollView,
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  RefreshControl,
+  Pressable,
+  Alert,
 } from "react-native";
-import { useLocalSearchParams, useFocusEffect } from "expo-router";
-import { getVehicleById } from "../../../api/admin";
+import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
 import {
-  LoadingScreen, ErrorBanner, SectionCard, EmptyState,
+  getVehicleById,
+  markVehiclePassive,
+  unmarkVehiclePassive,
+} from "../../../api/admin";
+import {
+  LoadingScreen,
+  ErrorBanner,
+  SectionCard,
+  EmptyState,
 } from "../../../components/admin";
 import { COLORS } from "../../../constants/theme";
 
@@ -39,10 +53,11 @@ function fmtDate(dt) {
 
 export default function VehicleDetailScreen() {
   const { id } = useLocalSearchParams();
-  const [vehicle, setVehicle]     = useState(null);
-  const [loading, setLoading]     = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [error, setError]         = useState(false);
+  const [vehicle, setVehicle]         = useState(null);
+  const [loading, setLoading]         = useState(true);
+  const [refreshing, setRefreshing]   = useState(false);
+  const [error, setError]             = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -64,12 +79,47 @@ export default function VehicleDetailScreen() {
     setRefreshing(false);
   };
 
+  const handleTogglePassive = () => {
+    if (!vehicle) return;
+    const isPassive = !!vehicle.passiveAt;
+
+    Alert.alert(
+      isPassive ? "Araçı Aktifleştir" : "Araçı Pasife Al",
+      isPassive
+        ? "Bu araç tekrar kiralanabilir duruma getirilecek."
+        : "Bu araç geçici olarak filodan çekilecek ve kiralanamayacak.",
+      [
+        { text: "İptal", style: "cancel" },
+        {
+          text: isPassive ? "Aktife Al" : "Pasife Al",
+          style: isPassive ? "default" : "destructive",
+          onPress: async () => {
+            try {
+              setActionLoading(true);
+              if (isPassive) {
+                await unmarkVehiclePassive(id);
+              } else {
+                await markVehiclePassive(id, {});
+              }
+              await load();
+            } catch (err) {
+              Alert.alert("Hata", err?.response?.data?.message || "İşlem gerçekleştirilemedi.");
+            } finally {
+              setActionLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   if (loading) return <LoadingScreen />;
   if (error)   return <ErrorBanner message="Araç bilgileri yüklenemedi." onRetry={load} />;
   if (!vehicle) return <EmptyState icon="🚗" title="Araç bulunamadı" />;
 
   const v = vehicle;
   const name = [v.brand, v.model, v.year].filter(Boolean).join(" ");
+  const isPassive = !!v.passiveAt;
 
   return (
     <ScrollView
@@ -93,6 +143,21 @@ export default function VehicleDetailScreen() {
           <StatusBar vehicle={v} />
         </View>
       </View>
+
+      {/* Aktif Kiralama Varsa Kart */}
+      {v.activeContractId && (
+        <Pressable
+          style={styles.activeContractCard}
+          onPress={() => router.push(`/(admin)/contracts/${v.activeContractId}`)}
+        >
+          <View style={styles.activeContractDot} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.activeContractTitle}>Bu araç şu anda aktif kirada!</Text>
+            <Text style={styles.activeContractSub}>Kontrat detaylarını görüntülemek için tıklayın</Text>
+          </View>
+          <Text style={styles.activeContractArrow}>›</Text>
+        </Pressable>
+      )}
 
       {/* Araç Bilgileri */}
       <SectionCard>
@@ -125,6 +190,28 @@ export default function VehicleDetailScreen() {
         <InfoRow label="Aylık"   value={v.monthlyPrice!= null ? `₺${Number(v.monthlyPrice).toLocaleString("tr-TR")}` : null} />
         <InfoRow label="Depozito"value={v.deposit     != null ? `₺${Number(v.deposit).toLocaleString("tr-TR")}` : null} />
       </SectionCard>
+
+      {/* Aksiyonlar */}
+      {!actionLoading && !v.isRented && (
+        <View style={styles.actions}>
+          <Pressable
+            style={[
+              styles.actionBtn,
+              isPassive ? styles.actionActiveBtn : styles.actionPassiveBtn,
+            ]}
+            onPress={handleTogglePassive}
+          >
+            <Text
+              style={[
+                styles.actionBtnText,
+                { color: isPassive ? COLORS.green : COLORS.red },
+              ]}
+            >
+              {isPassive ? "✓  Araçı Tekrar Aktifleştir" : "⏸  Araçı Pasife Al"}
+            </Text>
+          </Pressable>
+        </View>
+      )}
     </ScrollView>
   );
 }
@@ -160,8 +247,31 @@ const styles = StyleSheet.create({
   statusBar: { alignSelf: "flex-start", borderRadius: 8, borderWidth: 1, paddingHorizontal: 10, paddingVertical: 4, marginTop: 4 },
   statusText:{ fontSize: 12, fontWeight: "700" },
 
+  activeContractCard: {
+    backgroundColor: COLORS.amberSoft,
+    borderColor: COLORS.amberLine,
+    borderWidth: 1,
+    borderRadius: 14,
+    padding: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+    gap: 12,
+  },
+  activeContractDot:   { width: 10, height: 10, borderRadius: 5, backgroundColor: COLORS.amber },
+  activeContractTitle: { fontSize: 14, fontWeight: "800", color: "#78350f" },
+  activeContractSub:   { fontSize: 11, color: "#92400e", marginTop: 2 },
+  activeContractArrow: { fontSize: 22, color: COLORS.amber, fontWeight: "800" },
+
   sectionTitle: { fontSize: 13, fontWeight: "800", color: COLORS.ink, marginBottom: 10, textTransform: "uppercase", letterSpacing: 0.5 },
   infoRow:   { flexDirection: "row", justifyContent: "space-between", paddingVertical: 7, borderBottomWidth: 1, borderBottomColor: COLORS.line },
   infoLabel: { fontSize: 13, color: COLORS.muted, flex: 1 },
   infoValue: { fontSize: 13, color: COLORS.ink, fontWeight: "600", flex: 1, textAlign: "right" },
+
+  actions:          { gap: 10, marginTop: 8 },
+  actionBtn:        { borderRadius: 14, paddingVertical: 14, alignItems: "center", borderWidth: 1.5 },
+  actionPassiveBtn: { backgroundColor: COLORS.redSoft, borderColor: COLORS.red + "55" },
+  actionActiveBtn:  { backgroundColor: COLORS.greenSoft, borderColor: COLORS.green + "55" },
+  actionBtnText:    { fontSize: 14, fontWeight: "700" },
 });
+
