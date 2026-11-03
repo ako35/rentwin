@@ -495,14 +495,14 @@ const LOCATIONS_COPY = {
     why: (n) => [
       "Bakımlı ve sigortalı geniş araç filosu",
       "Ek ücret sürprizi olmayan şeffaf fiyatlandırma",
-      `${n} noktasından hızlı teslim alma ve bırakma`,
+      `${n} için teslimat noktası rezervasyonla belirlenir`,
       "Online rezervasyon ve esnek iptal koşulları",
     ],
     howTitle: (n) => `${n} lokasyonundan kiralama nasıl işler?`,
     how: (n) => [
       `Alış–bırakış tarih ve saatlerinizi seçip ${n} için müsait araçları listeleyin.`,
       "Aracınızı ve ek hizmetleri (havalimanı karşılama, tek yön kiralama, ek sürücü) belirleyip rezervasyonu oluşturun.",
-      `${n} noktasında kimlik, ehliyet ve kart ile aracınızı teslim alın; depozito talep edilmez.`,
+      `${n} için belirlenen teslimat noktasında kimlik, ehliyet ve kart ile aracınızı teslim alın; depozito talep edilmez.`,
     ],
   },
   en: {
@@ -513,20 +513,19 @@ const LOCATIONS_COPY = {
     why: (n) => [
       "A large fleet of maintained, insured vehicles",
       "Transparent pricing with no surprise fees",
-      `Fast pick-up and drop-off at ${n}`,
+      `The handover point in ${n} is agreed when you book`,
       "Online booking with flexible cancellation",
     ],
     howTitle: (n) => `How does renting from ${n} work?`,
     how: (n) => [
       `Choose your pick-up and drop-off dates and times to list the cars available at ${n}.`,
       "Select your car and any extras (airport meet-and-greet, one-way rental, additional driver) and place the booking.",
-      `Pick up your car at ${n} with your ID, licence, and card — no deposit required.`,
+      `Receive your car at the agreed handover point in ${n} with your ID, licence, and card — no deposit required.`,
     ],
   },
 };
 
-// Per-slug extra paragraphs — mirrors locations.json `detail.local.*`. Only
-// "aliaga" has one today; a slug with none simply gets no extra section.
+// Per-slug extra paragraphs — mirrors locations.json `detail.local.*`.
 const LOCATION_LOCAL_COPY = {
   tr: {
     aliaga: {
@@ -541,6 +540,13 @@ const LOCATION_LOCAL_COPY = {
       paragraphs: [
         "İzmir Adnan Menderes Havalimanı'nda Rentwin araç teslimi ve karşılama hizmeti rezervasyon sırasında talep edilebilir. Alış tarih ve saatinizi seçip havalimanı teslim isteğinizi ekibimize iletin; teslim ayrıntılarını rezervasyon teyidinde netleştirin.",
         "Havalimanından Aliağa'ya, İzmir merkezine veya çevre ilçelere devam edeceğiniz yolculuk için günlük ya da aylık kiralama seçeneklerini inceleyin. Uygun araçları görmek ve rezervasyon başlatmak için araç listemizi ziyaret edin.",
+      ],
+    },
+    bursa: {
+      title: "Bursa'da adrese araç teslimi",
+      paragraphs: [
+        "Bursa'daki Rentwin araç kiralama hizmetinde araç, müşteriyle belirlenen adrese teslim edilir. Rezervasyon talebinizde teslimat adresinizi ve tercih ettiğiniz saati belirtin.",
+        "Yola çıkmadan önce araç müsaitliğini ve teslimat ayrıntılarını Rentwin ekibiyle teyit edin. Bursa seyahatinize uygun aracı görmek için araç listemizi inceleyin.",
       ],
     },
   },
@@ -559,6 +565,13 @@ const LOCATION_LOCAL_COPY = {
         "Explore daily and monthly rental options for trips from the airport to Aliağa, central İzmir, and nearby districts. Visit our vehicle list to check available cars and start a reservation.",
       ],
     },
+    bursa: {
+      title: "Car delivery to your address in Bursa",
+      paragraphs: [
+        "For Rentwin car rentals in Bursa, the vehicle is delivered to an address agreed with the customer. Include your preferred delivery address and time with your booking request.",
+        "Before your trip, confirm vehicle availability and delivery details with the Rentwin team. Browse the fleet to choose a vehicle for your time in Bursa.",
+      ],
+    },
   },
 };
 
@@ -575,6 +588,8 @@ const renderLocationDetailBody = ({ locationName, slug }, locale = "tr") => {
     (local
       ? `<h2>${htmlEsc(local.title)}</h2>${local.paragraphs.map((p) => `<p>${htmlEsc(p)}</p>`).join("")}`
       : "") +
+    `<ul>${htmlLink(`${SITE_URL}${localizePath("/vehicles", locale)}`, locale === "en" ? "Browse available vehicles" : "Müsait araçları inceleyin")}` +
+    `${htmlLink(`${SITE_URL}${localizePath("/contact", locale)}`, locale === "en" ? "Contact Rentwin" : "Rentwin ile iletişime geçin")}</ul>` +
     "</main>"
   );
 };

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -25,7 +25,7 @@ import PhotoCompare from "../../components/PhotoCompare";
 import { formatKm, fuelLabel, groupThousands, localStamp } from "../../utils/format";
 
 // Shrinks + re-compresses a raw camera capture before it ever touches the
-// queue/upload path — full-resolution phone photos are 3-8 MB, this keeps
+// queue/upload path ÔÇö full-resolution phone photos are 3-8 MB, this keeps
 // each one small and fast over mobile data. Width-only resize keeps aspect
 // ratio (see expo-image-manipulator docs); compressing to JPEG q0.7 does
 // most of the size reduction regardless of which edge ends up longest.
@@ -44,7 +44,7 @@ const ANGLE_LABELS = {
 
 const photoCaption = (photo) => {
   const by = [photo.takenBy?.firstName, photo.takenBy?.lastName?.charAt(0)].filter(Boolean).join(" ");
-  return [localStamp(photo.createdAt), by && `${by}.`].filter(Boolean).join(" · ");
+  return [localStamp(photo.createdAt), by && `${by}.`].filter(Boolean).join(" ┬À ");
 };
 
 // The hand-over (PICKUP) photos a return is compared against: the latest shot
@@ -67,7 +67,7 @@ export default function CaptureScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [captureAngle, setCaptureAngle] = useState(null); // non-null while the camera view is open
   const [busy, setBusy] = useState(false);
-  // { [angle]: [{ uri, mimeType }] } — DAMAGE can hold several, every other
+  // { [angle]: [{ uri, mimeType }] } ÔÇö DAMAGE can hold several, every other
   // angle holds at most one (a new capture replaces it).
   const [shots, setShots] = useState({});
   const [saving, setSaving] = useState(false);
@@ -135,7 +135,7 @@ export default function CaptureScreen() {
   const readingsChanged = readingsComplete && (kmNum !== recordedKm || fuel !== recordedFuel);
   const kmError =
     isReturn && kmNum != null && pickupKmRef != null && kmNum < pickupKmRef
-      ? `Teslimdeki ${formatKm(pickupKmRef)} değerinden küçük olamaz.`
+      ? `Teslimdeki ${formatKm(pickupKmRef)} de─şerinden k├╝├ğ├╝k olamaz.`
       : null;
   const usedKm = isReturn && kmNum != null && pickupKmRef != null && !kmError ? kmNum - pickupKmRef : null;
 
@@ -143,9 +143,9 @@ export default function CaptureScreen() {
     if (!firstVisit) return [];
     const list = [];
     const photosLeft = REQUIRED_ANGLES.length - capturedCount;
-    if (photosLeft > 0) list.push(`${photosLeft} fotoğraf`);
+    if (photosLeft > 0) list.push(`${photosLeft} foto─şraf`);
     if (kmNum == null) list.push("km");
-    if (fuel == null) list.push("yakıt seviyesi");
+    if (fuel == null) list.push("yak─▒t seviyesi");
     return list;
   }, [firstVisit, capturedCount, kmNum, fuel]);
 
@@ -160,7 +160,7 @@ export default function CaptureScreen() {
     if (!permission?.granted) {
       const res = await requestPermission();
       if (!res.granted) {
-        Alert.alert("İzin gerekli", "Fotoğraf çekmek için kamera izni vermelisiniz.");
+        Alert.alert("─░zin gerekli", "Foto─şraf ├ğekmek i├ğin kamera izni vermelisiniz.");
         return;
       }
     }
@@ -180,7 +180,7 @@ export default function CaptureScreen() {
         return { ...prev, [captureAngle]: isMulti ? [...existing, entry] : [entry] };
       });
     } catch {
-      Alert.alert("Hata", "Fotoğraf çekilemedi, tekrar deneyin.");
+      Alert.alert("Hata", "Foto─şraf ├ğekilemedi, tekrar deneyin.");
     } finally {
       setBusy(false);
       if (captureAngle !== DAMAGE_ANGLE) setCaptureAngle(null);
@@ -196,7 +196,7 @@ export default function CaptureScreen() {
     setCompare({
       title: ANGLE_LABELS[angle],
       before: references.byAngle[angle] || null,
-      after: shot ? { uri: shot.uri, caption: "Yeni çekim" } : null,
+      after: shot ? { uri: shot.uri, caption: "Yeni ├ğekim" } : null,
       showAfter: true,
     });
   };
@@ -220,7 +220,7 @@ export default function CaptureScreen() {
       setShots({});
       Alert.alert(
         "Kaydedildi",
-        "Bilgiler yükleniyor. Bağlantı yoksa bağlantı gelince otomatik gönderilecek.",
+        "Bilgiler y├╝kleniyor. Ba─şlant─▒ yoksa ba─şlant─▒ gelince otomatik g├Ânderilecek.",
         [{ text: "Tamam", onPress: () => router.back() }]
       );
     } finally {
@@ -245,18 +245,18 @@ export default function CaptureScreen() {
   return (
     <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       {/* headerShown: the camera view hides the header; restore it on the way back */}
-      <Stack.Screen options={{ headerShown: true, title: `${plate || ""} · ${stageLabel}` }} />
+      <Stack.Screen options={{ headerShown: true, title: `${plate || ""} ┬À ${stageLabel}` }} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {failedForContract.length > 0 && (
           <View style={styles.failBanner}>
-            <Text style={styles.failTitle}>{failedForContract.length} kayıt gönderilemedi</Text>
+            <Text style={styles.failTitle}>{failedForContract.length} kay─▒t g├Ânderilemedi</Text>
             <Text style={styles.failText}>{failedForContract[0].lastError}</Text>
             <View style={styles.failActions}>
               <Pressable onPress={flushQueue} style={styles.failButton}>
                 <Text style={styles.failButtonText}>Tekrar dene</Text>
               </Pressable>
               <Pressable onPress={() => discardFailed(contractId)} style={styles.failButtonGhost}>
-                <Text style={styles.failGhostText}>Vazgeç</Text>
+                <Text style={styles.failGhostText}>Vazge├ğ</Text>
               </Pressable>
             </View>
           </View>
@@ -265,20 +265,20 @@ export default function CaptureScreen() {
         {!loading && !firstVisit && (
           <View style={styles.infoBanner}>
             <Text style={styles.infoText}>
-              Bu {stageLabel.toLocaleLowerCase("tr-TR")} için fotoğraflar daha önce yüklendi. Ek fotoğraf ekleyebilir
-              veya km ve yakıtı düzeltebilirsiniz.
+              Bu {stageLabel.toLocaleLowerCase("tr-TR")} i├ğin foto─şraflar daha ├Ânce y├╝klendi. Ek foto─şraf ekleyebilir
+              veya km ve yak─▒t─▒ d├╝zeltebilirsiniz.
             </Text>
           </View>
         )}
 
         <View style={styles.sectionHead}>
-          <Text style={styles.sectionTitle}>Fotoğraflar</Text>
+          <Text style={styles.sectionTitle}>Foto─şraflar</Text>
           <Text style={styles.sectionMeta}>
             {capturedCount}/{REQUIRED_ANGLES.length}
           </Text>
         </View>
         {isReturn && referencesFailed && (
-          <Text style={styles.note}>Teslim fotoğrafları yüklenemedi, karşılaştırma şu an kullanılamıyor.</Text>
+          <Text style={styles.note}>Teslim foto─şraflar─▒ y├╝klenemedi, kar┼ş─▒la┼şt─▒rma ┼şu an kullan─▒lam─▒yor.</Text>
         )}
 
         <View style={styles.card}>
@@ -291,7 +291,7 @@ export default function CaptureScreen() {
                   onPress={() => openCamera(angle)}
                   style={styles.slot}
                   accessibilityRole="button"
-                  accessibilityLabel={`${label} fotoğrafı çek`}
+                  accessibilityLabel={`${label} foto─şraf─▒ ├ğek`}
                 >
                   {shot ? (
                     <Image source={{ uri: shot.uri }} style={styles.slotImage} />
@@ -303,10 +303,10 @@ export default function CaptureScreen() {
                   <Text style={styles.angleLabel}>{label}</Text>
                   {ref ? (
                     <Pressable onPress={() => openCompare(angle)} hitSlop={8}>
-                      <Text style={styles.compareLink}>{shot ? "Teslimdekiyle karşılaştır ›" : "Teslimdeki halini gör ›"}</Text>
+                      <Text style={styles.compareLink}>{shot ? "Teslimdekiyle kar┼ş─▒la┼şt─▒r ÔÇ║" : "Teslimdeki halini g├Âr ÔÇ║"}</Text>
                     </Pressable>
                   ) : (
-                    <Text style={styles.angleHint}>{shot ? "Çekildi · değiştirmek için dokun" : "Çekmek için dokun"}</Text>
+                    <Text style={styles.angleHint}>{shot ? "├çekildi ┬À de─şi┼ştirmek i├ğin dokun" : "├çekmek i├ğin dokun"}</Text>
                   )}
                 </View>
                 {ref ? (
@@ -315,7 +315,7 @@ export default function CaptureScreen() {
                     <Text style={styles.refLabel}>Teslim</Text>
                   </Pressable>
                 ) : (
-                  shot && <Text style={styles.check}>✓</Text>
+                  shot && <Text style={styles.check}>Ô£ô</Text>
                 )}
               </View>
             );
@@ -323,13 +323,13 @@ export default function CaptureScreen() {
         </View>
 
         <View style={styles.sectionHead}>
-          <Text style={styles.sectionTitle}>Hasar fotoğrafları</Text>
-          <Text style={styles.sectionMeta}>isteğe bağlı</Text>
+          <Text style={styles.sectionTitle}>Hasar foto─şraflar─▒</Text>
+          <Text style={styles.sectionMeta}>iste─şe ba─şl─▒</Text>
         </View>
         <View style={styles.card}>
           {isReturn && references.damage.length > 0 && (
             <View style={styles.damageRefs}>
-              <Text style={styles.damageRefsTitle}>Teslimde kayıtlı hasarlar</Text>
+              <Text style={styles.damageRefsTitle}>Teslimde kay─▒tl─▒ hasarlar</Text>
               <View style={styles.thumbRow}>
                 {references.damage.map((ref, i) => (
                   <Pressable
@@ -354,16 +354,16 @@ export default function CaptureScreen() {
               style={[styles.thumb, styles.addThumb]}
               onPress={() => openCamera(DAMAGE_ANGLE)}
               accessibilityRole="button"
-              accessibilityLabel="Hasar fotoğrafı ekle"
+              accessibilityLabel="Hasar foto─şraf─▒ ekle"
             >
               <Text style={styles.slotPlus}>+</Text>
             </Pressable>
           </View>
-          <Text style={styles.hint}>Yeni hasar fotoğrafını kaldırmak için üzerine uzun basın.</Text>
+          <Text style={styles.hint}>Yeni hasar foto─şraf─▒n─▒ kald─▒rmak i├ğin ├╝zerine uzun bas─▒n.</Text>
         </View>
 
         <View style={styles.sectionHead}>
-          <Text style={styles.sectionTitle}>Km & yakıt</Text>
+          <Text style={styles.sectionTitle}>Km & yak─▒t</Text>
           {loading && <ActivityIndicator size="small" color={COLORS.green} />}
         </View>
         <View style={styles.card}>
@@ -371,7 +371,7 @@ export default function CaptureScreen() {
             <View style={styles.refLine}>
               <Text style={styles.refLineLabel}>Teslimde</Text>
               <Text style={styles.refLineValue}>
-                {formatKm(pickupKmRef)} · {fuelLabel(recorded.pickUpFuelEighths)}
+                {formatKm(pickupKmRef)} ┬À {fuelLabel(recorded.pickUpFuelEighths)}
               </Text>
             </View>
           )}
@@ -381,7 +381,7 @@ export default function CaptureScreen() {
               value={km}
               onChangeText={(text) => setKm(text.replace(/\D/g, "").slice(0, 7))}
               keyboardType="number-pad"
-              placeholder="Göstergedeki km"
+              placeholder="G├Âstergedeki km"
               placeholderTextColor={COLORS.subtle}
               style={styles.kmInput}
               accessibilityLabel="Kilometre"
@@ -391,12 +391,12 @@ export default function CaptureScreen() {
           {kmError ? (
             <Text style={styles.errorText}>{kmError}</Text>
           ) : usedKm != null ? (
-            <Text style={styles.helper}>Bu kiralamada {groupThousands(usedKm)} km yapılmış.</Text>
+            <Text style={styles.helper}>Bu kiralamada {groupThousands(usedKm)} km yap─▒lm─▒┼ş.</Text>
           ) : kmNum != null ? (
             <Text style={styles.helper}>{formatKm(kmNum)}</Text>
           ) : null}
 
-          <Text style={[styles.fieldLabel, styles.fuelLabel]}>Yakıt / şarj seviyesi</Text>
+          <Text style={[styles.fieldLabel, styles.fuelLabel]}>Yak─▒t / ┼şarj seviyesi</Text>
           <FuelGauge value={fuel} onChange={setFuel} />
         </View>
 
@@ -409,7 +409,7 @@ export default function CaptureScreen() {
           {saving ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.saveText}>{firstVisit ? "Kaydet ve yükle" : "Değişiklikleri kaydet"}</Text>
+            <Text style={styles.saveText}>{firstVisit ? "Kaydet ve y├╝kle" : "De─şi┼şiklikleri kaydet"}</Text>
           )}
         </Pressable>
         {missing.length > 0 && <Text style={styles.missing}>Eksik: {missing.join(", ")}</Text>}
@@ -428,7 +428,7 @@ export default function CaptureScreen() {
 }
 
 // Full-screen capture UI, isolated so the main screen's ref-management stays
-// simple — a fresh CameraView + ref per open/close cycle. On a return, the
+// simple ÔÇö a fresh CameraView + ref per open/close cycle. On a return, the
 // hand-over shot of the same angle sits in the corner as a framing guide.
 const CameraScreen = ({ angle, busy, onShoot, onClose, reference }) => {
   const cameraRef = useRef(null);
@@ -454,7 +454,7 @@ const CameraScreen = ({ angle, busy, onShoot, onClose, reference }) => {
           disabled={busy}
           onPress={() => onShoot(cameraRef)}
           accessibilityRole="button"
-          accessibilityLabel="Fotoğraf çek"
+          accessibilityLabel="Foto─şraf ├ğek"
         >
           {busy && <ActivityIndicator color="#000" />}
         </Pressable>

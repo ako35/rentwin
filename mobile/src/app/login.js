@@ -45,8 +45,8 @@ export default function LoginScreen() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <Text style={styles.title}>Rentwin Saha</Text>
-      <Text style={styles.subtitle}>Personel girişi</Text>
+      <Text style={styles.title}>Rentwin</Text>
+      <Text style={styles.subtitle}>Hesabınıza giriş yapın</Text>
 
       <TextInput
         style={styles.input}

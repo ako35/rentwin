@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+﻿import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -19,7 +19,7 @@ import { CARD, COLORS } from "../../constants/theme";
 import { discardFailed, flushQueue, getQueue, subscribeQueue } from "../../queue/upload-queue";
 import { formatKm, fuelLabel, groupThousands, wallDate, wallDayName, wallTime, whatsappNumber } from "../../utils/format";
 
-// Contract detail — everything the crew needs at the car before shooting:
+// Contract detail ÔÇö everything the crew needs at the car before shooting:
 // the vehicle, who to call, when/where, notes, and per-stage progress.
 // Opened from the schedule with { id, stage, plate }; `stage` puts that
 // hand-over first.
@@ -81,14 +81,14 @@ export default function ContractScreen() {
       >
         {failed.length > 0 && (
           <View style={styles.failBanner}>
-            <Text style={styles.failTitle}>{failed.length} kayıt gönderilemedi</Text>
+            <Text style={styles.failTitle}>{failed.length} kay─▒t g├Ânderilemedi</Text>
             <Text style={styles.failText}>{failed[0].lastError}</Text>
             <View style={styles.failActions}>
               <Pressable onPress={flushQueue} style={styles.failButton}>
                 <Text style={styles.failButtonText}>Tekrar dene</Text>
               </Pressable>
               <Pressable onPress={() => discardFailed(contractId)} style={styles.failGhost}>
-                <Text style={styles.failGhostText}>Vazgeç</Text>
+                <Text style={styles.failGhostText}>Vazge├ğ</Text>
               </Pressable>
             </View>
           </View>
@@ -96,7 +96,7 @@ export default function ContractScreen() {
 
         {loadError && (
           <Pressable onPress={onRefresh} style={styles.errorBanner}>
-            <Text style={styles.errorText}>Kontrat bilgileri alınamadı. Yenilemek için dokun.</Text>
+            <Text style={styles.errorText}>Kontrat bilgileri al─▒namad─▒. Yenilemek i├ğin dokun.</Text>
           </Pressable>
         )}
 
@@ -115,10 +115,10 @@ export default function ContractScreen() {
                     <Text style={styles.vehicleImageFallback}>{car?.brand?.charAt(0) || "R"}</Text>
                   )}
                 </View>
-                <Text style={styles.plate}>{car?.licensePlate || plate || "—"}</Text>
+                <Text style={styles.plate}>{car?.licensePlate || plate || "ÔÇö"}</Text>
                 <Text style={styles.vehicleName}>
                   {[car?.brand, car?.model].filter(Boolean).join(" ").trim()}
-                  {car?.modelYear ? ` · ${car.modelYear}` : ""}
+                  {car?.modelYear ? ` ┬À ${car.modelYear}` : ""}
                 </Text>
                 <View style={styles.specRow}>
                   {[TRANSMISSION_LABEL[car?.transmission], FUEL_TYPE_LABEL[car?.fuelType], car?.color]
@@ -134,13 +134,13 @@ export default function ContractScreen() {
               <CustomerCard customer={contract.customer} drivers={contract.drivers} />
 
               <View style={styles.card}>
-                <Text style={styles.eyebrow}>KİRALAMA</Text>
+                <Text style={styles.eyebrow}>K─░RALAMA</Text>
                 <PlanRow label="Teslim" time={contract.pickUpTime} location={contract.pickUpLocation} />
                 <View style={styles.planLine} />
-                <PlanRow label="İade" time={contract.dropOffTime} location={contract.dropOffLocation} />
+                <PlanRow label="─░ade" time={contract.dropOffTime} location={contract.dropOffLocation} />
                 {!!contract.flightNo && (
                   <View style={styles.flight}>
-                    <Text style={styles.flightLabel}>Uçuş</Text>
+                    <Text style={styles.flightLabel}>U├ğu┼ş</Text>
                     <Text style={styles.flightValue}>{contract.flightNo}</Text>
                   </View>
                 )}
@@ -149,7 +149,7 @@ export default function ContractScreen() {
               {(contract.customerNote || contract.adminNote) && (
                 <View style={styles.card}>
                   {!!contract.adminNote && <Note label="Ofis notu" text={contract.adminNote} />}
-                  {!!contract.customerNote && <Note label="Müşteri notu" text={contract.customerNote} />}
+                  {!!contract.customerNote && <Note label="M├╝┼şteri notu" text={contract.customerNote} />}
                 </View>
               )}
             </>
@@ -157,7 +157,7 @@ export default function ContractScreen() {
         )}
 
         {/* Stage actions stay reachable even if the detail failed to load
-            (no signal at the car) — capture works offline via the queue. */}
+            (no signal at the car) ÔÇö capture works offline via the queue. */}
         {(contract || loadError) &&
           stages.map((stage) => (
             <StageCard
@@ -179,8 +179,8 @@ function CustomerCard({ customer, drivers }) {
   const wa = whatsappNumber(customer.phone);
   return (
     <View style={styles.card}>
-      <Text style={styles.eyebrow}>MÜŞTERİ</Text>
-      <Text style={styles.customerName}>{customer.name || "—"}</Text>
+      <Text style={styles.eyebrow}>M├£┼ŞTER─░</Text>
+      <Text style={styles.customerName}>{customer.name || "ÔÇö"}</Text>
       {!!customer.contactName && <Text style={styles.customerSub}>Yetkili: {customer.contactName}</Text>}
       {!!customer.phone && (
         <View style={styles.actions}>
@@ -189,7 +189,7 @@ function CustomerCard({ customer, drivers }) {
             style={[styles.actionButton, styles.actionPrimary]}
             accessibilityRole="button"
           >
-            <Text style={styles.actionPrimaryText}>Ara · {customer.phone}</Text>
+            <Text style={styles.actionPrimaryText}>Ara ┬À {customer.phone}</Text>
           </Pressable>
           {!!wa && (
             <Pressable
@@ -204,7 +204,7 @@ function CustomerCard({ customer, drivers }) {
       )}
       {drivers?.length > 0 && (
         <View style={styles.drivers}>
-          <Text style={styles.driversTitle}>Ek sürücüler</Text>
+          <Text style={styles.driversTitle}>Ek s├╝r├╝c├╝ler</Text>
           {drivers.map((d, i) => (
             <View key={`${d.name}-${i}`} style={styles.driverRow}>
               <Text style={styles.driverName}>{d.name}</Text>
@@ -227,7 +227,7 @@ function PlanRow({ label, time, location }) {
       <View style={styles.planDot} />
       <View style={styles.planCopy}>
         <Text style={styles.planLabel}>{label}</Text>
-        <Text style={styles.planLocation}>{location || "—"}</Text>
+        <Text style={styles.planLocation}>{location || "ÔÇö"}</Text>
       </View>
       <View style={styles.planWhen}>
         <Text style={styles.planTime}>{wallTime(time)}</Text>
@@ -264,19 +264,19 @@ function StageCard({ stage, contract, focused, pending, onCapture }) {
         <Text style={styles.stageTitle}>{label}</Text>
         <View style={[styles.chip, styles[`chip_${status}`]]}>
           <Text style={[styles.chipText, styles[`chipText_${status}`]]}>
-            {status === "uploading" ? `${pending} kayıt yükleniyor` : status === "done" ? "Tamamlandı" : "Bekliyor"}
+            {status === "uploading" ? `${pending} kay─▒t y├╝kleniyor` : status === "done" ? "Tamamland─▒" : "Bekliyor"}
           </Text>
         </View>
       </View>
       {contract && (
         <View style={styles.stageFacts}>
-          <Fact label="Fotoğraf" value={photos > 0 ? String(photos) : "—"} />
+          <Fact label="Foto─şraf" value={photos > 0 ? String(photos) : "ÔÇö"} />
           <Fact label="Km" value={formatKm(km)} />
-          <Fact label="Yakıt" value={fuelLabel(fuel)} />
+          <Fact label="Yak─▒t" value={fuelLabel(fuel)} />
         </View>
       )}
       {used != null && used >= 0 && (
-        <Text style={styles.usedKm}>Bu kiralamada {groupThousands(used)} km yapıldı.</Text>
+        <Text style={styles.usedKm}>Bu kiralamada {groupThousands(used)} km yap─▒ld─▒.</Text>
       )}
       <Pressable
         onPress={onCapture}
@@ -284,7 +284,7 @@ function StageCard({ stage, contract, focused, pending, onCapture }) {
         accessibilityRole="button"
       >
         <Text style={[styles.stageButtonText, done && styles.stageButtonTextSecondary]}>
-          {done ? "Ek fotoğraf / km düzelt" : `${label} fotoğraflarını çek`}
+          {done ? "Ek foto─şraf / km d├╝zelt" : `${label} foto─şraflar─▒n─▒ ├ğek`}
         </Text>
       </Pressable>
     </View>

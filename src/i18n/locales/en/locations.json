@@ -14,14 +14,14 @@
     "why": [
       "A large fleet of maintained, insured vehicles",
       "Transparent pricing with no surprise fees",
-      "Fast pick-up and drop-off at {{name}}",
+      "The handover point in {{name}} is agreed when you book",
       "Online booking with flexible cancellation"
     ],
     "howTitle": "How does renting from {{name}} work?",
     "how": [
       "Choose your pick-up and drop-off dates and times to list the cars available at {{name}}.",
       "Select your car and any extras (airport meet-and-greet, one-way rental, additional driver) and place the booking.",
-      "Pick up your car at {{name}} with your ID, licence, and card — no deposit required."
+      "Receive your car at the agreed handover point in {{name}} with your ID, licence, and card — no deposit required."
     ],
     "faqLead": "For questions about required documents, mileage limits, and the fuel policy, see:",
     "faqLink": "Frequently Asked Questions",
@@ -45,6 +45,13 @@
         "paragraphs": [
           "Vehicle delivery and meet-and-greet at İzmir Adnan Menderes Airport can be requested when you book. Select your pick-up date and time and send the airport request to our team; confirm handover details with your booking confirmation.",
           "Explore daily and monthly rental options for trips from the airport to Aliağa, central İzmir, and nearby districts. Visit our vehicle list to check available cars and start a reservation."
+        ]
+      },
+      "bursa": {
+        "title": "Car delivery to your address in Bursa",
+        "paragraphs": [
+          "For Rentwin car rentals in Bursa, the vehicle is delivered to an address agreed with the customer. Include your preferred delivery address and time with your booking request.",
+          "Before your trip, confirm vehicle availability and delivery details with the Rentwin team. Browse the fleet to choose a vehicle for your time in Bursa."
         ]
       }
     }

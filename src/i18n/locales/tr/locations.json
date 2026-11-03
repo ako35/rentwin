@@ -14,14 +14,14 @@
     "why": [
       "Bakımlı ve sigortalı geniş araç filosu",
       "Ek ücret sürprizi olmayan şeffaf fiyatlandırma",
-      "{{name}} noktasından hızlı teslim alma ve bırakma",
+      "{{name}} için teslimat noktası rezervasyonla belirlenir",
       "Online rezervasyon ve esnek iptal koşulları"
     ],
     "howTitle": "{{name}} lokasyonundan kiralama nasıl işler?",
     "how": [
       "Alış–bırakış tarih ve saatlerinizi seçip {{name}} için müsait araçları listeleyin.",
       "Aracınızı ve ek hizmetleri (havalimanı karşılama, tek yön kiralama, ek sürücü) belirleyip rezervasyonu oluşturun.",
-      "{{name}} noktasında kimlik, ehliyet ve kart ile aracınızı teslim alın; depozito talep edilmez."
+      "{{name}} için belirlenen teslimat noktasında kimlik, ehliyet ve kart ile aracınızı teslim alın; depozito talep edilmez."
     ],
     "faqLead": "Gerekli belgeler, kilometre limiti ve yakıt politikası gibi sorular için:",
     "faqLink": "Sıkça Sorulan Sorular",
@@ -45,6 +45,13 @@
         "paragraphs": [
           "İzmir Adnan Menderes Havalimanı'nda Rentwin araç teslimi ve karşılama hizmeti rezervasyon sırasında talep edilebilir. Alış tarih ve saatinizi seçip havalimanı teslim isteğinizi ekibimize iletin; teslim ayrıntılarını rezervasyon teyidinde netleştirin.",
           "Havalimanından Aliağa'ya, İzmir merkezine veya çevre ilçelere devam edeceğiniz yolculuk için günlük ya da aylık kiralama seçeneklerini inceleyin. Uygun araçları görmek ve rezervasyon başlatmak için araç listemizi ziyaret edin."
+        ]
+      },
+      "bursa": {
+        "title": "Bursa'da adrese araç teslimi",
+        "paragraphs": [
+          "Bursa'daki Rentwin araç kiralama hizmetinde araç, müşteriyle belirlenen adrese teslim edilir. Rezervasyon talebinizde teslimat adresinizi ve tercih ettiğiniz saati belirtin.",
+          "Yola çıkmadan önce araç müsaitliğini ve teslimat ayrıntılarını Rentwin ekibiyle teyit edin. Bursa seyahatinize uygun aracı görmek için araç listemizi inceleyin."
         ]
       }
     }

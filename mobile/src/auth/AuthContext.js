@@ -28,9 +28,9 @@ export const AuthProvider = ({ children }) => {
     // interceptor, which pulls straight from AsyncStorage (see client.js).
     await saveSession(token, null);
     const me = await api.getCurrentUser();
-    if (!me.roles?.includes("Administrator")) {
+    if (!me.roles?.includes("Administrator") && !me.roles?.includes("Staff")) {
       await clearSession();
-      throw new Error("Bu hesabın saha uygulamasına erişim yetkisi yok.");
+      throw new Error("Bu hesabın uygulamaya erişim yetkisi yok.");
     }
     await saveSession(token, me);
     setUser(me);

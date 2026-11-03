@@ -62,6 +62,23 @@ for (const [path, locale] of [
   });
 }
 
+test("crawler location body for Bursa explains address delivery in both languages", () => {
+  const tr = buildHead({
+    path: "/lokasyonlar/bursa",
+    locationName: "Bursa",
+    slug: "bursa",
+  }).bodyHtml;
+  const en = buildHead({
+    path: "/en/lokasyonlar/bursa",
+    locationName: "Bursa",
+    slug: "bursa",
+  }).bodyHtml;
+
+  assert.match(tr, /müşteriyle belirlenen adrese teslim edilir/);
+  assert.match(en, /delivered to an address agreed with the customer/);
+  assert.doesNotMatch(en, /Fast pick-up and drop-off at Bursa/);
+});
+
 test("business structured data uses the confirmed Aliağa address coordinates", () => {
   assert.deepEqual(autoRentalLd().geo, {
     "@type": "GeoCoordinates",

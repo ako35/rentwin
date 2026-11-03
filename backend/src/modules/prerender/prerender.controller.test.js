@@ -4,12 +4,16 @@ const { renderPage } = require("./prerender.controller");
 
 test("prerender failures return 503 instead of an empty page with 200", async (t) => {
   const originalFetch = global.fetch;
+  const originalConsoleError = console.error;
+  const errors = [];
   t.after(() => {
     global.fetch = originalFetch;
+    console.error = originalConsoleError;
   });
   global.fetch = async () => {
     throw new Error("shell unavailable");
   };
+  console.error = (...args) => errors.push(args);
 
   const headers = {};
   const response = {
@@ -35,4 +39,6 @@ test("prerender failures return 503 instead of an empty page with 200", async (t
   assert.equal(headers["Cache-Control"], "no-store");
   assert.equal(headers["Retry-After"], "60");
   assert.match(response.body, /noindex, nofollow/);
+  assert.equal(errors.length, 1);
+  assert.match(errors[0][1].message, /shell unavailable/);
 });
