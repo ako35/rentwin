@@ -84,7 +84,7 @@ function ScheduleCard({ row, overdue, onOpen }) {
 }
 
 export default function ScheduleScreen() {
-  const { user, loading: authLoading, logout } = useAuth();
+  const { user, loading: authLoading, logout, setMode } = useAuth();
   const [schedule, setSchedule] = useState({ departures: [], returns: [] });
   const [tab, setTab] = useState("PICKUP");
   const [loading, setLoading] = useState(true);
@@ -175,7 +175,10 @@ export default function ScheduleScreen() {
           <View style={styles.topActions}>
             {user?.roles?.includes("Administrator") && (
               <Pressable
-                onPress={() => router.replace("/(admin)")}
+                onPress={() => {
+                  setMode("admin");
+                  router.replace("/(admin)");
+                }}
                 style={styles.adminButton}
                 accessibilityRole="button"
                 accessibilityLabel="Yönetim paneline geç"

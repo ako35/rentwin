@@ -20,7 +20,7 @@ function MenuGroup({ label, items }) {
 }
 
 export default function MoreScreen() {
-  const { user, logout } = useAuth();
+  const { user, logout, setMode } = useAuth();
 
   const confirmLogout = () => {
     Alert.alert("Çıkış Yap", "Hesaptan çıkmak istiyor musunuz?", [
@@ -52,8 +52,11 @@ export default function MoreScreen() {
           {
             emoji: "📸",
             label: "Saha Modu",
-            sub: "Günlük teslim / iade programı ve fotoğraf çekimi",
-            onPress: () => router.replace("/(saha)"),
+            sub: "Günlük teslim / iade programı ve fotoğraf çekimi. Uygulama bir sonraki açılışta da saha modunda açılır.",
+            onPress: () => {
+              setMode("saha");
+              router.replace("/(saha)");
+            },
           },
         ]}
       />

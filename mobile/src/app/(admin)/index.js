@@ -266,9 +266,9 @@ function TodayScheduleSection({ departures, returns, nowWall }) {
   );
 }
 
-function QuickActions() {
+function QuickActions({ onSahaMode }) {
   const actions = [
-    { label: "Saha Modu",     emoji: "📸", href: "/(saha)", replace: true },
+    { label: "Saha Modu",     emoji: "📸", href: "/(saha)", onPress: onSahaMode },
     { label: "Kullanıcılar",  emoji: "👥", href: "/(admin)/users" },
     { label: "Finans",        emoji: "💰", href: "/(admin)/finance" },
     { label: "Fiyat Listesi", emoji: "🏷️", href: "/(admin)/price-list" },
@@ -282,7 +282,7 @@ function QuickActions() {
           <Pressable
             key={a.href}
             style={({ pressed }) => [styles.qaButton, pressed && styles.qaPressed]}
-            onPress={() => (a.replace ? router.replace(a.href) : router.push(a.href))}
+            onPress={() => (a.onPress ? a.onPress() : router.push(a.href))}
           >
             <Text style={styles.qaEmoji}>{a.emoji}</Text>
             <Text style={styles.qaLabel}>{a.label}</Text>
@@ -294,7 +294,7 @@ function QuickActions() {
 }
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const { user, setMode } = useAuth();
   const { branches, selectedBranchId, selectedBranch, setSelectedBranchId } = useBranch();
   const [branchModalOpen, setBranchModalOpen] = useState(false);
 
@@ -405,7 +405,12 @@ export default function AdminDashboard() {
 
       <TodayScheduleSection departures={departures} returns={returns} nowWall={nowWall} />
 
-      <QuickActions />
+      <QuickActions
+        onSahaMode={() => {
+          setMode("saha");
+          router.replace("/(saha)");
+        }}
+      />
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>Rentwin Admin</Text>
