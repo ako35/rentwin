@@ -7,6 +7,7 @@ import { getFleetStats, getInvoicePendingContracts, getHgsPendingContracts } fro
 import { useBranch } from "../../../context/BranchContext";
 import { LoadingScreen, ErrorBanner, SectionCard, StatTile } from "../../../components/admin";
 import { COLORS } from "../../../constants/theme";
+import { customerName } from "../../../utils/admin";
 
 export default function FinanceScreen() {
   const { selectedBranchId } = useBranch();
@@ -83,7 +84,7 @@ export default function FinanceScreen() {
             >
               <View style={{ flex: 1 }}>
                 <Text style={styles.pendingPlate}>{c.car?.licensePlate || "—"}</Text>
-                <Text style={styles.pendingCustomer}>{c.user?.name || "—"}</Text>
+                <Text style={styles.pendingCustomer}>{customerName(c)}</Text>
               </View>
               <View style={{ alignItems: "flex-end" }}>
                 <Text style={styles.pendingNo}>{c.contractNo || c.id?.slice(0, 8)}</Text>
@@ -111,7 +112,7 @@ export default function FinanceScreen() {
             >
               <View style={{ flex: 1 }}>
                 <Text style={styles.pendingPlate}>{c.car?.licensePlate || "—"}</Text>
-                <Text style={styles.pendingCustomer}>{c.user?.name || "—"}</Text>
+                <Text style={styles.pendingCustomer}>{customerName(c)}</Text>
               </View>
               <View style={{ alignItems: "flex-end" }}>
                 <Text style={styles.pendingNo}>{c.contractNo || c.id?.slice(0, 8)}</Text>

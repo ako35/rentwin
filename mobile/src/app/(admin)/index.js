@@ -31,12 +31,14 @@ import {
 } from "../../components/admin";
 import { COLORS } from "../../constants/theme";
 import UpdateBanner from "../../components/UpdateBanner";
+import { wallTime } from "../../utils/format";
+import { customerName, wallDate } from "../../utils/admin";
 
 function GreetingHeader({ user, selectedBranch, onOpenBranchPicker }) {
   const hour = new Date().getHours();
   const greeting =
     hour < 12 ? "Günaydın" : hour < 18 ? "İyi günler" : "İyi akşamlar";
-  const name = user?.name?.split(" ")[0] || "Admin";
+  const name = user?.firstName?.split(" ")[0] || "Admin";
   const today = new Date().toLocaleDateString("tr-TR", {
     weekday: "long",
     day: "numeric",
@@ -99,6 +101,8 @@ function FleetStatsRow({ stats }) {
   );
 }
 
+const pendingHref = (type) => ({ pathname: "/(admin)/pending/[type]", params: { type } });
+
 function AlertsSection({
   hgs,
   invoice,
@@ -112,11 +116,16 @@ function AlertsSection({
   const kbsCount = kbs?.length || 0;
   const kbsReleaseCount = kbsRelease?.length || 0;
   const signCount = sign?.length || 0;
-  const maintenanceDue = expiry?.maintenanceDue || 0;
-  const inspectionDue = expiry?.inspectionDue || 0;
+  const cat = expiry?.categories || {};
+  const expiryCount = (key) => (Array.isArray(cat[key]) ? cat[key].length : 0);
+  const insuranceDue = expiryCount("insurance") + expiryCount("kasko");
+  const taxDue = expiryCount("tax");
+  const inspectionDue = expiryCount("inspection");
+  const maintenanceDue = expiryCount("maintenance");
 
   const total =
-    hgsCount + invoiceCount + kbsCount + kbsReleaseCount + signCount + maintenanceDue + inspectionDue;
+    hgsCount + invoiceCount + kbsCount + kbsReleaseCount + signCount +
+    insuranceDue + taxDue + inspectionDue + maintenanceDue;
 
   if (total === 0) {
     return (
@@ -140,99 +149,129 @@ function AlertsSection({
           count={invoiceCount}
           label="fatura kesilecek kontrat"
           color={COLORS.red}
-          onPress={() => router.push("/(admin)/finance")}
+          onPress={() => router.push(pendingHref("invoice"))}
         />
         <AlertPill
           count={hgsCount}
-          label="HGS girilecek kontrat"
+          label="HGS kontrolü bekleyen kontrat"
           color={COLORS.amber}
-          onPress={() => router.push("/(admin)/finance")}
+          onPress={() => router.push(pendingHref("hgs"))}
         />
         <AlertPill
           count={kbsCount}
           label="KABİS bildirilecek kontrat"
           color={COLORS.amber}
-          onPress={() => router.push("/(admin)/contracts")}
+          onPress={() => router.push(pendingHref("kbs"))}
         />
         <AlertPill
           count={kbsReleaseCount}
           label="KABİS çıkışı yapılacak kontrat"
           color={COLORS.muted}
-          onPress={() => router.push("/(admin)/contracts")}
+          onPress={() => router.push(pendingHref("kbsRelease"))}
         />
         <AlertPill
           count={signCount}
           label="imza bekleyen kontrat"
           color="#7c3aed"
           bg="#ede9fe"
-          onPress={() => router.push("/(admin)/contracts")}
-        />
-        <AlertPill
-          count={maintenanceDue}
-          label="bakım zamanı gelen araç"
-          color={COLORS.amber}
-          onPress={() => router.push("/(admin)/vehicles")}
+          onPress={() => router.push(pendingHref("sign"))}
         />
         <AlertPill
           count={inspectionDue}
-          label="muayene zamanı gelen araç"
+          label="muayenesi yaklaşan araç"
           color={COLORS.amber}
-          onPress={() => router.push("/(admin)/vehicles")}
+          onPress={() => router.push(pendingHref("inspection"))}
+        />
+        <AlertPill
+          count={maintenanceDue}
+          label="bakımı yaklaşan araç"
+          color={COLORS.amber}
+          onPress={() => router.push(pendingHref("maintenance"))}
+        />
+        <AlertPill
+          count={insuranceDue}
+          label="sigorta / kaskosu biten araç"
+          color={COLORS.red}
+          onPress={() => router.push(pendingHref("insurance"))}
+        />
+        <AlertPill
+          count={taxDue}
+          label="MTV ödemesi yaklaşan araç"
+          color={COLORS.amber}
+          onPress={() => router.push(pendingHref("tax"))}
         />
       </View>
     </SectionCard>
   );
 }
 
-function TodayScheduleSection({ schedule }) {
-  const departures = schedule?.departures?.filter((r) => r.bucket !== "tomorrow") || [];
-  const returns = schedule?.returns?.filter((r) => r.bucket !== "tomorrow") || [];
+// Liste geciken kayıtları da içerir (backend alt sınır koymuyor) — tarihi
+// geçmiş olanlar kırmızı işaretlenir.
+function ScheduleGroup({ title, emoji, tint, rows, timeField, nowWall }) {
+  if (!rows.length) return null;
+  return (
+    <View style={styles.scheduleGroup}>
+      <View style={styles.scheduleHead}>
+        <View style={[styles.scheduleDot, { backgroundColor: tint }]}>
+          <Text style={{ fontSize: 14 }}>{emoji}</Text>
+        </View>
+        <Text style={styles.scheduleLabel}>{title}</Text>
+        <Text style={styles.scheduleCount}>{rows.length}</Text>
+      </View>
+      {rows.map((r) => {
+        const overdue = Date.parse(r[timeField]) < nowWall;
+        return (
+          <Pressable
+            key={r.id}
+            style={({ pressed }) => [styles.scheduleRow, pressed && { opacity: 0.7 }]}
+            onPress={() => router.push(`/(admin)/contracts/${r.id}`)}
+          >
+            <Text style={[styles.scheduleTime, overdue && { color: COLORS.red }]}>
+              {overdue ? wallDate(r[timeField]) : wallTime(r[timeField])}
+            </Text>
+            <View style={styles.scheduleCopy}>
+              <Text style={styles.schedulePlate}>{r.car?.licensePlate || "—"}</Text>
+              <Text style={styles.scheduleCustomer} numberOfLines={1}>{customerName(r)}</Text>
+            </View>
+            <Text style={styles.scheduleArrow}>›</Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
 
+function TodayScheduleSection({ departures, returns, nowWall }) {
   if (!departures.length && !returns.length) return null;
-
   return (
     <SectionCard>
       <Text style={styles.sectionTitle}>Bugünkü Program</Text>
-      {departures.length > 0 && (
-        <Pressable
-          style={styles.scheduleRow}
-          onPress={() => router.push("/(admin)/contracts")}
-        >
-          <View style={[styles.scheduleDot, { backgroundColor: COLORS.greenSoft }]}>
-            <Text style={{ fontSize: 14 }}>🚗</Text>
-          </View>
-          <View style={styles.scheduleCopy}>
-            <Text style={styles.scheduleLabel}>Teslim</Text>
-            <Text style={styles.scheduleCount}>{departures.length} araç</Text>
-          </View>
-          <Text style={styles.scheduleArrow}>›</Text>
-        </Pressable>
-      )}
-      {returns.length > 0 && (
-        <Pressable
-          style={[styles.scheduleRow, { marginTop: 8 }]}
-          onPress={() => router.push("/(admin)/contracts")}
-        >
-          <View style={[styles.scheduleDot, { backgroundColor: COLORS.redSoft }]}>
-            <Text style={{ fontSize: 14 }}>🔑</Text>
-          </View>
-          <View style={styles.scheduleCopy}>
-            <Text style={styles.scheduleLabel}>İade</Text>
-            <Text style={styles.scheduleCount}>{returns.length} araç</Text>
-          </View>
-          <Text style={styles.scheduleArrow}>›</Text>
-        </Pressable>
-      )}
+      <ScheduleGroup
+        title="Teslim edilecek"
+        emoji="🚗"
+        tint={COLORS.greenSoft}
+        rows={departures}
+        timeField="pickUpTime"
+        nowWall={nowWall}
+      />
+      <ScheduleGroup
+        title="İade alınacak"
+        emoji="🔑"
+        tint={COLORS.redSoft}
+        rows={returns}
+        timeField="dropOffTime"
+        nowWall={nowWall}
+      />
     </SectionCard>
   );
 }
 
 function QuickActions() {
   const actions = [
-    { label: "Kontratlar",    emoji: "📋", href: "/(admin)/contracts" },
-    { label: "Araçlar",       emoji: "🚗", href: "/(admin)/vehicles" },
-    { label: "Rezervasyonlar",emoji: "📅", href: "/(admin)/reservations" },
+    { label: "Saha Modu",     emoji: "📸", href: "/(saha)", replace: true },
+    { label: "Kullanıcılar",  emoji: "👥", href: "/(admin)/users" },
     { label: "Finans",        emoji: "💰", href: "/(admin)/finance" },
+    { label: "Fiyat Listesi", emoji: "🏷️", href: "/(admin)/price-list" },
   ];
 
   return (
@@ -243,7 +282,7 @@ function QuickActions() {
           <Pressable
             key={a.href}
             style={({ pressed }) => [styles.qaButton, pressed && styles.qaPressed]}
-            onPress={() => router.push(a.href)}
+            onPress={() => (a.replace ? router.replace(a.href) : router.push(a.href))}
           >
             <Text style={styles.qaEmoji}>{a.emoji}</Text>
             <Text style={styles.qaLabel}>{a.label}</Text>
@@ -270,39 +309,51 @@ export default function AdminDashboard() {
   const [kbs, setKbs] = useState([]);
   const [kbsRelease, setKbsRelease] = useState([]);
   const [sign, setSign] = useState([]);
-  const [schedule, setSchedule] = useState(null);
+  const [departures, setDepartures] = useState([]);
+  const [returns, setReturns] = useState([]);
+  // Program saatleri duvar saati olarak UTC'de; gecikme kontrolü için "şimdi"
+  // de aynı eksene taşınır (yükleme anında sabitlenir).
+  const [nowWall, setNowWall] = useState(0);
 
   const load = useCallback(async () => {
-    try {
-      setError(false);
-      const [stats, alerts, hgsR, invR, kbsR, kbsRelR, signR, schR] = await Promise.all([
-        getFleetStats(selectedBranchId).catch(() => null),
-        getExpiryAlerts(selectedBranchId).catch(() => null),
-        getHgsPendingContracts(selectedBranchId).catch(() => []),
-        getInvoicePendingContracts(selectedBranchId).catch(() => []),
-        getKbsPendingContracts(selectedBranchId).catch(() => []),
-        getKbsReleasePendingContracts(selectedBranchId).catch(() => []),
-        getSignPendingContracts(selectedBranchId).catch(() => []),
-        getAdminSchedule().catch(() => null),
-      ]);
-      setFleetStats(stats);
-      setExpiryAlerts(alerts);
-      setHgs(Array.isArray(hgsR) ? hgsR : []);
-      setInvoice(Array.isArray(invR) ? invR : []);
-      setKbs(Array.isArray(kbsR) ? kbsR : []);
-      setKbsRelease(Array.isArray(kbsRelR) ? kbsRelR : []);
-      setSign(Array.isArray(signR) ? signR : []);
-      setSchedule(schR);
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
+    // Tek tek hatalar paneli boş bırakır; hepsi düşerse (ör. bağlantı yok) uyarı gösterilir.
+    let failures = 0;
+    const safe = (promise, fallback) =>
+      promise.catch(() => {
+        failures += 1;
+        return fallback;
+      });
+    const branch = selectedBranchId || undefined;
+    const today = { window: "today", excludeCompleted: "true", ...(branch && { branchId: branch }) };
+    const [stats, alerts, hgsR, invR, kbsR, kbsRelR, signR, depR, retR] = await Promise.all([
+      safe(getFleetStats(selectedBranchId), null),
+      safe(getExpiryAlerts(selectedBranchId), null),
+      safe(getHgsPendingContracts(selectedBranchId), []),
+      safe(getInvoicePendingContracts(selectedBranchId), []),
+      safe(getKbsPendingContracts(selectedBranchId), []),
+      safe(getKbsReleasePendingContracts(selectedBranchId), []),
+      safe(getSignPendingContracts(selectedBranchId), []),
+      safe(getAdminSchedule({ ...today, type: "departures" }), []),
+      safe(getAdminSchedule({ ...today, type: "returns" }), []),
+    ]);
+    const list = (x) => (Array.isArray(x) ? x : []);
+    setFleetStats(stats);
+    setExpiryAlerts(alerts);
+    setHgs(list(hgsR));
+    setInvoice(list(invR));
+    setKbs(list(kbsR));
+    setKbsRelease(list(kbsRelR));
+    setSign(list(signR));
+    setDepartures(list(depR));
+    setReturns(list(retR));
+    setNowWall(Date.now() - new Date().getTimezoneOffset() * 60000);
+    setError(failures === 9);
+    setLoading(false);
   }, [selectedBranchId]);
 
   useFocusEffect(
     useCallback(() => {
-      load().finally(() => setLoading(false));
+      load();
     }, [load])
   );
 
@@ -352,7 +403,7 @@ export default function AdminDashboard() {
         expiry={expiryAlerts}
       />
 
-      <TodayScheduleSection schedule={schedule} />
+      <TodayScheduleSection departures={departures} returns={returns} nowWall={nowWall} />
 
       <QuickActions />
 
@@ -436,12 +487,24 @@ const styles = StyleSheet.create({
   allClearTitle: { fontSize: 15, fontWeight: "700", color: COLORS.ink },
   allClearSub:   { fontSize: 12, color: COLORS.muted, marginTop: 2 },
 
-  scheduleRow:    { flexDirection: "row", alignItems: "center", gap: 12 },
-  scheduleDot:    { width: 42, height: 42, borderRadius: 13, alignItems: "center", justifyContent: "center" },
-  scheduleCopy:   { flex: 1 },
-  scheduleLabel:  { fontSize: 13, color: COLORS.muted, fontWeight: "600" },
-  scheduleCount:  { fontSize: 16, color: COLORS.ink, fontWeight: "800", marginTop: 2 },
-  scheduleArrow:  { color: COLORS.muted, fontSize: 22 },
+  scheduleGroup:    { marginBottom: 10 },
+  scheduleHead:     { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 4 },
+  scheduleDot:      { width: 34, height: 34, borderRadius: 11, alignItems: "center", justifyContent: "center" },
+  scheduleLabel:    { flex: 1, fontSize: 13, color: COLORS.muted, fontWeight: "700" },
+  scheduleCount:    { fontSize: 16, color: COLORS.ink, fontWeight: "800" },
+  scheduleRow:      {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.line,
+  },
+  scheduleTime:     { width: 54, fontSize: 13, fontWeight: "800", color: COLORS.ink, fontVariant: ["tabular-nums"] },
+  scheduleCopy:     { flex: 1 },
+  schedulePlate:    { fontSize: 14, fontWeight: "800", color: COLORS.ink },
+  scheduleCustomer: { fontSize: 12, color: COLORS.muted, marginTop: 1 },
+  scheduleArrow:    { color: COLORS.muted, fontSize: 20 },
 
   qaGrid:    { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   qaButton:  {

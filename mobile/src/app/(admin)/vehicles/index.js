@@ -1,171 +1,129 @@
-import { useState, useCallback } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  TextInput,
-  Pressable,
-  RefreshControl,
-  Image,
-} from "react-native";
-import { useFocusEffect, router } from "expo-router";
+import { useState, useCallback, useLayoutEffect } from "react";
+import { View, Text, FlatList, StyleSheet, Pressable, RefreshControl, Image } from "react-native";
+import { router, useNavigation } from "expo-router";
 import { getVehiclesByPage } from "../../../api/admin";
 import { useBranch } from "../../../context/BranchContext";
+import { usePagedList } from "../../../hooks/usePagedList";
 import {
   LoadingScreen,
   ErrorBanner,
   EmptyState,
+  SearchBar,
+  Chips,
+  ListFooter,
 } from "../../../components/admin";
 import { COLORS } from "../../../constants/theme";
+import { PAGE_SIZE, vehicleImageUrl, vehicleStatus } from "../../../utils/admin";
 
+// Durum bir kolon değil — backend arama kelimesinden türetiyor
+// (vehicles.controller.js resolveToken: müsait / kirada / pasif / servis dışı).
 const STATUS_FILTERS = [
-  { key: null,     label: "Tümü" },
-  { key: "active", label: "Aktif" },
-  { key: "rented", label: "Kirada" },
-  { key: "passive",label: "Pasif" },
+  { key: null,      label: "Tümü" },
+  { key: "müsait",  label: "Müsait" },
+  { key: "kirada",  label: "Kirada" },
+  { key: "servis",  label: "Servis Dışı" },
+  { key: "pasif",   label: "Pasif" },
+  { key: "sold",    label: "Satılanlar" },
 ];
 
-function VehicleStatusDot({ vehicle }) {
-  if (vehicle.outOfService) return <View style={[styles.dot, { backgroundColor: COLORS.red }]} />;
-  if (vehicle.passiveAt)    return <View style={[styles.dot, { backgroundColor: COLORS.muted }]} />;
-  if (vehicle.isRented)     return <View style={[styles.dot, { backgroundColor: COLORS.amber }]} />;
-  return <View style={[styles.dot, { backgroundColor: COLORS.green }]} />;
-}
-
-function VehicleStatusLabel({ vehicle }) {
-  if (vehicle.outOfService) return <Text style={[styles.statusLabel, { color: COLORS.red }]}>Servis Dışı</Text>;
-  if (vehicle.passiveAt)    return <Text style={[styles.statusLabel, { color: COLORS.muted }]}>Pasif</Text>;
-  if (vehicle.isRented)     return <Text style={[styles.statusLabel, { color: COLORS.amber }]}>Kirada</Text>;
-  return <Text style={[styles.statusLabel, { color: COLORS.green }]}>Müsait</Text>;
-}
-
 function VehicleRow({ item, onPress }) {
-  const name = [item.brand, item.model, item.year].filter(Boolean).join(" ");
+  const name = [item.brand, item.model, item.modelYear].filter(Boolean).join(" ");
+  const status = vehicleStatus(item);
+  const uri = vehicleImageUrl(item);
   return (
-    <Pressable
-      style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
-      onPress={onPress}
-    >
+    <Pressable style={({ pressed }) => [styles.row, pressed && styles.rowPressed]} onPress={onPress}>
       <View style={styles.thumb}>
-        {item.image ? (
-          <Image source={{ uri: item.image }} style={styles.thumbImg} resizeMode="contain" />
+        {uri ? (
+          <Image source={{ uri }} style={styles.thumbImg} resizeMode="contain" />
         ) : (
-          <Text style={styles.thumbText}>{item.brand?.charAt(0) || "🚗"}</Text>
+          <Text style={styles.thumbText}>🚗</Text>
         )}
       </View>
       <View style={styles.rowBody}>
         <View style={styles.rowTop}>
           <Text style={styles.plate}>{item.licensePlate || "—"}</Text>
           <View style={styles.statusRow}>
-            <VehicleStatusDot vehicle={item} />
-            <VehicleStatusLabel vehicle={item} />
+            <View style={[styles.dot, { backgroundColor: status.color }]} />
+            <Text style={[styles.statusLabel, { color: status.color }]}>{status.label}</Text>
           </View>
         </View>
         <Text style={styles.name} numberOfLines={1}>{name}</Text>
-        {item.branch?.name && (
-          <Text style={styles.branch}>{item.branch.name}</Text>
-        )}
+        {item.branch?.name ? <Text style={styles.branch}>{item.branch.name}</Text> : null}
       </View>
     </Pressable>
   );
 }
 
 export default function VehiclesScreen() {
+  const navigation = useNavigation();
   const { selectedBranchId } = useBranch();
-  const [vehicles, setVehicles]   = useState([]);
-  const [loading, setLoading]     = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [error, setError]         = useState(false);
-  const [search, setSearch]       = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [query, setQuery] = useState("");
   const [statusFilter, setStatus] = useState(null);
-  const [page, setPage]           = useState(1);
-  const [hasMore, setHasMore]     = useState(false);
 
-  const load = useCallback(async (p = 1, append = false) => {
-    try {
-      setError(false);
-      const params = {
-        page: p,
-        limit: 20,
-        ...(search.trim() && { search: search.trim() }),
-        ...(statusFilter && { status: statusFilter }),
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable
+          onPress={() => router.push("/(admin)/vehicles/new")}
+          style={styles.addBtn}
+          hitSlop={8}
+        >
+          <Text style={styles.addBtnText}>＋ Ekle</Text>
+        </Pressable>
+      ),
+    });
+  }, [navigation]);
+
+  const fetchPage = useCallback(
+    (page) => {
+      const sold = statusFilter === "sold";
+      const words = [query, !sold && statusFilter].filter(Boolean).join(" ");
+      return getVehiclesByPage({
+        page,
+        size: PAGE_SIZE,
+        ...(words && { q: words }),
+        ...(sold && { sold: "1" }),
         ...(selectedBranchId && { branchId: selectedBranchId }),
-      };
-      const data = await getVehiclesByPage(params);
-      const rows = Array.isArray(data) ? data : (data.cars || data.vehicles || data.rows || []);
-      const total = data.total || rows.length;
-      setVehicles((prev) => (append ? [...prev, ...rows] : rows));
-      setHasMore(p * 20 < total);
-      setPage(p);
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, [search, statusFilter, selectedBranchId]);
-
-  useFocusEffect(
-    useCallback(() => {
-      setLoading(true);
-      load(1, false);
-    }, [load])
+      });
+    },
+    [query, statusFilter, selectedBranchId]
   );
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await load(1, false);
-    setRefreshing(false);
-  };
+  const list = usePagedList(fetchPage);
 
-  if (loading && !vehicles.length) return <LoadingScreen />;
+  if (list.loading && !list.rows.length) return <LoadingScreen />;
 
   return (
     <View style={styles.root}>
-      <View style={styles.searchRow}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Plaka, marka, model..."
-          placeholderTextColor={COLORS.subtle}
-          value={search}
-          onChangeText={setSearch}
-          onSubmitEditing={() => { setLoading(true); load(1); }}
-          returnKeyType="search"
-        />
-      </View>
+      <SearchBar
+        placeholder="Plaka, marka, model, şube…"
+        value={searchText}
+        onChangeText={(t) => {
+          setSearchText(t);
+          if (!t.trim()) setQuery("");
+        }}
+        onSubmit={() => setQuery(searchText.trim())}
+      />
+      <Chips options={STATUS_FILTERS} value={statusFilter} onChange={setStatus} />
 
-      <View style={styles.filterRow}>
-        {STATUS_FILTERS.map((f) => (
-          <Pressable
-            key={String(f.key)}
-            style={[styles.filterChip, statusFilter === f.key && styles.filterChipActive]}
-            onPress={() => { setStatus(f.key); setLoading(true); }}
-          >
-            <Text style={[styles.filterLabel, statusFilter === f.key && styles.filterLabelActive]}>
-              {f.label}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
-
-      {error && <ErrorBanner message="Araçlar yüklenemedi." onRetry={() => load(1)} />}
+      {list.error && <ErrorBanner message="Araçlar yüklenemedi." onRetry={list.reload} />}
 
       <FlatList
-        data={vehicles}
+        data={list.rows}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <VehicleRow
-            item={item}
-            onPress={() => router.push(`/(admin)/vehicles/${item.id}`)}
-          />
+          <VehicleRow item={item} onPress={() => router.push(`/(admin)/vehicles/${item.id}`)} />
         )}
         contentContainerStyle={styles.list}
-        ListEmptyComponent={<EmptyState icon="🚗" title="Araç bulunamadı" />}
+        ListEmptyComponent={list.error ? null : <EmptyState icon="🚗" title="Araç bulunamadı" />}
+        ListFooterComponent={<ListFooter loading={list.loadingMore} />}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.green} />
+          <RefreshControl refreshing={list.refreshing} onRefresh={list.refresh} tintColor={COLORS.green} />
         }
-        onEndReached={() => { if (hasMore && !loading) load(page + 1, true); }}
+        onEndReached={list.loadMore}
         onEndReachedThreshold={0.3}
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       />
     </View>
@@ -173,27 +131,11 @@ export default function VehiclesScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:    { flex: 1, backgroundColor: COLORS.canvas },
-
-  searchRow:   { padding: 12, paddingBottom: 6 },
-  searchInput: {
-    backgroundColor: COLORS.card,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: COLORS.line,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    fontSize: 14,
-    color: COLORS.ink,
-  },
-
-  filterRow:        { flexDirection: "row", paddingHorizontal: 12, gap: 8, marginBottom: 6 },
-  filterChip:       { paddingHorizontal: 13, paddingVertical: 7, borderRadius: 20, backgroundColor: COLORS.card, borderWidth: 1, borderColor: COLORS.line },
-  filterChipActive: { backgroundColor: COLORS.green, borderColor: COLORS.green },
-  filterLabel:      { fontSize: 12, color: COLORS.muted, fontWeight: "600" },
-  filterLabelActive:{ color: "#fff" },
-
+  root: { flex: 1, backgroundColor: COLORS.canvas },
   list: { padding: 12, paddingTop: 4, gap: 8 },
+
+  addBtn:     { marginRight: 14, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 10, backgroundColor: COLORS.greenSoft },
+  addBtnText: { color: COLORS.green, fontWeight: "800", fontSize: 13 },
 
   row: {
     backgroundColor: COLORS.card,
@@ -207,17 +149,24 @@ const styles = StyleSheet.create({
   },
   rowPressed: { opacity: 0.75, transform: [{ scale: 0.99 }] },
 
-  thumb:     { width: 56, height: 44, borderRadius: 12, backgroundColor: COLORS.greenSoft, alignItems: "center", justifyContent: "center", overflow: "hidden" },
+  thumb:     {
+    width: 56,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: COLORS.greenSoft,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
   thumbImg:  { width: 56, height: 44 },
   thumbText: { fontSize: 22 },
 
-  rowBody:   { flex: 1 },
-  rowTop:    { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  plate:     { fontSize: 16, fontWeight: "800", color: COLORS.ink },
-  statusRow: { flexDirection: "row", alignItems: "center", gap: 5 },
-  dot:       { width: 8, height: 8, borderRadius: 4 },
-  statusLabel:{ fontSize: 12, fontWeight: "600" },
-  name:      { fontSize: 12, color: COLORS.muted, marginTop: 4 },
-  branch:    { fontSize: 11, color: COLORS.subtle, marginTop: 2 },
+  rowBody:     { flex: 1 },
+  rowTop:      { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  plate:       { fontSize: 16, fontWeight: "800", color: COLORS.ink },
+  statusRow:   { flexDirection: "row", alignItems: "center", gap: 5 },
+  dot:         { width: 8, height: 8, borderRadius: 4 },
+  statusLabel: { fontSize: 12, fontWeight: "600" },
+  name:        { fontSize: 12, color: COLORS.muted, marginTop: 4 },
+  branch:      { fontSize: 11, color: COLORS.subtle, marginTop: 2 },
 });
-

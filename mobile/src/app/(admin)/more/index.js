@@ -1,20 +1,21 @@
-import { View, Text, StyleSheet, Pressable, ScrollView, Alert } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import { router } from "expo-router";
+import Constants from "expo-constants";
 import { useAuth } from "../../../auth/AuthContext";
+import { MenuItem } from "../../../components/admin";
 import { COLORS } from "../../../constants/theme";
+import { personName } from "../../../utils/admin";
 
-function MenuItem({ emoji, label, onPress, danger }) {
+function MenuGroup({ label, items }) {
   return (
-    <Pressable
-      style={({ pressed }) => [styles.menuItem, pressed && styles.menuPressed]}
-      onPress={onPress}
-    >
-      <View style={[styles.menuIcon, danger && styles.menuIconDanger]}>
-        <Text style={styles.menuEmoji}>{emoji}</Text>
+    <View style={styles.section}>
+      <Text style={styles.sectionLabel}>{label}</Text>
+      <View style={styles.menuGroup}>
+        {items.map((item, i) => (
+          <MenuItem key={item.label} {...item} last={i === items.length - 1} />
+        ))}
       </View>
-      <Text style={[styles.menuLabel, danger && styles.menuLabelDanger]}>{label}</Text>
-      <Text style={styles.menuArrow}>›</Text>
-    </Pressable>
+    </View>
   );
 }
 
@@ -28,17 +29,16 @@ export default function MoreScreen() {
     ]);
   };
 
+  const name = personName(user);
+
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-      {/* Profil */}
       <View style={styles.profileCard}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>
-            {user?.name?.charAt(0)?.toUpperCase() || "A"}
-          </Text>
+          <Text style={styles.avatarText}>{(user?.firstName || "A").charAt(0).toLocaleUpperCase("tr-TR")}</Text>
         </View>
-        <View>
-          <Text style={styles.profileName}>{user?.name || "Admin"}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.profileName}>{name === "—" ? "Yönetici" : name}</Text>
           <Text style={styles.profileEmail}>{user?.email || ""}</Text>
           <View style={styles.roleBadge}>
             <Text style={styles.roleText}>Yönetici</Text>
@@ -46,32 +46,40 @@ export default function MoreScreen() {
         </View>
       </View>
 
-      {/* Finans */}
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>Finans</Text>
-        <View style={styles.menuGroup}>
-          <MenuItem
-            emoji="💰"
-            label="Finans Özeti"
-            onPress={() => router.push("/(admin)/finance")}
-          />
-        </View>
-      </View>
+      <MenuGroup
+        label="Saha"
+        items={[
+          {
+            emoji: "📸",
+            label: "Saha Modu",
+            sub: "Günlük teslim / iade programı ve fotoğraf çekimi",
+            onPress: () => router.replace("/(saha)"),
+          },
+        ]}
+      />
 
-      {/* Hesap */}
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>Hesap</Text>
-        <View style={styles.menuGroup}>
-          <MenuItem
-            emoji="🚪"
-            label="Çıkış Yap"
-            onPress={confirmLogout}
-            danger
-          />
-        </View>
-      </View>
+      <MenuGroup
+        label="Operasyon"
+        items={[
+          { emoji: "💰", label: "Finans Özeti", onPress: () => router.push("/(admin)/finance") },
+          { emoji: "👥", label: "Kullanıcılar", sub: "Müşteriler ve yöneticiler", onPress: () => router.push("/(admin)/users") },
+        ]}
+      />
 
-      <Text style={styles.version}>Rentwin Admin · v1.0</Text>
+      <MenuGroup
+        label="Yönetim"
+        items={[
+          { emoji: "🏢", label: "Şubeler", onPress: () => router.push("/(admin)/branches") },
+          { emoji: "🚗", label: "Yeni Araç Ekle", onPress: () => router.push("/(admin)/vehicles/new") },
+          { emoji: "🏷️", label: "Fiyat Listesi", sub: "Araç bazında günlük / aylık fiyatlar", onPress: () => router.push("/(admin)/price-list") },
+          { emoji: "📣", label: "Duyurular", onPress: () => router.push("/(admin)/announcements") },
+          { emoji: "⚙️", label: "Ayarlar", sub: "Sözleşme varsayılanları ve uyarı süreleri", onPress: () => router.push("/(admin)/settings") },
+        ]}
+      />
+
+      <MenuGroup label="Hesap" items={[{ emoji: "🚪", label: "Çıkış Yap", onPress: confirmLogout, danger: true }]} />
+
+      <Text style={styles.version}>Rentwin Admin · v{Constants.expoConfig?.version || "1.0"}</Text>
     </ScrollView>
   );
 }
@@ -99,24 +107,22 @@ const styles = StyleSheet.create({
   roleText:     { color: COLORS.green, fontSize: 11, fontWeight: "700" },
 
   section:      { marginBottom: 16 },
-  sectionLabel: { fontSize: 12, fontWeight: "700", color: COLORS.muted, marginBottom: 8, marginLeft: 4, textTransform: "uppercase", letterSpacing: 0.8 },
-
-  menuGroup:  {
+  sectionLabel: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: COLORS.muted,
+    marginBottom: 8,
+    marginLeft: 4,
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+  },
+  menuGroup: {
     backgroundColor: COLORS.card,
     borderRadius: 14,
     borderWidth: 1,
     borderColor: COLORS.line,
     overflow: "hidden",
   },
-  menuItem:   { flexDirection: "row", alignItems: "center", padding: 14, gap: 12, borderBottomWidth: 1, borderBottomColor: COLORS.line },
-  menuPressed:{ opacity: 0.7 },
-  menuIcon:       { width: 36, height: 36, borderRadius: 10, backgroundColor: COLORS.greenSoft, alignItems: "center", justifyContent: "center" },
-  menuIconDanger: { backgroundColor: COLORS.redSoft },
-  menuEmoji:  { fontSize: 18 },
-  menuLabel:  { flex: 1, fontSize: 14, color: COLORS.ink, fontWeight: "600" },
-  menuLabelDanger: { color: COLORS.red },
-  menuArrow:  { color: COLORS.subtle, fontSize: 20 },
 
   version: { textAlign: "center", color: COLORS.subtle, fontSize: 11, marginTop: 20 },
 });
-

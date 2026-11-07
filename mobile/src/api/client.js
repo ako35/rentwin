@@ -2,7 +2,7 @@ import axios from "axios";
 import Constants from "expo-constants";
 import { getToken, clearSession } from "../auth/session";
 
-const API_URL = Constants.expoConfig.extra.apiUrl;
+export const API_URL = Constants.expoConfig.extra.apiUrl;
 
 const http = axios.create({ baseURL: API_URL });
 

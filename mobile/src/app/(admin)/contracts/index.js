@@ -1,57 +1,49 @@
 import { useState, useCallback } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  TextInput,
-  Pressable,
-  RefreshControl,
-} from "react-native";
-import { useFocusEffect, router } from "expo-router";
+import { View, Text, FlatList, StyleSheet, Pressable, RefreshControl } from "react-native";
+import { router } from "expo-router";
 import { getContractsByPage } from "../../../api/admin";
 import { useBranch } from "../../../context/BranchContext";
+import { usePagedList } from "../../../hooks/usePagedList";
 import {
   LoadingScreen,
   ErrorBanner,
   StatusBadge,
   EmptyState,
+  SearchBar,
+  Chips,
+  ListFooter,
 } from "../../../components/admin";
 import { COLORS } from "../../../constants/theme";
+import { PAGE_SIZE, plateOrCustomer, wallDate, money } from "../../../utils/admin";
 
 const STATUS_FILTERS = [
   { key: null,        label: "Tümü" },
-  { key: "ACTIVE",    label: "Aktif" },
+  { key: "CREATED",   label: "Aktif" },
   { key: "DONE",      label: "Tamamlandı" },
   { key: "CANCELLED", label: "İptal" },
 ];
 
 function ContractRow({ item, onPress }) {
-  const plate    = item.car?.licensePlate || "—";
-  const brand    = [item.car?.brand, item.car?.model].filter(Boolean).join(" ");
-  const customer = item.user?.name || "—";
-  const no       = item.contractNo || item.id?.slice(0, 8);
-  const pickup   = item.pickUpTime
-    ? new Date(item.pickUpTime).toLocaleDateString("tr-TR")
-    : "—";
-  const dropoff  = item.dropOffTime
-    ? new Date(item.dropOffTime).toLocaleDateString("tr-TR")
-    : "—";
-
+  const balance = (item.totalPrice || 0) - (item.collected || 0);
   return (
-    <Pressable
-      style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
-      onPress={onPress}
-    >
+    <Pressable style={({ pressed }) => [styles.row, pressed && styles.rowPressed]} onPress={onPress}>
       <View style={styles.rowLeft}>
-        <Text style={styles.plate}>{plate}</Text>
-        <Text style={styles.brand} numberOfLines={1}>{brand}</Text>
-        <Text style={styles.customer} numberOfLines={1}>{customer}</Text>
+        <Text style={styles.plate}>{item.plate || "—"}</Text>
+        <Text style={styles.brand} numberOfLines={1}>{item.vehicle}</Text>
+        <Text style={styles.customer} numberOfLines={1}>{item.customerName || "—"}</Text>
       </View>
       <View style={styles.rowRight}>
         <StatusBadge status={item.status} />
-        <Text style={styles.contractNo}>{no}</Text>
-        <Text style={styles.dates}>{pickup} → {dropoff}</Text>
+        <Text style={styles.contractNo}>
+          {item.contractNo || item.id?.slice(0, 8)}
+          {item.branchCode ? ` · Şb ${item.branchCode}` : ""}
+        </Text>
+        <Text style={styles.dates}>
+          {wallDate(item.pickUpTime)} → {wallDate(item.dropOffTime)}
+        </Text>
+        {item.status !== "CANCELLED" && balance > 0.009 ? (
+          <Text style={styles.balance}>Bakiye {money(balance)}</Text>
+        ) : null}
       </View>
     </Pressable>
   );
@@ -59,106 +51,58 @@ function ContractRow({ item, onPress }) {
 
 export default function ContractsScreen() {
   const { selectedBranchId } = useBranch();
-  const [contracts, setContracts]   = useState([]);
-  const [loading, setLoading]       = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [error, setError]           = useState(false);
-  const [search, setSearch]         = useState("");
-  const [statusFilter, setStatus]   = useState(null);
-  const [page, setPage]             = useState(1);
-  const [hasMore, setHasMore]       = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatus] = useState(null);
 
-  const load = useCallback(async (p = 1, append = false) => {
-    try {
-      setError(false);
-      const params = {
-        page: p,
-        limit: 20,
-        ...(search.trim() && { search: search.trim() }),
+  const fetchPage = useCallback(
+    (page) =>
+      getContractsByPage({
+        page,
+        size: PAGE_SIZE,
+        ...plateOrCustomer(query),
         ...(statusFilter && { status: statusFilter }),
         ...(selectedBranchId && { branchId: selectedBranchId }),
-      };
-      const data = await getContractsByPage(params);
-      // Backend genellikle { contracts, total, page } şeklinde döner
-      const rows = Array.isArray(data) ? data : (data.contracts || data.rows || []);
-      const total = data.total || rows.length;
-      setContracts((prev) => (append ? [...prev, ...rows] : rows));
-      setHasMore(p * 20 < total);
-      setPage(p);
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, [search, statusFilter, selectedBranchId]);
-
-  useFocusEffect(
-    useCallback(() => {
-      setLoading(true);
-      load(1, false);
-    }, [load])
+      }),
+    [query, statusFilter, selectedBranchId]
   );
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await load(1, false);
-    setRefreshing(false);
-  };
+  const list = usePagedList(fetchPage);
 
-  const loadMore = () => {
-    if (hasMore && !loading) load(page + 1, true);
-  };
-
-  if (loading && !contracts.length) return <LoadingScreen />;
+  if (list.loading && !list.rows.length) return <LoadingScreen />;
 
   return (
     <View style={styles.root}>
-      {/* Arama */}
-      <View style={styles.searchRow}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Plaka, müşteri, kontrat no..."
-          placeholderTextColor={COLORS.subtle}
-          value={search}
-          onChangeText={(v) => { setSearch(v); }}
-          onSubmitEditing={() => { setLoading(true); load(1, false); }}
-          returnKeyType="search"
-        />
-      </View>
+      <SearchBar
+        placeholder="Plaka veya müşteri adı…"
+        value={searchText}
+        onChangeText={(t) => {
+          setSearchText(t);
+          if (!t.trim()) setQuery("");
+        }}
+        onSubmit={() => setQuery(searchText.trim())}
+      />
+      <Chips options={STATUS_FILTERS} value={statusFilter} onChange={setStatus} />
 
-      {/* Filtre */}
-      <View style={styles.filterRow}>
-        {STATUS_FILTERS.map((f) => (
-          <Pressable
-            key={String(f.key)}
-            style={[styles.filterChip, statusFilter === f.key && styles.filterChipActive]}
-            onPress={() => { setStatus(f.key); setLoading(true); }}
-          >
-            <Text style={[styles.filterLabel, statusFilter === f.key && styles.filterLabelActive]}>
-              {f.label}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
-
-      {error && <ErrorBanner message="Kontratlar yüklenemedi." onRetry={() => load(1)} />}
+      {list.error && <ErrorBanner message="Kontratlar yüklenemedi." onRetry={list.reload} />}
 
       <FlatList
-        data={contracts}
+        data={list.rows}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ContractRow
-            item={item}
-            onPress={() => router.push(`/(admin)/contracts/${item.id}`)}
-          />
+          <ContractRow item={item} onPress={() => router.push(`/(admin)/contracts/${item.id}`)} />
         )}
         contentContainerStyle={styles.list}
-        ListEmptyComponent={<EmptyState icon="📋" title="Kontrat bulunamadı" />}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.green} />
+        ListEmptyComponent={
+          list.error ? null : <EmptyState icon="📋" title="Kontrat bulunamadı" />
         }
-        onEndReached={loadMore}
+        ListFooterComponent={<ListFooter loading={list.loadingMore} />}
+        refreshControl={
+          <RefreshControl refreshing={list.refreshing} onRefresh={list.refresh} tintColor={COLORS.green} />
+        }
+        onEndReached={list.loadMore}
         onEndReachedThreshold={0.3}
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       />
     </View>
@@ -166,33 +110,7 @@ export default function ContractsScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:        { flex: 1, backgroundColor: COLORS.canvas },
-
-  searchRow:   { padding: 12, paddingBottom: 6 },
-  searchInput: {
-    backgroundColor: COLORS.card,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: COLORS.line,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    fontSize: 14,
-    color: COLORS.ink,
-  },
-
-  filterRow:       { flexDirection: "row", paddingHorizontal: 12, gap: 8, marginBottom: 6 },
-  filterChip:      {
-    paddingHorizontal: 13,
-    paddingVertical: 7,
-    borderRadius: 20,
-    backgroundColor: COLORS.card,
-    borderWidth: 1,
-    borderColor: COLORS.line,
-  },
-  filterChipActive: { backgroundColor: COLORS.green, borderColor: COLORS.green },
-  filterLabel:      { fontSize: 12, color: COLORS.muted, fontWeight: "600" },
-  filterLabelActive:{ color: "#fff" },
-
+  root: { flex: 1, backgroundColor: COLORS.canvas },
   list: { padding: 12, paddingTop: 4, gap: 8 },
 
   row: {
@@ -207,13 +125,13 @@ const styles = StyleSheet.create({
   },
   rowPressed: { opacity: 0.75, transform: [{ scale: 0.99 }] },
 
-  rowLeft:    { flex: 1, marginRight: 12 },
-  plate:      { fontSize: 16, fontWeight: "800", color: COLORS.ink },
-  brand:      { fontSize: 12, color: COLORS.muted, marginTop: 3 },
-  customer:   { fontSize: 13, color: COLORS.ink, marginTop: 6, fontWeight: "600" },
+  rowLeft:  { flex: 1, marginRight: 12 },
+  plate:    { fontSize: 16, fontWeight: "800", color: COLORS.ink },
+  brand:    { fontSize: 12, color: COLORS.muted, marginTop: 3 },
+  customer: { fontSize: 13, color: COLORS.ink, marginTop: 6, fontWeight: "600" },
 
-  rowRight:    { alignItems: "flex-end", gap: 5 },
+  rowRight:   { alignItems: "flex-end", gap: 4 },
   contractNo: { fontSize: 11, color: COLORS.muted, marginTop: 4 },
-  dates:      { fontSize: 11, color: COLORS.subtle, marginTop: 2 },
+  dates:      { fontSize: 11, color: COLORS.subtle },
+  balance:    { fontSize: 11, color: COLORS.red, fontWeight: "700" },
 });
-

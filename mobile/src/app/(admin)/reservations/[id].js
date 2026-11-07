@@ -1,47 +1,37 @@
 import { useState, useCallback } from "react";
-import { useLocalSearchParams, useFocusEffect } from "expo-router";
+import { ScrollView, View, Text, StyleSheet, Pressable, Alert, RefreshControl, Linking } from "react-native";
+import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
 import {
-  ScrollView, View, Text, StyleSheet, Pressable, Alert, RefreshControl,
-} from "react-native";
-import {
-  getReservationById, confirmReservation, cancelReservation,
+  getReservationById,
+  confirmReservation,
+  cancelReservation,
+  convertReservation,
 } from "../../../api/admin";
 import {
-  LoadingScreen, ErrorBanner, SectionCard, StatusBadge, EmptyState,
+  LoadingScreen,
+  ErrorBanner,
+  SectionCard,
+  StatusBadge,
+  EmptyState,
+  InfoRow,
+  Button,
 } from "../../../components/admin";
 import { COLORS } from "../../../constants/theme";
-
-function InfoRow({ label, value }) {
-  if (!value) return null;
-  return (
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>{label}</Text>
-      <Text style={styles.infoValue}>{value}</Text>
-    </View>
-  );
-}
-
-function fmt(dt) {
-  if (!dt) return "—";
-  return new Date(dt).toLocaleString("tr-TR", {
-    day: "2-digit", month: "2-digit", year: "numeric",
-    hour: "2-digit", minute: "2-digit",
-  });
-}
+import { customerName, wallDateTime, localDate, apiError, billableDays } from "../../../utils/admin";
 
 export default function ReservationDetailScreen() {
   const { id } = useLocalSearchParams();
   const [reservation, setReservation] = useState(null);
-  const [loading, setLoading]         = useState(true);
-  const [error, setError]             = useState(false);
-  const [refreshing, setRefreshing]   = useState(false);
-  const [actionLoading, setActionLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
     try {
-      setError(false);
       const r = await getReservationById(id);
       setReservation(r);
+      setError(false);
     } catch {
       setError(true);
     } finally {
@@ -49,7 +39,11 @@ export default function ReservationDetailScreen() {
     }
   }, [id]);
 
-  useFocusEffect(useCallback(() => { load(); }, [load]));
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [load])
+  );
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -57,54 +51,36 @@ export default function ReservationDetailScreen() {
     setRefreshing(false);
   };
 
-  const handleConfirm = () => {
-    Alert.alert("Rezervasyonu Onayla", "Bu rezervasyonu onaylamak istiyor musunuz?", [
-      { text: "İptal", style: "cancel" },
+  const confirmThen = (title, message, confirmText, action, { destructive, after } = {}) => {
+    Alert.alert(title, message, [
+      { text: "Vazgeç", style: "cancel" },
       {
-        text: "Onayla",
+        text: confirmText,
+        style: destructive ? "destructive" : "default",
         onPress: async () => {
+          setBusy(true);
           try {
-            setActionLoading(true);
-            await confirmReservation(id);
-            await load();
-          } catch (e) {
-            Alert.alert("Hata", e?.response?.data?.message || "Onay başarısız.");
+            const result = await action();
+            if (after) after(result);
+            else await load();
+          } catch (err) {
+            Alert.alert("Hata", apiError(err));
           } finally {
-            setActionLoading(false);
+            setBusy(false);
           }
         },
       },
     ]);
   };
 
-  const handleCancel = () => {
-    Alert.alert("Rezervasyonu İptal Et", "Bu rezervasyonu iptal etmek istiyor musunuz?", [
-      { text: "Geri", style: "cancel" },
-      {
-        text: "İptal Et",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            setActionLoading(true);
-            await cancelReservation(id);
-            await load();
-          } catch (e) {
-            Alert.alert("Hata", e?.response?.data?.message || "İptal başarısız.");
-          } finally {
-            setActionLoading(false);
-          }
-        },
-      },
-    ]);
-  };
-
-  if (loading) return <LoadingScreen />;
-  if (error)   return <ErrorBanner message="Rezervasyon yüklenemedi." onRetry={load} />;
+  const stale = reservation && reservation.id !== id;
+  if (error && (!reservation || stale)) return <ErrorBanner message="Rezervasyon yüklenemedi." onRetry={load} />;
+  if (loading || stale) return <LoadingScreen />;
   if (!reservation) return <EmptyState icon="📅" title="Rezervasyon bulunamadı" />;
 
   const r = reservation;
-  const isPending   = r.status === "PENDING";
-  const isConfirmed = r.status === "CONFIRMED";
+  const open = r.status === "PENDING" || r.status === "CONFIRMED";
+  const phone = r.customer?.phoneNumber;
 
   return (
     <ScrollView
@@ -113,39 +89,88 @@ export default function ReservationDetailScreen() {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.green} />}
       showsVerticalScrollIndicator={false}
     >
+      {error && <ErrorBanner message="Güncel veri alınamadı." onRetry={load} />}
+
       <View style={styles.hero}>
-        <View>
-          <Text style={styles.heroName}>{r.user?.name || r.name || "—"}</Text>
-          <Text style={styles.heroNo}>{r.reservationNo || r.id?.slice(0, 10)}</Text>
+        <View style={{ flex: 1 }}>
+          <Pressable onPress={() => r.userId && router.push(`/(admin)/users/${r.userId}`)}>
+            <Text style={styles.heroName}>{customerName(r)} ›</Text>
+          </Pressable>
+          {r.customer?.email ? <Text style={styles.heroSub}>{r.customer.email}</Text> : null}
+          {phone ? (
+            <Pressable onPress={() => Linking.openURL(`tel:${phone}`)}>
+              <Text style={styles.heroPhone}>📞 {phone}</Text>
+            </Pressable>
+          ) : null}
         </View>
         <StatusBadge status={r.status} />
       </View>
 
-      <SectionCard>
-        <Text style={styles.sectionTitle}>Rezervasyon Bilgileri</Text>
-        <InfoRow label="Teslim Tarihi"  value={fmt(r.pickUpTime)} />
-        <InfoRow label="İade Tarihi"    value={fmt(r.dropOffTime)} />
-        <InfoRow label="Teslim Yeri"    value={r.pickUpLocation} />
-        <InfoRow label="İade Yeri"      value={r.dropOffLocation} />
-        <InfoRow label="Araç"           value={r.car ? `${r.car.brand || ""} ${r.car.model || ""} — ${r.car.licensePlate || ""}`.trim() : null} />
-        <InfoRow label="Uçuş No"        value={r.flightNo} />
-        <InfoRow label="Not"            value={r.customerNote} />
+      <SectionCard title="Rezervasyon Bilgileri">
+        <InfoRow label="Alış" value={wallDateTime(r.pickUpTime)} />
+        <InfoRow label="Bırakış" value={wallDateTime(r.dropOffTime)} />
+        <InfoRow label="Süre" value={`${billableDays(r)} gün`} />
+        <InfoRow label="Alış yeri" value={r.pickUpLocation} />
+        <InfoRow label="Bırakış yeri" value={r.dropOffLocation} />
+        <InfoRow label="Oluşturulma" value={localDate(r.createdAt)} />
       </SectionCard>
 
-      {!actionLoading && (isPending || isConfirmed) && (
-        <View style={styles.actions}>
-          {isPending && (
-            <Pressable style={[styles.actionBtn, styles.actionConfirm]} onPress={handleConfirm}>
-              <Text style={styles.actionBtnText}>✓  Rezervasyonu Onayla</Text>
-            </Pressable>
-          )}
-          {(isPending || isConfirmed) && (
-            <Pressable style={[styles.actionBtn, styles.actionCancel]} onPress={handleCancel}>
-              <Text style={[styles.actionBtnText, { color: COLORS.red }]}>✕  Rezervasyonu İptal Et</Text>
-            </Pressable>
-          )}
-        </View>
-      )}
+      {r.car ? (
+        <Pressable onPress={() => r.carId && router.push(`/(admin)/vehicles/${r.carId}`)}>
+          <SectionCard title="Araç" right={<Text style={styles.link}>Aç ›</Text>}>
+            <InfoRow label="Plaka" value={r.car.licensePlate} />
+            <InfoRow label="Araç" value={[r.car.brand, r.car.model, r.car.modelYear].filter(Boolean).join(" ")} />
+            <InfoRow label="Şube" value={r.car.branch?.name} />
+          </SectionCard>
+        </Pressable>
+      ) : null}
+
+      {r.note ? (
+        <SectionCard title="Not">
+          <Text style={styles.noteText}>{r.note}</Text>
+        </SectionCard>
+      ) : null}
+
+      <View style={styles.actions}>
+        {r.contractId ? (
+          <Button title="📋  Kontratı Aç" onPress={() => router.push(`/(admin)/contracts/${r.contractId}`)} />
+        ) : null}
+        {r.status === "PENDING" && (
+          <Button
+            title="✓  Rezervasyonu Onayla"
+            disabled={busy}
+            onPress={() => confirmThen("Rezervasyonu Onayla", "Rezervasyon onaylanacak.", "Onayla", () => confirmReservation(id))}
+          />
+        )}
+        {open && (
+          <Button
+            title="⇢  Kontrata Dönüştür"
+            variant="blue"
+            disabled={busy}
+            onPress={() =>
+              confirmThen(
+                "Kontrata Dönüştür",
+                "Bu rezervasyondan bir kontrat taslağı oluşturulacak. Fiyatlandırma ve diğer detaylar web panelinden tamamlanmalı.",
+                "Dönüştür",
+                () => convertReservation(id),
+                { after: (res) => (res?.contractId ? router.push(`/(admin)/contracts/${res.contractId}`) : load()) }
+              )
+            }
+          />
+        )}
+        {open && (
+          <Button
+            title="✕  Rezervasyonu İptal Et"
+            variant="danger"
+            disabled={busy}
+            onPress={() =>
+              confirmThen("Rezervasyonu İptal Et", "Rezervasyon iptal edilecek.", "İptal Et", () => cancelReservation(id), {
+                destructive: true,
+              })
+            }
+          />
+        )}
+      </View>
     </ScrollView>
   );
 }
@@ -157,6 +182,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-between",
+    gap: 10,
     backgroundColor: COLORS.card,
     borderRadius: 16,
     borderWidth: 1,
@@ -164,16 +190,10 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
   },
-  heroName:     { fontSize: 18, fontWeight: "800", color: COLORS.ink },
-  heroNo:       { fontSize: 12, color: COLORS.muted, marginTop: 4 },
-  sectionTitle: { fontSize: 13, fontWeight: "800", color: COLORS.ink, marginBottom: 10, textTransform: "uppercase", letterSpacing: 0.5 },
-  infoRow:   { flexDirection: "row", justifyContent: "space-between", paddingVertical: 7, borderBottomWidth: 1, borderBottomColor: COLORS.line },
-  infoLabel: { fontSize: 13, color: COLORS.muted, flex: 1 },
-  infoValue: { fontSize: 13, color: COLORS.ink, fontWeight: "600", flex: 1, textAlign: "right" },
-  actions:       { gap: 10, marginTop: 4 },
-  actionBtn:     { borderRadius: 14, paddingVertical: 15, alignItems: "center", borderWidth: 1.5 },
-  actionConfirm: { backgroundColor: COLORS.green, borderColor: COLORS.green },
-  actionCancel:  { backgroundColor: COLORS.redSoft, borderColor: COLORS.red + "55" },
-  actionBtnText: { fontSize: 15, fontWeight: "700", color: "#fff" },
+  heroName:  { fontSize: 18, fontWeight: "800", color: COLORS.green },
+  heroSub:   { fontSize: 12, color: COLORS.muted, marginTop: 4 },
+  heroPhone: { fontSize: 13, color: COLORS.ink, marginTop: 6 },
+  link:      { fontSize: 12, color: COLORS.green, fontWeight: "700" },
+  noteText:  { fontSize: 13, color: COLORS.ink, lineHeight: 19 },
+  actions:   { gap: 10, marginTop: 4 },
 });
-

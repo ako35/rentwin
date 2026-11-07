@@ -1,21 +1,8 @@
-import { useState, useCallback } from "react";
-import {
-  ScrollView,
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  Alert,
-  RefreshControl,
-  Linking,
-  Modal,
-  TextInput,
-  ActivityIndicator,
-} from "react-native";
-import { useLocalSearchParams, useFocusEffect } from "expo-router";
+import { useState, useCallback, useMemo } from "react";
+import { ScrollView, View, Text, StyleSheet, Pressable, Alert, RefreshControl, Linking, Switch } from "react-native";
+import { useLocalSearchParams, useFocusEffect, router } from "expo-router";
 import {
   getContractById,
-  listInvoices,
   getInvoicePdfUrl,
   returnContract,
   cancelContract,
@@ -29,63 +16,68 @@ import {
   SectionCard,
   StatusBadge,
   EmptyState,
+  InfoRow,
+  Field,
+  Button,
+  Sheet,
 } from "../../../components/admin";
+import FuelGauge from "../../../components/FuelGauge";
 import { COLORS } from "../../../constants/theme";
+import { fuelLabel, formatKm } from "../../../utils/format";
+import {
+  customerName,
+  wallDate,
+  wallDateTime,
+  wallTimeInput,
+  nowDateInput,
+  nowTimeInput,
+  parseDateInput,
+  parseTimeInput,
+  toBackendDateTime,
+  wallMs,
+  isoDay,
+  money,
+  parseAmount,
+  returnOverage,
+  apiError,
+} from "../../../utils/admin";
 
-function InfoRow({ label, value, mono }) {
-  if (value === null || value === undefined || value === "") return null;
+const LESSOR_LABEL = { SAIR: "Şair Turizm", MOVILO: "Movilo Ulaşım" };
+
+function extensionDuration(ext) {
+  if (ext.months && ext.extraDays) return `${ext.months} ay ${ext.extraDays} gün`;
+  if (ext.months) return `${ext.months} ay`;
+  return `${ext.extraDays || 0} gün`;
+}
+
+function CheckRow({ label, done, doneText, pendingText }) {
   return (
-    <View style={styles.infoRow}>
-      <Text style={styles.infoLabel}>{label}</Text>
-      <Text style={[styles.infoValue, mono && styles.infoMono]}>{value}</Text>
+    <View style={styles.checkRow}>
+      <Text style={styles.checkLabel}>{label}</Text>
+      <View style={[styles.checkPill, { backgroundColor: done ? COLORS.greenSoft : COLORS.amberSoft }]}>
+        <Text style={[styles.checkText, { color: done ? COLORS.green : COLORS.amber }]}>
+          {done ? `✓ ${doneText}` : pendingText}
+        </Text>
+      </View>
     </View>
   );
 }
 
-function fmt(dt) {
-  if (!dt) return "—";
-  return new Date(dt).toLocaleString("tr-TR", {
-    day: "2-digit", month: "2-digit", year: "numeric",
-    hour: "2-digit", minute: "2-digit",
-  });
-}
-
-function fmtDate(dt) {
-  if (!dt) return "—";
-  return new Date(dt).toLocaleDateString("tr-TR");
-}
-
-function formatExtensionDuration(ext, isMonthly) {
-  if (ext.months && ext.extraDays) {
-    return `${ext.months} ay ${ext.extraDays} gün`;
-  }
-  if (ext.months) return `${ext.months} ay`;
-  if (ext.extraDays) return `${ext.extraDays} gün`;
-
-  const s = new Date(ext.previousDropOff);
-  const e = new Date(ext.newDropOff);
-  const diffDays = Math.max(1, Math.round((e - s) / (1000 * 60 * 60 * 24)));
-  return `${diffDays} gün`;
-}
-
 function InvoiceCard({ invoice, onOpenPdf }) {
+  const hasPdf = !!(invoice.pdfPathname || invoice.pdfUrl);
   return (
     <View style={styles.invoiceCard}>
       <View style={styles.invoiceTop}>
-        <View>
-          <Text style={styles.invoiceNo}>{invoice.invoiceNo || "Fatura"}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.invoiceNo}>{invoice.number || "Fatura"}</Text>
           <Text style={styles.invoiceDates}>
-            {fmtDate(invoice.periodFrom)} – {fmtDate(invoice.periodTo)}
+            {invoice.periodFrom ? `${wallDate(invoice.periodFrom)} – ${wallDate(invoice.periodTo)}` : wallDate(invoice.issuedAt)}
           </Text>
         </View>
         <View style={styles.invoiceRight}>
-          <Text style={styles.invoiceAmount}>
-            {invoice.totalAmount != null
-              ? `₺${Number(invoice.totalAmount).toLocaleString("tr-TR")}`
-              : "—"}
-          </Text>
-          {invoice.pdfUrl && (
-            <Pressable style={styles.pdfBtn} onPress={() => onOpenPdf(invoice)}>
+          <Text style={styles.invoiceAmount}>{money(invoice.grossAmount)}</Text>
+          {hasPdf && (
+            <Pressable style={styles.pdfBtn} onPress={() => onOpenPdf(invoice)} hitSlop={6}>
               <Text style={styles.pdfBtnText}>PDF</Text>
             </Pressable>
           )}
@@ -95,32 +87,295 @@ function InvoiceCard({ invoice, onOpenPdf }) {
   );
 }
 
+// ─── İade (Araç Teslim Al) ───────────────────────────────────────────────────
+// Web VehicleReturnModal ile aynı kurallar: km + yakıt zorunlu, km alıştan
+// küçük olamaz, km aşımı ve eksik yakıt kontrat ücretlerinden önerilir (düzenlenebilir).
+// Panel yalnızca açıkken bağlanır — her açılış temiz durumla başlar.
+function ReturnSheet({ contract, onClose, onDone }) {
+  const [date, setDate] = useState(nowDateInput);
+  const [time, setTime] = useState(nowTimeInput);
+  const [km, setKm] = useState(contract.returnKm != null ? String(contract.returnKm) : "");
+  const [fuel, setFuel] = useState(contract.returnFuelEighths ?? null);
+  const [kmAmount, setKmAmount] = useState(null);
+  const [fuelAmount, setFuelAmount] = useState(null);
+  const [kmIncluded, setKmIncluded] = useState(true);
+  const [fuelIncluded, setFuelIncluded] = useState(true);
+  const [attempted, setAttempted] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const kmNum = km.trim() === "" ? "" : Number(km.replace(/\D/g, ""));
+  const overage = useMemo(() => returnOverage(contract, kmNum, fuel), [contract, kmNum, fuel]);
+  const kmLimited = Number.isFinite(overage.allowedKm);
+  // Kullanıcı yazana kadar öneri tutarı gösterilir.
+  const kmValue = kmAmount ?? (overage.kmCharge ? String(overage.kmCharge) : "");
+  const fuelValue = fuelAmount ?? (overage.fuelCharge ? String(overage.fuelCharge) : "");
+
+  const parsedDate = parseDateInput(date);
+  const parsedTime = parseTimeInput(time);
+  const pickUpKm = Number(contract.pickUpKm) || 0;
+  const errors = {
+    date: !parsedDate || !parsedTime
+      ? "Geçerli tarih (GG.AA.YYYY) ve saat (SS:DD) girin."
+      : wallMs(parsedDate, parsedTime) < Date.parse(contract.pickUpTime)
+        ? "Teslim tarihi alış tarihinden önce olamaz."
+        : null,
+    km: kmNum === ""
+      ? "Dönüş km zorunlu."
+      : kmNum < pickUpKm
+        ? `Dönüş km alış km'sinden (${formatKm(pickUpKm)}) küçük olamaz.`
+        : null,
+    fuel: fuel == null ? "Yakıt seviyesi seçin." : null,
+  };
+  const invalid = Object.values(errors).some(Boolean);
+
+  const submit = async () => {
+    setAttempted(true);
+    if (invalid) return;
+
+    const kmCharge = parseAmount(kmValue);
+    const fuelCharge = parseAmount(fuelValue);
+    if (Number.isNaN(kmCharge) || Number.isNaN(fuelCharge)) {
+      Alert.alert("Uyarı", "Ücret tutarlarını kontrol edin.");
+      return;
+    }
+
+    const send = async () => {
+      setSaving(true);
+      const charges = [];
+      if (kmIncluded && kmCharge > 0) {
+        charges.push({
+          category: "KM_EXCESS",
+          description: `${overage.excessKm} km aşım × ${Number(contract.kmOverageFee) || 0} ₺`,
+          amount: kmCharge,
+          quantity: 1,
+        });
+      }
+      if (fuelIncluded && fuelCharge > 0) {
+        charges.push({
+          category: "FUEL",
+          description: `${overage.missingEighths}/8 eksik yakıt`,
+          amount: fuelCharge,
+          quantity: 1,
+        });
+      }
+      try {
+        await returnContract(contract.id, {
+          returnKm: kmNum,
+          returnFuelEighths: fuel,
+          returnedAt: toBackendDateTime(parsedDate, parsedTime),
+          charges,
+        });
+        onDone();
+      } catch (err) {
+        Alert.alert("Hata", apiError(err, "Teslim alma işlemi başarısız."));
+      } finally {
+        setSaving(false);
+      }
+    };
+
+    // Erken iade: bırakış tarihi teslim anına çekilir ve kiralama yeniden fiyatlanır.
+    const returnDay = `${parsedDate.y}-${String(parsedDate.m).padStart(2, "0")}-${String(parsedDate.d).padStart(2, "0")}`;
+    if (returnDay < isoDay(contract.dropOffTime)) {
+      Alert.alert(
+        "Erken İade",
+        `Araç planlanan bırakış tarihinden (${wallDate(contract.dropOffTime)}) önce teslim alınıyor. Bırakış tarihi ${date} ${time} olarak güncellenecek ve kiralama kullanılan günlere göre yeniden hesaplanacak. Devam edilsin mi?`,
+        [
+          { text: "Vazgeç", style: "cancel" },
+          { text: "Devam", onPress: send },
+        ]
+      );
+      return;
+    }
+    send();
+  };
+
+  return (
+    <Sheet visible title="Araç Teslim Al" onClose={onClose}>
+      <View style={styles.row2}>
+        <Field
+          style={{ flex: 1.4 }}
+          label="Teslim tarihi"
+          value={date}
+          onChangeText={setDate}
+          placeholder="GG.AA.YYYY"
+          keyboardType="numbers-and-punctuation"
+        />
+        <Field
+          style={{ flex: 1 }}
+          label="Saat"
+          value={time}
+          onChangeText={setTime}
+          placeholder="SS:DD"
+          keyboardType="numbers-and-punctuation"
+        />
+      </View>
+      {attempted && errors.date ? <Text style={styles.formError}>{errors.date}</Text> : null}
+
+      <Field
+        label="Dönüş km *"
+        value={km}
+        onChangeText={(t) => setKm(t.replace(/[^\d]/g, ""))}
+        keyboardType="number-pad"
+        placeholder="Örn. 45210"
+        hint={`Alış: ${formatKm(contract.pickUpKm)}`}
+        error={attempted ? errors.km : null}
+      />
+
+      <Text style={styles.fieldLabel}>Dönüş yakıt seviyesi *</Text>
+      <FuelGauge value={fuel} onChange={setFuel} />
+      <Text style={styles.fieldHint}>Alış: {fuelLabel(contract.pickUpFuelEighths)}</Text>
+      {attempted && errors.fuel ? <Text style={styles.formError}>{errors.fuel}</Text> : null}
+
+      <View style={styles.overageBox}>
+        <Text style={styles.overageTitle}>Km aşımı</Text>
+        {kmLimited ? (
+          <Text style={styles.overageText}>
+            Kullanılan {formatKm(overage.usedKm)} · İzin {formatKm(Math.round(overage.allowedKm))} ·{" "}
+            <Text style={overage.excessKm > 0 && styles.overageOver}>Aşım {formatKm(overage.excessKm)}</Text>
+          </Text>
+        ) : (
+          <Text style={styles.overageText}>Sınırsız km — aşım ücreti yok.</Text>
+        )}
+        {kmLimited && overage.excessKm > 0 && (
+          <View style={styles.chargeRow}>
+            <Field
+              style={{ flex: 1, marginBottom: 0 }}
+              label="Km aşım ücreti (₺)"
+              value={kmValue}
+              onChangeText={setKmAmount}
+              keyboardType="decimal-pad"
+            />
+            <View style={styles.switchBox}>
+              <Text style={styles.switchLabel}>Ekle</Text>
+              <Switch value={kmIncluded} onValueChange={setKmIncluded} trackColor={{ true: COLORS.green }} />
+            </View>
+          </View>
+        )}
+
+        <Text style={[styles.overageTitle, { marginTop: 12 }]}>Yakıt</Text>
+        <Text style={styles.overageText}>
+          {fuel == null ? "Yakıt seviyesi seçilmedi." : (
+            <Text style={overage.missingEighths > 0 && styles.overageOver}>Eksik {overage.missingEighths}/8</Text>
+          )}
+        </Text>
+        {overage.missingEighths > 0 && (
+          <View style={styles.chargeRow}>
+            <Field
+              style={{ flex: 1, marginBottom: 0 }}
+              label="Eksik yakıt ücreti (₺)"
+              value={fuelValue}
+              onChangeText={setFuelAmount}
+              keyboardType="decimal-pad"
+            />
+            <View style={styles.switchBox}>
+              <Text style={styles.switchLabel}>Ekle</Text>
+              <Switch value={fuelIncluded} onValueChange={setFuelIncluded} trackColor={{ true: COLORS.green }} />
+            </View>
+          </View>
+        )}
+      </View>
+
+      <Button title="Teslim Al ve Kontratı Kapat" onPress={submit} loading={saving} style={{ marginTop: 16 }} />
+    </Sheet>
+  );
+}
+
+// ─── Süre Uzatma ─────────────────────────────────────────────────────────────
+function ExtendSheet({ contract, onClose, onDone }) {
+  // Varsayılan: mevcut bırakışın ertesi günü, aynı saat.
+  const [date, setDate] = useState(() =>
+    wallDate(new Date(Date.parse(contract.dropOffTime) + 86400000).toISOString())
+  );
+  const [time, setTime] = useState(() => wallTimeInput(contract.dropOffTime) || "12:00");
+  const [amount, setAmount] = useState("");
+  const [note, setNote] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [attempted, setAttempted] = useState(false);
+
+  const isMonthly = contract.rentalType === "MONTHLY";
+  const parsedDate = parseDateInput(date);
+  const parsedTime = parseTimeInput(time);
+  const amountNum = parseAmount(amount);
+  const dateError = !parsedDate || !parsedTime
+    ? "Geçerli tarih (GG.AA.YYYY) ve saat (SS:DD) girin."
+    : wallMs(parsedDate, parsedTime) <= Date.parse(contract.dropOffTime)
+      ? `Yeni bırakış, mevcut bırakıştan (${wallDateTime(contract.dropOffTime)}) sonra olmalı.`
+      : null;
+  const amountError = Number.isNaN(amountNum) || (amountNum != null && amountNum < 0) ? "Geçerli bir tutar girin." : null;
+
+  const submit = async () => {
+    setAttempted(true);
+    if (dateError || amountError) return;
+    setSaving(true);
+    try {
+      await extendContract(contract.id, {
+        newDropOff: toBackendDateTime(parsedDate, parsedTime),
+        ...(amountNum != null ? { extraAmount: amountNum } : {}),
+        ...(note.trim() ? { note: note.trim() } : {}),
+      });
+      onDone();
+    } catch (err) {
+      Alert.alert("Hata", apiError(err, "Uzatma işlemi yapılamadı."));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const autoHint = isMonthly
+    ? `Boş bırakılırsa aylık fiyattan (${money(contract.monthlyPrice)}) hesaplanır. Tutar KDV hariç girilir, KDV (%${contract.vatRate ?? 20}) eklenir.`
+    : `Boş bırakılırsa günlük fiyattan (${money(contract.dailyPrice)}) hesaplanır.`;
+
+  return (
+    <Sheet visible title="Süre Uzat" onClose={onClose}>
+      <InfoRow label="Mevcut bırakış" value={wallDateTime(contract.dropOffTime)} />
+      <View style={[styles.row2, { marginTop: 12 }]}>
+        <Field
+          style={{ flex: 1.4 }}
+          label="Yeni bırakış tarihi *"
+          value={date}
+          onChangeText={setDate}
+          placeholder="GG.AA.YYYY"
+          keyboardType="numbers-and-punctuation"
+        />
+        <Field
+          style={{ flex: 1 }}
+          label="Saat"
+          value={time}
+          onChangeText={setTime}
+          placeholder="SS:DD"
+          keyboardType="numbers-and-punctuation"
+        />
+      </View>
+      {attempted && dateError ? <Text style={styles.formError}>{dateError}</Text> : null}
+      <Field
+        label="Ek tutar (₺)"
+        value={amount}
+        onChangeText={setAmount}
+        keyboardType="decimal-pad"
+        placeholder="Otomatik"
+        hint={autoHint}
+        error={attempted ? amountError : null}
+      />
+      <Field label="Not" value={note} onChangeText={setNote} multiline placeholder="Uzatma açıklaması…" />
+      <Button title="Uzatmayı Kaydet" onPress={submit} loading={saving} style={{ marginTop: 6 }} />
+    </Sheet>
+  );
+}
+
 export default function ContractDetailScreen() {
   const { id } = useLocalSearchParams();
-  const [contract, setContract]   = useState(null);
-  const [invoices, setInvoices]   = useState([]);
-  const [loading, setLoading]     = useState(true);
+  const [contract, setContract] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [error, setError]         = useState(false);
-  const [actionLoading, setActionLoading] = useState(false);
-
-  // Uzatma modal state
-  const [extendModalVisible, setExtendModalVisible] = useState(false);
-  const [extDate, setExtDate] = useState("");
-  const [extTime, setExtTime] = useState("12:00");
-  const [extAmount, setExtAmount] = useState("");
-  const [extNote, setExtNote] = useState("");
-  const [extSubmitting, setExtSubmitting] = useState(false);
+  const [error, setError] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [sheet, setSheet] = useState(null); // "return" | "extend" | null
 
   const load = useCallback(async () => {
     try {
-      setError(false);
-      const [c, inv] = await Promise.all([
-        getContractById(id),
-        listInvoices(id).catch(() => []),
-      ]);
+      const c = await getContractById(id);
       setContract(c);
-      setInvoices(Array.isArray(inv) ? inv : []);
+      setError(false);
     } catch {
       setError(true);
     } finally {
@@ -128,7 +383,11 @@ export default function ContractDetailScreen() {
     }
   }, [id]);
 
-  useFocusEffect(useCallback(() => { load(); }, [load]));
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [load])
+  );
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -136,371 +395,280 @@ export default function ContractDetailScreen() {
     setRefreshing(false);
   };
 
+  // İmzalı PDF bağlantıları kısa ömürlü — her açılışta tazesi istenir.
   const openPdf = async (invoice) => {
     try {
       const { url } = await getInvoicePdfUrl(invoice.id);
-      if (url) Linking.openURL(url);
-    } catch {
-      Alert.alert("Hata", "PDF açılamadı.");
+      if (url) await Linking.openURL(url);
+    } catch (err) {
+      Alert.alert("Hata", apiError(err, "PDF açılamadı."));
     }
   };
 
-  const handleReturn = () => {
-    Alert.alert(
-      "Araç İadesi",
-      "Bu kontratta aracı iade almak istediğinize emin misiniz?",
-      [
-        { text: "İptal", style: "cancel" },
-        {
-          text: "İade Al",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              setActionLoading(true);
-              await returnContract(id, {});
-              await load();
-            } catch (e) {
-              Alert.alert("Hata", e?.response?.data?.message || "İade işlemi başarısız.");
-            } finally {
-              setActionLoading(false);
-            }
-          },
-        },
-      ]
-    );
-  };
-
-  const handleCancel = () => {
-    Alert.alert(
-      "Kontrat İptali",
-      "Bu kontratı iptal etmek istediğinize emin misiniz?",
-      [
-        { text: "Geri", style: "cancel" },
-        {
-          text: "İptal Et",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              setActionLoading(true);
-              await cancelContract(id);
-              await load();
-            } catch (e) {
-              Alert.alert("Hata", e?.response?.data?.message || "İptal işlemi başarısız.");
-            } finally {
-              setActionLoading(false);
-            }
-          },
-        },
-      ]
-    );
-  };
-
-  const handleReopen = () => {
-    Alert.alert("Kontratı Yeniden Aç", "Bu kontratı aktif duruma getirmek istiyor musunuz?", [
-      { text: "İptal", style: "cancel" },
+  const runAction = (title, message, confirmText, action, destructive) => {
+    Alert.alert(title, message, [
+      { text: "Vazgeç", style: "cancel" },
       {
-        text: "Yeniden Aç",
+        text: confirmText,
+        style: destructive ? "destructive" : "default",
         onPress: async () => {
+          setBusy(true);
           try {
-            setActionLoading(true);
-            await reopenContract(id);
+            await action();
             await load();
-          } catch (e) {
-            Alert.alert("Hata", e?.response?.data?.message || "İşlem başarısız.");
+          } catch (err) {
+            Alert.alert("Hata", apiError(err));
           } finally {
-            setActionLoading(false);
+            setBusy(false);
           }
         },
       },
     ]);
   };
 
-  const openExtendModal = () => {
-    if (contract?.dropOffTime) {
-      const d = new Date(contract.dropOffTime);
-      d.setDate(d.getDate() + 1);
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, "0");
-      const dd = String(d.getDate()).padStart(2, "0");
-      setExtDate(`${yyyy}-${mm}-${dd}`);
-      const hh = String(d.getHours()).padStart(2, "0");
-      const min = String(d.getMinutes()).padStart(2, "0");
-      setExtTime(`${hh}:${min}`);
-    } else {
-      setExtDate("");
-      setExtTime("12:00");
-    }
-    setExtAmount("");
-    setExtNote("");
-    setExtendModalVisible(true);
+  const onSheetDone = async (message) => {
+    setSheet(null);
+    await load();
+    Alert.alert("Başarılı", message);
   };
 
-  const submitExtension = async () => {
-    if (!extDate.trim()) {
-      Alert.alert("Uyarı", "Lütfen geçerli bir yeni bitiş tarihi girin (YYYY-AA-GG).");
-      return;
-    }
-    setExtSubmitting(true);
-    try {
-      const formattedDateTime = `${extDate.trim()} ${extTime.trim() || "12:00"}`;
-      await extendContract(id, {
-        newDropOff: formattedDateTime,
-        ...(extAmount.trim() ? { extraAmount: Number(extAmount.trim()) } : {}),
-        note: extNote.trim() || undefined,
-      });
-      setExtendModalVisible(false);
-      await load();
-      Alert.alert("Başarılı", "Kontrat süresi başarıyla uzatıldı.");
-    } catch (err) {
-      Alert.alert("Hata", err?.response?.data?.message || "Uzatma işlemi yapılamadı.");
-    } finally {
-      setExtSubmitting(false);
-    }
-  };
-
-  const handleDeleteExtension = (extId) => {
-    Alert.alert(
-      "Uzatmayı Sil",
-      "Bu uzatma kaydını silmek istediğinize emin misiniz? Bırakış tarihi önceki tarihe geri dönecektir.",
-      [
-        { text: "İptal", style: "cancel" },
-        {
-          text: "Sil",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              setActionLoading(true);
-              await deleteExtension(id, extId);
-              await load();
-            } catch (err) {
-              Alert.alert("Hata", err?.response?.data?.message || "Uzatma silinemedi.");
-            } finally {
-              setActionLoading(false);
-            }
-          },
-        },
-      ]
-    );
-  };
-
-  if (loading) return <LoadingScreen />;
-  if (error)   return <ErrorBanner message="Kontrat yüklenemedi." onRetry={load} />;
+  // Sekme ekranları bağlı kalır: başka bir kontrata geçilince eskisi gösterilmesin.
+  const stale = contract && contract.id !== id;
+  if (error && (!contract || stale)) return <ErrorBanner message="Kontrat yüklenemedi." onRetry={load} />;
+  if (loading || stale) return <LoadingScreen />;
   if (!contract) return <EmptyState icon="📋" title="Kontrat bulunamadı" />;
 
   const c = contract;
-  const plate    = c.car?.licensePlate || "—";
-  const carName  = [c.car?.brand, c.car?.model].filter(Boolean).join(" ");
-  const customer = c.user?.name || "—";
-  const isActive = c.status === "ACTIVE";
-  const isDone   = c.status === "DONE";
+  const isOpen = c.status === "CREATED";
   const isMonthly = c.rentalType === "MONTHLY";
   const extensions = Array.isArray(c.extensions) ? c.extensions : [];
+  const invoices = Array.isArray(c.invoices) ? c.invoices : [];
+  const drivers = Array.isArray(c.drivers) ? c.drivers : [];
+  const balance = (c.totalPrice || 0) - (c.collected || 0);
+  const kmLimitText = c.unlimitedKm
+    ? "Sınırsız"
+    : isMonthly
+      ? (c.monthlyKmLimit ? `${formatKm(c.monthlyKmLimit)} / ay` : "—")
+      : (c.dailyKmLimit ? `${formatKm(c.dailyKmLimit)} / gün` : "—");
 
   return (
-    <ScrollView
-      style={styles.root}
-      contentContainerStyle={styles.content}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.green} />}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Başlık */}
-      <View style={styles.hero}>
-        <View style={styles.heroLeft}>
-          <Text style={styles.heroPlate}>{plate}</Text>
-          <Text style={styles.herocar}>{carName}</Text>
-          <Text style={styles.heroCustomer}>{customer}</Text>
-        </View>
-        <StatusBadge status={c.status} />
-      </View>
+    <View style={styles.root}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.green} />}
+        showsVerticalScrollIndicator={false}
+      >
+        {error && <ErrorBanner message="Güncel veri alınamadı." onRetry={load} />}
 
-      {/* Temel bilgiler */}
-      <SectionCard>
-        <Text style={styles.sectionTitle}>Kontrat Bilgileri</Text>
-        <InfoRow label="Kontrat No"   value={c.contractNo} mono />
-        <InfoRow label="Kiralama Tipi" value={isMonthly ? "Aylık" : "Günlük"} />
-        <InfoRow label="Teslim Tarihi" value={fmt(c.pickUpTime)} />
-        <InfoRow label="İade Tarihi"   value={fmt(c.dropOffTime)} />
-        {c.returnedAt && <InfoRow label="Fiili İade" value={fmt(c.returnedAt)} />}
-        <InfoRow label="Teslim Yeri"  value={c.pickUpLocation} />
-        <InfoRow label="İade Yeri"    value={c.dropOffLocation} />
-        <InfoRow label="Uçuş No"      value={c.flightNo} />
-      </SectionCard>
-
-      {/* Uzatma Geçmişi */}
-      {extensions.length > 0 && (
-        <SectionCard>
-          <Text style={styles.sectionTitle}>Uzatma Geçmişi ({extensions.length})</Text>
-          {extensions.map((ext) => (
-            <View key={ext.id} style={styles.extRow}>
-              <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-                  <Text style={styles.extDate}>{fmt(ext.newDropOff)}</Text>
-                  <View style={styles.extDurationBadge}>
-                    <Text style={styles.extDurationText}>
-                      +{formatExtensionDuration(ext, isMonthly)}
-                    </Text>
-                  </View>
-                </View>
-                {ext.extraAmount != null && (
-                  <Text style={styles.extAmount}>
-                    Ek Tutar: ₺{Number(ext.extraAmount).toLocaleString("tr-TR")}
-                  </Text>
-                )}
-                {ext.note ? <Text style={styles.extNote}>{ext.note}</Text> : null}
-              </View>
-              {isActive && (
-                <Pressable
-                  style={styles.extDelBtn}
-                  onPress={() => handleDeleteExtension(ext.id)}
-                >
-                  <Text style={styles.extDelText}>✕</Text>
-                </Pressable>
-              )}
-            </View>
-          ))}
-        </SectionCard>
-      )}
-
-      {/* Fiyatlar */}
-      <SectionCard>
-        <Text style={styles.sectionTitle}>Finansal Bilgiler</Text>
-        <InfoRow label="Günlük Fiyat"   value={c.dailyPrice    != null ? `₺${Number(c.dailyPrice).toLocaleString("tr-TR")}` : null} />
-        <InfoRow label="Aylık Fiyat"    value={c.monthlyPrice  != null ? `₺${Number(c.monthlyPrice).toLocaleString("tr-TR")}` : null} />
-        <InfoRow label="Toplam Tutar"   value={c.totalPrice    != null ? `₺${Number(c.totalPrice).toLocaleString("tr-TR")}` : null} />
-        <InfoRow label="Depozito"        value={c.deposit       != null ? `₺${Number(c.deposit).toLocaleString("tr-TR")}` : null} />
-        <InfoRow label="Hasar Muafiyeti" value={c.damageDeductible != null ? `₺${Number(c.damageDeductible).toLocaleString("tr-TR")}` : null} />
-        <InfoRow label="KDV Oranı"       value={c.vatRate       != null ? `%${c.vatRate}` : null} />
-      </SectionCard>
-
-      {/* Km Limiti */}
-      {!c.unlimitedKm && (
-        <SectionCard>
-          <Text style={styles.sectionTitle}>Km Limiti</Text>
-          <InfoRow label="Toplam Limit"  value={c.kmLimit       ? `${c.kmLimit} km` : null} />
-          <InfoRow label="Günlük Limit"  value={c.dailyKmLimit  ? `${c.dailyKmLimit} km` : null} />
-          <InfoRow label="Aylık Limit"   value={c.monthlyKmLimit? `${c.monthlyKmLimit} km` : null} />
-          <InfoRow label="Km Aşım Ücreti" value={c.kmOverageFee  ? `₺${c.kmOverageFee}/km` : null} />
-        </SectionCard>
-      )}
-      {c.unlimitedKm && (
-        <SectionCard>
-          <InfoRow label="Km Limiti" value="Sınırsız ✅" />
-        </SectionCard>
-      )}
-
-      {/* Faturalar */}
-      <SectionCard>
-        <Text style={styles.sectionTitle}>
-          Faturalar {invoices.length > 0 ? `(${invoices.length})` : ""}
-        </Text>
-        {invoices.length === 0 ? (
-          <Text style={styles.noInvoice}>Henüz fatura kesilmemiş</Text>
-        ) : (
-          invoices.map((inv) => (
-            <InvoiceCard key={inv.id} invoice={inv} onOpenPdf={openPdf} />
-          ))
-        )}
-      </SectionCard>
-
-      {/* Notlar */}
-      {(c.customerNote || c.adminNote) && (
-        <SectionCard>
-          <Text style={styles.sectionTitle}>Notlar</Text>
-          {c.customerNote && <InfoRow label="Müşteri Notu" value={c.customerNote} />}
-          {c.adminNote    && <InfoRow label="Admin Notu"   value={c.adminNote} />}
-        </SectionCard>
-      )}
-
-      {/* Aksiyonlar */}
-      {!actionLoading && (
-        <View style={styles.actions}>
-          {isActive && (
-            <Pressable style={[styles.actionBtn, styles.actionExtend]} onPress={openExtendModal}>
-              <Text style={styles.actionBtnText}>⏳  Süre Uzat</Text>
+        <View style={styles.hero}>
+          <View style={styles.heroLeft}>
+            <Pressable onPress={() => c.carId && router.push(`/(admin)/vehicles/${c.carId}`)}>
+              <Text style={styles.heroPlate}>{c.car?.licensePlate || "—"} ›</Text>
             </Pressable>
-          )}
-          {isActive && (
-            <Pressable style={[styles.actionBtn, styles.actionReturn]} onPress={handleReturn}>
-              <Text style={styles.actionBtnText}>🔑  Araç İadesi Al</Text>
+            <Text style={styles.heroCar}>{[c.car?.brand, c.car?.model].filter(Boolean).join(" ")}</Text>
+            <Pressable onPress={() => c.userId && router.push(`/(admin)/users/${c.userId}`)}>
+              <Text style={styles.heroCustomer}>{customerName(c)} ›</Text>
             </Pressable>
-          )}
-          {isActive && (
-            <Pressable style={[styles.actionBtn, styles.actionCancel]} onPress={handleCancel}>
-              <Text style={[styles.actionBtnText, { color: COLORS.red }]}>✕  İptal Et</Text>
-            </Pressable>
-          )}
-          {isDone && (
-            <Pressable style={[styles.actionBtn, styles.actionReopen]} onPress={handleReopen}>
-              <Text style={[styles.actionBtnText, { color: COLORS.amber }]}>↺  Yeniden Aç</Text>
-            </Pressable>
-          )}
-        </View>
-      )}
-
-      {/* Uzatma Modalı */}
-      <Modal visible={extendModalVisible} transparent animationType="slide" onRequestClose={() => setExtendModalVisible(false)}>
-        <Pressable style={styles.modalOverlay} onPress={() => setExtendModalVisible(false)}>
-          <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Kontrat Süresi Uzat</Text>
-              <Pressable onPress={() => setExtendModalVisible(false)}>
-                <Text style={styles.modalCloseText}>✕</Text>
+            {c.customer?.phoneNumber ? (
+              <Pressable onPress={() => Linking.openURL(`tel:${c.customer.phoneNumber}`)}>
+                <Text style={styles.heroPhone}>📞 {c.customer.phoneNumber}</Text>
               </Pressable>
-            </View>
+            ) : null}
+          </View>
+          <StatusBadge status={c.status} />
+        </View>
 
-            <Text style={styles.inputLabel}>Yeni Bitiş Tarihi (YYYY-AA-GG) *</Text>
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Örn: 2026-11-20"
-              placeholderTextColor={COLORS.subtle}
-              value={extDate}
-              onChangeText={setExtDate}
+        <SectionCard title="Kontrat Bilgileri">
+          <InfoRow label="Kontrat No" value={c.contractNo} mono />
+          <InfoRow label="Kiralama Tipi" value={isMonthly ? "Aylık" : "Günlük"} />
+          <InfoRow label="Alış" value={wallDateTime(c.pickUpTime)} />
+          <InfoRow label="Bırakış" value={wallDateTime(c.dropOffTime)} />
+          {c.returnedAt ? <InfoRow label="Teslim Alındı" value={wallDateTime(c.returnedAt)} /> : null}
+          <InfoRow label="Alış Yeri" value={c.pickUpLocation} />
+          <InfoRow label="Bırakış Yeri" value={c.dropOffLocation} />
+          <InfoRow label="Uçuş No" value={c.flightNo} />
+          <InfoRow label="Referans No" value={c.referenceNo} />
+          <InfoRow label="Kiralayan Firma" value={LESSOR_LABEL[c.lessorCompany] || c.lessorCompany} />
+          {c.referenceUser ? <InfoRow label="Referans Müşteri" value={customerName({ customer: c.referenceUser })} /> : null}
+        </SectionCard>
+
+        {c.status !== "CANCELLED" && (
+          <SectionCard title="Kontroller">
+            <CheckRow label="İmza" done={!!c.signedAt} doneText={wallDate(c.signedAt)} pendingText="İmza bekliyor" />
+            <CheckRow
+              label="KABİS"
+              done={!!c.kbsNotifiedAt}
+              doneText={c.kbsReleasedAt ? "Bildirildi · çıkış yapıldı" : "Bildirildi"}
+              pendingText="Bildirilmedi"
             />
+            {c.kbsNotifiedAt && !c.kbsReleasedAt && c.status === "DONE" ? (
+              <CheckRow label="KABİS çıkışı" done={false} pendingText="Çıkış bekliyor" />
+            ) : null}
+            <CheckRow label="HGS/OGS" done={c.hgsStatus === "CHECKED"} doneText="Kontrol edildi" pendingText="Kontrol bekliyor" />
+            <Text style={styles.checkNote}>Bu kayıtlar web panelinden güncellenir.</Text>
+          </SectionCard>
+        )}
 
-            <Text style={styles.inputLabel}>Yeni Bitiş Saati (SS:DD)</Text>
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Örn: 12:00"
-              placeholderTextColor={COLORS.subtle}
-              value={extTime}
-              onChangeText={setExtTime}
+        <SectionCard title="Km & Yakıt">
+          <InfoRow label="Alış km" value={formatKm(c.pickUpKm)} />
+          <InfoRow label="Alış yakıt" value={fuelLabel(c.pickUpFuelEighths)} />
+          <InfoRow label="Dönüş km" value={c.returnKm != null ? formatKm(c.returnKm) : null} />
+          <InfoRow label="Dönüş yakıt" value={c.returnFuelEighths != null ? fuelLabel(c.returnFuelEighths) : null} />
+          <InfoRow label="Km limiti" value={kmLimitText} />
+          {!c.unlimitedKm ? <InfoRow label="Km aşım ücreti" value={c.kmOverageFee ? `${money(c.kmOverageFee)} / km` : null} /> : null}
+          <InfoRow label="Eksik yakıt ücreti" value={c.fuelFeePerEighth ? `${money(c.fuelFeePerEighth)} / (1/8)` : null} />
+        </SectionCard>
+
+        <SectionCard title="Finans">
+          <InfoRow label={isMonthly ? "Aylık fiyat" : "Günlük fiyat"} value={money(isMonthly ? c.monthlyPrice : c.dailyPrice)} />
+          <InfoRow label="Ekstralar" value={c.extrasTotal ? money(c.extrasTotal) : null} />
+          <InfoRow label="Tek yön ücreti" value={c.oneWayFee ? money(c.oneWayFee) : null} />
+          <InfoRow label="İndirim" value={c.discount ? (c.discountIsPercent ? `%${c.discount}` : money(c.discount)) : null} />
+          <InfoRow label="Dönüş ekstraları" value={c.returnExtraAmount ? money(c.returnExtraAmount) : null} />
+          <InfoRow label="Toplam" value={money(c.totalPrice)} />
+          <InfoRow label="Tahsil edilen" value={money(c.collected || 0)} color={COLORS.green} />
+          {c.status !== "CANCELLED" ? (
+            <InfoRow
+              label="Kalan bakiye"
+              value={money(Math.max(0, balance))}
+              color={balance > 0.009 ? COLORS.red : COLORS.green}
             />
-
-            <Text style={styles.inputLabel}>Ek Tutar (TL - Boş bırakılırsa otomatik hesaplanır)</Text>
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Otomatik"
-              placeholderTextColor={COLORS.subtle}
-              keyboardType="numeric"
-              value={extAmount}
-              onChangeText={setExtAmount}
+          ) : null}
+          <InfoRow label="Depozito" value={c.deposit ? money(c.deposit) : null} />
+          <InfoRow label="Kasko muafiyeti" value={c.damageDeductible ? money(c.damageDeductible) : null} />
+          <InfoRow label="KDV" value={c.vatRate != null ? `%${c.vatRate}` : null} />
+          {c.customer ? (
+            <InfoRow
+              label="Müşteri cari bakiyesi"
+              value={money(c.customer.balance)}
+              color={c.customer.balance < -0.009 ? COLORS.red : COLORS.ink}
             />
+          ) : null}
+        </SectionCard>
 
-            <Text style={styles.inputLabel}>Not (Opsiyonel)</Text>
-            <TextInput
-              style={[styles.modalInput, { height: 60, textAlignVertical: "top" }]}
-              placeholder="Uzatma açıklaması..."
-              placeholderTextColor={COLORS.subtle}
-              multiline
-              value={extNote}
-              onChangeText={setExtNote}
+        {extensions.length > 0 && (
+          <SectionCard title={`Uzatmalar (${extensions.length})`}>
+            {extensions.map((ext) => (
+              <View key={ext.id} style={styles.extRow}>
+                <View style={{ flex: 1 }}>
+                  <View style={styles.extTop}>
+                    <Text style={styles.extDate}>{wallDateTime(ext.newDropOff)}</Text>
+                    <View style={styles.extBadge}>
+                      <Text style={styles.extBadgeText}>+{extensionDuration(ext)}</Text>
+                    </View>
+                  </View>
+                  <Text style={styles.extAmount}>{money(ext.extraAmount)}</Text>
+                  {ext.note ? <Text style={styles.extNote}>{ext.note}</Text> : null}
+                </View>
+                {isOpen && (
+                  <Pressable
+                    style={styles.extDelBtn}
+                    hitSlop={6}
+                    onPress={() =>
+                      runAction(
+                        "Uzatmayı Sil",
+                        `Bırakış tarihi ${wallDateTime(ext.previousDropOff)} olarak geri alınacak ve ${money(ext.extraAmount)} toplamdan düşülecek.`,
+                        "Sil",
+                        () => deleteExtension(c.id, ext.id),
+                        true
+                      )
+                    }
+                  >
+                    <Text style={styles.extDelText}>✕</Text>
+                  </Pressable>
+                )}
+              </View>
+            ))}
+          </SectionCard>
+        )}
+
+        <SectionCard title={`Faturalar${invoices.length ? ` (${invoices.length})` : ""}`}>
+          {invoices.length === 0 ? (
+            <Text style={styles.muted}>Henüz fatura kesilmemiş.</Text>
+          ) : (
+            invoices.map((inv) => <InvoiceCard key={inv.id} invoice={inv} onOpenPdf={openPdf} />)
+          )}
+        </SectionCard>
+
+        {drivers.length > 0 && (
+          <SectionCard title="Ek Sürücüler">
+            {drivers.map((d) => (
+              <InfoRow
+                key={d.id}
+                label={`${d.firstName || ""} ${d.lastName || ""}`.trim() || "Sürücü"}
+                value={d.phone || (d.licenseDate ? `Ehliyet ${wallDate(d.licenseDate)}` : "Kayıtlı")}
+              />
+            ))}
+          </SectionCard>
+        )}
+
+        {(c.customerNote || c.adminNote) && (
+          <SectionCard title="Notlar">
+            {c.customerNote ? <Text style={styles.noteText}>Müşteri: {c.customerNote}</Text> : null}
+            {c.adminNote ? (
+              <Text style={styles.noteText}>
+                Yönetici{c.adminNoteBy ? ` (${c.adminNoteBy})` : ""}: {c.adminNote}
+              </Text>
+            ) : null}
+          </SectionCard>
+        )}
+
+        <View style={styles.actions}>
+          {isOpen && (
+            <>
+              <Button title="🔑  Araç Teslim Al" onPress={() => setSheet("return")} disabled={busy} />
+              <Button title="⏳  Süre Uzat" variant="blue" onPress={() => setSheet("extend")} disabled={busy} />
+              <Button
+                title="✕  Kontratı İptal Et"
+                variant="danger"
+                disabled={busy}
+                onPress={() =>
+                  runAction(
+                    "Kontrat İptali",
+                    "Kontrat iptal edilecek, araç boşa çıkacak ve kontratın cari kayıtları silinecek.",
+                    "İptal Et",
+                    () => cancelContract(c.id),
+                    true
+                  )
+                }
+              />
+            </>
+          )}
+          {!isOpen && (
+            <Button
+              title="↺  Kontratı Geri Aç"
+              variant="amber"
+              loading={busy}
+              onPress={() =>
+                runAction(
+                  "Kontratı Geri Aç",
+                  c.status === "DONE"
+                    ? "Kontrat yeniden açılacak; iadede eklenen km/yakıt aşım ücretleri silinip dönüş km/yakıt bilgisi temizlenecek."
+                    : "İptal edilen kontrat yeniden aktif duruma getirilecek.",
+                  "Geri Aç",
+                  () => reopenContract(c.id)
+                )
+              }
             />
+          )}
+        </View>
+      </ScrollView>
 
-            <Pressable
-              style={[styles.submitBtn, extSubmitting && { opacity: 0.7 }]}
-              onPress={submitExtension}
-              disabled={extSubmitting}
-            >
-              {extSubmitting ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.submitBtnText}>Uzatmayı Kaydet</Text>
-              )}
-            </Pressable>
-          </Pressable>
-        </Pressable>
-      </Modal>
-    </ScrollView>
+      {sheet === "return" && (
+        <ReturnSheet
+          contract={c}
+          onClose={() => setSheet(null)}
+          onDone={() => onSheetDone("Araç teslim alındı, kontrat kapatıldı.")}
+        />
+      )}
+      {sheet === "extend" && (
+        <ExtendSheet
+          contract={c}
+          onClose={() => setSheet(null)}
+          onDone={() => onSheetDone("Kontrat süresi uzatıldı.")}
+        />
+      )}
+    </View>
   );
 }
 
@@ -512,26 +680,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-between",
-    marginBottom: 16,
+    marginBottom: 12,
     backgroundColor: COLORS.card,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: COLORS.line,
     padding: 16,
+    gap: 10,
   },
   heroLeft:     { flex: 1 },
   heroPlate:    { fontSize: 22, fontWeight: "800", color: COLORS.ink },
-  herocar:      { fontSize: 13, color: COLORS.muted, marginTop: 4 },
-  heroCustomer: { fontSize: 15, color: COLORS.ink, fontWeight: "700", marginTop: 8 },
+  heroCar:      { fontSize: 13, color: COLORS.muted, marginTop: 4 },
+  heroCustomer: { fontSize: 15, color: COLORS.green, fontWeight: "700", marginTop: 8 },
+  heroPhone:    { fontSize: 13, color: COLORS.ink, marginTop: 6 },
 
-  sectionTitle: { fontSize: 13, fontWeight: "800", color: COLORS.ink, marginBottom: 10, textTransform: "uppercase", letterSpacing: 0.5 },
+  checkRow:   { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 6 },
+  checkLabel: { fontSize: 13, color: COLORS.muted },
+  checkPill:  { borderRadius: 8, paddingHorizontal: 9, paddingVertical: 4 },
+  checkText:  { fontSize: 12, fontWeight: "700" },
+  checkNote:  { fontSize: 11, color: COLORS.subtle, marginTop: 6 },
 
-  infoRow:   { flexDirection: "row", justifyContent: "space-between", paddingVertical: 7, borderBottomWidth: 1, borderBottomColor: COLORS.line },
-  infoLabel: { fontSize: 13, color: COLORS.muted, flex: 1 },
-  infoValue: { fontSize: 13, color: COLORS.ink, fontWeight: "600", flex: 1, textAlign: "right" },
-  infoMono:  { fontVariant: ["tabular-nums"] },
-
-  noInvoice: { color: COLORS.muted, fontSize: 13, fontStyle: "italic" },
+  muted:    { color: COLORS.muted, fontSize: 13, fontStyle: "italic" },
+  noteText: { color: COLORS.ink, fontSize: 13, lineHeight: 19, marginBottom: 6 },
 
   extRow: {
     flexDirection: "row",
@@ -540,89 +710,38 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.line,
+    gap: 10,
   },
-  extDate:          { fontSize: 14, fontWeight: "700", color: COLORS.ink },
-  extDurationBadge: { backgroundColor: COLORS.greenSoft, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 },
-  extDurationText:  { color: COLORS.green, fontSize: 11, fontWeight: "700" },
-  extAmount:        { fontSize: 12, color: COLORS.green, fontWeight: "700", marginTop: 3 },
-  extNote:          { fontSize: 11, color: COLORS.muted, marginTop: 2 },
-  extDelBtn:        { padding: 8, backgroundColor: COLORS.redSoft, borderRadius: 8 },
-  extDelText:       { color: COLORS.red, fontWeight: "800", fontSize: 12 },
+  extTop:       { flexDirection: "row", alignItems: "center", gap: 6, flexWrap: "wrap" },
+  extDate:      { fontSize: 14, fontWeight: "700", color: COLORS.ink },
+  extBadge:     { backgroundColor: COLORS.greenSoft, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 },
+  extBadgeText: { color: COLORS.green, fontSize: 11, fontWeight: "700" },
+  extAmount:    { fontSize: 12, color: COLORS.green, fontWeight: "700", marginTop: 3 },
+  extNote:      { fontSize: 11, color: COLORS.muted, marginTop: 2 },
+  extDelBtn:    { paddingVertical: 8, paddingHorizontal: 10, backgroundColor: COLORS.redSoft, borderRadius: 8 },
+  extDelText:   { color: COLORS.red, fontWeight: "800", fontSize: 12 },
 
-  invoiceCard: {
-    borderWidth: 1,
-    borderColor: COLORS.line,
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 8,
-  },
-  invoiceTop:    { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
+  invoiceCard:   { borderWidth: 1, borderColor: COLORS.line, borderRadius: 10, padding: 12, marginBottom: 8 },
+  invoiceTop:    { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", gap: 10 },
   invoiceNo:     { fontSize: 14, fontWeight: "700", color: COLORS.ink },
   invoiceDates:  { fontSize: 11, color: COLORS.muted, marginTop: 3 },
   invoiceRight:  { alignItems: "flex-end", gap: 6 },
   invoiceAmount: { fontSize: 16, fontWeight: "800", color: COLORS.green },
-  pdfBtn: {
-    backgroundColor: COLORS.greenSoft,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  pdfBtnText: { color: COLORS.green, fontSize: 12, fontWeight: "700" },
+  pdfBtn:        { backgroundColor: COLORS.greenSoft, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 5 },
+  pdfBtnText:    { color: COLORS.green, fontSize: 12, fontWeight: "700" },
 
-  actions:       { gap: 10, marginTop: 8 },
-  actionBtn:     {
-    borderRadius: 14,
-    paddingVertical: 15,
-    alignItems: "center",
-    borderWidth: 1.5,
-  },
-  actionExtend:  { backgroundColor: "#3b82f6", borderColor: "#3b82f6" },
-  actionReturn:  { backgroundColor: COLORS.green, borderColor: COLORS.green },
-  actionCancel:  { backgroundColor: COLORS.redSoft, borderColor: COLORS.red + "55" },
-  actionReopen:  { backgroundColor: COLORS.amberSoft, borderColor: COLORS.amber + "55" },
-  actionBtnText: { fontSize: 15, fontWeight: "700", color: "#fff" },
+  actions: { gap: 10, marginTop: 8 },
 
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "flex-end",
-  },
-  modalContent: {
-    backgroundColor: COLORS.card,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 20,
-    paddingBottom: 36,
-  },
-  modalHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.line,
-    paddingBottom: 12,
-  },
-  modalTitle:     { fontSize: 18, fontWeight: "800", color: COLORS.ink },
-  modalCloseText: { fontSize: 18, color: COLORS.muted, fontWeight: "800" },
-  inputLabel:     { fontSize: 12, fontWeight: "700", color: COLORS.muted, marginBottom: 4, marginTop: 8 },
-  modalInput: {
-    backgroundColor: COLORS.canvas,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: COLORS.line,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 14,
-    color: COLORS.ink,
-  },
-  submitBtn: {
-    backgroundColor: COLORS.green,
-    borderRadius: 12,
-    paddingVertical: 14,
-    alignItems: "center",
-    marginTop: 20,
-  },
-  submitBtnText: { color: "#fff", fontSize: 15, fontWeight: "700" },
+  row2:        { flexDirection: "row", gap: 10 },
+  formError:   { fontSize: 11, color: COLORS.red, marginTop: -6, marginBottom: 10 },
+  fieldLabel:  { fontSize: 12, fontWeight: "700", color: COLORS.muted, marginBottom: 8 },
+  fieldHint:   { fontSize: 11, color: COLORS.subtle, marginTop: 4, marginBottom: 6 },
+
+  overageBox:   { backgroundColor: COLORS.canvas, borderRadius: 12, padding: 12, marginTop: 10, borderWidth: 1, borderColor: COLORS.line },
+  overageTitle: { fontSize: 12, fontWeight: "800", color: COLORS.ink, textTransform: "uppercase", letterSpacing: 0.4 },
+  overageText:  { fontSize: 13, color: COLORS.muted, marginTop: 4 },
+  overageOver:  { color: COLORS.red, fontWeight: "700" },
+  chargeRow:    { flexDirection: "row", alignItems: "flex-end", gap: 10, marginTop: 10 },
+  switchBox:    { alignItems: "center", paddingBottom: 4 },
+  switchLabel:  { fontSize: 11, color: COLORS.muted, fontWeight: "700", marginBottom: 2 },
 });
-

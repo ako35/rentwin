@@ -172,14 +172,26 @@ export default function ScheduleScreen() {
               <Text style={styles.brandCaption}>SAHA EKİBİ</Text>
             </View>
           </View>
-          <Pressable
-            onPress={confirmLogout}
-            style={styles.profileButton}
-            accessibilityRole="button"
-            accessibilityLabel="Oturumu kapat"
-          >
-            <Text style={styles.profileInitial}>{(firstName || "S").charAt(0).toLocaleUpperCase("tr-TR")}</Text>
-          </Pressable>
+          <View style={styles.topActions}>
+            {user?.roles?.includes("Administrator") && (
+              <Pressable
+                onPress={() => router.replace("/(admin)")}
+                style={styles.adminButton}
+                accessibilityRole="button"
+                accessibilityLabel="Yönetim paneline geç"
+              >
+                <Text style={styles.adminButtonText}>Yönetim</Text>
+              </Pressable>
+            )}
+            <Pressable
+              onPress={confirmLogout}
+              style={styles.profileButton}
+              accessibilityRole="button"
+              accessibilityLabel="Oturumu kapat"
+            >
+              <Text style={styles.profileInitial}>{(firstName || "S").charAt(0).toLocaleUpperCase("tr-TR")}</Text>
+            </Pressable>
+          </View>
         </View>
 
         <View style={styles.welcomeBlock}>
@@ -284,6 +296,18 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: COLORS.canvas },
   content: { paddingHorizontal: 20, paddingTop: 14, paddingBottom: 36 },
   topBar: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 28 },
+  topActions: { flexDirection: "row", alignItems: "center", gap: 8 },
+  adminButton: {
+    height: 36,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: COLORS.line,
+    backgroundColor: COLORS.card,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  adminButtonText: { color: COLORS.green, fontSize: 13, fontWeight: "800" },
   brandLockup: { flexDirection: "row", alignItems: "center", gap: 10 },
   brandMark: { width: 38, height: 38, borderRadius: 13, backgroundColor: COLORS.green, alignItems: "center", justifyContent: "center" },
   brandMarkText: { color: "#fff", fontSize: 20, fontWeight: "800" },
