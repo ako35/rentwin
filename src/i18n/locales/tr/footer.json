@@ -2,6 +2,8 @@
  "quickLinks": "Hızlı Bağlantılar",
  "workingHours": "Çalışma Saatleri",
  "contactUs": "İletişim",
+ "followUs": "Bizi takip edin",
+ "socialLabel": "Rentwin {{network}} hesabı",
  "blurb": "Güvenli, konforlu ve şeffaf fiyatlarla hızlı araç kiralama hizmeti.",
  "hours": {
   "weekdays": "Pzt - Cuma: 09:00 - 21:00",

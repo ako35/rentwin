@@ -155,6 +155,16 @@ const rentwinAddress = "ATATÜRK MAH. 356 SK. NO: 16/31 ALİAĞA / İZMİR";
 const rentwinGeo = { latitude: 38.7928859, longitude: 26.9683881 };
 const rentwinMapsUrl = "https://maps.google.com/?cid=3109543909970773042";
 
+// Rentwin's own social profiles. Fill one in only once the profile is live and
+// carries the same name/address/phone as the site — every filled entry shows
+// as a footer icon and joins `sameAs` below. Mirrored in backend/src/lib/site.js.
+const rentwinSocial = {
+  facebook: "https://www.facebook.com/rentwin.aliaga",
+  instagram: "",
+  youtube: "",
+  x: "",
+};
+
 const website = {
   name: "Rentwin",
   url: "https://rentwin.com.tr",
@@ -177,8 +187,9 @@ const website = {
     { days: ["Saturday"], opens: "09:00", closes: "19:00" },
     { days: ["Sunday"], opens: "09:00", closes: "17:00" },
   ],
+  social: rentwinSocial,
   // Verified public profiles only — an unverifiable sameAs hurts rich results.
-  sameAs: [rentwinMapsUrl],
+  sameAs: [rentwinMapsUrl, ...Object.values(rentwinSocial).filter(Boolean)],
 };
 
 // Legacy combined legal identity — kept only so a contract created before

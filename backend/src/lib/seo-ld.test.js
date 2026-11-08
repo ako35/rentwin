@@ -302,3 +302,15 @@ for (const [prefix, copy] of [
     }
   });
 }
+
+test("business sameAs lists every live social profile", () => {
+  const { business } = require("./site");
+  const { sameAs } = autoRentalLd();
+  const live = Object.values(business.social).filter(Boolean);
+  assert.ok(live.includes("https://www.facebook.com/rentwin.aliaga"));
+  for (const url of live) {
+    assert.match(url, /^https:\/\//);
+    assert.ok(sameAs.includes(url), `${url} missing from sameAs`);
+  }
+  assert.equal(sameAs.filter((u) => u === "").length, 0);
+});

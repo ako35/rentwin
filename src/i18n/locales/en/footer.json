@@ -2,6 +2,8 @@
   "quickLinks": "Quick Links",
   "workingHours": "Working Hours",
   "contactUs": "Contact Us",
+  "followUs": "Follow us",
+  "socialLabel": "Rentwin on {{network}}",
   "blurb": "Fast car rental with safe, comfortable vehicles and transparent pricing.",
   "hours": {
     "weekdays": "Mon - Fri: 09:00 AM - 09:00 PM",

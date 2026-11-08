@@ -64,6 +64,49 @@ $breakpoint: 992px;
         color: rgba(255, 255, 255, 0.72);
     }
 
+    // --- social profiles --------------------------------------------------
+    &__social {
+        @include m.flexbox(column, flex-start, flex-start, 0.6rem);
+        margin-top: 0.4rem;
+
+        ul {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        a {
+            @include m.flexbox(row, center, center);
+            width: 2.4rem;
+            height: 2.4rem;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.05rem;
+            transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+
+            &:hover,
+            &:focus-visible {
+                color: #fff;
+                border-color: v.$color1;
+                background-color: v.$color1_5;
+            }
+
+            &:focus-visible {
+                outline: 2px solid v.$color1;
+                outline-offset: 2px;
+            }
+        }
+    }
+
+    &__social-title {
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
     // --- working hours ---------------------------------------------------
     &__hours li {
         font-size: 0.9rem;
@@ -126,8 +169,13 @@ $breakpoint: 992px;
 
         ul,
         .contact-info--plain,
-        &__brand {
+        &__brand,
+        &__social {
             align-items: center;
+        }
+
+        &__social ul {
+            justify-content: center;
         }
 
         .quick-link a {

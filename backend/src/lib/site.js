@@ -12,6 +12,16 @@ const SITE_URL = (process.env.PUBLIC_SITE_URL || "https://rentwin.com.tr").repla
 // Google Business Profile place (maps.app.goo.gl/r7VLYXKt7nJjXPuFA resolved).
 const MAPS_URL = "https://maps.google.com/?cid=3109543909970773042";
 
+// Rentwin's own social profiles — mirrors src/constants/index.js
+// `rentwinSocial`. Only live profiles that carry the same name/address/phone
+// as the site; each filled entry joins `sameAs`.
+const SOCIAL = {
+  facebook: "https://www.facebook.com/rentwin.aliaga",
+  instagram: "",
+  youtube: "",
+  x: "",
+};
+
 const business = {
   name: "Rentwin",
   email: "info@rentwin.com.tr",
@@ -26,8 +36,9 @@ const business = {
   mapUrl: MAPS_URL,
   // Keep in sync with src/constants/index.js `website.geo` and the confirmed address.
   geo: { latitude: 38.7928859, longitude: 26.9683881 },
+  social: SOCIAL,
   // Verified public profiles only — an unverifiable sameAs hurts rich results.
-  sameAs: [MAPS_URL],
+  sameAs: [MAPS_URL, ...Object.values(SOCIAL).filter(Boolean)],
   openingHours: [
     { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "21:00" },
     { days: ["Saturday"], opens: "09:00", closes: "19:00" },
