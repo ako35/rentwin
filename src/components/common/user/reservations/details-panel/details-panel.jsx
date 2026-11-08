@@ -7,16 +7,20 @@ const API_URL = import.meta.env.VITE_APP_API_URL;
 const UserReservationDetailsPanel = (props) => {
   const navigate = useNavigate();
   const { t } = useTranslation("user");
+  const image = props.car?.image;
+  const imageId = Array.isArray(image) ? image[0] : image;
 
   return (
     <>
       <h2>{props.car?.model}</h2>
-      <img
-        src={`${API_URL}/files/display${props.car?.image}`}
-        alt={props.car?.model}
-        title={props.car?.model}
-        className="img-fluid"
-      />
+      {imageId && (
+        <img
+          src={`${API_URL}/files/display/${imageId}`}
+          alt={props.car?.model}
+          title={props.car?.model}
+          className="img-fluid"
+        />
+      )}
       <Button onClick={() => navigate(-1)}>
         {t("reservations.details.backButton")}
       </Button>

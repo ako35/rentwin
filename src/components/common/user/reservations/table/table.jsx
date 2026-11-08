@@ -30,7 +30,7 @@ const UserReservationsTable = (props) => {
             </td>
           </tr>
         )}
-        {props.reservations.map((reservation, index) => {
+        {props.reservations.map((reservation, index) => (
           <tr
             key={reservation?.id || index}
             onClick={() => navigate(`${reservation?.id}`)}
@@ -41,15 +41,15 @@ const UserReservationsTable = (props) => {
               reservation?.car?.model,
               `${
                 reservation?.pickUpLocation
-              } - ${utils.functions.formatDateTime(reservation?.pickUpDate)}`,
+              } - ${utils.functions.formatDateTime(reservation?.pickUpTime)}`,
               `${
                 reservation?.dropOffLocation
-              } - ${utils.functions.formatDateTime(reservation?.dropOffDate)}`,
+              } - ${utils.functions.formatDateTime(reservation?.dropOffTime)}`,
             ].map((item, index) => (
               <td key={index}>{item}</td>
             ))}
-          </tr>;
-        })}
+          </tr>
+        ))}
       </tbody>
     </Table>
   );
