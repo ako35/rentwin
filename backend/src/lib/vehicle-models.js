@@ -31,19 +31,19 @@ const MODEL_COPY = {
   "FORD TRANSIT CIFT KABIN": {
     tr: {
       summary:
-        "Ford Transit Çift Kabin, arka koltuk sırasıyla kapalı yük bölümünü tek araçta birleştiren bir panelvan. Ekibini ve ekipmanını birlikte taşıması gereken saha, şantiye ve servis işleri için tasarlandı.",
+        "Ford Transit Çift Kabin, iki sıra koltuklu kabini ve arkasındaki açık yük kasasıyla ekibi ve malzemeyi tek araçta taşıyan bir kamyonet. Saha, şantiye ve servis işleri için tasarlandı.",
       idealFor: [
         "Saha ve şantiye ekiplerinin ulaşımı",
-        "Ekipman ve malzemenin ekiple birlikte taşınması",
+        "Malzeme ve ekipmanın açık kasada ekiple birlikte taşınması",
         "Aliağa sanayi bölgesindeki projeler için kısa ve uzun dönem kiralama",
       ],
     },
     en: {
       summary:
-        "The Ford Transit Double Cab combines a second seating row with an enclosed cargo area in one van. It is built for site, construction and service work where a crew and its equipment travel together.",
+        "The Ford Transit Double Cab is a pickup with a two-row cab and an open cargo bed, carrying a crew and its materials in one vehicle. It is built for site, construction and service work.",
       idealFor: [
         "Getting site and construction crews to work",
-        "Carrying tools and materials along with the team",
+        "Carrying materials and equipment on the open bed along with the team",
         "Short- and long-term hire for projects in the Aliağa industrial zone",
       ],
     },
