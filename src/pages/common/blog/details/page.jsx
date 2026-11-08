@@ -41,6 +41,8 @@ const BlogDetailPage = () => {
     description: post ? post.excerpt : t("seoDescription"),
     noindex: missing,
     statusCode: missing ? 404 : undefined,
+    // Posts are written in Turkish only — /en/blog/:slug canonicalizes to the TR URL.
+    monolingual: true,
   });
 
   if (loading) return <Loading height={400} />;

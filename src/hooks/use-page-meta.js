@@ -83,7 +83,11 @@ const removeAlternates = () => {
  * @param {string} [description]          used only with the (title, description) form
  *
  * Options: { title, description, image, canonical, type = "website",
- *            noindex = false, statusCode }
+ *            noindex = false, statusCode, monolingual = false }
+ *
+ * `monolingual`: the page's content exists in Turkish only (blog posts — see
+ * backend/src/lib/seo-ld.js buildHead). Canonical always points at the TR URL,
+ * <html lang> is "tr" and no hreflang pair is emitted, even on the /en route.
  */
 export const usePageMeta = (titleOrOptions, description) => {
   const options =
@@ -99,21 +103,23 @@ export const usePageMeta = (titleOrOptions, description) => {
     type = "website",
     noindex = false,
     statusCode,
+    monolingual = false,
   } = options;
 
   useEffect(() => {
     const path =
       window.location.pathname === "/" ? "/" : window.location.pathname.replace(/\/+$/, "");
-    const url = absolute(canonical, `${SITE_URL}${path}`);
+    const canonicalPath = stripLocalePrefix(path);
+    const url = absolute(canonical, `${SITE_URL}${monolingual ? canonicalPath : path}`);
     const resolvedTitle = title || DEFAULT_TITLE;
     const resolvedDesc = desc || DEFAULT_DESCRIPTION;
     const resolvedImage = absolute(image, DEFAULT_IMAGE);
     // Dimensions are only known for our own brand card — a vehicle/campaign
     // photo can be any aspect ratio, so don't claim 1200x630 for those.
     const usingDefaultImage = resolvedImage === DEFAULT_IMAGE;
-    const lang = i18n.resolvedLanguage === "en" ? "en" : "tr";
+    const lang = !monolingual && i18n.resolvedLanguage === "en" ? "en" : "tr";
     const locale = lang === "en" ? "en_US" : "tr_TR";
-    const altLocale = lang === "en" ? "tr_TR" : "en_US";
+    const altLocale = monolingual ? null : lang === "en" ? "tr_TR" : "en_US";
 
     document.title = resolvedTitle;
     document.documentElement.lang = lang;
@@ -125,10 +131,9 @@ export const usePageMeta = (titleOrOptions, description) => {
     // hreflang: tell search engines the TR and EN URLs are the same page in
     // two languages. Keyed off the URL, not the `noindex` page's own
     // content, so it stays correct even while e.g. a vehicle is loading.
-    if (noindex) {
+    if (noindex || monolingual) {
       removeAlternates();
     } else {
-      const canonicalPath = stripLocalePrefix(path);
       setAlternate("tr", `${SITE_URL}${canonicalPath}`);
       setAlternate("en", `${SITE_URL}${localizePath(canonicalPath, "en")}`);
       setAlternate("x-default", `${SITE_URL}${canonicalPath}`);
@@ -149,7 +154,8 @@ export const usePageMeta = (titleOrOptions, description) => {
       removeProperty("og:image:height");
     }
     setProperty("og:locale", locale);
-    setProperty("og:locale:alternate", altLocale);
+    if (altLocale) setProperty("og:locale:alternate", altLocale);
+    else removeProperty("og:locale:alternate");
     setNamed("twitter:card", "summary_large_image");
     setNamed("twitter:title", resolvedTitle);
     setNamed("twitter:description", resolvedDesc);
@@ -162,5 +168,5 @@ export const usePageMeta = (titleOrOptions, description) => {
       const tag = document.head.querySelector('meta[name="render:status_code"]');
       if (tag) tag.remove();
     };
-  }, [title, desc, image, canonical, type, noindex, statusCode]);
+  }, [title, desc, image, canonical, type, noindex, statusCode, monolingual]);
 };

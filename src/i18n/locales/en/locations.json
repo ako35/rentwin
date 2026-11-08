@@ -6,6 +6,13 @@
   "cardCta": "Details",
   "empty": "There are no locations to display right now.",
   "detail": {
+    "overrides": {
+      "aliaga": {
+        "seoTitle": "Rentwin Aliağa Office | Address & Opening Hours",
+        "seoDescription": "Rentwin's Aliağa office is at Atatürk Mah. 356 Sk. No: 16/31, Aliağa/İzmir and open 7 days a week. Pick up your car at the office or request airport delivery.",
+        "heading": "Rentwin Aliağa Office"
+      }
+    },
     "seoTitle": "{{name}} Car Rental | Rentwin",
     "seoDescription": "Affordable, well-maintained rental cars in {{name}}. Book online with Rentwin and pick up your car at {{name}}.",
     "heading": "Car Rental in {{name}}",

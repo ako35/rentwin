@@ -44,8 +44,10 @@ const esc = (value) =>
 const renderHeadTags = (h) => {
   const ogUrl = h.canonical || h.url;
   // hreflang alternates — mirrors src/hooks/use-page-meta.js. Skipped for a
-  // noindex page (h.canonical is null then), same as the client does.
-  const canonicalPath = h.path ? stripLocalePrefix(h.path) : null;
+  // noindex page (h.canonical is null then), same as the client does, and
+  // for a Turkish-only page (h.monolingual — blog posts), which has no
+  // English version to pair with.
+  const canonicalPath = h.path && !h.monolingual ? stripLocalePrefix(h.path) : null;
   return [
     `<title>${esc(h.title)}</title>`,
     `<meta name="description" content="${esc(h.description)}" />`,
@@ -70,7 +72,7 @@ const renderHeadTags = (h) => {
     h.ogImageDefault ? `<meta property="og:image:width" content="1200" />` : null,
     h.ogImageDefault ? `<meta property="og:image:height" content="630" />` : null,
     `<meta property="og:locale" content="${esc(h.ogLocale)}" />`,
-    `<meta property="og:locale:alternate" content="${esc(h.ogLocaleAlt)}" />`,
+    h.ogLocaleAlt ? `<meta property="og:locale:alternate" content="${esc(h.ogLocaleAlt)}" />` : null,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${esc(h.title)}" />`,
     `<meta name="twitter:description" content="${esc(h.description)}" />`,
@@ -323,4 +325,4 @@ const renderPage = async (req, res) => {
   }
 };
 
-module.exports = { renderPage };
+module.exports = { renderPage, renderHeadTags };

@@ -49,10 +49,15 @@ const LocationDetailPage = () => {
   // found" UI below still covers both cases (it keys off `location` being
   // unset), only the SEO signal changes.
   const missing = !loading && !loadFailed && !location;
+  // Per-slug title/description/H1 (detail.overrides) — Aliağa is the home
+  // office; the homepage owns "Aliağa Araç Kiralama", so this page targets the
+  // office itself. Mirrored in backend/src/lib/seo-ld.js LOCATION_META_OVERRIDES.
+  const override = t(`detail.overrides.${slug}`, { returnObjects: true, defaultValue: null });
+  const meta = override && typeof override === "object" ? override : null;
 
   usePageMeta({
-    title: name ? t("detail.seoTitle", { name }) : t("seoTitle"),
-    description: name ? t("detail.seoDescription", { name }) : t("seoDescription"),
+    title: name ? meta?.seoTitle || t("detail.seoTitle", { name }) : t("seoTitle"),
+    description: name ? meta?.seoDescription || t("detail.seoDescription", { name }) : t("seoDescription"),
     noindex: missing,
     statusCode: missing ? 404 : undefined,
   });
@@ -109,7 +114,7 @@ const LocationDetailPage = () => {
         ])}
       />
       <PageHeader
-        title={t("detail.heading", { name })}
+        title={meta?.heading || t("detail.heading", { name })}
         crumbs={[{ label: t("pageTitle"), to: routes.locations }]}
       />
       <Spacer />

@@ -164,17 +164,20 @@ export const vehicleLd = ({
 
 // Mirrors the backend bot-prerender's articleLd (backend/src/lib/seo-ld.js)
 // for client parity — a /blog/:slug post.
+// Blog posts are Turkish-only, so the article always points at its TR URL
+// (the canonical of both /blog/:slug and /en/blog/:slug).
 export const articleLd = ({ title, excerpt, image, publishedAt, updatedAt, path }) => ({
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   headline: title,
   description: excerpt,
+  inLanguage: "tr-TR",
   ...(image ? { image } : {}),
   datePublished: new Date(publishedAt).toISOString(),
   dateModified: new Date(updatedAt || publishedAt).toISOString(),
   author: { "@id": `${SITE_URL}/#organization` },
   publisher: { "@id": `${SITE_URL}/#organization` },
-  mainEntityOfPage: `${SITE_URL}${localizePath(path, currentLocale())}`,
+  mainEntityOfPage: `${SITE_URL}${path}`,
 });
 
 // Embedded inside autoRentalLd()'s `review` array — never emitted on its own.

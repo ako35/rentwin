@@ -7,8 +7,6 @@ import { usePageMeta, SITE_URL } from "../../../hooks/use-page-meta";
 import { breadcrumbLd, itemListLd } from "../../../utils/seo";
 import { services } from "../../../services";
 import { constants } from "../../../constants";
-import { useLocale } from "../../../hooks/use-locale";
-import { localizePath } from "../../../i18n/locale-routing";
 import "./style.scss";
 
 const { routes } = constants;
@@ -17,7 +15,6 @@ const API_URL = import.meta.env.VITE_APP_API_URL;
 const BlogPage = () => {
   const { t, i18n } = useTranslation("blog");
   const { t: tCommon } = useTranslation("common");
-  const locale = useLocale();
   const dateLocale = i18n.language === "en" ? "en-GB" : "tr-TR";
   usePageMeta(t("seoTitle"), t("seoDescription"));
 
@@ -50,7 +47,9 @@ const BlogPage = () => {
               "@type": "ListItem",
               position: index + 1,
               name: p.title,
-              url: `${SITE_URL}${localizePath(`${routes.blog}/${p.slug}`, locale)}`,
+              // Posts are Turkish-only — /en/blog/:slug canonicalizes to the
+              // TR URL, so the list points at that canonical URL on both routes.
+              url: `${SITE_URL}${routes.blog}/${p.slug}`,
             })),
           })}
         />

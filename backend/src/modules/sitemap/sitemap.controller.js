@@ -157,15 +157,16 @@ const getSitemap = asyncHandler(async (req, res) => {
         priority: "0.6",
       })
     ),
-    ...posts.flatMap((p) =>
-      withEnglishTwin({
-        path: `/blog/${p.slug}`,
-        lastmod: p.updatedAt,
-        changefreq: "monthly",
-        priority: "0.6",
-        image: p.imageId ? blobById.get(p.imageId) : undefined,
-      })
-    ),
+    // Blog posts are Turkish-only (BlogPost has no translation fields) — the
+    // /en/blog/:slug URL canonicalizes to the TR page (see seo-ld buildHead),
+    // so it's not listed here and the TR entry carries no hreflang pair.
+    ...posts.map((p) => ({
+      path: `/blog/${p.slug}`,
+      lastmod: p.updatedAt,
+      changefreq: "monthly",
+      priority: "0.6",
+      image: p.imageId ? blobById.get(p.imageId) : undefined,
+    })),
   ];
 
   const xml =

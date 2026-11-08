@@ -160,17 +160,21 @@ const vehicleLd = ({ name, brand, model, image, transmission, fuelType, modelYea
   },
 });
 
-const articleLd = ({ title, excerpt, image, publishedAt, updatedAt, path, locale = "tr" }) => ({
+// Blog posts are Turkish-only (no translation fields on BlogPost), so the
+// article always points at its TR URL — the same URL both /blog/:slug and
+// /en/blog/:slug canonicalize to.
+const articleLd = ({ title, excerpt, image, publishedAt, updatedAt, path }) => ({
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   headline: title,
   description: excerpt,
+  inLanguage: "tr-TR",
   ...(image ? { image } : {}),
   datePublished: new Date(publishedAt).toISOString(),
   dateModified: new Date(updatedAt || publishedAt).toISOString(),
   author: { "@id": ORG_ID },
   publisher: { "@id": ORG_ID },
-  mainEntityOfPage: `${SITE_URL}${localizePath(path, locale)}`,
+  mainEntityOfPage: `${SITE_URL}${path}`,
 });
 
 // Embedded inside autoRentalLd()'s `review` array — never emitted on its own.
@@ -575,13 +579,39 @@ const LOCATION_LOCAL_COPY = {
   },
 };
 
+// Per-slug <title> / description / H1 overrides — mirrors
+// src/i18n/locales/{tr,en}/locations.json detail.overrides. Aliağa is the
+// home office and the homepage already targets "Aliağa Araç Kiralama" (see
+// STATIC_META "/"); with the same title + H1 on /lokasyonlar/aliaga the two
+// pages competed for one query. The Aliağa page now aims at the office
+// itself (address, opening hours, pick-up) and leaves the head term to "/".
+const LOCATION_META_OVERRIDES = {
+  tr: {
+    aliaga: {
+      title: "Rentwin Aliağa Ofisi | Adres ve Çalışma Saatleri",
+      description:
+        "Rentwin Aliağa ofisi Atatürk Mah. 356 Sk. No: 16/31, Aliağa/İzmir adresinde, haftanın 7 günü açık. Aracınızı ofisten teslim alın veya havalimanı teslimi isteyin.",
+      heading: "Rentwin Aliağa Ofisi",
+    },
+  },
+  en: {
+    aliaga: {
+      title: "Rentwin Aliağa Office | Address & Opening Hours",
+      description:
+        "Rentwin's Aliağa office is at Atatürk Mah. 356 Sk. No: 16/31, Aliağa/İzmir and open 7 days a week. Pick up your car at the office or request airport delivery.",
+      heading: "Rentwin Aliağa Office",
+    },
+  },
+};
+
 const renderLocationDetailBody = ({ locationName, slug }, locale = "tr") => {
   const copy = LOCATIONS_COPY[locale];
   const local = LOCATION_LOCAL_COPY[locale][slug];
+  const override = LOCATION_META_OVERRIDES[locale][slug];
   const list = (items) => `<ul>${items.map((i) => `<li>${htmlEsc(i)}</li>`).join("")}</ul>`;
   const steps = (items) => `<ol>${items.map((i) => `<li>${htmlEsc(i)}</li>`).join("")}</ol>`;
   return (
-    `<main><h1>${htmlEsc(copy.heading(locationName))}</h1>` +
+    `<main><h1>${htmlEsc(override?.heading || copy.heading(locationName))}</h1>` +
     `<p>${htmlEsc(copy.lead(locationName))}</p>` +
     `<h2>${htmlEsc(copy.whyTitle(locationName))}</h2>${list(copy.why(locationName))}` +
     `<h2>${htmlEsc(copy.howTitle(locationName))}</h2>${steps(copy.how(locationName))}` +
@@ -695,8 +725,10 @@ const BLOG_LIST_COPY = {
 };
 
 // posts: [{ slug, title }]
+// Posts are Turkish-only, so every link (on /blog and /en/blog alike) points
+// at the TR canonical URL — see buildHead's blog post branch.
 const renderBlogListBody = (posts = [], locale = "tr") => {
-  const links = posts.map((p) => htmlLink(`${SITE_URL}${localizePath(`/blog/${p.slug}`, locale)}`, p.title)).join("");
+  const links = posts.map((p) => htmlLink(`${SITE_URL}/blog/${p.slug}`, p.title)).join("");
   const copy = BLOG_LIST_COPY[locale];
   return `<main><h1>${htmlEsc(copy.heading)}</h1><p>${htmlEsc(copy.intro)}</p>${links ? `<ul>${links}</ul>` : ""}</main>`;
 };
@@ -1102,16 +1134,19 @@ const buildHead = ({
         title: locale === "en" ? "Car Rental Locations | Rentwin" : "Araç Kiralama Lokasyonları | Rentwin",
       });
     }
+    const override = LOCATION_META_OVERRIDES[locale][slug];
     return {
       ...base(path),
       title:
-        locale === "en"
+        override?.title ||
+        (locale === "en"
           ? `${locationName} Car Rental | Rentwin`
-          : `${locationName} Araç Kiralama | Rentwin`,
+          : `${locationName} Araç Kiralama | Rentwin`),
       description:
-        locale === "en"
+        override?.description ||
+        (locale === "en"
           ? `Affordable, well-maintained rental cars in ${locationName}. Book online with Rentwin and pick up your car at ${locationName}.`
-          : `${locationName} bölgesinde uygun fiyatlı ve bakımlı kiralık araçlar. Rentwin güvencesiyle online rezervasyon yapın, aracınızı ${locationName} noktasından teslim alın.`,
+          : `${locationName} bölgesinde uygun fiyatlı ve bakımlı kiralık araçlar. Rentwin güvencesiyle online rezervasyon yapın, aracınızı ${locationName} noktasından teslim alın.`),
       jsonLd: [
         breadcrumbLd(
           [
@@ -1134,9 +1169,19 @@ const buildHead = ({
         title: locale === "en" ? "Blog Post | Rentwin" : "Blog Yazısı | Rentwin Araç Kiralama",
       });
     }
+    // BlogPost has no translation fields — every post exists in Turkish only,
+    // so /en/blog/:slug serves the same Turkish text under the English UI.
+    // Declaring that URL as an indexable English page made it a duplicate of
+    // the TR one. Both URLs now canonicalize to the TR page, are tagged
+    // lang="tr", and carry no hreflang pair (there is no English version).
     return {
       ...base(path),
-      title: `${post.title} | Rentwin ${locale === "en" ? "Blog" : "Blog"}`,
+      canonical: `${SITE_URL}${canonicalPath}`,
+      htmlLang: "tr",
+      ogLocale: "tr_TR",
+      ogLocaleAlt: null,
+      monolingual: true,
+      title: `${post.title} | Rentwin Blog`,
       description: post.excerpt,
       ogImage: post.image || DEFAULT_IMAGE,
       ogImageDefault: !post.image,
@@ -1150,7 +1195,7 @@ const buildHead = ({
           ],
           locale
         ),
-        articleLd({ ...post, path: canonicalPath, locale }),
+        articleLd({ ...post, path: canonicalPath }),
       ],
       bodyHtml: renderBlogPostBody({ post }, locale),
     };
@@ -1226,7 +1271,7 @@ const buildHead = ({
               "@type": "ListItem",
               position: i + 1,
               name: p.title,
-              url: `${SITE_URL}${localizePath(`/blog/${p.slug}`, locale)}`,
+              url: `${SITE_URL}/blog/${p.slug}`, // TR canonical — posts are Turkish-only
             })),
           })
         );

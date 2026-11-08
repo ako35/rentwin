@@ -1,10 +1,13 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const { autoRentalLd, buildHead } = require("./seo-ld");
+const { SITE_URL } = require("./site");
 const trHomeCopy = require("../../../src/i18n/locales/tr/home.json");
 const enHomeCopy = require("../../../src/i18n/locales/en/home.json");
 const trVehiclesCopy = require("../../../src/i18n/locales/tr/vehicles.json");
 const enVehiclesCopy = require("../../../src/i18n/locales/en/vehicles.json");
+const trLocationsCopy = require("../../../src/i18n/locales/tr/locations.json");
+const enLocationsCopy = require("../../../src/i18n/locales/en/locations.json");
 
 const cases = [
   { path: "/vehicles", heading: "Araçlarımız" },
@@ -105,5 +108,84 @@ test("home and vehicle metadata target local rental searches in both languages",
   assert.match(enHome.title, /Car Rental in Aliağa/);
   for (const page of [trHome, enHome, trVehicles, enVehicles]) {
     assert.match(page.description, /Adnan Menderes Airport|Adnan Menderes Havalimanı/);
+  }
+});
+
+// LOCATION_META_OVERRIDES (backend) must stay in sync with the client's
+// locations.json detail.overrides, or a bot and a browser see different
+// <title>/H1 for the same URL.
+for (const [prefix, copy] of [
+  ["", trLocationsCopy],
+  ["/en", enLocationsCopy],
+]) {
+  for (const [slug, override] of Object.entries(copy.detail.overrides)) {
+    test(`location override for ${prefix}/lokasyonlar/${slug} mirrors the client copy`, () => {
+      const head = buildHead({ path: `${prefix}/lokasyonlar/${slug}`, locationName: slug, slug });
+      assert.equal(head.title, override.seoTitle);
+      assert.equal(head.description, override.seoDescription);
+      assert.ok(head.bodyHtml.includes(`<h1>${override.heading}</h1>`));
+    });
+  }
+}
+
+test("Aliağa location page no longer competes with the homepage title", () => {
+  for (const [home, location] of [
+    ["/", "/lokasyonlar/aliaga"],
+    ["/en", "/en/lokasyonlar/aliaga"],
+  ]) {
+    const homeHead = buildHead({ path: home });
+    const locationHead = buildHead({ path: location, locationName: "Aliağa", slug: "aliaga" });
+    assert.notEqual(locationHead.title, homeHead.title);
+    assert.doesNotMatch(locationHead.title, /Aliağa Araç Kiralama|Car Rental in Aliağa|Aliağa Car Rental/);
+  }
+});
+
+test("locations without an override keep the templated title and H1", () => {
+  const tr = buildHead({ path: "/lokasyonlar/bursa", locationName: "Bursa", slug: "bursa" });
+  const en = buildHead({ path: "/en/lokasyonlar/bursa", locationName: "Bursa", slug: "bursa" });
+  assert.equal(tr.title, "Bursa Araç Kiralama | Rentwin");
+  assert.equal(en.title, "Bursa Car Rental | Rentwin");
+  assert.ok(tr.bodyHtml.includes("<h1>Bursa Araç Kiralama</h1>"));
+});
+
+const samplePost = {
+  title: "Kış Lastiği Rehberi",
+  excerpt: "Kış aylarında kiralık araçla güvenli sürüş için bilmeniz gerekenler.",
+  content: "<p>İçerik</p>",
+  image: null,
+  publishedAt: new Date("2026-10-01T09:00:00Z"),
+  updatedAt: new Date("2026-10-05T09:00:00Z"),
+};
+
+for (const path of ["/blog/kis-lastigi-rehberi", "/en/blog/kis-lastigi-rehberi"]) {
+  test(`blog post ${path} is Turkish-only and canonicalizes to the TR URL`, () => {
+    const head = buildHead({ path, post: samplePost });
+    const trUrl = `${SITE_URL}/blog/kis-lastigi-rehberi`;
+    assert.equal(head.canonical, trUrl);
+    assert.equal(head.htmlLang, "tr");
+    assert.equal(head.ogLocale, "tr_TR");
+    assert.equal(head.ogLocaleAlt, null);
+    assert.equal(head.monolingual, true);
+    assert.equal(head.robots, "index, follow");
+    const article = head.jsonLd.find((block) => block["@type"] === "BlogPosting");
+    assert.equal(article.inLanguage, "tr-TR");
+    assert.equal(article.mainEntityOfPage, trUrl);
+  });
+}
+
+test("missing blog post stays noindex without a canonical", () => {
+  const head = buildHead({ path: "/en/blog/yok", postMissing: true });
+  assert.equal(head.canonical, null);
+  assert.equal(head.robots, "noindex, nofollow");
+});
+
+test("blog list points every post at its TR canonical URL on both routes", () => {
+  const posts = [{ slug: "kis-lastigi-rehberi", title: "Kış Lastiği Rehberi" }];
+  for (const path of ["/blog", "/en/blog"]) {
+    const head = buildHead({ path, posts });
+    const list = head.jsonLd.find((block) => block["@type"] === "ItemList");
+    assert.equal(list.itemListElement[0].url, `${SITE_URL}/blog/kis-lastigi-rehberi`);
+    assert.ok(head.bodyHtml.includes(`href="${SITE_URL}/blog/kis-lastigi-rehberi"`));
+    assert.ok(!head.bodyHtml.includes("/en/blog/kis-lastigi-rehberi"));
   }
 });

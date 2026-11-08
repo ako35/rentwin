@@ -6,6 +6,13 @@
   "cardCta": "Detaylar",
   "empty": "Şu anda listelenecek lokasyon bulunmuyor.",
   "detail": {
+    "overrides": {
+      "aliaga": {
+        "seoTitle": "Rentwin Aliağa Ofisi | Adres ve Çalışma Saatleri",
+        "seoDescription": "Rentwin Aliağa ofisi Atatürk Mah. 356 Sk. No: 16/31, Aliağa/İzmir adresinde, haftanın 7 günü açık. Aracınızı ofisten teslim alın veya havalimanı teslimi isteyin.",
+        "heading": "Rentwin Aliağa Ofisi"
+      }
+    },
     "seoTitle": "{{name}} Araç Kiralama | Rentwin",
     "seoDescription": "{{name}} bölgesinde uygun fiyatlı ve bakımlı kiralık araçlar. Rentwin güvencesiyle online rezervasyon yapın, aracınızı {{name}} noktasından teslim alın.",
     "heading": "{{name}} Araç Kiralama",
