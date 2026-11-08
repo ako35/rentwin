@@ -18,6 +18,7 @@
 // only the surrounding page chrome (titles, labels, breadcrumbs) is bilingual.
 
 const { SITE_URL, business, slugify, localeFromPath, localizePath, stripLocalePrefix } = require("./site");
+const { getModelCopy } = require("./vehicle-models");
 const HOME_COPY = {
   tr: require("../../../src/i18n/locales/tr/home.json"),
   en: require("../../../src/i18n/locales/en/home.json"),
@@ -417,6 +418,10 @@ const VEHICLE_DETAIL_COPY = {
     monthlyPriceLabel: "Aylık Fiyat",
     vatSuffix: "+ KDV",
     relatedTitle: "Benzer Araçlar",
+    idealForTitle: (name) => `${name} kimler için uygun?`,
+    fleetTitle: (name) => `Filomuzdaki ${name} araçlar`,
+    variants: ({ count, name, years, transmissions, fuels }) =>
+      `Rentwin filosunda ${count} adet ${name} bulunuyor${years ? `: ${years} model` : ""}, ${transmissions} vites ve ${fuels} yakıt seçenekleriyle. Rezervasyonda müsait olan aracı seçebilirsiniz.`,
     description: ({ brand, model, transmission, fuel }) =>
       `${brand} ${model}, Rentwin filosunda ${transmission} vites ve ${fuel} yakıt seçeneğiyle hizmetinizde. Aliağa ve İzmir genelinde teslim alınabilen bu araç, bakımları tamamlanmış ve kullanıma hazır durumdadır.`,
     descriptionWithYear: ({ year, brand, model, transmission, fuel }) =>
@@ -431,6 +436,10 @@ const VEHICLE_DETAIL_COPY = {
     monthlyPriceLabel: "Monthly Price",
     vatSuffix: "+ VAT",
     relatedTitle: "Similar Vehicles",
+    idealForTitle: (name) => `Who is the ${name} for?`,
+    fleetTitle: (name) => `${name} in our fleet`,
+    variants: ({ count, name, years, transmissions, fuels }) =>
+      `The Rentwin fleet has ${count} ${name} vehicles${years ? ` (${years} models)` : ""}, with ${transmissions} transmission and ${fuels} fuel. You can choose whichever unit is available when you book.`,
     description: ({ brand, model, transmission, fuel }) =>
       `The ${brand} ${model} is part of the Rentwin fleet, available with ${transmission} transmission and ${fuel} fuel. Available for pickup across Aliağa and İzmir, this vehicle is fully serviced and ready to drive.`,
     descriptionWithYear: ({ year, brand, model, transmission, fuel }) =>
@@ -438,11 +447,33 @@ const VEHICLE_DETAIL_COPY = {
   },
 };
 
-// vehicle: { name, brand, model, transmission, fuelType, modelYear } (raw
-// enum values, labeled here); related: [{ id, name }] — a few other
-// in-service vehicles to link to, same purpose as the frontend's "Benzer
-// Araçlar" section (internal link discovery for a crawler that never runs
-// the client-side fetch).
+// The "N units of this model: 2022–2025, Manual and Automatic …" sentence —
+// only when the fleet holds more than one unit of the model (for a single
+// unit the description above already says it all). Mirrors
+// details-panel.jsx's formatVariants. variants: lib/vehicle-models.js
+// summarizeVariants() output.
+const formatVariants = (variants, name, locale = "tr") => {
+  if (!variants || variants.count < 2) return "";
+  const list = new Intl.ListFormat(locale === "en" ? "en" : "tr", { type: "conjunction" });
+  const years =
+    variants.minYear == null
+      ? ""
+      : variants.minYear === variants.maxYear
+        ? String(variants.minYear)
+        : `${variants.minYear}–${variants.maxYear}`;
+  return VEHICLE_DETAIL_COPY[locale].variants({
+    count: variants.count,
+    name,
+    years,
+    transmissions: list.format(variants.transmissions.map((t) => TRANSMISSION_LABELS[locale][t] || t)),
+    fuels: list.format(variants.fuelTypes.map((f) => FUEL_LABELS[locale][f] || f)),
+  });
+};
+
+// vehicle: { name, brand, model, transmission, fuelType, modelYear, variants }
+// (raw enum values, labeled here); related: [{ id, name }] — other models'
+// canonical pages, same purpose as the frontend's "Benzer Araçlar" section
+// (internal link discovery for a crawler that never runs the client fetch).
 const renderVehicleDetailBody = ({ vehicle, related = [] }, locale = "tr") => {
   const copy = VEHICLE_DETAIL_COPY[locale];
   const transmissionLabel = TRANSMISSION_LABELS[locale][vehicle.transmission] || vehicle.transmission || "";
@@ -455,6 +486,17 @@ const renderVehicleDetailBody = ({ vehicle, related = [] }, locale = "tr") => {
     fuel: fuelLabel,
   };
   const description = vehicle.modelYear ? copy.descriptionWithYear(descArgs) : copy.description(descArgs);
+  const name = `${vehicle.brand} ${vehicle.model}`.trim();
+  // Model-level copy (lib/vehicle-models.js MODEL_COPY) — what makes one
+  // model's page read differently from another's.
+  const modelCopy = getModelCopy(vehicle.brand, vehicle.model)?.[locale];
+  const modelSection = modelCopy
+    ? `<p>${htmlEsc(modelCopy.summary)}</p>` +
+      `<h2>${htmlEsc(copy.idealForTitle(name))}</h2>` +
+      `<ul>${modelCopy.idealFor.map((i) => `<li>${htmlEsc(i)}</li>`).join("")}</ul>`
+    : "";
+  const variantsText = formatVariants(vehicle.variants, name, locale);
+  const fleetSection = variantsText ? `<h2>${htmlEsc(copy.fleetTitle(name))}</h2><p>${htmlEsc(variantsText)}</p>` : "";
   const relatedList = related.length
     ? `<h2>${htmlEsc(copy.relatedTitle)}</h2><ul>${related
         .map(
@@ -474,6 +516,7 @@ const renderVehicleDetailBody = ({ vehicle, related = [] }, locale = "tr") => {
   return (
     `<main><h1>${htmlEsc(vehicle.name)}</h1>` +
     `<p>${htmlEsc(description)}</p>` +
+    modelSection +
     `<h2>${htmlEsc(copy.highlightsTitle)}</h2>` +
     "<ul>" +
     `<li>${htmlEsc(copy.modelLabel)}: ${htmlEsc(`${vehicle.brand} ${vehicle.model}`.trim())}</li>` +
@@ -481,6 +524,7 @@ const renderVehicleDetailBody = ({ vehicle, related = [] }, locale = "tr") => {
     `<li>${htmlEsc(copy.fuelLabel)}: ${htmlEsc(fuelLabel)}</li>` +
     priceItems +
     "</ul>" +
+    fleetSection +
     relatedList +
     "</main>"
   );
@@ -529,11 +573,28 @@ const LOCATIONS_COPY = {
   },
 };
 
-// Per-slug extra paragraphs — mirrors locations.json `detail.local.*`.
+// Per-slug copy — mirrors locations.json `detail.local.*`. `lead`, `why` and
+// `how` replace LOCATIONS_COPY's shared template for that slug: with only the
+// city name swapped in, the location pages were ~35% identical and Search
+// Console folded Aliağa and İzmir Havalimanı into Bursa ("Duplicate, Google
+// chose different canonical than user").
 const LOCATION_LOCAL_COPY = {
   tr: {
     aliaga: {
       title: "Aliağa'da araç kiralama hakkında",
+      lead:
+        "Aliağa, Rentwin'in merkez ofisinin bulunduğu yer. Aracınızı Atatürk Mahallesi'ndeki ofisimizden teslim alabilir, Aliağa'daki iş ve tatil yolculuklarınıza doğrudan buradan başlayabilirsiniz.",
+      why: [
+        "Atatürk Mah. 356 Sk.'deki ofisimizden aracınızı doğrudan teslim alabilirsiniz",
+        "Ofisimiz haftanın 7 günü açık: hafta içi 09:00–21:00, Cumartesi 09:00–19:00, Pazar 09:00–17:00",
+        "Sanayi bölgesindeki işler için binek araçların yanında panelvan ve çift kabin seçenekleri",
+        "Kısa süreli kiralamanın yanında aylık kiralama seçenekleri",
+      ],
+      how: [
+        "Alış–bırakış tarih ve saatlerinizi seçip Aliağa ofisindeki müsait araçları listeleyin.",
+        "Aracınızı ve ek hizmetleri belirleyip rezervasyonu oluşturun.",
+        "Ofis saatleri içinde kimlik, ehliyet ve kartınızla ofisimize gelip aracınızı teslim alın; depozito talep edilmez.",
+      ],
       paragraphs: [
         "Aliağa'daki Rentwin ofisi Atatürk Mah. 356 Sk. No: 16/31, 35800 Aliağa/İzmir adresindedir. STAR Rafineri, Petkim ve liman tesislerine iş seyahati için gelenler, rezervasyonla araç teslim alabilir.",
         "Aliağa'dan Foça, Yeni Foça ve Çandarlı yönüne seyahat edebilir; İzmir Adnan Menderes Havalimanı'nda teslim ve karşılama talep edebilirsiniz. Ofis saatleri: Pazartesi–Cuma 09:00–21:00, Cumartesi 09:00–19:00, Pazar 09:00–17:00.",
@@ -541,6 +602,19 @@ const LOCATION_LOCAL_COPY = {
     },
     "izmir-havalimani": {
       title: "İzmir Adnan Menderes Havalimanı araç kiralama",
+      lead:
+        "İzmir'e uçakla geliyorsanız aracınızı İzmir Adnan Menderes Havalimanı'nda teslim alabilirsiniz. Havalimanı teslimi ve karşılama rezervasyon sırasında talep edilir; böylece inişten sonra doğrudan yola çıkabilirsiniz.",
+      why: [
+        "Havalimanında araç teslimi ve karşılama, rezervasyon sırasında talep edilebilir",
+        "Havalimanından Aliağa'ya, İzmir merkezine ve çevre ilçelere doğrudan devam edebilirsiniz",
+        "Kalabalık gruplar ve bol bagajlı yolculuklar için geniş araç seçenekleri",
+        "Günlük ve aylık kiralama seçenekleri",
+      ],
+      how: [
+        "Alış tarih ve saatinizi seçip rezervasyona havalimanı teslim isteğinizi ekleyin.",
+        "Teslim ayrıntıları rezervasyon teyidinizde netleştirilir.",
+        "Havalimanında kimlik, ehliyet ve kartınızla aracınızı teslim alın; depozito talep edilmez.",
+      ],
       paragraphs: [
         "İzmir Adnan Menderes Havalimanı'nda Rentwin araç teslimi ve karşılama hizmeti rezervasyon sırasında talep edilebilir. Alış tarih ve saatinizi seçip havalimanı teslim isteğinizi ekibimize iletin; teslim ayrıntılarını rezervasyon teyidinde netleştirin.",
         "Havalimanından Aliağa'ya, İzmir merkezine veya çevre ilçelere devam edeceğiniz yolculuk için günlük ya da aylık kiralama seçeneklerini inceleyin. Uygun araçları görmek ve rezervasyon başlatmak için araç listemizi ziyaret edin.",
@@ -548,6 +622,19 @@ const LOCATION_LOCAL_COPY = {
     },
     bursa: {
       title: "Bursa'da adrese araç teslimi",
+      lead:
+        "Bursa'da aracınızı sizinle belirlenen adrese teslim ediyoruz. Teslimat adresini ve saatini rezervasyon talebinizde belirtmeniz yeterli.",
+      why: [
+        "Araç, Bursa'da sizinle belirlenen adrese teslim edilir",
+        "Teslimat adresini ve saatini rezervasyon talebinizde siz belirlersiniz",
+        "Şehir içi kullanım için kompakt araçlardan ticari işler için panelvanlara kadar seçenekler",
+        "Kısa ve uzun dönem kiralama seçenekleri",
+      ],
+      how: [
+        "Alış–bırakış tarih ve saatlerinizi seçip müsait araçları listeleyin.",
+        "Rezervasyon talebinize Bursa'daki teslimat adresinizi ve tercih ettiğiniz saati ekleyin.",
+        "Araç belirlenen adrese getirildiğinde kimlik, ehliyet ve kartınızla teslim alın; depozito talep edilmez.",
+      ],
       paragraphs: [
         "Bursa'daki Rentwin araç kiralama hizmetinde araç, müşteriyle belirlenen adrese teslim edilir. Rezervasyon talebinizde teslimat adresinizi ve tercih ettiğiniz saati belirtin.",
         "Yola çıkmadan önce araç müsaitliğini ve teslimat ayrıntılarını Rentwin ekibiyle teyit edin. Bursa seyahatinize uygun aracı görmek için araç listemizi inceleyin.",
@@ -557,6 +644,19 @@ const LOCATION_LOCAL_COPY = {
   en: {
     aliaga: {
       title: "Renting a car in Aliağa",
+      lead:
+        "Aliağa is home to Rentwin's main office. Pick up your car at our office in the Atatürk neighbourhood and start your business or holiday trips around Aliağa right from there.",
+      why: [
+        "Pick up your car directly from our office on 356 Sk., Atatürk Mah.",
+        "Our office is open 7 days a week: weekdays 09:00–21:00, Saturday 09:00–19:00, Sunday 09:00–17:00",
+        "Panel vans and double-cab vans alongside cars for work in the industrial zone",
+        "Monthly rental options as well as short-term hire",
+      ],
+      how: [
+        "Choose your pick-up and drop-off dates and times to list the cars available at the Aliağa office.",
+        "Select your car and any extras and place the booking.",
+        "Come to our office during opening hours with your ID, licence, and card to collect your car — no deposit required.",
+      ],
       paragraphs: [
         "Rentwin's Aliağa office is at Atatürk Mah. 356 Sk. No: 16/31, 35800 Aliağa/İzmir. Visitors travelling for business to STAR Refinery, Petkim, and the port facilities can arrange vehicle pick-up with a reservation.",
         "Travel from Aliağa toward Foça, Yeni Foça, and Çandarlı, or request vehicle delivery and meet-and-greet at İzmir Adnan Menderes Airport. Office hours: Monday–Friday 09:00–21:00, Saturday 09:00–19:00, Sunday 09:00–17:00.",
@@ -564,6 +664,19 @@ const LOCATION_LOCAL_COPY = {
     },
     "izmir-havalimani": {
       title: "Car rental at İzmir Adnan Menderes Airport",
+      lead:
+        "Flying into İzmir? You can collect your car at İzmir Adnan Menderes Airport. Airport delivery and meet-and-greet are requested when you book, so you can hit the road right after landing.",
+      why: [
+        "Vehicle delivery and meet-and-greet at the airport can be requested when you book",
+        "Drive straight on from the airport to Aliağa, central İzmir, and nearby districts",
+        "Roomy vehicles for groups and trips with lots of luggage",
+        "Daily and monthly rental options",
+      ],
+      how: [
+        "Choose your pick-up date and time and add an airport delivery request to your booking.",
+        "Handover details are confirmed in your booking confirmation.",
+        "Collect your car at the airport with your ID, licence, and card — no deposit required.",
+      ],
       paragraphs: [
         "Vehicle delivery and meet-and-greet at İzmir Adnan Menderes Airport can be requested when you book. Select your pick-up date and time and send the airport request to our team; confirm handover details with your booking confirmation.",
         "Explore daily and monthly rental options for trips from the airport to Aliağa, central İzmir, and nearby districts. Visit our vehicle list to check available cars and start a reservation.",
@@ -571,6 +684,19 @@ const LOCATION_LOCAL_COPY = {
     },
     bursa: {
       title: "Car delivery to your address in Bursa",
+      lead:
+        "In Bursa we deliver your car to an address agreed with you. Just include the delivery address and time in your booking request.",
+      why: [
+        "The car is delivered to an address in Bursa agreed with you",
+        "You set the delivery address and time in your booking request",
+        "Options from compact cars for the city to panel vans for business",
+        "Short- and long-term rental options",
+      ],
+      how: [
+        "Choose your pick-up and drop-off dates and times to list the available cars.",
+        "Add your delivery address in Bursa and preferred time to the booking request.",
+        "When the car arrives at the agreed address, collect it with your ID, licence, and card — no deposit required.",
+      ],
       paragraphs: [
         "For Rentwin car rentals in Bursa, the vehicle is delivered to an address agreed with the customer. Include your preferred delivery address and time with your booking request.",
         "Before your trip, confirm vehicle availability and delivery details with the Rentwin team. Browse the fleet to choose a vehicle for your time in Bursa.",
@@ -612,9 +738,9 @@ const renderLocationDetailBody = ({ locationName, slug }, locale = "tr") => {
   const steps = (items) => `<ol>${items.map((i) => `<li>${htmlEsc(i)}</li>`).join("")}</ol>`;
   return (
     `<main><h1>${htmlEsc(override?.heading || copy.heading(locationName))}</h1>` +
-    `<p>${htmlEsc(copy.lead(locationName))}</p>` +
-    `<h2>${htmlEsc(copy.whyTitle(locationName))}</h2>${list(copy.why(locationName))}` +
-    `<h2>${htmlEsc(copy.howTitle(locationName))}</h2>${steps(copy.how(locationName))}` +
+    `<p>${htmlEsc(local?.lead || copy.lead(locationName))}</p>` +
+    `<h2>${htmlEsc(copy.whyTitle(locationName))}</h2>${list(local?.why || copy.why(locationName))}` +
+    `<h2>${htmlEsc(copy.howTitle(locationName))}</h2>${steps(local?.how || copy.how(locationName))}` +
     (local
       ? `<h2>${htmlEsc(local.title)}</h2>${local.paragraphs.map((p) => `<p>${htmlEsc(p)}</p>`).join("")}`
       : "") +
@@ -1050,7 +1176,7 @@ const noindex = (head) => ({ ...head, canonical: null, robots: "noindex, nofollo
  * @param {object} [args.vehicle] { id, name, brand, model, image, transmission, fuelType, modelYear, color } or null
  * @param {boolean} [args.vehicleMissing]  path was /vehicles/:id but no such vehicle
  * @param {object[]} [args.related]        [{ id, name }] a few other in-service vehicles, for the vehicle detail body
- * @param {string} [args.canonicalVehicleId]  another vehicle's id to canonicalize to instead of self — set when this vehicle shares brand/model/year/transmission/fuel with a sibling (see vehicles.shared.findCanonicalVehicleId)
+ * @param {string} [args.canonicalVehicleId]  another vehicle's id to canonicalize to instead of self — set when another active unit of the same model is that model's canonical page (see vehicles.shared.loadModelContext)
  * @param {string} [args.locationName]     resolved Location.name for /lokasyonlar/:slug
  * @param {string} [args.slug]             the raw /lokasyonlar/:slug param (keys LOCATION_LOCAL_COPY)
  * @param {boolean} [args.locationMissing] path was /lokasyonlar/:slug but no match

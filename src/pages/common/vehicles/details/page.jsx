@@ -18,6 +18,7 @@ import { setVehicle } from "../../../../store";
 import { usePageMeta } from "../../../../hooks/use-page-meta";
 import { breadcrumbLd, vehicleLd } from "../../../../utils/seo";
 import { localeFromPath, localizePath } from "../../../../i18n/locale-routing";
+import { modelKey } from "../../../../utils/vehicle-model";
 import "./style.scss";
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
@@ -42,12 +43,11 @@ const VehicleDetailsPage = () => {
   const vehicleName = vehicle ? `${vehicle.brand} ${vehicle.model}`.trim() : "";
   const imageId = Array.isArray(vehicle?.image) ? vehicle.image[0] : vehicle?.image;
   const imageUrl = imageId ? `${API_URL}/files/display/${imageId}` : undefined;
-  // Several fleet units can share the exact same brand/model/year/transmission/
-  // fuel (and so the exact same templated title+description) — the backend
-  // picks one of that cluster as canonical; every sibling points here instead
-  // of at itself, so Google consolidates them deliberately rather than picking
-  // one at random (Search Console: "Duplicate, Google chose different
-  // canonical than user" — see vehicles.shared.findCanonicalVehicleId).
+  // Every unit of a model shares one canonical page — the backend picks it
+  // (backend/src/lib/vehicle-models.js) and every other unit points here
+  // instead of at itself, so Google consolidates them deliberately rather
+  // than folding unrelated models together (Search Console: "Duplicate,
+  // Google chose different canonical than user").
   const canonicalPath = vehicle?.canonicalId
     ? localizePath(`/vehicles/${vehicle.canonicalId}`, localeFromPath(window.location.pathname))
     : undefined;
@@ -67,6 +67,7 @@ const VehicleDetailsPage = () => {
       const data = await services.vehicle.getVehicleById(vehicleId);
       dispatch(setVehicle(data));
       setVehicleState(data);
+      loadRelated(vehicleId, modelKey(data.brand, data.model));
     } catch (error) {
       if (error?.response?.status === 404) setNotFound(true);
       setLoadFailed(true);
@@ -75,13 +76,18 @@ const VehicleDetailsPage = () => {
     }
   };
 
-  // Best-effort — a few other in-service vehicles to link to from this page
-  // ("Benzer Araçlar"). Never blocks or fails the main page: an empty list
-  // just hides the section.
-  const loadRelated = async (excludeId) => {
+  // Best-effort — a few *other models* to link to from this page ("Benzer
+  // Araçlar"); another unit of the same model only linked a duplicate of this
+  // page. Never blocks or fails the main page: an empty list just hides the
+  // section.
+  const loadRelated = async (excludeId, excludeModelKey) => {
     try {
-      const { content } = await services.vehicle.getVehiclesByPage(0, 5);
-      setRelated((content || []).filter((item) => item.id !== excludeId).slice(0, 4));
+      const { content } = await services.vehicle.getVehiclesByPage(0, 8, "model", "ASC", undefined, true);
+      setRelated(
+        (content || [])
+          .filter((item) => item.id !== excludeId && modelKey(item.brand, item.model) !== excludeModelKey)
+          .slice(0, 4)
+      );
     } catch (error) {
       setRelated([]);
     }
@@ -95,8 +101,8 @@ const VehicleDetailsPage = () => {
     setLoading(true);
     setNotFound(false);
     setLoadFailed(false);
+    setRelated([]);
     loadData();
-    loadRelated(vehicleId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vehicleId]);
 

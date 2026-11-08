@@ -42,6 +42,18 @@
     "local": {
       "aliaga": {
         "title": "Aliağa'da araç kiralama hakkında",
+        "lead": "Aliağa, Rentwin'in merkez ofisinin bulunduğu yer. Aracınızı Atatürk Mahallesi'ndeki ofisimizden teslim alabilir, Aliağa'daki iş ve tatil yolculuklarınıza doğrudan buradan başlayabilirsiniz.",
+        "why": [
+          "Atatürk Mah. 356 Sk.'deki ofisimizden aracınızı doğrudan teslim alabilirsiniz",
+          "Ofisimiz haftanın 7 günü açık: hafta içi 09:00–21:00, Cumartesi 09:00–19:00, Pazar 09:00–17:00",
+          "Sanayi bölgesindeki işler için binek araçların yanında panelvan ve çift kabin seçenekleri",
+          "Kısa süreli kiralamanın yanında aylık kiralama seçenekleri"
+        ],
+        "how": [
+          "Alış–bırakış tarih ve saatlerinizi seçip Aliağa ofisindeki müsait araçları listeleyin.",
+          "Aracınızı ve ek hizmetleri belirleyip rezervasyonu oluşturun.",
+          "Ofis saatleri içinde kimlik, ehliyet ve kartınızla ofisimize gelip aracınızı teslim alın; depozito talep edilmez."
+        ],
         "paragraphs": [
           "Aliağa'daki Rentwin ofisi Atatürk Mah. 356 Sk. No: 16/31, 35800 Aliağa/İzmir adresindedir. STAR Rafineri, Petkim ve liman tesislerine iş seyahati için gelenler, rezervasyonla araç teslim alabilir.",
           "Aliağa'dan Foça, Yeni Foça ve Çandarlı yönüne seyahat edebilir; İzmir Adnan Menderes Havalimanı'nda teslim ve karşılama talep edebilirsiniz. Ofis saatleri: Pazartesi–Cuma 09:00–21:00, Cumartesi 09:00–19:00, Pazar 09:00–17:00."
@@ -49,6 +61,18 @@
       },
       "izmir-havalimani": {
         "title": "İzmir Adnan Menderes Havalimanı araç kiralama",
+        "lead": "İzmir'e uçakla geliyorsanız aracınızı İzmir Adnan Menderes Havalimanı'nda teslim alabilirsiniz. Havalimanı teslimi ve karşılama rezervasyon sırasında talep edilir; böylece inişten sonra doğrudan yola çıkabilirsiniz.",
+        "why": [
+          "Havalimanında araç teslimi ve karşılama, rezervasyon sırasında talep edilebilir",
+          "Havalimanından Aliağa'ya, İzmir merkezine ve çevre ilçelere doğrudan devam edebilirsiniz",
+          "Kalabalık gruplar ve bol bagajlı yolculuklar için geniş araç seçenekleri",
+          "Günlük ve aylık kiralama seçenekleri"
+        ],
+        "how": [
+          "Alış tarih ve saatinizi seçip rezervasyona havalimanı teslim isteğinizi ekleyin.",
+          "Teslim ayrıntıları rezervasyon teyidinizde netleştirilir.",
+          "Havalimanında kimlik, ehliyet ve kartınızla aracınızı teslim alın; depozito talep edilmez."
+        ],
         "paragraphs": [
           "İzmir Adnan Menderes Havalimanı'nda Rentwin araç teslimi ve karşılama hizmeti rezervasyon sırasında talep edilebilir. Alış tarih ve saatinizi seçip havalimanı teslim isteğinizi ekibimize iletin; teslim ayrıntılarını rezervasyon teyidinde netleştirin.",
           "Havalimanından Aliağa'ya, İzmir merkezine veya çevre ilçelere devam edeceğiniz yolculuk için günlük ya da aylık kiralama seçeneklerini inceleyin. Uygun araçları görmek ve rezervasyon başlatmak için araç listemizi ziyaret edin."
@@ -56,6 +80,18 @@
       },
       "bursa": {
         "title": "Bursa'da adrese araç teslimi",
+        "lead": "Bursa'da aracınızı sizinle belirlenen adrese teslim ediyoruz. Teslimat adresini ve saatini rezervasyon talebinizde belirtmeniz yeterli.",
+        "why": [
+          "Araç, Bursa'da sizinle belirlenen adrese teslim edilir",
+          "Teslimat adresini ve saatini rezervasyon talebinizde siz belirlersiniz",
+          "Şehir içi kullanım için kompakt araçlardan ticari işler için panelvanlara kadar seçenekler",
+          "Kısa ve uzun dönem kiralama seçenekleri"
+        ],
+        "how": [
+          "Alış–bırakış tarih ve saatlerinizi seçip müsait araçları listeleyin.",
+          "Rezervasyon talebinize Bursa'daki teslimat adresinizi ve tercih ettiğiniz saati ekleyin.",
+          "Araç belirlenen adrese getirildiğinde kimlik, ehliyet ve kartınızla teslim alın; depozito talep edilmez."
+        ],
         "paragraphs": [
           "Bursa'daki Rentwin araç kiralama hizmetinde araç, müşteriyle belirlenen adrese teslim edilir. Rezervasyon talebinizde teslimat adresinizi ve tercih ettiğiniz saati belirtin.",
           "Yola çıkmadan önce araç müsaitliğini ve teslimat ayrıntılarını Rentwin ekibiyle teyit edin. Bursa seyahatinize uygun aracı görmek için araç listemizi inceleyin."

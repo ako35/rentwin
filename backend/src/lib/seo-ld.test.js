@@ -189,3 +189,116 @@ test("blog list points every post at its TR canonical URL on both routes", () =>
     assert.ok(!head.bodyHtml.includes("/en/blog/kis-lastigi-rehberi"));
   }
 });
+
+// Jaccard similarity over 3-word shingles of the visible text — the same
+// rough measure used to diagnose the duplicate clusters Search Console
+// reported (vehicle pages ~35-50% alike, location pages ~35%).
+const visibleText = (html) => html.replace(/<[^>]+>/g, " ").replace(/&[a-z#0-9]+;/gi, " ").replace(/\s+/g, " ").trim();
+const similarity = (a, b) => {
+  const shingles = (t) => {
+    const w = visibleText(t).toLowerCase().split(" ");
+    const s = new Set();
+    for (let i = 0; i + 2 < w.length; i++) s.add(w.slice(i, i + 3).join(" "));
+    return s;
+  };
+  const sa = shingles(a);
+  const sb = shingles(b);
+  let inter = 0;
+  for (const x of sa) if (sb.has(x)) inter++;
+  return inter / (sa.size + sb.size - inter);
+};
+
+const vehicleHead = (path, vehicle) =>
+  buildHead({
+    path,
+    vehicle: { name: `${vehicle.brand} ${vehicle.model}`, image: null, ...vehicle },
+    related: [{ id: "x1", name: "RENAULT CLİO" }],
+  });
+
+const transit = {
+  brand: "FORD",
+  model: "TRANSİT ÇİFT KABİN",
+  transmission: "Manual",
+  fuelType: "Diesel",
+  modelYear: 2025,
+  variants: { count: 10, minYear: 2022, maxYear: 2025, transmissions: ["Manual"], fuelTypes: ["Diesel"] },
+};
+const egea = {
+  brand: "FIAT",
+  model: "EGEA",
+  transmission: "Automatic",
+  fuelType: "Diesel",
+  modelYear: 2024,
+  variants: { count: 5, minYear: 2023, maxYear: 2026, transmissions: ["Automatic", "Manual"], fuelTypes: ["Diesel"] },
+};
+
+test("vehicle body carries model copy and a fleet-variants sentence matching the client copy", () => {
+  const interpolate = (s, vars) => s.replace(/\{\{(\w+)\}\}/g, (_, k) => vars[k]);
+  for (const [path, copy, labels] of [
+    ["/vehicles/e1", trVehiclesCopy, { tr: "Otomatik ve Manuel", fuel: "Dizel" }],
+    ["/en/vehicles/e1", enVehiclesCopy, { tr: "Automatic and Manual", fuel: "Diesel" }],
+  ]) {
+    const { bodyHtml } = vehicleHead(path, egea);
+    const lang = path.startsWith("/en") ? "en" : "tr";
+    assert.ok(bodyHtml.includes(require("./vehicle-models").getModelCopy("FIAT", "EGEA")[lang].summary));
+    assert.ok(bodyHtml.includes(interpolate(copy.details.idealForTitle, { name: "FIAT EGEA" })));
+    const expected = interpolate(copy.details.variantsWithYears, {
+      count: 5,
+      name: "FIAT EGEA",
+      years: "2023–2026",
+      transmissions: labels.tr,
+      fuels: labels.fuel,
+    });
+    assert.ok(visibleText(bodyHtml).includes(visibleText(expected)), `${path}: ${expected}`);
+  }
+});
+
+test("a single-unit model gets no fleet-variants sentence", () => {
+  const { bodyHtml } = vehicleHead("/vehicles/p1", {
+    ...egea,
+    variants: { count: 1, minYear: 2024, maxYear: 2024, transmissions: ["Automatic"], fuelTypes: ["Diesel"] },
+  });
+  assert.doesNotMatch(bodyHtml, /Filomuzdaki/);
+});
+
+test("pages of different vehicle models no longer read alike", () => {
+  for (const prefix of ["", "/en"]) {
+    const a = vehicleHead(`${prefix}/vehicles/t1`, transit).bodyHtml;
+    const b = vehicleHead(`${prefix}/vehicles/e1`, egea).bodyHtml;
+    assert.ok(similarity(a, b) < 0.25, `${prefix || "/"} vehicles ${(similarity(a, b) * 100).toFixed(0)}% alike`);
+  }
+});
+
+const LOCATIONS = [
+  ["aliaga", "Aliağa"],
+  ["izmir-havalimani", "İzmir Havalimanı"],
+  ["bursa", "Bursa"],
+];
+
+for (const [prefix, copy] of [
+  ["", trLocationsCopy],
+  ["/en", enLocationsCopy],
+]) {
+  test(`location bodies under ${prefix || "/"} use each location's own lead, why and how (client parity)`, () => {
+    for (const [slug, name] of LOCATIONS) {
+      const { bodyHtml } = buildHead({ path: `${prefix}/lokasyonlar/${slug}`, locationName: name, slug });
+      const local = copy.detail.local[slug];
+      const text = visibleText(bodyHtml);
+      for (const line of [local.lead, ...local.why, ...local.how]) {
+        assert.ok(text.includes(visibleText(line)), `${slug}: ${line}`);
+      }
+    }
+  });
+
+  test(`location pages under ${prefix || "/"} no longer read alike`, () => {
+    const bodies = LOCATIONS.map(
+      ([slug, name]) => buildHead({ path: `${prefix}/lokasyonlar/${slug}`, locationName: name, slug }).bodyHtml
+    );
+    for (let i = 0; i < bodies.length; i++) {
+      for (let j = i + 1; j < bodies.length; j++) {
+        const s = similarity(bodies[i], bodies[j]);
+        assert.ok(s < 0.15, `${LOCATIONS[i][0]} ~ ${LOCATIONS[j][0]}: ${(s * 100).toFixed(0)}% alike`);
+      }
+    }
+  });
+}

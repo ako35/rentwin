@@ -95,11 +95,10 @@ const getSitemap = asyncHandler(async (req, res) => {
   const vehicleImage = (v) =>
     modelImages.get(modelImageKey(v.brand, v.model))?.blobUrl || v.images[0]?.blobUrl;
 
-  // A sitemap should only ever list canonical URLs — a sibling that shares
-  // another vehicle's brand/model/year/transmission/fuel (and so its exact
-  // templated content) points `rel=canonical` elsewhere and has no business
-  // being submitted here under its own URL (see vehicles.shared.
-  // buildCanonicalVehicleMap / findCanonicalVehicleId).
+  // A sitemap should only ever list canonical URLs — every unit of a model
+  // but one points `rel=canonical` at that model's canonical page and has no
+  // business being submitted here under its own URL (see
+  // lib/vehicle-models.js buildCanonicalVehicleMap).
   const canonicalVehicleMap = buildCanonicalVehicleMap(vehicles);
   const canonicalVehicles = vehicles.filter((v) => canonicalVehicleMap.get(v.id) == null);
 

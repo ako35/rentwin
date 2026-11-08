@@ -6,13 +6,15 @@ import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Card, Col, Row } from "react-bootstrap";
 import { Spacer } from "../../../";
+import { formatVariants } from "../../../../utils/vehicle-model";
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
 
 const DetailsPanel = () => {
   const vehicle = useSelector((state) => state.reservation.vehicle);
-  const { t } = useTranslation("vehicles");
+  const { t, i18n } = useTranslation("vehicles");
   const { t: tCommon } = useTranslation("common");
+  const lang = i18n.resolvedLanguage === "en" ? "en" : "tr";
   const vehicleName = [vehicle?.brand, vehicle?.model].filter(Boolean).join(" ");
 
   const carDetails = [
@@ -66,6 +68,14 @@ const DetailsPanel = () => {
       })
     : "";
 
+  // Model-level copy + fleet variants from the API (backend/src/lib/
+  // vehicle-models.js — the bot prerender renders the same). This is what
+  // makes one model's page read differently from another's; the sentence
+  // above alone left every vehicle page near-identical, and Search Console
+  // folded them into one.
+  const modelCopy = vehicle?.modelInfo?.copy?.[lang];
+  const variantsText = formatVariants(vehicle?.modelInfo?.variants, vehicleName, { t, tCommon, lang });
+
   return (
     <div className="details-panel">
       <div className="panel-title">
@@ -81,6 +91,17 @@ const DetailsPanel = () => {
       </Card>
       <Spacer />
       <p className="details-panel__description">{description}</p>
+      {modelCopy && (
+        <>
+          <p className="details-panel__description">{modelCopy.summary}</p>
+          <h2 className="text-primary">{t("details.idealForTitle", { name: vehicleName })}</h2>
+          <ul className="details-panel__ideal-for">
+            {modelCopy.idealFor.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </>
+      )}
       <h2 className="text-primary">{t("details.propertyHighlights")}</h2>
       <Row xs={2} md={4}>
         {carDetails.map((item) => (
@@ -91,6 +112,13 @@ const DetailsPanel = () => {
           </Col>
         ))}
       </Row>
+      {variantsText && (
+        <>
+          <Spacer height={30} />
+          <h2 className="text-primary">{t("details.fleetTitle", { name: vehicleName })}</h2>
+          <p className="details-panel__description">{variantsText}</p>
+        </>
+      )}
     </div>
   );
 };

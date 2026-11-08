@@ -1,6 +1,12 @@
 const dayjs = require("dayjs");
 const prisma = require("../../lib/prisma");
 const { modelImageKey } = require("../../lib/serializers");
+const {
+  modelKey,
+  summarizeVariants,
+  buildCanonicalVehicleMap,
+  pickRelatedModels,
+} = require("../../lib/vehicle-models");
 
 const ALLOWED_SORT_FIELDS = ["id", "model"];
 const IMAGES_AND_BRANCH_INCLUDE = { images: { orderBy: { createdAt: "asc" } }, branch: true };
@@ -58,67 +64,45 @@ const getActiveRentalContractId = async (vehicleId) => {
   return contract?.id || null;
 };
 
-// Vehicles sharing brand+model+year+transmission+fuel render the exact same
-// templated title/description (DetailsPanel.jsx on the frontend, seo-ld.js's
-// renderVehicleDetailBody on the bot-prerender side) — typically several
-// units of the same car bought as one fleet batch. Search engines correctly
-// treat these as duplicate content and keep only one of them in the index
-// (Search Console: "Duplicate, Google chose different canonical than user").
-// This picks that one ourselves — the longest-listed in the cluster, likely
-// to already carry the most signals — so every sibling can deliberately point
-// `rel=canonical` at it instead of leaving the choice to Google.
-const normalizeSpec = (s) => (s || "").replace(/\s+/g, " ").trim().toUpperCase();
-
-// vehicles: [{ id, brand, model, modelYear, transmission, fuelType, createdAt }]
-// Returns Map<vehicleId, canonicalId|null> — null means "this IS the canonical".
-const buildCanonicalVehicleMap = (vehicles) => {
-  const clusters = new Map();
-  vehicles.forEach((v) => {
-    const key = [
-      normalizeSpec(v.brand),
-      normalizeSpec(v.model),
-      v.modelYear || "",
-      v.transmission || "",
-      v.fuelType || "",
-    ].join("|");
-    if (!clusters.has(key)) clusters.set(key, []);
-    clusters.get(key).push(v);
-  });
-
-  const result = new Map();
-  clusters.forEach((group) => {
-    if (group.length < 2) {
-      result.set(group[0].id, null);
-      return;
-    }
-    const sorted = [...group].sort(
-      (a, b) =>
-        (a.createdAt?.getTime() || 0) - (b.createdAt?.getTime() || 0) || (a.id < b.id ? -1 : 1)
-    );
-    const winnerId = sorted[0].id;
-    group.forEach((v) => result.set(v.id, v.id === winnerId ? null : winnerId));
-  });
-  return result;
+// Units of the same model share one canonical page — see
+// lib/vehicle-models.js for why (Search Console folded nearly every vehicle
+// page into one when each unit stood on its own).
+const ACTIVE_VEHICLE_WHERE = { outOfService: false, soldAt: null, passiveAt: null };
+const MODEL_CONTEXT_SELECT = {
+  id: true,
+  brand: true,
+  model: true,
+  modelYear: true,
+  transmission: true,
+  fuelType: true,
+  bodyType: true,
+  createdAt: true,
 };
 
-// Single-vehicle lookup for the public detail route + bot-prerender — queries
-// just this vehicle's spec cluster rather than the whole fleet.
-const findCanonicalVehicleId = async (vehicle) => {
-  if (!vehicle.brand || !vehicle.model) return null;
-  const siblings = await prisma.vehicle.findMany({
-    where: {
-      outOfService: false,
-      soldAt: null,
-      passiveAt: null,
-      modelYear: vehicle.modelYear,
-      transmission: vehicle.transmission,
-      fuelType: vehicle.fuelType,
-    },
-    select: { id: true, brand: true, model: true, modelYear: true, transmission: true, fuelType: true, createdAt: true },
-  });
-  const pool = siblings.some((s) => s.id === vehicle.id) ? siblings : [...siblings, vehicle];
-  return buildCanonicalVehicleMap(pool).get(vehicle.id) ?? null;
+// Everything the public detail route and the bot prerender need about a
+// vehicle's model, from one fleet query (the active fleet is a few dozen rows):
+//   canonicalId — the model's canonical unit, or null when this IS it
+//   variants    — summary of the model's active units (count, years, …)
+//   related     — canonical pages of a few other models
+const loadModelContext = async (vehicle) => {
+  const active = await prisma.vehicle.findMany({ where: ACTIVE_VEHICLE_WHERE, select: MODEL_CONTEXT_SELECT });
+  const key = modelKey(vehicle.brand, vehicle.model);
+  const units = active.filter((v) => modelKey(v.brand, v.model) === key);
+  let canonicalId = null;
+  if (vehicle.brand && vehicle.model && units.length) {
+    const map = buildCanonicalVehicleMap(units);
+    // An out-of-service unit still renders, but it isn't part of the active
+    // cluster — point it at the active canonical rather than at itself.
+    canonicalId = map.has(vehicle.id) ? map.get(vehicle.id) : [...map].find(([, c]) => c === null)[0];
+  }
+  return {
+    canonicalId,
+    variants: summarizeVariants(units.length ? units : [vehicle]),
+    related: pickRelatedModels(active, vehicle),
+  };
 };
+
+const findCanonicalVehicleId = async (vehicle) => (await loadModelContext(vehicle)).canonicalId;
 
 module.exports = {
   ALLOWED_SORT_FIELDS,
@@ -129,4 +113,5 @@ module.exports = {
   getActiveRentalContractId,
   buildCanonicalVehicleMap,
   findCanonicalVehicleId,
+  loadModelContext,
 };

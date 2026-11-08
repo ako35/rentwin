@@ -13,7 +13,8 @@ const prisma = require("../../lib/prisma");
 const { SITE_URL, slugify, localizePath, stripLocalePrefix } = require("../../lib/site");
 const { buildHead } = require("../../lib/seo-ld");
 const { modelImageKey } = require("../../lib/serializers");
-const { loadModelImageMap, findCanonicalVehicleId } = require("../vehicles/vehicles.shared");
+const { loadModelImageMap, loadModelContext } = require("../vehicles/vehicles.shared");
+const { buildCanonicalVehicleMap } = require("../../lib/vehicle-models");
 const { loadReviewSeoData } = require("../reviews/reviews.shared");
 
 const SHELL_URL = process.env.PRERENDER_SHELL_URL || `${SITE_URL}/index.html`;
@@ -152,26 +153,20 @@ const resolvePath = async (reqPath) => {
   const canonicalPath = stripLocalePrefix(reqPath);
   const vehicleMatch = canonicalPath.match(/^\/vehicles\/([^/]+)$/);
   if (vehicleMatch) {
-    const [vehicle, modelImages, relatedRows] = await Promise.all([
+    const [vehicle, modelImages] = await Promise.all([
       prisma.vehicle.findUnique({
         where: { id: vehicleMatch[1] },
         include: { images: { orderBy: { createdAt: "asc" }, take: 1 } },
       }),
       loadModelImageMap(),
-      // A few other in-service vehicles for the body's "Benzer Araçlar" —
-      // mirrors the frontend's getVehiclesByPage(0, 5) default sort/size.
-      prisma.vehicle.findMany({
-        where: { outOfService: false, soldAt: null, passiveAt: null },
-        select: { id: true, brand: true, model: true },
-        orderBy: { model: "asc" },
-        take: 5,
-      }),
     ]);
     // Mirror the SPA's getVehicleById so a bot and a browser never see
     // different pages for the same URL: out-of-service still renders, but a
     // sold vehicle is retired from the fleet and 404s on both.
     if (!vehicle || vehicle.soldAt) return { path: reqPath, vehicleMissing: true };
-    const canonicalVehicleId = await findCanonicalVehicleId(vehicle);
+    // Model-level canonical, fleet variants and "Benzer Araçlar" (other
+    // models' canonical pages) — same source as the public detail API.
+    const { canonicalId: canonicalVehicleId, variants, related } = await loadModelContext(vehicle);
     const image =
       modelImages.get(modelImageKey(vehicle.brand, vehicle.model))?.blobUrl ||
       vehicle.images[0]?.blobUrl ||
@@ -179,10 +174,6 @@ const resolvePath = async (reqPath) => {
     const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
     const brand = clean(vehicle.brand);
     const model = clean(vehicle.model);
-    const related = relatedRows
-      .filter((r) => r.id !== vehicle.id)
-      .slice(0, 4)
-      .map((r) => ({ id: r.id, name: `${clean(r.brand)} ${clean(r.model)}`.trim() }));
     return {
       path: reqPath,
       vehicle: {
@@ -196,6 +187,7 @@ const resolvePath = async (reqPath) => {
         color: vehicle.color,
         dailyPrice: vehicle.dailyPrice,
         monthlyPrice: vehicle.monthlyPrice,
+        variants,
       },
       related,
       canonicalVehicleId,
@@ -234,12 +226,15 @@ const resolvePath = async (reqPath) => {
   // Listing pages: hand buildHead the data it needs for an ItemList (and, for
   // /kampanyalar, the server-rendered card list).
   if (canonicalPath === "/vehicles") {
-    const vehicles = await prisma.vehicle.findMany({
+    const fleet = await prisma.vehicle.findMany({
       where: { outOfService: false, soldAt: null, passiveAt: null },
-      select: { id: true, brand: true, model: true },
+      select: { id: true, brand: true, model: true, createdAt: true },
       orderBy: { model: "asc" },
-      take: 100,
     });
+    // One entry per model — its canonical page. The other units of a model
+    // canonicalize to it, so listing them only fed crawlers duplicate URLs.
+    const canonical = buildCanonicalVehicleMap(fleet);
+    const vehicles = fleet.filter((v) => canonical.get(v.id) === null).slice(0, 100);
     return { path: reqPath, vehicles };
   }
 

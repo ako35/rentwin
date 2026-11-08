@@ -42,6 +42,18 @@
     "local": {
       "aliaga": {
         "title": "Renting a car in Aliağa",
+        "lead": "Aliağa is home to Rentwin's main office. Pick up your car at our office in the Atatürk neighbourhood and start your business or holiday trips around Aliağa right from there.",
+        "why": [
+          "Pick up your car directly from our office on 356 Sk., Atatürk Mah.",
+          "Our office is open 7 days a week: weekdays 09:00–21:00, Saturday 09:00–19:00, Sunday 09:00–17:00",
+          "Panel vans and double-cab vans alongside cars for work in the industrial zone",
+          "Monthly rental options as well as short-term hire"
+        ],
+        "how": [
+          "Choose your pick-up and drop-off dates and times to list the cars available at the Aliağa office.",
+          "Select your car and any extras and place the booking.",
+          "Come to our office during opening hours with your ID, licence, and card to collect your car — no deposit required."
+        ],
         "paragraphs": [
           "Rentwin's Aliağa office is at Atatürk Mah. 356 Sk. No: 16/31, 35800 Aliağa/İzmir. Visitors travelling for business to STAR Refinery, Petkim, and the port facilities can arrange vehicle pick-up with a reservation.",
           "Travel from Aliağa toward Foça, Yeni Foça, and Çandarlı, or request vehicle delivery and meet-and-greet at İzmir Adnan Menderes Airport. Office hours: Monday–Friday 09:00–21:00, Saturday 09:00–19:00, Sunday 09:00–17:00."
@@ -49,6 +61,18 @@
       },
       "izmir-havalimani": {
         "title": "Car rental at İzmir Adnan Menderes Airport",
+        "lead": "Flying into İzmir? You can collect your car at İzmir Adnan Menderes Airport. Airport delivery and meet-and-greet are requested when you book, so you can hit the road right after landing.",
+        "why": [
+          "Vehicle delivery and meet-and-greet at the airport can be requested when you book",
+          "Drive straight on from the airport to Aliağa, central İzmir, and nearby districts",
+          "Roomy vehicles for groups and trips with lots of luggage",
+          "Daily and monthly rental options"
+        ],
+        "how": [
+          "Choose your pick-up date and time and add an airport delivery request to your booking.",
+          "Handover details are confirmed in your booking confirmation.",
+          "Collect your car at the airport with your ID, licence, and card — no deposit required."
+        ],
         "paragraphs": [
           "Vehicle delivery and meet-and-greet at İzmir Adnan Menderes Airport can be requested when you book. Select your pick-up date and time and send the airport request to our team; confirm handover details with your booking confirmation.",
           "Explore daily and monthly rental options for trips from the airport to Aliağa, central İzmir, and nearby districts. Visit our vehicle list to check available cars and start a reservation."
@@ -56,6 +80,18 @@
       },
       "bursa": {
         "title": "Car delivery to your address in Bursa",
+        "lead": "In Bursa we deliver your car to an address agreed with you. Just include the delivery address and time in your booking request.",
+        "why": [
+          "The car is delivered to an address in Bursa agreed with you",
+          "You set the delivery address and time in your booking request",
+          "Options from compact cars for the city to panel vans for business",
+          "Short- and long-term rental options"
+        ],
+        "how": [
+          "Choose your pick-up and drop-off dates and times to list the available cars.",
+          "Add your delivery address in Bursa and preferred time to the booking request.",
+          "When the car arrives at the agreed address, collect it with your ID, licence, and card — no deposit required."
+        ],
         "paragraphs": [
           "For Rentwin car rentals in Bursa, the vehicle is delivered to an address agreed with the customer. Include your preferred delivery address and time with your booking request.",
           "Before your trip, confirm vehicle availability and delivery details with the Rentwin team. Browse the fleet to choose a vehicle for your time in Bursa."

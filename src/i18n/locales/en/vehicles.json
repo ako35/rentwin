@@ -66,7 +66,11 @@
     "no": "No",
     "description": "The {{brand}} {{model}} is part of the Rentwin fleet, available with {{transmission}} transmission and {{fuel}} fuel. Available for pickup across Aliağa and İzmir, this vehicle is fully serviced and ready to drive.",
     "descriptionWithYear": "The {{year}} {{brand}} {{model}} is part of the Rentwin fleet, available with {{transmission}} transmission and {{fuel}} fuel. Available for pickup across Aliağa and İzmir, this vehicle is fully serviced and ready to drive.",
-    "relatedTitle": "Similar Vehicles"
+    "relatedTitle": "Similar Vehicles",
+    "idealForTitle": "Who is the {{name}} for?",
+    "fleetTitle": "{{name}} in our fleet",
+    "variantsWithYears": "The Rentwin fleet has {{count}} {{name}} vehicles ({{years}} models), with {{transmissions}} transmission and {{fuels}} fuel. You can choose whichever unit is available when you book.",
+    "variants": "The Rentwin fleet has {{count}} {{name}} vehicles, with {{transmissions}} transmission and {{fuels}} fuel. You can choose whichever unit is available when you book."
   },
   "booking": {
     "sectionTitle1": "Book",

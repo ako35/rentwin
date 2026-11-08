@@ -13,8 +13,9 @@ const {
   getRentedVehicleIds,
   getVehicleStatus,
   getActiveRentalContractId,
-  findCanonicalVehicleId,
+  loadModelContext,
 } = require("./vehicles.shared");
+const { getModelCopy } = require("../../lib/vehicle-models");
 const { pickVehicleFields } = require("./vehicle-fields");
 
 // Prisma unique-constraint violation on Vehicle.licensePlate -> a clean 409.
@@ -35,10 +36,15 @@ const getVehicleById = asyncHandler(async (req, res) => {
   // A sold vehicle is retired from the fleet — treat it as gone on the public
   // detail route (matches the browse list, the sitemap and the bot prerender).
   if (!vehicle || vehicle.soldAt) throw new HttpError(404, "Vehicle not found.");
-  // null when this vehicle IS the canonical one for its spec cluster — see
-  // vehicles.shared.findCanonicalVehicleId.
-  const canonicalId = await findCanonicalVehicleId(vehicle);
-  res.json({ ...serializeVehicle(vehicle, modelImages), canonicalId });
+  // canonicalId: null when this vehicle IS its model's canonical unit.
+  // modelInfo: the model-level copy + fleet variants the detail page renders
+  // (same source as the bot prerender — see lib/vehicle-models.js).
+  const { canonicalId, variants } = await loadModelContext(vehicle);
+  res.json({
+    ...serializeVehicle(vehicle, modelImages),
+    canonicalId,
+    modelInfo: { variants, copy: getModelCopy(vehicle.brand, vehicle.model) },
+  });
 });
 
 // Admin single-vehicle fetch — unlike the public route this still returns a

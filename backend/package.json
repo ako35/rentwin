@@ -11,7 +11,8 @@
     "migrate:deploy": "prisma migrate deploy",
     "private-media:migrate": "node scripts/migrate-private-media.js",
     "seed": "node prisma/seed.js",
-    "db:which": "node scripts/db-which.js"
+    "db:which": "node scripts/db-which.js",
+    "gsc": "node scripts/search-console.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

@@ -24,6 +24,13 @@ $breakpointsm: 400px;
         margin: 1.1rem 0;
     }
 
+    &__ideal-for{
+        color: v.$color5_3;
+        line-height: 1.55;
+        margin: 0.5rem 0 1.4rem;
+        padding-left: 1.2rem;
+    }
+
     .card{
         max-width: 340px;
         margin: 0 auto;

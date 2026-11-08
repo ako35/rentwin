@@ -1,3 +1,7 @@
 .vercel
 .env*
 !.env.example
+
+# Google service account keys (e.g. the Search Console one used by
+# scripts/search-console.js) belong outside the repo — this is a safety net.
+*service-account*.json

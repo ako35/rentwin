@@ -10,7 +10,7 @@
     {
       "src": "/araclar/ford-transit/?",
       "status": 301,
-      "dest": "/vehicles/596138ec-c836-4fab-89c1-4a57fed75037"
+      "dest": "/vehicles/4bd9e816-44af-462f-a178-c79111cca207"
     },
     { "src": "/api/(.*)", "dest": "backend/api/index.js" },
     { "src": "/sitemap.xml", "dest": "backend/api/index.js" },

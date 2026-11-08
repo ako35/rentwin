@@ -99,9 +99,15 @@ const LocationDetailPage = () => {
     slug === "aliaga"
       ? constants.website.mapEmbedUrl
       : `https://www.google.com/maps?q=${encodeURIComponent(`${name} İzmir`)}&output=embed`;
-  const bullets = t("detail.why", { name, returnObjects: true });
-  const steps = t("detail.how", { name, returnObjects: true });
-  const local = t(`detail.local.${slug}`, { returnObjects: true, defaultValue: null });
+  // A location with its own copy (detail.local.<slug>) replaces the shared
+  // lead / why / how template — with only the name swapped in, the location
+  // pages read alike and Search Console folded them into one another.
+  // Mirrored in backend/src/lib/seo-ld.js LOCATION_LOCAL_COPY.
+  const localRaw = t(`detail.local.${slug}`, { returnObjects: true, defaultValue: null });
+  const local = localRaw && typeof localRaw === "object" ? localRaw : null;
+  const lead = local?.lead || t("detail.lead", { name });
+  const bullets = Array.isArray(local?.why) ? local.why : t("detail.why", { name, returnObjects: true });
+  const steps = Array.isArray(local?.how) ? local.how : t("detail.how", { name, returnObjects: true });
 
   return (
     <>
@@ -129,7 +135,7 @@ const LocationDetailPage = () => {
           </div>
         )}
 
-        <p className="location-detail__lead">{t("detail.lead", { name })}</p>
+        <p className="location-detail__lead">{lead}</p>
 
         <div className="location-detail__actions">
           <AppLink to={routes.vehicles} className="btn btn-primary">
