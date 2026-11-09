@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Container } from "react-bootstrap";
+import { Button, Container, Form } from "react-bootstrap";
 import { BsGeoAlt, BsXLg } from "react-icons/bs";
-import moment from "moment/moment";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
 import { clearSearchCriteria } from "../../../store";
@@ -26,6 +25,36 @@ const PAGE_SIZE = 9;
 const TRANSMISSION_ORDER = ["Manual", "SemiAutomatic", "Automatic"];
 const FUEL_TYPE_ORDER = ["Gasoline", "Diesel", "Hybrid", "Electricity", "LPG", "CNG", "Hydrogen"];
 const EMPTY_FILTERS = { transmission: [], fuelType: [], brand: [] };
+// "recommended" keeps the API order (by model); the price sorts are offered
+// only when at least one listed vehicle has a price for this rental type.
+const PRICE_SORTS = ["priceAsc", "priceDesc"];
+const SORTS = ["recommended", ...PRICE_SORTS, "yearDesc", "nameAsc"];
+
+const vehicleName = (v) => [v.brand, v.model].filter(Boolean).join(" ").trim();
+const byName = (a, b) => vehicleName(a).localeCompare(vehicleName(b), "tr");
+
+// Vehicles without a list price ("Fiyat için teklif alın") stay last in both
+// price directions; ties fall back to make/model.
+const sortVehicles = (list, sort, priceOf) => {
+  if (sort === "recommended") return list;
+  const sorted = [...list];
+  if (PRICE_SORTS.includes(sort)) {
+    const dir = sort === "priceAsc" ? 1 : -1;
+    sorted.sort((a, b) => {
+      const pa = priceOf(a);
+      const pb = priceOf(b);
+      if (pa == null && pb == null) return byName(a, b);
+      if (pa == null) return 1;
+      if (pb == null) return -1;
+      return (pa - pb) * dir || byName(a, b);
+    });
+  } else if (sort === "yearDesc") {
+    sorted.sort((a, b) => (Number(b.modelYear) || 0) - (Number(a.modelYear) || 0) || byName(a, b));
+  } else if (sort === "nameAsc") {
+    sorted.sort(byName);
+  }
+  return sorted;
+};
 
 const buildGroup = (vehicles, key, order) => {
   const counts = new Map();
@@ -39,14 +68,16 @@ const buildGroup = (vehicles, key, order) => {
 };
 
 const Vehicles = () => {
-  const { t } = useTranslation("vehicles");
+  const { t, i18n } = useTranslation("vehicles");
   const locale = useLocale();
   const dispatch = useDispatch();
   const searchCriteria = useSelector((state) => state.reservation.searchCriteria);
   const [loading, setLoading] = useState(true);
   const [vehicles, setVehicles] = useState([]);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
+  const [sort, setSort] = useState("recommended");
   const [page, setPage] = useState(0);
+  const isMonthly = searchCriteria?.rentalType === "MONTHLY";
 
   // With a homepage search the list is limited to vehicles that are actually
   // free for that date range; without one ("Araçlar" menu) every vehicle shows.
@@ -114,11 +145,41 @@ const Vehicles = () => {
     [vehicles, filters]
   );
 
-  const totalPages = Math.max(1, Math.ceil(filteredVehicles.length / PAGE_SIZE));
-  const currentPage = Math.min(page, totalPages - 1);
-  const pagedVehicles = filteredVehicles.slice(currentPage * PAGE_SIZE, currentPage * PAGE_SIZE + PAGE_SIZE);
+  // The card shows the monthly price for a monthly search and the daily one
+  // otherwise, so the price sort follows the same field.
+  const priceOf = (v) => {
+    const price = Number(isMonthly ? v.monthlyPrice : v.dailyPrice);
+    return price > 0 ? price : null;
+  };
+  const hasPrices = vehicles.some((v) => priceOf(v) != null);
+  const sortOptions = hasPrices ? SORTS : SORTS.filter((key) => !PRICE_SORTS.includes(key));
+  const activeSort = sortOptions.includes(sort) ? sort : "recommended";
 
-  const fmt = (date, time) => moment(`${date} ${time}`).format("DD MMM YYYY HH:mm");
+  const sortedVehicles = useMemo(
+    () => sortVehicles(filteredVehicles, activeSort, priceOf),
+    // priceOf only depends on isMonthly
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [filteredVehicles, activeSort, isMonthly]
+  );
+
+  const totalPages = Math.max(1, Math.ceil(sortedVehicles.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages - 1);
+  const pagedVehicles = sortedVehicles.slice(currentPage * PAGE_SIZE, currentPage * PAGE_SIZE + PAGE_SIZE);
+
+  // Dates in the page's language: "15 Kasım 2026 10:00" / "15 November 2026, 10:00".
+  // (moment has no Turkish locale loaded here, so it printed "Nov".)
+  const dateLocale = (locale || i18n.language) === "en" ? "en-GB" : "tr-TR";
+  const fmt = (date, time) => {
+    const value = new Date(`${date}T${time || "00:00"}`);
+    if (Number.isNaN(value.getTime())) return `${date} ${time || ""}`.trim();
+    return value.toLocaleString(dateLocale, {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   // ItemList mirrors the bot-prerender's (backend/src/lib/seo-ld.js) — only
   // for the plain catalog view, not an ephemeral date-search result.
@@ -127,7 +188,7 @@ const Vehicles = () => {
     return vehicles.slice(0, 100).map((v, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      name: [v.brand, v.model].filter(Boolean).join(" ").trim(),
+      name: vehicleName(v),
       url: `${SITE_URL}${localizePath(`${routes.vehicles}/${v.id}`, locale)}`,
     }));
   }, [vehicles, searchCriteria, locale]);
@@ -185,8 +246,27 @@ const Vehicles = () => {
           />
 
           <div className="vehicles__results">
-            <div className="vehicles__results-count">
-              {t("searchSummary.resultsCount", { count: filteredVehicles.length })}
+            <div className="vehicles__results-bar">
+              <div className="vehicles__results-count">
+                {t("searchSummary.resultsCount", { count: filteredVehicles.length })}
+              </div>
+              <label className="vehicles__sort">
+                <span>{t("sort.label")}</span>
+                <Form.Select
+                  size="sm"
+                  value={activeSort}
+                  onChange={(e) => {
+                    setSort(e.target.value);
+                    setPage(0);
+                  }}
+                >
+                  {sortOptions.map((key) => (
+                    <option key={key} value={key}>
+                      {t(`sort.${key}`)}
+                    </option>
+                  ))}
+                </Form.Select>
+              </label>
             </div>
 
             {filteredVehicles.length === 0 ? (

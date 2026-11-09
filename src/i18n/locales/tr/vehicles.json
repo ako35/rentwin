@@ -94,5 +94,13 @@
     "genericError": "Rezervasyon işlemi sırasında bir hata oluştu!",
     "dateOrderError": "Alış tarihi, bırakış tarihinden en az 1 saat önce olmalıdır!",
     "notAvailableError": "Bu araç seçilen tarihler için artık müsait değil. Lütfen tarihleri değiştirin."
+  },
+  "sort": {
+    "label": "Sırala",
+    "recommended": "Önerilen",
+    "priceAsc": "Fiyat: düşükten yükseğe",
+    "priceDesc": "Fiyat: yüksekten düşüğe",
+    "yearDesc": "Model yılı: en yeni",
+    "nameAsc": "Marka / model (A–Z)"
   }
 }

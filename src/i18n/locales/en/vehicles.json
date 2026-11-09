@@ -94,5 +94,13 @@
     "genericError": "There is an error occurred during rent operation!",
     "dateOrderError": "Pick up date must be minimum 1 hour before drop off date!",
     "notAvailableError": "This vehicle is no longer available for the selected dates. Please change the dates."
+  },
+  "sort": {
+    "label": "Sort by",
+    "recommended": "Recommended",
+    "priceAsc": "Price: low to high",
+    "priceDesc": "Price: high to low",
+    "yearDesc": "Model year: newest",
+    "nameAsc": "Make / model (A–Z)"
   }
 }
