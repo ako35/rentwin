@@ -155,7 +155,19 @@ const vehicleLd = ({ name, brand, model, image, transmission, fuelType, modelYea
     "@type": "Offer",
     availability: "https://schema.org/InStock",
     priceCurrency: "TRY",
-    ...(dailyPrice ? { price: dailyPrice } : {}),
+    // List prices (daily and monthly) are VAT-exclusive; the page shows "+ KDV".
+    ...(dailyPrice
+      ? {
+          price: dailyPrice,
+          priceSpecification: {
+            "@type": "UnitPriceSpecification",
+            price: dailyPrice,
+            priceCurrency: "TRY",
+            unitCode: "DAY",
+            valueAddedTaxIncluded: false,
+          },
+        }
+      : {}),
     businessFunction: "https://schema.org/LeaseOut",
     seller: { "@id": ORG_ID },
   },
@@ -507,7 +519,7 @@ const renderVehicleDetailBody = ({ vehicle, related = [] }, locale = "tr") => {
     : "";
   const priceItems =
     (vehicle.dailyPrice
-      ? `<li>${htmlEsc(copy.dailyPriceLabel)}: ${htmlEsc(`${Number(vehicle.dailyPrice).toLocaleString("tr-TR")} TL`)}</li>`
+      ? `<li>${htmlEsc(copy.dailyPriceLabel)}: ${htmlEsc(`${Number(vehicle.dailyPrice).toLocaleString("tr-TR")} TL ${copy.vatSuffix}`)}</li>`
       : "") +
     (vehicle.monthlyPrice
       ? `<li>${htmlEsc(copy.monthlyPriceLabel)}: ${htmlEsc(`${Number(vehicle.monthlyPrice).toLocaleString("tr-TR")} TL ${copy.vatSuffix}`)}</li>`

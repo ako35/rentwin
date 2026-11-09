@@ -46,6 +46,7 @@
     "rentNow": "Şimdi Kirala",
     "quoteHint": "Fiyat için teklif alın",
     "perDay": "/ gün",
+    "plusVatPerDay": "+ KDV / gün",
     "plusVatPerMonth": "+ KDV / ay"
   },
   "details": {

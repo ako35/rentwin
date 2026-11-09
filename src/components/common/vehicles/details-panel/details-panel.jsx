@@ -42,7 +42,7 @@ const DetailsPanel = () => {
       id: 4,
       title: t("details.dailyPrice"),
       icon: <BsTag />,
-      info: `${Number(vehicle.dailyPrice).toLocaleString("tr-TR")} TL`,
+      info: `${Number(vehicle.dailyPrice).toLocaleString("tr-TR")} TL ${t("details.plusVat")}`,
     });
   }
   if (vehicle?.monthlyPrice) {

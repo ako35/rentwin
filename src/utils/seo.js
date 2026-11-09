@@ -156,7 +156,19 @@ export const vehicleLd = ({
     "@type": "Offer",
     availability: "https://schema.org/InStock",
     priceCurrency: "TRY",
-    ...(dailyPrice ? { price: dailyPrice } : {}),
+    // List prices (daily and monthly) are VAT-exclusive; the page shows "+ KDV".
+    ...(dailyPrice
+      ? {
+          price: dailyPrice,
+          priceSpecification: {
+            "@type": "UnitPriceSpecification",
+            price: dailyPrice,
+            priceCurrency: "TRY",
+            unitCode: "DAY",
+            valueAddedTaxIncluded: false,
+          },
+        }
+      : {}),
     businessFunction: "https://schema.org/LeaseOut",
     seller: { "@id": `${SITE_URL}/#organization` },
   },

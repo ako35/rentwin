@@ -314,3 +314,26 @@ test("business sameAs lists every live social profile", () => {
   }
   assert.equal(sameAs.filter((u) => u === "").length, 0);
 });
+
+test("vehicle list prices are shown and marked as VAT-exclusive (client parity)", () => {
+  const { vehicleLd } = require("./seo-ld");
+  for (const [path, copy] of [
+    ["/vehicles/e1", trVehiclesCopy],
+    ["/en/vehicles/e1", enVehiclesCopy],
+  ]) {
+    const text = visibleText(vehicleHead(path, { ...egea, dailyPrice: 1500, monthlyPrice: 45000 }).bodyHtml);
+    assert.ok(text.includes(`1.500 TL ${copy.details.plusVat}`), `${path}: daily price lacks "${copy.details.plusVat}"`);
+    assert.ok(text.includes(`45.000 TL ${copy.details.plusVat}`), `${path}: monthly price lacks "${copy.details.plusVat}"`);
+  }
+
+  const { offers } = vehicleLd({ name: "FIAT EGEA", dailyPrice: 1500, path: "/vehicles/e1" });
+  assert.equal(offers.price, 1500);
+  assert.deepEqual(offers.priceSpecification, {
+    "@type": "UnitPriceSpecification",
+    price: 1500,
+    priceCurrency: "TRY",
+    unitCode: "DAY",
+    valueAddedTaxIncluded: false,
+  });
+  assert.equal(vehicleLd({ name: "FIAT EGEA", path: "/vehicles/e1" }).offers.priceSpecification, undefined);
+});

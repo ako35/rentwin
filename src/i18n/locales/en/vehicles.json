@@ -46,6 +46,7 @@
     "rentNow": "Rent Now",
     "quoteHint": "Request a quote",
     "perDay": "/ day",
+    "plusVatPerDay": "+ VAT / day",
     "plusVatPerMonth": "+ VAT / month"
   },
   "details": {

@@ -67,7 +67,7 @@ const VehicleGridCard = ({ listView, rentalType, ...props }) => {
                 <strong className="vehicle-grid-card__price">
                   {Number(price).toLocaleString("tr-TR")} TL
                 </strong>{" "}
-                {isMonthly ? t("card.plusVatPerMonth") : t("card.perDay")}
+                {isMonthly ? t("card.plusVatPerMonth") : t("card.plusVatPerDay")}
               </>
             ) : (
               t("card.quoteHint")

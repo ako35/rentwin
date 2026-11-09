@@ -9,6 +9,12 @@ import "./style.scss";
 
 const formatTRY = (value) => (value == null ? "—" : `${Math.round(Number(value)).toLocaleString("tr-TR")} TL`);
 
+// List prices are VAT-exclusive (the site shows "+ KDV"), but the AI market
+// research returns VAT-inclusive averages (backend/src/lib/claude.js), so they
+// are converted to net before being applied to the price fields.
+const VAT_RATE = 20;
+const netOf = (gross) => Math.round(Number(gross) / (1 + VAT_RATE / 100));
+
 const toDraft = (vehicle) => ({
   dailyPrice: vehicle.dailyPrice == null ? "" : String(vehicle.dailyPrice),
   monthlyPrice: vehicle.monthlyPrice == null ? "" : String(vehicle.monthlyPrice),
@@ -84,8 +90,8 @@ const AdminPriceListPage = () => {
     setDrafts((prev) => ({
       ...prev,
       [vehicleId]: {
-        dailyPrice: data.dailyPriceTRY != null ? String(Math.round(data.dailyPriceTRY)) : prev[vehicleId]?.dailyPrice ?? "",
-        monthlyPrice: data.monthlyPriceTRY != null ? String(Math.round(data.monthlyPriceTRY)) : prev[vehicleId]?.monthlyPrice ?? "",
+        dailyPrice: data.dailyPriceTRY != null ? String(netOf(data.dailyPriceTRY)) : prev[vehicleId]?.dailyPrice ?? "",
+        monthlyPrice: data.monthlyPriceTRY != null ? String(netOf(data.monthlyPriceTRY)) : prev[vehicleId]?.monthlyPrice ?? "",
       },
     }));
     setResearch(null);
@@ -187,18 +193,25 @@ const AdminPriceListPage = () => {
               <p className="admin-price-list-page__research-summary">{research.data.summary}</p>
               <div className="admin-price-list-page__research-suggestion">
                 <div>
-                  <span>{t("priceList.dailyPrice")}</span>
+                  <span>{t("priceList.research.marketDaily")}</span>
                   <strong>{formatTRY(research.data.dailyPriceTRY)}</strong>
+                  {research.data.dailyPriceTRY != null && (
+                    <small>{t("priceList.research.netValue", { v: formatTRY(netOf(research.data.dailyPriceTRY)) })}</small>
+                  )}
                 </div>
                 <div>
-                  <span>{t("priceList.monthlyPrice")}</span>
+                  <span>{t("priceList.research.marketMonthly")}</span>
                   <strong>{formatTRY(research.data.monthlyPriceTRY)}</strong>
+                  {research.data.monthlyPriceTRY != null && (
+                    <small>{t("priceList.research.netValue", { v: formatTRY(netOf(research.data.monthlyPriceTRY)) })}</small>
+                  )}
                 </div>
                 <div>
                   <span>{t("priceList.research.confidence")}</span>
                   <strong>{t(`priceList.research.confidence_${research.data.confidence || "low"}`)}</strong>
                 </div>
               </div>
+              <p className="admin-price-list-page__research-note">{t("priceList.research.vatNote")}</p>
               {Array.isArray(research.data.sources) && research.data.sources.length > 0 && (
                 <>
                   <h6 className="admin-price-list-page__research-sources-title">
@@ -208,8 +221,8 @@ const AdminPriceListPage = () => {
                     {research.data.sources.map((source, index) => (
                       <li key={index}>
                         <strong>{source.site}</strong>
-                        {source.dailyPriceTRY != null && ` — ${t("priceList.dailyPrice")}: ${formatTRY(source.dailyPriceTRY)}`}
-                        {source.monthlyPriceTRY != null && ` — ${t("priceList.monthlyPrice")}: ${formatTRY(source.monthlyPriceTRY)}`}
+                        {source.dailyPriceTRY != null && ` — ${t("priceList.research.marketDaily")}: ${formatTRY(source.dailyPriceTRY)}`}
+                        {source.monthlyPriceTRY != null && ` — ${t("priceList.research.marketMonthly")}: ${formatTRY(source.monthlyPriceTRY)}`}
                         {source.url && (
                           <>
                             {" — "}
