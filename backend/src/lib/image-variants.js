@@ -3,7 +3,16 @@
 // public pages slow on mobile; a `?w=` request gets a width-capped WebP
 // instead. Only a fixed set of widths is honoured so the CDN keeps a handful
 // of variants per image rather than one per arbitrary number.
-const sharp = require("sharp");
+//
+// sharp is a native module, required on first use rather than at load time:
+// if its binary ever fails to load on the server, only the resize fails
+// (and /files/display falls back to the original) instead of the whole API
+// failing to boot because files.controller imports this file.
+let sharp;
+const loadSharp = () => {
+  if (!sharp) sharp = require("sharp");
+  return sharp;
+};
 
 const DISPLAY_WIDTHS = [160, 320, 480, 640, 800, 960, 1280, 1600];
 
@@ -16,8 +25,8 @@ const pickWidth = (raw) => {
 };
 
 // Never upscales: a 677px original asked for at 960 stays 677px wide.
-const renderVariant = (input, width) =>
-  sharp(input)
+const renderVariant = async (input, width) =>
+  loadSharp()(input)
     .rotate()
     .resize({ width, withoutEnlargement: true })
     .webp({ quality: 78 })
