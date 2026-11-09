@@ -7,6 +7,7 @@ import { usePageMeta } from "../../../../hooks/use-page-meta";
 import { breadcrumbLd, articleLd } from "../../../../utils/seo";
 import { services } from "../../../../services";
 import { constants } from "../../../../constants";
+import { responsiveImage } from "../../../../utils/image-url";
 import "../style.scss";
 
 const { routes } = constants;
@@ -94,7 +95,11 @@ const BlogDetailPage = () => {
 
         {post.imageId && (
           <div className="blog-post__hero">
-            <img src={`${API_URL}/files/display/${post.imageId}`} alt={post.title} />
+            <img
+              {...responsiveImage(post.imageId, { widths: [480, 640, 960, 1280], fallback: 960, sizes: "(max-width: 900px) 92vw, 860px" })}
+              alt={post.title}
+              decoding="async"
+            />
           </div>
         )}
 

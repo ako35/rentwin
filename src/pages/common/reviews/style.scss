@@ -38,6 +38,12 @@
     padding: 2.5rem 0;
   }
 
+  &__side {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
   &__form {
     background-color: #fff;
     border: 1px solid v.$color3;
@@ -48,6 +54,26 @@
       font-size: 1.15rem;
       margin-bottom: 1rem;
       color: v.$color5;
+    }
+  }
+
+  // Customers who came via Google can leave the review where other searchers see it.
+  &__google {
+    background-color: #fff;
+    border: 1px solid v.$color3;
+    border-radius: 16px;
+    padding: 1.1rem 1.5rem;
+
+    p {
+      margin: 0 0 0.7rem;
+      font-size: 0.92rem;
+      color: v.$color5_2;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
     }
   }
 }

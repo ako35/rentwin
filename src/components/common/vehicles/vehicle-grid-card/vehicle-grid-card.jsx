@@ -3,10 +3,12 @@ import { GiGasPump, GiGearStick } from "react-icons/gi";
 import { BsCalendar3, BsArrowRight } from "react-icons/bs";
 import { constants } from "../../../../constants";
 import AppLink from "../../app-link/app-link";
+import { responsiveImage } from "../../../../utils/image-url";
 import "./vehicle-grid-card.scss";
 
 const { routes } = constants;
-const API_URL = import.meta.env.VITE_APP_API_URL;
+// The card photo is at most ~400px wide (one column on phones, 2–3 per row above).
+const CARD_IMAGE = { widths: [320, 480, 640, 960], fallback: 640, sizes: "(max-width: 576px) 92vw, 400px" };
 
 // One vehicle in the marketing grid / homepage rail: photo on a fixed light
 // ground, dark bold name, an inline spec row (transmission · fuel · year) and
@@ -38,7 +40,7 @@ const VehicleGridCard = ({ listView, rentalType, ...props }) => {
       <div className="vehicle-grid-card__image">
         {imageId ? (
           <img
-            src={`${API_URL}/files/display/${imageId}`}
+            {...responsiveImage(imageId, CARD_IMAGE)}
             alt={name}
             loading="lazy"
             decoding="async"

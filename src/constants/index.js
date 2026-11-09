@@ -177,6 +177,8 @@ const website = {
   phone: "0507 350 31 35",
   phoneE164: "+905073503135",
   whatsapp: "https://wa.me/905073503135",
+  // Opens the "write a review" box of Rentwin's Google Business Profile.
+  googleReviewUrl: "https://g.page/r/CTKESQe2UScrEBM/review",
   geo: rentwinGeo,
   mapUrl: rentwinMapsUrl,
   mapEmbedUrl: `https://www.google.com/maps?q=${rentwinGeo.latitude},${rentwinGeo.longitude}&z=16&output=embed`,

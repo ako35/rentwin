@@ -7,10 +7,11 @@ import { usePageMeta, SITE_URL } from "../../../hooks/use-page-meta";
 import { breadcrumbLd, itemListLd } from "../../../utils/seo";
 import { services } from "../../../services";
 import { constants } from "../../../constants";
+import { responsiveImage } from "../../../utils/image-url";
 import "./style.scss";
 
 const { routes } = constants;
-const API_URL = import.meta.env.VITE_APP_API_URL;
+const CARD_IMAGE = { widths: [320, 480, 640, 960], fallback: 640, sizes: "(max-width: 576px) 92vw, 400px" };
 
 const BlogPage = () => {
   const { t, i18n } = useTranslation("blog");
@@ -69,7 +70,7 @@ const BlogPage = () => {
               <AppLink key={p.id} to={`${routes.blog}/${p.slug}`} className="blog-card">
                 <span className="blog-card__media">
                   {p.imageId ? (
-                    <img src={`${API_URL}/files/display/${p.imageId}`} alt={p.title} loading="lazy" />
+                    <img {...responsiveImage(p.imageId, CARD_IMAGE)} alt={p.title} loading="lazy" decoding="async" />
                   ) : (
                     <BsFileText />
                   )}

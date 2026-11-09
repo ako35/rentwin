@@ -5,14 +5,15 @@ import { useTranslation } from "react-i18next";
 import { BsArrowRight, BsCheck2, BsGeoAltFill } from "react-icons/bs";
 import { AppLink, JsonLd, Loading, PageHeader, Spacer } from "../../../../components";
 import { usePageMeta } from "../../../../hooks/use-page-meta";
-import { breadcrumbLd } from "../../../../utils/seo";
+import { breadcrumbLd, faqLd } from "../../../../utils/seo";
 import { services } from "../../../../services";
 import { utils } from "../../../../utils";
 import { constants } from "../../../../constants";
+import { responsiveImage } from "../../../../utils/image-url";
 import "../style.scss";
 
 const { routes } = constants;
-const API_URL = import.meta.env.VITE_APP_API_URL;
+const HERO_IMAGE = { widths: [480, 640, 960, 1280], fallback: 960, sizes: "(max-width: 1200px) 92vw, 1100px" };
 
 const LocationDetailPage = () => {
   const { slug } = useParams();
@@ -131,7 +132,7 @@ const LocationDetailPage = () => {
 
         {location.imageId && (
           <div className="location-detail__hero">
-            <img src={`${API_URL}/files/display/${location.imageId}`} alt={name} />
+            <img {...responsiveImage(location.imageId, HERO_IMAGE)} alt={name} decoding="async" />
           </div>
         )}
 
@@ -177,6 +178,22 @@ const LocationDetailPage = () => {
                 {paragraph}
               </p>
             ))}
+          </>
+        )}
+
+        {Array.isArray(local?.faq) && local.faq.length > 0 && (
+          <>
+            <JsonLd id="ld-location-faq" data={faqLd(local.faq)} />
+            <Spacer />
+            <h2 className="location-detail__subtitle">{local.faqTitle}</h2>
+            <div className="location-detail__qa">
+              {local.faq.map((item) => (
+                <div key={item.q} className="location-detail__qa-item">
+                  <h3>{item.q}</h3>
+                  <p>{item.a}</p>
+                </div>
+              ))}
+            </div>
           </>
         )}
 

@@ -15,5 +15,9 @@
     "submit": "Yorumu Gönder",
     "successToast": "Teşekkürler! Yorumunuz incelendikten sonra yayınlanacaktır.",
     "errorToast": "Yorumunuz gönderilemedi, lütfen tekrar deneyin."
+  },
+  "google": {
+    "text": "Rentwin ile kiraladıysanız deneyiminizi Google'da da paylaşabilirsiniz; yorumunuz bizi arayan diğer müşterilere yardımcı olur.",
+    "cta": "Google'da değerlendirin"
   }
 }

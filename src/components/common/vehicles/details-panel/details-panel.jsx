@@ -7,8 +7,13 @@ import { useTranslation } from "react-i18next";
 import { Card, Col, Row } from "react-bootstrap";
 import { Spacer } from "../../../";
 import { formatVariants } from "../../../../utils/vehicle-model";
+import { responsiveImage } from "../../../../utils/image-url";
 
-const API_URL = import.meta.env.VITE_APP_API_URL;
+const DETAIL_IMAGE = {
+  widths: [480, 640, 960, 1280],
+  fallback: 960,
+  sizes: "(max-width: 768px) 92vw, 640px",
+};
 
 const DetailsPanel = () => {
   const vehicle = useSelector((state) => state.reservation.vehicle);
@@ -83,10 +88,10 @@ const DetailsPanel = () => {
       </div>
       <Card>
         <img
-          src={`${API_URL}/files/display/${vehicle?.image}`}
+          {...responsiveImage(vehicle?.image, DETAIL_IMAGE)}
           alt={vehicleName}
           title={vehicleName}
-          loading="lazy"
+          decoding="async"
         />
       </Card>
       <Spacer />

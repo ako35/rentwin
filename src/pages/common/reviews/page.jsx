@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import { FaGoogle } from "react-icons/fa";
 import { JsonLd, Loading, PageHeader, ReviewCard, ReviewForm, Spacer } from "../../../components";
 import { usePageMeta } from "../../../hooks/use-page-meta";
 import { autoRentalLd, breadcrumbLd } from "../../../utils/seo";
 import { services } from "../../../services";
+import { constants } from "../../../constants";
 import "./style.scss";
 
 const EMPTY = { items: [], count: 0, average: 0 };
@@ -62,9 +64,22 @@ const ReviewsPage = () => {
             )}
           </div>
 
-          <div className="reviews-page__form">
-            <h2>{t("form.heading")}</h2>
-            <ReviewForm />
+          <div className="reviews-page__side">
+            <div className="reviews-page__form">
+              <h2>{t("form.heading")}</h2>
+              <ReviewForm />
+            </div>
+            <div className="reviews-page__google">
+              <p>{t("google.text")}</p>
+              <a
+                href={constants.website.googleReviewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline-primary btn-sm"
+              >
+                <FaGoogle /> {t("google.cta")}
+              </a>
+            </div>
           </div>
         </div>
       </Container>

@@ -301,6 +301,23 @@ for (const [prefix, copy] of [
       }
     }
   });
+
+  test(`the Aliağa page under ${prefix || "/"} carries its own FAQ as text and FAQPage data (client parity)`, () => {
+    const head = buildHead({ path: `${prefix}/lokasyonlar/aliaga`, locationName: "Aliağa", slug: "aliaga" });
+    const { faqTitle, faq } = copy.detail.local.aliaga;
+    assert.ok(faq.length >= 5);
+    const text = visibleText(head.bodyHtml);
+    assert.ok(text.includes(visibleText(faqTitle)), faqTitle);
+    for (const { q, a } of faq) {
+      assert.ok(text.includes(visibleText(q)), q);
+      assert.ok(text.includes(visibleText(a)), a);
+    }
+    const ld = head.jsonLd.find((item) => item["@type"] === "FAQPage");
+    assert.deepEqual(
+      ld.mainEntity.map((m) => [m.name, m.acceptedAnswer.text]),
+      faq.map(({ q, a }) => [q, a])
+    );
+  });
 }
 
 test("business sameAs lists every live social profile", () => {

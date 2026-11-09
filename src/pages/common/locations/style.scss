@@ -195,6 +195,31 @@
     }
   }
 
+  &__qa {
+    @include m.flexbox(column, flex-start, stretch, 0.75rem);
+  }
+
+  &__qa-item {
+    border: 1px solid v.$color3;
+    border-radius: 12px;
+    padding: 0.9rem 1.1rem;
+    background-color: #fff;
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: v.$color5;
+      margin: 0 0 0.35rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: v.$color5_2;
+    }
+  }
+
   &__map {
     border-radius: 16px;
     overflow: hidden;

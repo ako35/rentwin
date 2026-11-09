@@ -15,5 +15,9 @@
     "submit": "Submit Review",
     "successToast": "Thank you! Your review will be published after it's reviewed.",
     "errorToast": "Your review couldn't be submitted, please try again."
+  },
+  "google": {
+    "text": "If you rented with Rentwin, you can also share your experience on Google; your review helps other customers who are looking for us.",
+    "cta": "Review us on Google"
   }
 }

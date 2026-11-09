@@ -57,6 +57,33 @@
         "paragraphs": [
           "Aliağa'daki Rentwin ofisi Atatürk Mah. 356 Sk. No: 16/31, 35800 Aliağa/İzmir adresindedir. STAR Rafineri, Petkim ve liman tesislerine iş seyahati için gelenler, rezervasyonla araç teslim alabilir.",
           "Aliağa'dan Foça, Yeni Foça ve Çandarlı yönüne seyahat edebilir; İzmir Adnan Menderes Havalimanı'nda teslim ve karşılama talep edebilirsiniz. Ofis saatleri: Pazartesi–Cuma 09:00–21:00, Cumartesi 09:00–19:00, Pazar 09:00–17:00."
+        ],
+        "faqTitle": "Aliağa'da araç kiralama: sık sorulan sorular",
+        "faq": [
+          {
+            "q": "Aliağa'da aracı nereden teslim alırım?",
+            "a": "Aracınızı Atatürk Mah. 356 Sk. No: 16/31, 35800 Aliağa/İzmir adresindeki ofisimizden, ofis saatleri içinde teslim alabilirsiniz. Belirttiğiniz bir adrese teslim için bizimle iletişime geçebilirsiniz."
+          },
+          {
+            "q": "STAR Rafineri, Petkim veya liman bölgesindeki bir iş için araç kiralayabilir miyim?",
+            "a": "Evet. Bu bölgelere iş seyahatiyle gelenler rezervasyonla aracını Aliağa ofisimizden teslim alabilir. Saha işleri için binek araçların yanında panelvan ve çift kabin seçeneklerimiz de var."
+          },
+          {
+            "q": "Aliağa'da aylık araç kiralama yapıyor musunuz?",
+            "a": "Evet. Kısa süreli kiralamanın yanında aylık kiralama seçeneklerimiz var. Fiyatlarımız KDV hariçtir; güncel aylık teklif için 0507 350 31 35 numarasını arayabilir ya da WhatsApp'tan yazabilirsiniz."
+          },
+          {
+            "q": "Aliağa'dan İzmir Adnan Menderes Havalimanı'na araç teslimi yapıyor musunuz?",
+            "a": "Evet. Havalimanında araç teslimi ve karşılama hizmeti veriyoruz; talebinizi rezervasyon sırasında belirtmeniz yeterli."
+          },
+          {
+            "q": "Aracı Aliağa dışında bir yerde teslim edebilir miyim?",
+            "a": "Evet, farklı lokasyonda teslim (tek yön kiralama) mümkündür. Bu hizmet için sözleşmeye tek yön ücreti eklenir; ayrıntılar için bizimle iletişime geçin."
+          },
+          {
+            "q": "Kiralamak için neler gerekiyor, depozito alıyor musunuz?",
+            "a": "En az 25 yaşında olmanız ve en az 3 yıllık sürücü belgeniz olması gerekir. Geçerli sürücü belgesi, T.C. kimlik kartı (yabancı uyruklular için pasaport) ve kiralayan kişi adına kredi kartı yeterlidir. Depozito talep etmiyoruz."
+          }
         ]
       },
       "izmir-havalimani": {

@@ -1,9 +1,15 @@
 import { useTranslation } from "react-i18next";
 import { BsArrowRight, BsCalendarEvent, BsTag } from "react-icons/bs";
 import AppLink from "../../app-link/app-link";
+import { responsiveImage } from "../../../../utils/image-url";
 import "./campaign-card.scss";
 
-const API_URL = import.meta.env.VITE_APP_API_URL;
+// Posters are shown whole at card width: one column on phones, 2–3 per row above.
+const POSTER_IMAGE = {
+  widths: [480, 640, 960, 1280],
+  fallback: 640,
+  sizes: "(max-width: 576px) 92vw, (max-width: 992px) 46vw, 380px",
+};
 
 const CampaignCard = ({ campaign, compact = false }) => {
   const { t, i18n } = useTranslation("campaigns");
@@ -23,7 +29,7 @@ const CampaignCard = ({ campaign, compact = false }) => {
     <article className={`campaign-card${compact ? " campaign-card--compact" : ""}`}>
       <div className={`campaign-card__media${imageId ? "" : " campaign-card__media--empty"}`}>
         {imageId ? (
-          <img src={`${API_URL}/files/display/${imageId}`} alt={title} loading="lazy" />
+          <img {...responsiveImage(imageId, POSTER_IMAGE)} alt={title} loading="lazy" decoding="async" />
         ) : (
           <BsTag />
         )}

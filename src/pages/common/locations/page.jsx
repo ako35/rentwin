@@ -10,10 +10,11 @@ import { utils } from "../../../utils";
 import { constants } from "../../../constants";
 import { useLocale } from "../../../hooks/use-locale";
 import { localizePath } from "../../../i18n/locale-routing";
+import { responsiveImage } from "../../../utils/image-url";
 import "./style.scss";
 
 const { routes } = constants;
-const API_URL = import.meta.env.VITE_APP_API_URL;
+const CARD_IMAGE = { widths: [320, 480, 640, 960], fallback: 640, sizes: "(max-width: 576px) 92vw, 400px" };
 
 const LocationsPage = () => {
   const { t } = useTranslation("locations");
@@ -75,7 +76,7 @@ const LocationsPage = () => {
                 <span className="location-card__media">
                   {loc.imageId ? (
                     <img
-                      src={`${API_URL}/files/display/${loc.imageId}`}
+                      {...responsiveImage(loc.imageId, CARD_IMAGE)}
                       alt={loc.name}
                       loading="lazy"
                     />
