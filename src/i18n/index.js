@@ -17,7 +17,6 @@ import trReviews from "./locales/tr/reviews.json";
 import trAuth from "./locales/tr/auth.json";
 import trVehicles from "./locales/tr/vehicles.json";
 import trUser from "./locales/tr/user.json";
-import trAdmin from "./locales/tr/admin.json";
 import trErrors from "./locales/tr/errors.json";
 import trValidation from "./locales/tr/validation.json";
 
@@ -35,7 +34,6 @@ import enReviews from "./locales/en/reviews.json";
 import enAuth from "./locales/en/auth.json";
 import enVehicles from "./locales/en/vehicles.json";
 import enUser from "./locales/en/user.json";
-import enAdmin from "./locales/en/admin.json";
 import enErrors from "./locales/en/errors.json";
 import enValidation from "./locales/en/validation.json";
 
@@ -55,7 +53,6 @@ const resources = {
     auth: trAuth,
     vehicles: trVehicles,
     user: trUser,
-    admin: trAdmin,
     errors: trErrors,
     validation: trValidation,
   },
@@ -74,7 +71,6 @@ const resources = {
     auth: enAuth,
     vehicles: enVehicles,
     user: enUser,
-    admin: enAdmin,
     errors: enErrors,
     validation: enValidation,
   },
@@ -110,7 +106,6 @@ i18n
       "auth",
       "vehicles",
       "user",
-      "admin",
       "errors",
       "validation",
     ],
@@ -144,5 +139,22 @@ i18n
   .then(() => {
     syncDocumentLanguage(i18n.resolvedLanguage);
   });
+
+// The "admin" namespace (~140 KB for both languages) is used only inside the
+// admin app, so it is not bundled with the public site: the router loads it
+// together with the lazy AdminLayout chunk, before any admin page renders.
+let adminBundlesPromise;
+export const loadAdminTranslations = () => {
+  if (!adminBundlesPromise) {
+    adminBundlesPromise = Promise.all([
+      import("./locales/tr/admin.json"),
+      import("./locales/en/admin.json"),
+    ]).then(([tr, en]) => {
+      i18n.addResourceBundle("tr", "admin", tr.default, true, true);
+      i18n.addResourceBundle("en", "admin", en.default, true, true);
+    });
+  }
+  return adminBundlesPromise;
+};
 
 export default i18n;

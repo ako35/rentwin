@@ -1,9 +1,19 @@
+import moment from "moment/moment"
+import i18n from "../../i18n"
+
 // No-CSS build: SweetAlert2's own styles are compiled from SCSS in
 // src/styles/styles.scss with our brand variables. The default "sweetalert2"
 // entry injects its own (purple) stylesheet at runtime and would override them.
-import Swal from "sweetalert2/dist/sweetalert2.js"
-import moment from "moment/moment"
-import i18n from "../../i18n"
+// The library (~150 KB) is only needed once a dialog opens, so it is fetched
+// on first use instead of shipping in the entry bundle; swalQuestion and
+// swalToast already returned a promise, so callers are unaffected.
+let swalPromise
+const loadSwal = () => {
+    if (!swalPromise) {
+        swalPromise = import("sweetalert2/dist/sweetalert2.js").then((m) => m.default)
+    }
+    return swalPromise
+}
 
 // SweetAlert2 button labels — localized (common:swal.*) with a literal fallback
 // so a missing key never leaks "swal.confirm" into a live dialog.
@@ -27,7 +37,7 @@ export const validCheck = (field, obj) => {
 //                    change) keep the green "?" default.
 export const swalQuestion = (title, text, options = {}) => {
     const { danger = false, confirmText, cancelText } = options
-    return Swal.fire({
+    return loadSwal().then((Swal) => Swal.fire({
         title: title,
         text: text,
         icon: danger ? 'warning' : 'question',
@@ -37,16 +47,16 @@ export const swalQuestion = (title, text, options = {}) => {
         confirmButtonText: confirmText || swalLabel(danger ? 'delete' : 'confirm', danger ? 'Sil' : 'Onayla'),
         cancelButtonText: cancelText || swalLabel('cancel', 'Vazgeç'),
         customClass: danger ? { confirmButton: 'swal2-confirm--danger' } : undefined,
-    })
+    }))
 }
 
 export const swalToast = (title, icon='info', timer=5000) => {
-    return Swal.fire({
+    return loadSwal().then((Swal) => Swal.fire({
         title: title,
         icon: icon,
         timer: timer,
         showConfirmButton: true
-    })
+    }))
 }
 
 // COMBINE DATE AND TIME FUNCTIONS

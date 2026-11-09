@@ -3,13 +3,8 @@ import { useOutletContext } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { services } from "../../../services";
 import { Col, Container, Row } from "react-bootstrap";
-import {
-  GaugeChart,
-  Loading,
-  MaintenanceAlertBar,
-  ScheduleTable,
-  VehicleStatsPanel,
-} from "../../../components";
+import { GaugeChart, Loading } from "../../../components";
+import { MaintenanceAlertBar, ScheduleTable, VehicleStatsPanel } from "../../../components/admin";
 import "./style.scss";
 
 const AdminDashboard = () => {

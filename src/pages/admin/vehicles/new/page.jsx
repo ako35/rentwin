@@ -5,7 +5,8 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { constants } from "../../../../constants";
 import { utils } from "../../../../utils";
-import { FormErrorSummary, VehicleForm } from "../../../../components";
+import { FormErrorSummary } from "../../../../components";
+import { VehicleForm } from "../../../../components/admin";
 import { services } from "../../../../services";
 import "./style.scss";
 

@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Button, Form, Table } from "react-bootstrap";
 import { services } from "../../../services";
 import { constants } from "../../../constants";
-import { Loading, RowLink } from "../../../components";
+import { Loading } from "../../../components";
+import { RowLink } from "../../../components/admin";
 import { formatMoney } from "../contracts/details/contract-helpers";
 import "./style.scss";
 

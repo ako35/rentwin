@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import moment from "moment/moment";
 import { BsWallet2 } from "react-icons/bs";
-import { ContractRecords } from "../../../../../components";
+import { ContractRecords } from "../../../../../components/admin";
 import SaveFirstHint from "./SaveFirstHint";
 import "./payments-tab.scss";
 

@@ -4,7 +4,8 @@ import { Table } from "react-bootstrap";
 import { services } from "../../../../services";
 import { utils } from "../../../../utils";
 import { constants } from "../../../../constants";
-import { Loading, RowLink } from "../../../../components";
+import { Loading } from "../../../../components";
+import { RowLink } from "../../../../components/admin";
 
 const { routes } = constants;
 

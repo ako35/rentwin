@@ -1,27 +1,36 @@
 import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { loadAdminTranslations } from "../i18n";
 
-// Public pages stay eager: they are the SEO-critical, first-paint routes and
-// the ones react-snap prerenders. The authenticated app (admin / auth / user)
-// is code-split so an anonymous visitor or crawler never downloads it.
+// Only the layout, the homepage and the error/loading screens are in the
+// entry bundle. Every other public page is its own chunk: crawlers get each
+// page's content from the backend prerender (backend/src/lib/seo-ld.js), so
+// the browser no longer has to download all of them before the first paint
+// (mobile Lighthouse 2026-11-09: a 1.09 MB entry chunk, ~1.6 s TBT). The
+// authenticated app (admin / auth / user) is split the same way.
 import CommonLayout from "../layouts/common/layout";
-import AboutPage from "../pages/common/about/page";
-import BlogPage from "../pages/common/blog/page";
-import BlogDetailPage from "../pages/common/blog/details/page";
-import CampaignsPage from "../pages/common/campaigns/page";
-import ContactPage from "../pages/common/contact/page";
-import FaqPage from "../pages/common/faq/page";
-import LocationsPage from "../pages/common/locations/page";
-import LocationDetailPage from "../pages/common/locations/details/page";
 import ErrorPage from "../pages/common/error/page";
 import HomePage from "../pages/common/home/page";
 import LoadingPage from "../pages/common/loading/page";
-import PrivacyPolicyPage from "../pages/common/privacy-policy/page";
-import ReviewsPage from "../pages/common/reviews/page";
-import VehiclesPage from "../pages/common/vehicles/page";
-import VehicleDetailsPage from "../pages/common/vehicles/details/page";
 
-const AdminLayout = lazy(() => import("../layouts/admin/layout"));
+const AboutPage = lazy(() => import("../pages/common/about/page"));
+const BlogPage = lazy(() => import("../pages/common/blog/page"));
+const BlogDetailPage = lazy(() => import("../pages/common/blog/details/page"));
+const CampaignsPage = lazy(() => import("../pages/common/campaigns/page"));
+const ContactPage = lazy(() => import("../pages/common/contact/page"));
+const FaqPage = lazy(() => import("../pages/common/faq/page"));
+const LocationsPage = lazy(() => import("../pages/common/locations/page"));
+const LocationDetailPage = lazy(() => import("../pages/common/locations/details/page"));
+const PrivacyPolicyPage = lazy(() => import("../pages/common/privacy-policy/page"));
+const ReviewsPage = lazy(() => import("../pages/common/reviews/page"));
+const VehiclesPage = lazy(() => import("../pages/common/vehicles/page"));
+const VehicleDetailsPage = lazy(() => import("../pages/common/vehicles/details/page"));
+
+// The admin translations are fetched alongside the layout chunk, so every
+// admin page (all rendered inside AdminLayout) finds its namespace ready.
+const AdminLayout = lazy(() =>
+  Promise.all([import("../layouts/admin/layout"), loadAdminTranslations()]).then(([layout]) => layout)
+);
 const AuthLayout = lazy(() => import("../layouts/auth/layout"));
 const UserLayout = lazy(() => import("../layouts/user/layout"));
 
@@ -69,31 +78,31 @@ const lazyRoute = (element) => <Suspense fallback={<LoadingPage />}>{element}</S
 // (src/hooks/use-locale.js), so nothing page-specific needs to change here.
 const marketingRoutes = () => [
   { index: true, element: <HomePage /> },
-  { path: "about", element: <AboutPage /> },
+  { path: "about", element: lazyRoute(<AboutPage />) },
   {
     path: "blog",
     children: [
-      { index: true, element: <BlogPage /> },
-      { path: ":slug", element: <BlogDetailPage /> },
+      { index: true, element: lazyRoute(<BlogPage />) },
+      { path: ":slug", element: lazyRoute(<BlogDetailPage />) },
     ],
   },
-  { path: "kampanyalar", element: <CampaignsPage /> },
-  { path: "contact", element: <ContactPage /> },
-  { path: "sss", element: <FaqPage /> },
+  { path: "kampanyalar", element: lazyRoute(<CampaignsPage />) },
+  { path: "contact", element: lazyRoute(<ContactPage />) },
+  { path: "sss", element: lazyRoute(<FaqPage />) },
   {
     path: "lokasyonlar",
     children: [
-      { index: true, element: <LocationsPage /> },
-      { path: ":slug", element: <LocationDetailPage /> },
+      { index: true, element: lazyRoute(<LocationsPage />) },
+      { path: ":slug", element: lazyRoute(<LocationDetailPage />) },
     ],
   },
-  { path: "privacy-policy", element: <PrivacyPolicyPage /> },
-  { path: "yorumlar", element: <ReviewsPage /> },
+  { path: "privacy-policy", element: lazyRoute(<PrivacyPolicyPage />) },
+  { path: "yorumlar", element: lazyRoute(<ReviewsPage />) },
   {
     path: "vehicles",
     children: [
-      { index: true, element: <VehiclesPage /> },
-      { path: ":vehicleId", element: <VehicleDetailsPage /> },
+      { index: true, element: lazyRoute(<VehiclesPage />) },
+      { path: ":vehicleId", element: lazyRoute(<VehicleDetailsPage />) },
     ],
   },
 ];

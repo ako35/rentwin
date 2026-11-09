@@ -5,7 +5,8 @@ import { BsSearch } from "react-icons/bs";
 import { services } from "../../../../services";
 import { utils } from "../../../../utils";
 import { constants } from "../../../../constants";
-import { Loading, RowLink } from "../../../../components";
+import { Loading } from "../../../../components";
+import { RowLink } from "../../../../components/admin";
 import "./style.scss";
 
 const { routes } = constants;

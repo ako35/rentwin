@@ -1,14 +1,3 @@
-// admin components
-import AdminFilterBar from './admin/filter-bar/filter-bar'
-import AdminFooter from './admin/footer/footer'
-import AdminTopNav from './admin/top-nav/top-nav'
-import ContractRecords from './admin/contract-records/contract-records'
-import MaintenanceAlertBar from './admin/maintenance-alert-bar/maintenance-alert-bar'
-import RowLink from './admin/row-link/row-link'
-import ScheduleTable from './admin/schedule-table/schedule-table'
-import TableRow from './admin/table-row/table-row'
-import VehicleForm from './admin/vehicle-form/vehicle-form'
-import VehicleStatsPanel from './admin/vehicle-stats-panel/vehicle-stats-panel'
 
 
 // common components
@@ -62,17 +51,6 @@ import VehicleGridCard from './common/vehicles/vehicle-grid-card/vehicle-grid-ca
 import Vehicles from './common/vehicles/vehicles'
 
 export{
-    // admin components
-    AdminFilterBar,
-    AdminFooter,
-    AdminTopNav,
-    ContractRecords,
-    MaintenanceAlertBar,
-    RowLink,
-    ScheduleTable,
-    TableRow,
-    VehicleForm,
-    VehicleStatsPanel,
 
     // common components
     AppLink,

@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner, Table } from "react-bootstrap";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
-import { Loading, RowLink } from "../../../components";
+import { Loading } from "../../../components";
+import { RowLink } from "../../../components/admin";
 import { constants } from "../../../constants";
 import "./style.scss";
 

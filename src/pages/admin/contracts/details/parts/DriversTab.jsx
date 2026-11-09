@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { BsPersonBadge } from "react-icons/bs";
-import { ContractRecords } from "../../../../../components";
+import { ContractRecords } from "../../../../../components/admin";
 import SaveFirstHint from "./SaveFirstHint";
 
 // Top tab: additional named drivers on the contract (Ek Sürücü) — purely

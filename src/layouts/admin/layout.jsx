@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 import { constants } from "../../constants";
-import { AdminFilterBar, AdminFooter, AdminTopNav } from "../../components";
+import { AdminFilterBar, AdminFooter, AdminTopNav } from "../../components/admin";
 import { usePageMeta } from "../../hooks/use-page-meta";
 import { activateAdminTheme, deactivateAdminTheme } from "../../hooks/use-admin-theme";
 import './style.scss'
