@@ -18,6 +18,7 @@ import CustomPagination from './common/custom-pagination/custom-pagination'
 import FormErrorSummary from './common/form-error-summary/form-error-summary'
 import GaugeChart from './common/gauge-chart/gauge-chart'
 import LanguageSwitcher from './common/language-switcher/language-switcher'
+import MapEmbed from './common/map-embed/map-embed'
 import QuickLink from './common/footer/quick-link/quick-link'
 import Footer from './common/footer/footer'
 import BottomMenu from './common/header/bottom-menu/bottom-menu'
@@ -70,6 +71,7 @@ export{
     FormErrorSummary,
     GaugeChart,
     LanguageSwitcher,
+    MapEmbed,
     QuickLink,
     Footer,
     BottomMenu,

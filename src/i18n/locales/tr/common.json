@@ -193,5 +193,10 @@
       "Fail": "Kaldı",
       "Defective": "Kusurlu"
     }
+  },
+  "map": {
+    "show": "Haritayı göster",
+    "open": "Google Haritalar'da aç",
+    "hint": "Harita, gösterdiğinizde Google Haritalar'dan yüklenir."
   }
 }

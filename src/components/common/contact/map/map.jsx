@@ -1,4 +1,5 @@
 import { constants } from "../../../../constants";
+import MapEmbed from "../../map-embed/map-embed";
 import './map.scss';
 
 const { website } = constants;
@@ -6,16 +7,13 @@ const { website } = constants;
 const ContactMap = () => {
   return (
     <div className="contact-map">
-      <iframe
+      <MapEmbed
         title={website.name}
         src={website.mapEmbedUrl}
-        width="100%"
-        height="500"
-        style={{ border: 0 }}
-        allowFullScreen=''
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-      ></iframe>
+        openUrl={website.mapUrl}
+        caption={`${website.streetAddress}, ${website.postalCode} ${website.addressLocality}/${website.addressRegion}`}
+        height={500}
+      />
     </div>
   );
 };

@@ -5,4 +5,10 @@
 // offer cards — read as raised rather than blending into the page.
 .common-main {
   background-color: v.$surface-sunken;
+  // Public pages are lazy chunks that also fetch their data, so for a moment
+  // the main area is empty. Without a floor the footer jumped up under the
+  // header and was then pushed off-screen when the content arrived — a 0.94
+  // CLS on /lokasyonlar/aliaga (mobile, 2026-11-09). Keeping the main area at
+  // least a screen tall keeps the footer below the fold while pages load.
+  min-height: 100vh;
 }

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { BsArrowRight, BsCheck2, BsGeoAltFill } from "react-icons/bs";
-import { AppLink, JsonLd, Loading, PageHeader, Spacer } from "../../../../components";
+import { AppLink, JsonLd, Loading, MapEmbed, PageHeader, Spacer } from "../../../../components";
 import { usePageMeta } from "../../../../hooks/use-page-meta";
 import { breadcrumbLd, faqLd } from "../../../../utils/seo";
 import { services } from "../../../../services";
@@ -96,10 +96,17 @@ const LocationDetailPage = () => {
     );
   }
 
-  const mapSrc =
-    slug === "aliaga"
-      ? constants.website.mapEmbedUrl
-      : `https://www.google.com/maps?q=${encodeURIComponent(`${name} İzmir`)}&output=embed`;
+  const isOffice = slug === "aliaga";
+  const { website } = constants;
+  const mapSrc = isOffice
+    ? website.mapEmbedUrl
+    : `https://www.google.com/maps?q=${encodeURIComponent(`${name} İzmir`)}&output=embed`;
+  const mapOpenUrl = isOffice
+    ? website.mapUrl
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${name} İzmir`)}`;
+  const mapCaption = isOffice
+    ? `${website.streetAddress}, ${website.postalCode} ${website.addressLocality}/${website.addressRegion}`
+    : name;
   // A location with its own copy (detail.local.<slug>) replaces the shared
   // lead / why / how template — with only the name swapped in, the location
   // pages read alike and Search Console folded them into one another.
@@ -202,12 +209,12 @@ const LocationDetailPage = () => {
           <BsGeoAltFill /> {t("detail.mapTitle", { name })}
         </h2>
         <div className="location-detail__map">
-          <iframe
+          <MapEmbed
             title={t("detail.mapTitle", { name })}
             src={mapSrc}
-            loading="lazy"
-            allowFullScreen=""
-            referrerPolicy="no-referrer-when-downgrade"
+            openUrl={mapOpenUrl}
+            caption={mapCaption}
+            height={420}
           />
         </div>
       </Container>

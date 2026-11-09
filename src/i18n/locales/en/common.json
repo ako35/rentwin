@@ -193,5 +193,10 @@
       "Fail": "Fail",
       "Defective": "Defective"
     }
+  },
+  "map": {
+    "show": "Show map",
+    "open": "Open in Google Maps",
+    "hint": "The map loads from Google Maps when you show it."
   }
 }
