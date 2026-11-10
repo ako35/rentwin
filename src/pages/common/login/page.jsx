@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Form, Spinner } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { loginFailure, loginSuccess } from "../../../store";
@@ -9,6 +9,7 @@ import { services } from "../../../services/";
 import { utils } from "../../../utils";
 import { CustomForm, PasswordInput } from "../../../components";
 import { constants } from "../../../constants";
+import { safeReturnPath } from "../../../services/session-expiry/session-expiry";
 import "./style.scss";
 
 const { routes } = constants;
@@ -16,6 +17,7 @@ const { routes } = constants;
 const LoginPage = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const dispatch = useDispatch();
     const { t } = useTranslation("auth");
 
@@ -37,10 +39,15 @@ const LoginPage = () => {
                 t("login.successToast"),
                 "success"
             );
+            // ?next= is set when an expired session sent the user here.
+            const isAdmin = responseUser?.roles?.includes("Administrator");
+            const next = safeReturnPath(searchParams.get("next"));
             navigate(
-                responseUser?.roles?.includes("Administrator")
-                    ? routes.adminDashboard
-                    : routes.home
+                next && (isAdmin || !next.startsWith("/admin"))
+                    ? next
+                    : isAdmin
+                        ? routes.adminDashboard
+                        : routes.home
             );
         } catch (error) {
             dispatch(loginFailure());

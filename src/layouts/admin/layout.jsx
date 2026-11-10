@@ -1,16 +1,18 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { constants } from "../../constants";
 import { AdminFilterBar, AdminFooter, AdminTopNav } from "../../components/admin";
 import { usePageMeta } from "../../hooks/use-page-meta";
 import { activateAdminTheme, deactivateAdminTheme } from "../../hooks/use-admin-theme";
+import { loginUrlFor } from "../../services/session-expiry/session-expiry";
 import './style.scss'
 
 const { routes } = constants;
 
 const AdminLayout = () => {
-  const { user } = useSelector((state) => state.auth);
+  const { user, isLoggedIn } = useSelector((state) => state.auth);
+  const location = useLocation();
   const [branchId, setBranchId] = useState("");
   const headerRef = useRef(null);
   const isAdmin = !!user?.roles?.includes('Administrator');
@@ -46,6 +48,8 @@ const AdminLayout = () => {
     };
   }, [isAdmin]);
 
+  // Signed out (or the stored token no longer works): sign in, then come back.
+  if (!isLoggedIn) return <Navigate to={loginUrlFor(routes.login, location.pathname + location.search)} replace />
   if(!user || !isAdmin) return <Navigate to={`${routes.forbidden}`} />
   return (
     <div className="admin-layout">

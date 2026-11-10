@@ -138,6 +138,9 @@
     "delete": "Evet, Sil",
     "cancel": "Vazgeç"
   },
+  "session": {
+    "expired": "Oturumunuzun süresi doldu. Lütfen tekrar giriş yapın; giriş yaptıktan sonra bu sayfaya döneceksiniz."
+  },
   "options": {
     "fuelTypes": {
       "Diesel": "Dizel",

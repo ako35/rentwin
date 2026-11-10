@@ -6,6 +6,7 @@ const withGeminiConfig = async (run) => {
   const previousFetch = global.fetch;
   const previousApiKey = process.env.GEMINI_API_KEY;
   const previousModel = process.env.GEMINI_DOCUMENT_MODEL;
+  const previousFallback = process.env.GEMINI_DOCUMENT_FALLBACK_MODEL;
   process.env.GEMINI_API_KEY = "test-api-key";
   process.env.GEMINI_DOCUMENT_MODEL = "test-model";
 
@@ -17,6 +18,8 @@ const withGeminiConfig = async (run) => {
     else process.env.GEMINI_API_KEY = previousApiKey;
     if (previousModel === undefined) delete process.env.GEMINI_DOCUMENT_MODEL;
     else process.env.GEMINI_DOCUMENT_MODEL = previousModel;
+    if (previousFallback === undefined) delete process.env.GEMINI_DOCUMENT_FALLBACK_MODEL;
+    else process.env.GEMINI_DOCUMENT_FALLBACK_MODEL = previousFallback;
   }
 };
 
@@ -139,5 +142,62 @@ test("rejects non-JSON Gemini responses", async () => {
       }),
       { code: "AI_RESPONSE" }
     );
+  });
+});
+
+test("falls back to the second model when the first is overloaded", async () => {
+  await withGeminiConfig(async () => {
+    process.env.GEMINI_DOCUMENT_FALLBACK_MODEL = "lite-model";
+    const urls = [];
+    global.fetch = async (url) => {
+      urls.push(url);
+      if (url.includes("/test-model:")) return { ok: false, status: 503 };
+      return {
+        ok: true,
+        json: async () => ({
+          candidates: [{ content: { parts: [{ text: JSON.stringify({ documentDetected: true, licensePlate: "35ABC123" }) }] } }],
+        }),
+      };
+    };
+
+    const result = await extractDocumentWithGemini({ buffer: Buffer.from("x"), mimeType: "image/png", kind: "registration" });
+
+    assert.deepEqual(result, { documentDetected: true, licensePlate: "35ABC123" });
+    assert.equal(urls.length, 2);
+    assert.match(urls[1], /\/lite-model:generateContent$/);
+  });
+});
+
+test("reports a timeout as AI_TIMEOUT and tries the fallback model", async () => {
+  await withGeminiConfig(async () => {
+    process.env.GEMINI_DOCUMENT_FALLBACK_MODEL = "lite-model";
+    let calls = 0;
+    global.fetch = async () => {
+      calls += 1;
+      throw new DOMException("This operation was aborted", "AbortError");
+    };
+
+    await assert.rejects(
+      extractDocumentWithGemini({ buffer: Buffer.from("x"), mimeType: "image/png", kind: "registration" }),
+      (error) => error.code === "AI_TIMEOUT"
+    );
+    assert.equal(calls, 2);
+  });
+});
+
+test("does not retry on another model when the API key is rejected", async () => {
+  await withGeminiConfig(async () => {
+    process.env.GEMINI_DOCUMENT_FALLBACK_MODEL = "lite-model";
+    let calls = 0;
+    global.fetch = async () => {
+      calls += 1;
+      return { ok: false, status: 403 };
+    };
+
+    await assert.rejects(
+      extractDocumentWithGemini({ buffer: Buffer.from("x"), mimeType: "image/png", kind: "registration" }),
+      (error) => error.code === "AI_CONFIG"
+    );
+    assert.equal(calls, 1);
   });
 });
