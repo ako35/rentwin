@@ -252,8 +252,28 @@ const pickRelatedModels = (active, vehicle, limit = 4) => {
     .map(({ id, name }) => ({ id, name }));
 };
 
+// One entry per model: its canonical unit (see buildCanonicalVehicleMap) plus
+// `bodyTypes`, every body type its units carry — units of one model are not
+// always classified alike (some FORD TRANSİT ÇİFT KABİN units were entered as
+// BINEK), so a page that filters by body type must look at the whole model.
+// Mirrored in src/utils/vehicle-model.js groupFleetByModel.
+// units: active fleet units [{ id, brand, model, bodyType, createdAt, ... }]
+const groupFleetByModel = (units) => {
+  const canonical = buildCanonicalVehicleMap(units);
+  const bodyTypes = new Map();
+  for (const u of units) {
+    const key = modelKey(u.brand, u.model);
+    if (!bodyTypes.has(key)) bodyTypes.set(key, new Set());
+    bodyTypes.get(key).add(u.bodyType);
+  }
+  return units
+    .filter((u) => canonical.get(u.id) === null)
+    .map((u) => ({ ...u, bodyTypes: [...bodyTypes.get(modelKey(u.brand, u.model))] }));
+};
+
 module.exports = {
   modelKey,
+  groupFleetByModel,
   MODEL_COPY,
   getModelCopy,
   summarizeVariants,

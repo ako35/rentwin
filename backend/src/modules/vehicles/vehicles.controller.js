@@ -15,7 +15,7 @@ const {
   getActiveRentalContractId,
   loadModelContext,
 } = require("./vehicles.shared");
-const { getModelCopy } = require("../../lib/vehicle-models");
+const { getModelCopy, modelKey } = require("../../lib/vehicle-models");
 const { pickVehicleFields } = require("./vehicle-fields");
 
 // Prisma unique-constraint violation on Vehicle.licensePlate -> a clean 409.
@@ -111,7 +111,9 @@ const getVehiclesByPage = asyncHandler(async (req, res) => {
     // group member's contract count for the ranking itself.
     const groups = new Map();
     for (const vehicle of activeVehicles) {
-      const key = `${vehicle.brand}::${vehicle.model}`;
+      // Normalized (case / spacing / diacritics): a stray trailing space in one
+      // unit's model name used to split a model into two homepage cards.
+      const key = modelKey(vehicle.brand, vehicle.model);
       const ownCount = contractCountByCarId.get(vehicle.id) || 0;
       const existing = groups.get(key);
       if (!existing) {

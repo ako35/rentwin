@@ -18,7 +18,7 @@
 // only the surrounding page chrome (titles, labels, breadcrumbs) is bilingual.
 
 const { SITE_URL, business, slugify, localeFromPath, localizePath, stripLocalePrefix } = require("./site");
-const { getModelCopy } = require("./vehicle-models");
+const { getModelCopy, groupFleetByModel } = require("./vehicle-models");
 const HOME_COPY = {
   tr: require("../../../src/i18n/locales/tr/home.json"),
   en: require("../../../src/i18n/locales/en/home.json"),
@@ -26,6 +26,16 @@ const HOME_COPY = {
 const PRIVACY_POLICY_COPY = {
   tr: require("../../../src/i18n/locales/tr/common.json").privacyPolicy,
   en: require("../../../src/i18n/locales/en/common.json").privacyPolicy,
+};
+// Service landing pages — read straight from the frontend locale files, so
+// there is no second copy of this text to keep in sync.
+const LANDING_COPY = {
+  tr: require("../../../src/i18n/locales/tr/landing.json"),
+  en: require("../../../src/i18n/locales/en/landing.json"),
+};
+const CARD_COPY = {
+  tr: require("../../../src/i18n/locales/tr/vehicles.json").card,
+  en: require("../../../src/i18n/locales/en/vehicles.json").card,
 };
 
 const ORG_ID = `${SITE_URL}/#organization`;
@@ -136,6 +146,21 @@ const itemListLd = ({ name, itemListElement }) => ({
   name,
   numberOfItems: itemListElement.length,
   itemListElement,
+});
+
+// A service landing page — mirrors src/utils/seo.js serviceLd.
+const serviceLd = ({ name, serviceType, description, path, locale = "tr" }) => ({
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name,
+  serviceType,
+  description,
+  url: `${SITE_URL}${localizePath(path, locale)}`,
+  provider: { "@type": "AutoRental", "@id": ORG_ID, name: business.name },
+  areaServed: [
+    { "@type": "City", name: "Aliağa" },
+    { "@type": "City", name: "İzmir" },
+  ],
 });
 
 const vehicleLd = ({ name, brand, model, image, transmission, fuelType, modelYear, color, dailyPrice, path, locale = "tr" }) => ({
@@ -874,6 +899,14 @@ const VEHICLES_LIST_COPY = {
   },
 };
 
+const VEHICLES_SEE_ALSO = Object.fromEntries(
+  ["tr", "en"].map((locale) => {
+    const nav = require(`../../../src/i18n/locales/${locale}/common.json`).nav;
+    const lead = require(`../../../src/i18n/locales/${locale}/vehicles.json`).seoBody.seeAlso;
+    return [locale, { lead, commercial: nav.commercialRental, longTerm: nav.longTermRental }];
+  })
+);
+
 // vehicles: [{ id, brand, model }]
 const renderVehiclesListBody = (vehicles = [], locale = "tr") => {
   const copy = VEHICLES_LIST_COPY[locale];
@@ -885,6 +918,10 @@ const renderVehiclesListBody = (vehicles = [], locale = "tr") => {
     (links ? `<ul>${links}</ul>` : "") +
     `<h2>${htmlEsc(copy.aboutTitle)}</h2>` +
     copy.aboutParagraphs.map((p) => `<p>${htmlEsc(p)}</p>`).join("") +
+    // Same "see also" line as src/pages/common/vehicles/page.jsx.
+    `<p>${htmlEsc(VEHICLES_SEE_ALSO[locale].lead)} ` +
+    `<a href="${htmlEsc(SITE_URL + localizePath("/ticari-arac-kiralama", locale))}">${htmlEsc(VEHICLES_SEE_ALSO[locale].commercial)}</a> · ` +
+    `<a href="${htmlEsc(SITE_URL + localizePath("/uzun-donem-arac-kiralama", locale))}">${htmlEsc(VEHICLES_SEE_ALSO[locale].longTerm)}</a></p>` +
     "</main>"
   );
 };
@@ -1075,6 +1112,121 @@ const renderReviewsBody = (reviewSummary, reviews = [], locale = "tr") => {
   );
 };
 
+/* ------------------------------------------- service landing pages  */
+// /ticari-arac-kiralama and /uzun-donem-arac-kiralama (+ /en twins). Which
+// fleet models each page lists — KEEP IN SYNC with
+// src/pages/common/landing/page.jsx VARIANTS.
+// Each page lists one entry per model (groupFleetByModel), cheapest first.
+const COMMERCIAL_BODY_TYPES = ["PANELVAN_MINIBUS", "KAMYONET"];
+const priceOrLast = (value) => (Number(value) > 0 ? Number(value) : Infinity);
+const byPrice = (field) => (a, b) =>
+  priceOrLast(a[field]) - priceOrLast(b[field]) ||
+  `${a.brand} ${a.model}`.localeCompare(`${b.brand} ${b.model}`, "tr");
+const LANDING_PAGES = {
+  "/ticari-arac-kiralama": {
+    key: "commercial",
+    monthly: false,
+    relatedPath: "/uzun-donem-arac-kiralama",
+    select: (models) =>
+      models.filter((m) => m.bodyTypes.some((t) => COMMERCIAL_BODY_TYPES.includes(t))).sort(byPrice("dailyPrice")),
+  },
+  "/uzun-donem-arac-kiralama": {
+    key: "longTerm",
+    monthly: true,
+    relatedPath: "/ticari-arac-kiralama",
+    select: (models) => models.filter((m) => Number(m.monthlyPrice) > 0).sort(byPrice("monthlyPrice")),
+  },
+};
+
+const formatTry = (value) => Number(value).toLocaleString("tr-TR");
+// "+905073503135" → "0507 350 31 35" (the site's own display format).
+const displayPhone = (e164) => {
+  const n = `0${String(e164).replace(/^\+90/, "")}`;
+  return `${n.slice(0, 4)} ${n.slice(4, 7)} ${n.slice(7, 9)} ${n.slice(9)}`;
+};
+const landingPrice = (page, v) => Number(page.monthly ? v.monthlyPrice : v.dailyPrice);
+const landingVehicleName = (v) => `${(v.brand || "").trim()} ${(v.model || "").trim()}`.replace(/\s+/g, " ").trim();
+
+// vehicles: the page's models [{ id, brand, model, dailyPrice, monthlyPrice }]
+const renderLandingBody = ({ page, canonicalPath, vehicles }, locale = "tr") => {
+  const copy = LANDING_COPY[locale][page.key];
+  const shared = LANDING_COPY[locale].shared;
+  const card = CARD_COPY[locale];
+  const prices = vehicles.map((v) => landingPrice(page, v)).filter((p) => p > 0);
+  const from = prices.length
+    ? shared[page.monthly ? "fromMonthly" : "fromDaily"].replace("{{price}}", formatTry(Math.min(...prices)))
+    : null;
+  const unit = page.monthly ? card.plusVatPerMonth : card.plusVatPerDay;
+  const vehicleItems = vehicles
+    .map((v) => {
+      const price = landingPrice(page, v);
+      const url = `${SITE_URL}${localizePath(`/vehicles/${v.id}`, locale)}`;
+      return (
+        `<li><a href="${htmlEsc(url)}">${htmlEsc(landingVehicleName(v))}</a>` +
+        (price > 0 ? ` — ${htmlEsc(formatTry(price))} TL ${htmlEsc(unit)}` : "") +
+        "</li>"
+      );
+    })
+    .join("");
+  const link = (path, label) => `<a href="${htmlEsc(SITE_URL + localizePath(path, locale))}">${htmlEsc(label)}</a>`;
+  return (
+    `<main><h1>${htmlEsc(copy.heading)}</h1><p>${htmlEsc(copy.lead)}</p>` +
+    (from ? `<p>${htmlEsc(from)}</p>` : "") +
+    `<section><h2>${htmlEsc(copy.fleetTitle)}</h2><p>${htmlEsc(copy.fleetIntro)}</p>` +
+    (vehicleItems ? `<ul>${vehicleItems}</ul>` : `<p>${htmlEsc(shared.fleetEmpty)}</p>`) +
+    "</section>" +
+    `<section><h2>${htmlEsc(copy.typesTitle)}</h2>` +
+    copy.types.map((t) => `<h3>${htmlEsc(t.title)}</h3><p>${htmlEsc(t.text)}</p>`).join("") +
+    "</section>" +
+    `<section><h2>${htmlEsc(copy.whyTitle)}</h2><ul>${copy.why.map((w) => `<li>${htmlEsc(w)}</li>`).join("")}</ul></section>` +
+    `<section><h2>${htmlEsc(copy.howTitle)}</h2><ol>${copy.how.map((h) => `<li>${htmlEsc(h)}</li>`).join("")}</ol></section>` +
+    `<section><h2>${htmlEsc(copy.faqTitle)}</h2>` +
+    copy.faq.map((item) => `<h3>${htmlEsc(item.q)}</h3><p>${htmlEsc(item.a)}</p>`).join("") +
+    `<p>${htmlEsc(shared.faqMore)} ${link("/sss", shared.faqMoreLink)}${htmlEsc(shared.faqMoreSuffix)}</p></section>` +
+    `<section><h2>${htmlEsc(copy.ctaTitle)}</h2><p>${htmlEsc(copy.ctaText)}</p>` +
+    `<p><a href="tel:${htmlEsc(business.phoneE164)}">${htmlEsc(shared.call.replace("{{phone}}", displayPhone(business.phoneE164)))}</a>` +
+    ` · ${link("/contact", shared.contactForm)}</p></section>` +
+    `<p>${htmlEsc(copy.relatedLead)} ${link(page.relatedPath, copy.relatedLabel)}</p>` +
+    "</main>"
+  );
+};
+
+const buildLandingHead = ({ head, page, canonicalPath, fleet, locale }) => {
+  const copy = LANDING_COPY[locale][page.key];
+  const vehicles = page.select(groupFleetByModel(fleet || []));
+  const jsonLd = [
+    breadcrumbLd([{ name: NAV[locale].home, path: "/" }, { name: copy.pageTitle }], locale),
+    serviceLd({
+      name: copy.heading,
+      serviceType: copy.serviceType,
+      description: copy.seoDescription,
+      path: canonicalPath,
+      locale,
+    }),
+    faqLd(copy.faq),
+  ];
+  if (vehicles.length) {
+    jsonLd.push(
+      itemListLd({
+        name: copy.fleetTitle,
+        itemListElement: vehicles.map((v, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: landingVehicleName(v),
+          url: `${SITE_URL}${localizePath(`/vehicles/${v.id}`, locale)}`,
+        })),
+      })
+    );
+  }
+  return {
+    ...head,
+    title: copy.seoTitle,
+    description: copy.seoDescription,
+    jsonLd,
+    bodyHtml: renderLandingBody({ page, canonicalPath, vehicles }, locale),
+  };
+};
+
 // path → { title, description, jsonLd(locale) } per locale. Keyed by the
 // canonical (unprefixed/TR-shaped) path in both maps.
 const STATIC_META = {
@@ -1258,6 +1410,7 @@ const noindex = (head) => ({ ...head, canonical: null, robots: "noindex, nofollo
  * @param {object[]} [args.posts]           [{ slug, title }] for the /blog list
  * @param {object} [args.reviewSummary]     { count, average } | null — for "/" and "/yorumlar"
  * @param {object[]} [args.reviews]         latest approved reviews (name-masked) — for "/" and "/yorumlar"
+ * @param {object[]} [args.fleet]           every active unit [{ id, brand, model, bodyType, dailyPrice, monthlyPrice, createdAt }] — for the LANDING_PAGES
  * @returns {{title,description,canonical,ogImage,ogType,ogLocale,ogLocaleAlt,htmlLang,robots,jsonLd:object[],bodyHtml?:string}}
  */
 const buildHead = ({
@@ -1277,6 +1430,7 @@ const buildHead = ({
   posts,
   reviewSummary,
   reviews,
+  fleet,
 }) => {
   const locale = localeFromPath(path);
   const canonicalPath = stripLocalePrefix(path);
@@ -1398,6 +1552,10 @@ const buildHead = ({
     };
   }
 
+  // service landing pages (/ticari-arac-kiralama, /uzun-donem-arac-kiralama)
+  const landing = LANDING_PAGES[canonicalPath];
+  if (landing) return buildLandingHead({ head: base(path), page: landing, canonicalPath, fleet, locale });
+
   // static routes
   const meta = STATIC_META[locale][canonicalPath];
   if (meta) {
@@ -1503,6 +1661,8 @@ module.exports = {
   breadcrumbLd,
   faqLd,
   itemListLd,
+  serviceLd,
+  LANDING_PAGES,
   vehicleLd,
   articleLd,
   reviewLd,

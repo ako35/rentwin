@@ -7,6 +7,8 @@ const { SITE_URL, slugify, localizePath } = require("../../lib/site");
 const STATIC_ROUTES = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
   { path: "/vehicles", changefreq: "daily", priority: "0.9" },
+  { path: "/ticari-arac-kiralama", changefreq: "weekly", priority: "0.8" },
+  { path: "/uzun-donem-arac-kiralama", changefreq: "weekly", priority: "0.8" },
   { path: "/lokasyonlar", changefreq: "weekly", priority: "0.7" },
   { path: "/kampanyalar", changefreq: "weekly", priority: "0.6" },
   { path: "/blog", changefreq: "weekly", priority: "0.6" },
@@ -125,6 +127,9 @@ const getSitemap = asyncHandler(async (req, res) => {
   const staticLastmodByPath = {
     "/": staticLastmod,
     "/vehicles": staticLastmod,
+    // The service landing pages list fleet models (and their prices).
+    "/ticari-arac-kiralama": staticLastmod,
+    "/uzun-donem-arac-kiralama": staticLastmod,
     "/lokasyonlar": locationsLastmod.getTime() ? locationsLastmod : undefined,
     "/kampanyalar": campaignsLastmod.getTime() ? campaignsLastmod : undefined,
     "/blog": postsLastmod.getTime() ? postsLastmod : undefined,

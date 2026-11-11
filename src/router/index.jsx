@@ -19,6 +19,7 @@ const BlogDetailPage = lazy(() => import("../pages/common/blog/details/page"));
 const CampaignsPage = lazy(() => import("../pages/common/campaigns/page"));
 const ContactPage = lazy(() => import("../pages/common/contact/page"));
 const FaqPage = lazy(() => import("../pages/common/faq/page"));
+const LandingPage = lazy(() => import("../pages/common/landing/page"));
 const LocationsPage = lazy(() => import("../pages/common/locations/page"));
 const LocationDetailPage = lazy(() => import("../pages/common/locations/details/page"));
 const PrivacyPolicyPage = lazy(() => import("../pages/common/privacy-policy/page"));
@@ -89,6 +90,8 @@ const marketingRoutes = () => [
   { path: "kampanyalar", element: lazyRoute(<CampaignsPage />) },
   { path: "contact", element: lazyRoute(<ContactPage />) },
   { path: "sss", element: lazyRoute(<FaqPage />) },
+  { path: "ticari-arac-kiralama", element: lazyRoute(<LandingPage variant="commercial" />) },
+  { path: "uzun-donem-arac-kiralama", element: lazyRoute(<LandingPage variant="longTerm" />) },
   {
     path: "lokasyonlar",
     children: [

@@ -11,6 +11,7 @@ import trAbout from "./locales/tr/about.json";
 import trContact from "./locales/tr/contact.json";
 import trFaq from "./locales/tr/faq.json";
 import trLocations from "./locales/tr/locations.json";
+import trLanding from "./locales/tr/landing.json";
 import trCampaigns from "./locales/tr/campaigns.json";
 import trBlog from "./locales/tr/blog.json";
 import trReviews from "./locales/tr/reviews.json";
@@ -28,6 +29,7 @@ import enAbout from "./locales/en/about.json";
 import enContact from "./locales/en/contact.json";
 import enFaq from "./locales/en/faq.json";
 import enLocations from "./locales/en/locations.json";
+import enLanding from "./locales/en/landing.json";
 import enCampaigns from "./locales/en/campaigns.json";
 import enBlog from "./locales/en/blog.json";
 import enReviews from "./locales/en/reviews.json";
@@ -47,6 +49,7 @@ const resources = {
     contact: trContact,
     faq: trFaq,
     locations: trLocations,
+    landing: trLanding,
     campaigns: trCampaigns,
     blog: trBlog,
     reviews: trReviews,
@@ -65,6 +68,7 @@ const resources = {
     contact: enContact,
     faq: enFaq,
     locations: enLocations,
+    landing: enLanding,
     campaigns: enCampaigns,
     blog: enBlog,
     reviews: enReviews,

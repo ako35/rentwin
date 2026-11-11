@@ -7,6 +7,7 @@ const {
   summarizeVariants,
   buildCanonicalVehicleMap,
   pickRelatedModels,
+  groupFleetByModel,
 } = require("./vehicle-models");
 
 const unit = (id, brand, model, extra = {}) => ({
@@ -78,4 +79,17 @@ test("summarizeVariants reports count, year range and distinct options", () => {
     ]),
     { count: 3, minYear: 2023, maxYear: 2026, transmissions: ["Automatic", "Manual"], fuelTypes: ["Diesel"] }
   );
+});
+
+test("groupFleetByModel: one canonical unit per model, body types pooled across units", () => {
+  const groups = groupFleetByModel([
+    unit("t1", "FORD", "TRANSİT ÇİFT KABİN", { bodyType: "KAMYONET", createdAt: "2026-09-14" }),
+    unit("t2", "FORD", "TRANSİT ÇİFT KABİN ", { bodyType: "BINEK", createdAt: "2026-09-10" }),
+    unit("e1", "FIAT", "EGEA", { createdAt: "2026-09-01" }),
+  ]);
+  assert.equal(groups.length, 2);
+  const transit = groups.find((g) => g.model.trim() === "TRANSİT ÇİFT KABİN");
+  assert.equal(transit.id, "t2"); // the earliest-listed unit is the canonical one
+  assert.deepEqual([...transit.bodyTypes].sort(), ["BINEK", "KAMYONET"]);
+  assert.deepEqual(groups.find((g) => g.id === "e1").bodyTypes, ["BINEK"]);
 });

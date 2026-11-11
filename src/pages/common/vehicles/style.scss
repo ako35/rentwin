@@ -32,4 +32,12 @@
       }
     }
   }
+
+  &__see-also a {
+    font-weight: 600;
+    color: v.$color1;
+    text-decoration: none;
+
+    &:hover { color: v.$color2; }
+  }
 }

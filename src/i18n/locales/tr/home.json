@@ -113,10 +113,10 @@
     "services": [
       { "id": 1, "title": "Bireysel Araç Kiralama" },
       { "id": 2, "title": "Kurumsal Filo Çözümleri" },
-      { "id": 3, "title": "Uzun Dönem Kiralama Programları" },
+      { "id": 3, "title": "Uzun Dönem Kiralama Programları", "route": "longTermRental" },
       { "id": 4, "title": "Premium Otomobil Kiralama" },
       { "id": 5, "title": "Havalimanı Teslim & Karşılama" },
-      { "id": 6, "title": "Arazi Aracı Kiralama" }
+      { "id": 6, "title": "Ticari Araç Kiralama", "route": "commercialRental" }
     ]
   }
 }

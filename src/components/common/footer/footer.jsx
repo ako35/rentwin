@@ -7,7 +7,20 @@ import { AppLink, ContactInfo, QuickLink } from "../../";
 import "./footer.scss";
 
 const {
-  routes: { about, blog, campaigns, contact, faq, home, locations, privacyPolicy, reviews, vehicles },
+  routes: {
+    about,
+    blog,
+    campaigns,
+    commercialRental,
+    contact,
+    faq,
+    home,
+    locations,
+    longTermRental,
+    privacyPolicy,
+    reviews,
+    vehicles,
+  },
   website: { social = {} },
 } = constants;
 
@@ -30,6 +43,8 @@ const socialLinks = [
 const quickLinks = [
   { direct: home, key: "home" },
   { direct: vehicles, key: "vehicles" },
+  { direct: commercialRental, key: "commercialRental" },
+  { direct: longTermRental, key: "longTermRental" },
   { direct: campaigns, key: "campaigns" },
   { direct: locations, key: "locations" },
   { direct: blog, key: "blog" },

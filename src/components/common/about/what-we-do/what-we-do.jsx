@@ -1,8 +1,11 @@
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { GiCarKey, GiJeep, GiAirplaneDeparture, GiTimeSynchronization } from "react-icons/gi";
+import { GiCarKey, GiAirplaneDeparture, GiTimeSynchronization } from "react-icons/gi";
+import { PiVan } from "react-icons/pi";
 import { TbBuildingSkyscraper } from "react-icons/tb";
 import { RiVipDiamondLine } from "react-icons/ri";
+import { constants } from "../../../../constants";
+import AppLink from "../../app-link/app-link";
 import "./what-we-do.scss";
 
 const serviceIcons = [
@@ -11,7 +14,7 @@ const serviceIcons = [
   <GiTimeSynchronization key="2" />,
   <RiVipDiamondLine key="3" />,
   <GiAirplaneDeparture key="4" />,
-  <GiJeep key="5" />,
+  <PiVan key="5" />,
 ];
 
 const WhatWeDo = () => {
@@ -33,7 +36,15 @@ const WhatWeDo = () => {
             {services.map((item, index) => (
               <li className="what-we-do__service" key={item.id}>
                 <span className="what-we-do__service-icon">{serviceIcons[index]}</span>
-                <span className="what-we-do__service-title">{item.title}</span>
+                {/* A service with its own landing page (home.json `route`) links
+                    to it; the link's ::after stretches over the whole card. */}
+                {item.route && constants.routes[item.route] ? (
+                  <AppLink to={constants.routes[item.route]} className="what-we-do__service-title what-we-do__service-link">
+                    {item.title}
+                  </AppLink>
+                ) : (
+                  <span className="what-we-do__service-title">{item.title}</span>
+                )}
               </li>
             ))}
           </ul>

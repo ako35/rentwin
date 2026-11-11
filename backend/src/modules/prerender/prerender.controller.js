@@ -11,7 +11,7 @@
 
 const prisma = require("../../lib/prisma");
 const { SITE_URL, slugify, localizePath, stripLocalePrefix } = require("../../lib/site");
-const { buildHead } = require("../../lib/seo-ld");
+const { buildHead, LANDING_PAGES } = require("../../lib/seo-ld");
 const { modelImageKey } = require("../../lib/serializers");
 const { loadModelImageMap, loadModelContext } = require("../vehicles/vehicles.shared");
 const { buildCanonicalVehicleMap } = require("../../lib/vehicle-models");
@@ -236,6 +236,24 @@ const resolvePath = async (reqPath) => {
     const canonical = buildCanonicalVehicleMap(fleet);
     const vehicles = fleet.filter((v) => canonical.get(v.id) === null).slice(0, 100);
     return { path: reqPath, vehicles };
+  }
+
+  // Service landing pages: every active unit — buildHead groups them into one
+  // entry per model (its canonical page) and filters / prices from there.
+  if (LANDING_PAGES[canonicalPath]) {
+    const fleet = await prisma.vehicle.findMany({
+      where: { outOfService: false, soldAt: null, passiveAt: null },
+      select: {
+        id: true,
+        brand: true,
+        model: true,
+        bodyType: true,
+        dailyPrice: true,
+        monthlyPrice: true,
+        createdAt: true,
+      },
+    });
+    return { path: reqPath, fleet };
   }
 
   if (canonicalPath === "/lokasyonlar") {

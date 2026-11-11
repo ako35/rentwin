@@ -354,3 +354,33 @@ test("vehicle list prices are shown and marked as VAT-exclusive (client parity)"
   });
   assert.equal(vehicleLd({ name: "FIAT EGEA", path: "/vehicles/e1" }).offers.priceSpecification, undefined);
 });
+
+test("commercial landing lists a model when any of its units is commercial, once, cheapest first", () => {
+  const unit = (id, brand, model, bodyType, dailyPrice, createdAt) => ({
+    id, brand, model, bodyType, dailyPrice, monthlyPrice: dailyPrice * 20, createdAt,
+  });
+  const fleet = [
+    unit("t1", "FORD", "TRANSİT ÇİFT KABİN", "BINEK", 9000, "2026-09-01"),
+    unit("t2", "FORD", "TRANSİT ÇİFT KABİN ", "KAMYONET", 9000, "2026-09-05"),
+    unit("f1", "FİAT", "FİORİNO", "PANELVAN_MINIBUS", 2750, "2026-09-02"),
+    unit("e1", "FIAT", "EGEA", "BINEK", 3000, "2026-09-03"),
+  ];
+  const head = buildHead({ path: "/ticari-arac-kiralama", fleet });
+  assert.equal(head.title, "Ticari Araç Kiralama Aliağa | Panelvan ve Kamyonet – Rentwin");
+  assert.equal(head.canonical, `${SITE_URL}/ticari-arac-kiralama`);
+  const list = head.jsonLd.find((ld) => ld["@type"] === "ItemList");
+  assert.deepEqual(
+    list.itemListElement.map((item) => item.url),
+    [`${SITE_URL}/vehicles/f1`, `${SITE_URL}/vehicles/t1`] // t1: the model's canonical (earliest) unit
+  );
+  assert.ok(head.jsonLd.some((ld) => ld["@type"] === "Service"));
+  assert.ok(head.jsonLd.some((ld) => ld["@type"] === "FAQPage"));
+  assert.match(head.bodyHtml, /<h1>Aliağa Ticari Araç Kiralama<\/h1>/);
+  assert.match(head.bodyHtml, /Günlük 2\.750 TL \+ KDV'den başlayan fiyatlar/);
+  assert.doesNotMatch(head.bodyHtml, /EGEA/);
+
+  const en = buildHead({ path: "/en/uzun-donem-arac-kiralama", fleet });
+  assert.equal(en.htmlLang, "en");
+  assert.match(en.bodyHtml, /<h1>Monthly &amp; Long-Term Car Rental in Aliağa<\/h1>/);
+  assert.match(en.bodyHtml, /href="https:\/\/rentwin\.com\.tr\/en\/vehicles\/e1"/);
+});

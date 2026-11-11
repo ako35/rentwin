@@ -113,10 +113,10 @@
     "services": [
       { "id": 1, "title": "Individual Vehicle Rental" },
       { "id": 2, "title": "Corporate Fleet Solutions" },
-      { "id": 3, "title": "Extended Lease Programs" },
+      { "id": 3, "title": "Extended Lease Programs", "route": "longTermRental" },
       { "id": 4, "title": "Premium Automobile Hire" },
       { "id": 5, "title": "Airport Delivery & Meet-and-Greet" },
-      { "id": 6, "title": "Off-Road Vehicle Leasing" }
+      { "id": 6, "title": "Commercial Vehicle Rental", "route": "commercialRental" }
     ]
   }
 }

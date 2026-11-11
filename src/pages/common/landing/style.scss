@@ -1,0 +1,275 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+// Service landing pages (/ticari-arac-kiralama, /uzun-donem-arac-kiralama).
+// Same visual language as the location detail page: white cards on a thin
+// border, the brand green only for icons, ticks and a soft tint.
+$tint: rgba(62, 184, 70, 0.08);
+$tint-border: rgba(62, 184, 70, 0.22);
+
+.landing {
+  &__intro {
+    max-width: 780px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  &__lead {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: v.$color-muted;
+    margin-bottom: 1rem;
+  }
+
+  &__from {
+    display: inline-block;
+    margin: 0 0 0.25rem;
+    padding: 0.35rem 0.95rem;
+    border-radius: 999px;
+    background-color: $tint;
+    color: v.$color2;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  &__actions {
+    @include m.flexbox(row, center, center, 0.6rem);
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+
+    .btn {
+      @include m.flexbox(row, center, center, 0.45rem);
+    }
+  }
+
+  &__section {
+    scroll-margin-top: 1.5rem;
+
+    &--narrow {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+  }
+
+  &__title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: v.$color5;
+    text-align: center;
+    margin-bottom: 0.5rem;
+
+    &--left {
+      text-align: left;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__subtitle {
+    max-width: 680px;
+    margin: 0 auto 1.5rem;
+    text-align: center;
+    font-size: 0.95rem;
+    color: v.$color5_3;
+  }
+
+  &__notice {
+    text-align: center;
+    color: v.$color5_3;
+    padding: 1.5rem 0;
+
+    p { margin-bottom: 0.75rem; }
+  }
+
+  // The homepage "Popular Cars" tracks, a touch narrower so four cards share
+  // a row at desktop width.
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(245px, 265px));
+    justify-content: center;
+    gap: 1.1rem;
+
+    @media (max-width: 560px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__types {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1.25rem;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__type {
+    background-color: #fff;
+    border: 1px solid v.$color3;
+    border-radius: 16px;
+    padding: 1.25rem 1.35rem;
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: v.$color5;
+      margin: 0.85rem 0 0.4rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: v.$color-muted;
+    }
+  }
+
+  &__type-icon {
+    @include m.flexbox(row, center, center);
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background-color: $tint;
+    color: v.$color2;
+    font-size: 1.5rem;
+  }
+
+  &__columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  &__why {
+    @include m.reset-list;
+    @include m.flexbox(column, flex-start, stretch, 0.7rem);
+
+    li {
+      @include m.flexbox(row, flex-start, flex-start, 0.6rem);
+      line-height: 1.55;
+      color: v.$color-muted;
+
+      svg {
+        flex-shrink: 0;
+        margin-top: 0.2rem;
+        color: v.$color1;
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  &__steps {
+    @include m.reset-list;
+    @include m.flexbox(column, flex-start, stretch, 0.85rem);
+    counter-reset: landing-step;
+
+    li {
+      position: relative;
+      padding-left: 2.6rem;
+      min-height: 1.9rem;
+      line-height: 1.6;
+      color: v.$color-muted;
+      counter-increment: landing-step;
+
+      &::before {
+        content: counter(landing-step);
+        position: absolute;
+        left: 0;
+        top: 0;
+        @include m.flexbox(row, center, center);
+        width: 1.9rem;
+        height: 1.9rem;
+        border-radius: 50%;
+        background-color: $tint;
+        color: v.$color2;
+        font-size: 0.9rem;
+        font-weight: 700;
+      }
+    }
+  }
+
+  &__qa {
+    @include m.flexbox(column, flex-start, stretch, 0.75rem);
+    margin-top: 1.25rem;
+  }
+
+  &__qa-item {
+    border: 1px solid v.$color3;
+    border-radius: 12px;
+    padding: 0.9rem 1.1rem;
+    background-color: #fff;
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: v.$color5;
+      margin: 0 0 0.35rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: v.$color-muted;
+    }
+  }
+
+  &__more,
+  &__related {
+    font-size: 0.95rem;
+    color: v.$color-muted;
+
+    a {
+      font-weight: 600;
+      color: v.$color1;
+      text-decoration: none;
+
+      &:hover { color: v.$color2; }
+    }
+  }
+
+  &__more {
+    margin: 1rem 0 0;
+  }
+
+  &__cta {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+    border: 1px solid $tint-border;
+    background-color: $tint;
+    text-align: center;
+
+    h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: v.$color5;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      max-width: 620px;
+      margin: 0 auto;
+      color: v.$color-muted;
+    }
+  }
+
+  &__related {
+    margin: 1.5rem 0 0;
+    text-align: center;
+
+    a {
+      @include m.flexbox(row, center, center, 0.3rem);
+      display: inline-flex;
+    }
+  }
+}

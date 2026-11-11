@@ -15,7 +15,7 @@
     { "src": "/api/(.*)", "dest": "backend/api/index.js" },
     { "src": "/sitemap.xml", "dest": "backend/api/index.js" },
     {
-      "src": "/((en/)?(vehicles/[^/]+|lokasyonlar/[^/]+|blog/[^/]+|vehicles|lokasyonlar|blog|kampanyalar|yorumlar|about|contact|sss|privacy-policy)|en)/?",
+      "src": "/((en/)?(vehicles/[^/]+|lokasyonlar/[^/]+|blog/[^/]+|vehicles|lokasyonlar|blog|kampanyalar|yorumlar|about|contact|sss|ticari-arac-kiralama|uzun-donem-arac-kiralama|privacy-policy)|en)/?",
       "has": [
         {
           "type": "header",

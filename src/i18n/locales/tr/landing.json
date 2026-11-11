@@ -1,0 +1,149 @@
+{
+  "shared": {
+    "fleetCta": "Araçları İncele",
+    "quoteCta": "Teklif İste",
+    "fromDaily": "Günlük {{price}} TL + KDV'den başlayan fiyatlar",
+    "fromMonthly": "Aylık {{price}} TL + KDV'den başlayan fiyatlar",
+    "fleetEmpty": "Şu anda listelenecek araç bulunmuyor; güncel durum için bizi arayın.",
+    "loadError": "Araçlar yüklenemedi.",
+    "retry": "Tekrar dene",
+    "call": "Ara: {{phone}}",
+    "whatsapp": "WhatsApp",
+    "contactForm": "İletişim Formu",
+    "faqMore": "Yaş, belgeler, kilometre ve yakıt politikası gibi genel kiralama koşulları için",
+    "faqMoreLink": "Sıkça Sorulan Sorular",
+    "faqMoreSuffix": " sayfasına bakın."
+  },
+  "commercial": {
+    "seoTitle": "Ticari Araç Kiralama Aliağa | Panelvan ve Kamyonet – Rentwin",
+    "seoDescription": "Aliağa ve İzmir'de ticari araç kiralama: panelvan, minibüs ve çift kabin kamyonet. Günlük veya aylık kiralama, depozito yok, şirket adına fatura.",
+    "serviceType": "Ticari araç kiralama",
+    "pageTitle": "Ticari Araç Kiralama",
+    "heading": "Aliağa Ticari Araç Kiralama",
+    "lead": "Saha işleri, sevkiyat ve ekip taşıma için panelvan, minibüs ve çift kabin kamyonet kiralayın. Aliağa ofisimizden günlük ya da aylık kiralama yapabilir, İzmir Adnan Menderes Havalimanı'nda teslim talep edebilirsiniz.",
+    "fleetTitle": "Kiralık Ticari Araçlarımız",
+    "fleetIntro": "Fiyatlar KDV hariç günlük liste fiyatıdır. Aracın detay sayfasından uygunluğu kontrol edip rezervasyon yapabilirsiniz.",
+    "typesTitle": "Hangi İşe Hangi Araç?",
+    "types": [
+      {
+        "icon": "van",
+        "title": "Hafif Ticari ve Panelvan",
+        "text": "Şehir içi dağıtım, teknik servis ve malzeme taşıma için kompakt yük alanı; dar sokaklarda ve sanayi sitelerinde kolay manevra."
+      },
+      {
+        "icon": "people",
+        "title": "Büyük Panelvan ve Minibüs",
+        "text": "Hacimli yükler ya da ekibin tek araçla sahaya ulaşması için geniş kabin ve daha yüksek taşıma kapasitesi."
+      },
+      {
+        "icon": "truck",
+        "title": "Çift Kabin Kamyonet",
+        "text": "Ekibi ve ekipmanı aynı anda taşımak için: önde ikinci sıra koltuklu kabin, arkada yük kasası. Şantiye, bakım ve saha işleri için uygun."
+      }
+    ],
+    "whyTitle": "Neden Rentwin?",
+    "why": [
+      "Günlük veya aylık kiralama; aylık tarife günlük fiyata göre belirgin şekilde daha avantajlı",
+      "Depozito yok; nakit, kredi kartı veya havale / EFT ile ödeme",
+      "Kurumsal kiralamalarda şirket ünvanına fatura",
+      "Aynı modelden birden fazla araç — ekipler için toplu kiralama",
+      "Her aracın günlük ve aylık fiyatı açıkça yazılı",
+      "Haftanın 7 günü açık Aliağa ofisi, havalimanında teslim talebi"
+    ],
+    "howTitle": "Nasıl Kiralanır?",
+    "how": [
+      "Listeden işinize uygun aracı seçin ve detay sayfasından uygunluğu kontrol edin.",
+      "Online rezervasyon yapın; birden fazla araç ya da aylık kiralama için bizi arayın veya teklif isteyin.",
+      "Sözleşmeyi imzalayıp aracınızı Aliağa ofisimizden ya da talep ederseniz İzmir Adnan Menderes Havalimanı'nda teslim alın."
+    ],
+    "faqTitle": "Ticari Araç Kiralama Hakkında Sık Sorulanlar",
+    "faq": [
+      {
+        "q": "Ticari araç kiralamak için hangi ehliyet gerekir?",
+        "a": "Azami yüklü ağırlığı 3.500 kg'a kadar olan panelvan ve kamyonetler B sınıfı ehliyetle kullanılabilir. Daha ağır kamyon sınıfı araçlar için C1 veya üstü ehliyet gerekir; seçtiğiniz aracın ehliyet sınıfını rezervasyon öncesinde ekibimizle teyit edin."
+      },
+      {
+        "q": "Şirket adına kiralama yapıp fatura alabilir miyim?",
+        "a": "Evet. Kurumsal kiralamalarda fatura şirket ünvanınıza düzenlenir; vergi dairesi ve vergi numaranızı rezervasyon sırasında iletmeniz yeterli."
+      },
+      {
+        "q": "Aynı anda birden fazla ticari araç kiralayabilir miyim?",
+        "a": "Evet. Filomuzda aynı modelden birden fazla araç bulunduğu için ekipler için toplu kiralama yapılabilir. Araç sayısını ve tarihleri iletin, uygunluğu kontrol edip size dönüş yapalım."
+      },
+      {
+        "q": "Aylık ticari araç kiralama fiyatları ne kadar?",
+        "a": "Her aracın günlük ve aylık liste fiyatı (KDV hariç) araç detay sayfasında yer alır. Aylık kiralama, aynı aracı günlük tarifeyle kiralamaya göre daha avantajlıdır."
+      }
+    ],
+    "ctaTitle": "Ekibiniz için birden fazla araç mı lazım?",
+    "ctaText": "Araç sayısını, tarihleri ve kullanım yerini iletin; uygunluğu kontrol edip size hızlıca dönüş yapalım.",
+    "relatedLead": "Aylık veya daha uzun süreli ihtiyaçlar için:",
+    "relatedLabel": "Uzun Dönem Araç Kiralama"
+  },
+  "longTerm": {
+    "seoTitle": "Aylık ve Uzun Dönem Araç Kiralama Aliağa | Rentwin",
+    "seoDescription": "Aliağa ve İzmir'de aylık ve uzun dönem araç kiralama: binek ve ticari araçlar, KDV hariç aylık liste fiyatlarıyla. Depozito yok, şirket adına fatura.",
+    "serviceType": "Uzun dönem araç kiralama",
+    "pageTitle": "Uzun Dönem Kiralama",
+    "heading": "Aliağa Aylık ve Uzun Dönem Araç Kiralama",
+    "lead": "Bir proje süresince, sezon boyunca ya da yeni aracınızı beklerken araç ihtiyacınızı aylık kiralamayla karşılayın. Binek araçtan çift kabin kamyonete kadar araçlarımızı aylık kiralayabilir, aylık fiyatları aşağıda karşılaştırabilirsiniz.",
+    "fleetTitle": "Aylık Kiralık Araçlar",
+    "fleetIntro": "Fiyatlar KDV hariç aylık liste fiyatıdır. Aracın detay sayfasından uygunluğu kontrol edebilir, birden fazla araç için teklif isteyebilirsiniz.",
+    "typesTitle": "Kimler İçin Uygun?",
+    "types": [
+      {
+        "icon": "building",
+        "title": "Şirketler ve Projeler",
+        "text": "Aliağa'daki sanayi tesislerinde proje yürüten şirketler, filo satın almadan ekiplerinin araç ihtiyacını karşılayabilir."
+      },
+      {
+        "icon": "workspace",
+        "title": "İş Seyahati ve Sezonluk Çalışma",
+        "text": "Bölgeye haftalarca ya da aylarca çalışmaya gelenler için günlük kiralamadan çok daha ekonomik bir çözüm."
+      },
+      {
+        "icon": "tools",
+        "title": "Aracı Serviste Olanlar",
+        "text": "Kendi aracınız bakımda ya da onarımdayken veya yeni aracınızı beklerken uzun süreli geçici araç."
+      }
+    ],
+    "whyTitle": "Uzun Dönem Kiralamanın Avantajları",
+    "why": [
+      "Aylık tarife, aynı aracı günlük fiyatla kiralamaya göre belirgin şekilde daha uygun",
+      "Araç satın almadan; peşinat ve ikinci el değer kaybı derdi olmadan araç kullanımı",
+      "Periyodik bakım ve muayene takibi bizde",
+      "Süre dolmadan haber vererek kiralamayı uzatabilme",
+      "Depozito yok; kurumsal kiralamalarda şirket ünvanına fatura",
+      "Binek ve ticari araç seçenekleri tek noktada"
+    ],
+    "howTitle": "Nasıl Kiralanır?",
+    "how": [
+      "Aylık fiyatları karşılaştırıp ihtiyacınıza uygun aracı seçin.",
+      "Kiralama süresini ve araç sayısını iletin; online rezervasyon yapın ya da teklif isteyin.",
+      "Sözleşmeyi imzalayıp aracı Aliağa ofisimizden teslim alın; uzatmak isterseniz süre dolmadan bize haber verin."
+    ],
+    "faqTitle": "Uzun Dönem Kiralama Hakkında Sık Sorulanlar",
+    "faq": [
+      {
+        "q": "Aylık kiralama günlük kiralamadan ne kadar avantajlı?",
+        "a": "Araca göre değişmekle birlikte aylık liste fiyatı, aynı aracı 30 gün boyunca günlük tarifeyle kiralamaya göre belirgin şekilde düşüktür. Her aracın günlük ve aylık fiyatı detay sayfasında yan yana yer alır."
+      },
+      {
+        "q": "Aylık kiralamada kilometre sınırı var mı?",
+        "a": "Kilometre limiti ve aşım ücreti kiralama sözleşmesinde açıkça belirtilir. Tahmini aylık kullanımınızı rezervasyon öncesinde bize iletirseniz size uygun seçeneği birlikte belirleyelim."
+      },
+      {
+        "q": "Kiralama süresini uzatabilir miyim?",
+        "a": "Evet. Süre dolmadan bize haber vererek kiralamanızı uzatabilirsiniz; uzatma, aracın ilgili tarihlerde müsait olmasına bağlıdır."
+      },
+      {
+        "q": "Şirket adına uzun dönem kiralama yapılabilir mi?",
+        "a": "Evet. Kurumsal kiralamalarda fatura şirket ünvanınıza düzenlenir. Birden fazla araç ya da farklı araç tipleri için ihtiyacınızı iletin, size uygun planı hazırlayalım."
+      }
+    ],
+    "ctaTitle": "Uzun dönem ya da filo kiralama mı planlıyorsunuz?",
+    "ctaText": "Kiralama süresini, araç tipini ve adedini iletin; size uygun aylık planı hazırlayıp hızlıca dönüş yapalım.",
+    "relatedLead": "Panelvan, minibüs veya kamyonet arıyorsanız:",
+    "relatedLabel": "Ticari Araç Kiralama"
+  }
+}

@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next"
 import { Container } from "react-bootstrap"
-import { JsonLd, PageHeader, Spacer, Vehicles } from "../../../components"
+import { AppLink, JsonLd, PageHeader, Spacer, Vehicles } from "../../../components"
+import { constants } from "../../../constants"
 import { usePageMeta } from "../../../hooks/use-page-meta"
 import { breadcrumbLd } from "../../../utils/seo"
 import "./style.scss"
@@ -35,6 +36,12 @@ const VehiclesPage = () => {
           {paragraphs.map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}
+          <p className="vehicles-page__see-also">
+            {seoBody.seeAlso}{" "}
+            <AppLink to={constants.routes.commercialRental}>{tCommon("nav.commercialRental")}</AppLink>
+            {" · "}
+            <AppLink to={constants.routes.longTermRental}>{tCommon("nav.longTermRental")}</AppLink>
+          </p>
         </Container>
       )}
       <Spacer />

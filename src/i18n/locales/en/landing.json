@@ -1,0 +1,149 @@
+{
+  "shared": {
+    "fleetCta": "Browse Vehicles",
+    "quoteCta": "Request a Quote",
+    "fromDaily": "Prices from {{price}} TL + VAT per day",
+    "fromMonthly": "Prices from {{price}} TL + VAT per month",
+    "fleetEmpty": "There are no vehicles to list right now; call us for current availability.",
+    "loadError": "The vehicles could not be loaded.",
+    "retry": "Try again",
+    "call": "Call: {{phone}}",
+    "whatsapp": "WhatsApp",
+    "contactForm": "Contact Form",
+    "faqMore": "For general rental terms such as age, documents, mileage and fuel policy, see our",
+    "faqMoreLink": "Frequently Asked Questions",
+    "faqMoreSuffix": "."
+  },
+  "commercial": {
+    "seoTitle": "Commercial Vehicle Rental in Aliağa | Vans & Pickups – Rentwin",
+    "seoDescription": "Commercial vehicle rental in Aliağa and İzmir: panel vans, minibuses and double-cab pickups. Daily or monthly rental, no deposit, invoiced to your company.",
+    "serviceType": "Commercial vehicle rental",
+    "pageTitle": "Commercial Vehicle Rental",
+    "heading": "Commercial Vehicle Rental in Aliağa",
+    "lead": "Rent a panel van, minibus or double-cab pickup for field work, deliveries and moving your crew. Rent daily or monthly from our Aliağa office, or request delivery at İzmir Adnan Menderes Airport.",
+    "fleetTitle": "Our Commercial Rental Vehicles",
+    "fleetIntro": "Prices are daily list prices excluding VAT. Check availability and book from each vehicle's detail page.",
+    "typesTitle": "Which Vehicle for Which Job?",
+    "types": [
+      {
+        "icon": "van",
+        "title": "Light Commercial & Panel Vans",
+        "text": "A compact cargo area for city deliveries, technical service and carrying materials; easy to manoeuvre in narrow streets and industrial estates."
+      },
+      {
+        "icon": "people",
+        "title": "Large Vans & Minibuses",
+        "text": "A roomy cabin and more carrying capacity for bulky loads, or for getting the whole crew to site in one vehicle."
+      },
+      {
+        "icon": "truck",
+        "title": "Double-Cab Pickups",
+        "text": "Carry the crew and the equipment together: a cabin with a second row of seats up front and a cargo bed behind. Suited to construction, maintenance and field work."
+      }
+    ],
+    "whyTitle": "Why Rentwin?",
+    "why": [
+      "Daily or monthly rental; the monthly rate is clearly better value than the daily one",
+      "No deposit; pay by cash, credit card or bank transfer",
+      "Corporate rentals invoiced to your company",
+      "Several units of the same model — group rentals for crews",
+      "Every vehicle's daily and monthly price shown upfront",
+      "Aliağa office open 7 days a week, airport delivery on request"
+    ],
+    "howTitle": "How to Rent",
+    "how": [
+      "Pick the vehicle that suits the job from the list and check availability on its detail page.",
+      "Book online; for several vehicles or a monthly rental, call us or request a quote.",
+      "Sign the contract and collect your vehicle at our Aliağa office or, on request, at İzmir Adnan Menderes Airport."
+    ],
+    "faqTitle": "Commercial Vehicle Rental FAQ",
+    "faq": [
+      {
+        "q": "Which driving licence do I need to rent a commercial vehicle?",
+        "a": "Panel vans and pickups with a maximum permitted weight of up to 3,500 kg can be driven on a category B licence. Heavier truck-class vehicles require a C1 licence or higher; confirm the licence category for your vehicle with our team before booking."
+      },
+      {
+        "q": "Can I rent in my company's name and get an invoice?",
+        "a": "Yes. Corporate rentals are invoiced to your company; just share your tax office and tax number when booking."
+      },
+      {
+        "q": "Can I rent several commercial vehicles at once?",
+        "a": "Yes. Our fleet has several units of the same model, so group rentals for crews are possible. Tell us how many vehicles you need and for which dates, and we will check availability and get back to you."
+      },
+      {
+        "q": "How much is a monthly commercial vehicle rental?",
+        "a": "Each vehicle's daily and monthly list price (excluding VAT) is shown on its detail page. A monthly rental costs less than renting the same vehicle at the daily rate."
+      }
+    ],
+    "ctaTitle": "Need several vehicles for your crew?",
+    "ctaText": "Tell us how many vehicles, which dates and where they will be used; we will check availability and get back to you quickly.",
+    "relatedLead": "For monthly or longer needs:",
+    "relatedLabel": "Long-Term Car Rental"
+  },
+  "longTerm": {
+    "seoTitle": "Monthly & Long-Term Car Rental in Aliağa | Rentwin",
+    "seoDescription": "Monthly and long-term car rental in Aliağa and İzmir: cars and commercial vehicles at monthly list prices (excl. VAT). No deposit, company invoicing.",
+    "serviceType": "Long-term car rental",
+    "pageTitle": "Long-Term Rental",
+    "heading": "Monthly & Long-Term Car Rental in Aliağa",
+    "lead": "Cover your vehicle needs with a monthly rental for the length of a project, for the season, or while you wait for your new car. Rent anything from a car to a double-cab pickup by the month and compare monthly prices below.",
+    "fleetTitle": "Vehicles for Monthly Rental",
+    "fleetIntro": "Prices are monthly list prices excluding VAT. Check availability on each vehicle's detail page, or request a quote for several vehicles.",
+    "typesTitle": "Who Is It For?",
+    "types": [
+      {
+        "icon": "building",
+        "title": "Companies & Projects",
+        "text": "Companies running projects at Aliağa's industrial sites can cover their crews' vehicle needs without buying a fleet."
+      },
+      {
+        "icon": "workspace",
+        "title": "Business Trips & Seasonal Work",
+        "text": "A far more economical option than daily rental for anyone working in the area for weeks or months."
+      },
+      {
+        "icon": "tools",
+        "title": "When Your Car Is in the Shop",
+        "text": "A longer-term temporary vehicle while your own car is being serviced or repaired, or while you wait for a new one."
+      }
+    ],
+    "whyTitle": "Benefits of Long-Term Rental",
+    "why": [
+      "The monthly rate is clearly lower than renting the same vehicle at the daily price",
+      "Use a vehicle without buying one — no down payment, no resale depreciation",
+      "We keep track of periodic maintenance and inspections",
+      "Extend your rental by letting us know before it ends",
+      "No deposit; corporate rentals invoiced to your company",
+      "Cars and commercial vehicles in one place"
+    ],
+    "howTitle": "How to Rent",
+    "how": [
+      "Compare monthly prices and pick the vehicle that suits you.",
+      "Tell us the rental period and the number of vehicles; book online or request a quote.",
+      "Sign the contract and collect the vehicle at our Aliağa office; to extend, let us know before the rental ends."
+    ],
+    "faqTitle": "Long-Term Rental FAQ",
+    "faq": [
+      {
+        "q": "How much cheaper is a monthly rental than a daily one?",
+        "a": "It depends on the vehicle, but the monthly list price is clearly lower than renting the same vehicle for 30 days at the daily rate. Each vehicle's daily and monthly prices are shown side by side on its detail page."
+      },
+      {
+        "q": "Is there a mileage limit on monthly rentals?",
+        "a": "The mileage limit and excess charge are stated clearly in the rental contract. Tell us your expected monthly mileage before booking and we will work out the right option together."
+      },
+      {
+        "q": "Can I extend my rental?",
+        "a": "Yes. Let us know before your rental ends and you can extend it, subject to the vehicle being available for the extra dates."
+      },
+      {
+        "q": "Can a company rent long-term?",
+        "a": "Yes. Corporate rentals are invoiced to your company. Tell us what you need — several vehicles or different vehicle types — and we will put together a plan that fits."
+      }
+    ],
+    "ctaTitle": "Planning a long-term or fleet rental?",
+    "ctaText": "Tell us the rental period, vehicle type and quantity; we will prepare a monthly plan that fits and get back to you quickly.",
+    "relatedLead": "Looking for a panel van, minibus or pickup?",
+    "relatedLabel": "Commercial Vehicle Rental"
+  }
+}

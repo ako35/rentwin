@@ -83,6 +83,7 @@
 
     // White mini cards with a standing shadow + hover lift.
     &__service {
+        position: relative;
         @include m.flexbox(row, flex-start, center, 0.7rem);
         padding: 0.8rem 0.85rem;
         background-color: #fff;
@@ -114,5 +115,21 @@
         font-weight: 600;
         line-height: 1.3;
         color: v.$color5;
+    }
+
+    &__service-link {
+        text-decoration: none;
+
+        &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+        }
+
+        &:hover,
+        &:focus-visible {
+            color: v.$color2;
+        }
     }
 }

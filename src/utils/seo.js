@@ -111,6 +111,25 @@ export const itemListLd = ({ name, itemListElement }) => ({
   itemListElement,
 });
 
+// A service landing page (/ticari-arac-kiralama, /uzun-donem-arac-kiralama).
+// The provider carries its own name so the node stands on its own — these
+// pages don't render the full AutoRental block that owns the @id. `path` is
+// the plain/unprefixed form, localized like breadcrumbLd. Mirrors the bot
+// prerender's serviceLd (backend/src/lib/seo-ld.js).
+export const serviceLd = ({ name, serviceType, description, path }) => ({
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name,
+  serviceType,
+  description,
+  url: `${SITE_URL}${localizePath(path, currentLocale())}`,
+  provider: { "@type": "AutoRental", "@id": `${SITE_URL}/#organization`, name: website.name },
+  areaServed: [
+    { "@type": "City", name: "Aliağa" },
+    { "@type": "City", name: "İzmir" },
+  ],
+});
+
 // items: [{ name, path }] — the current page is the last item. `path` is
 // always the plain/unprefixed (TR) form; auto-localized to whichever
 // language the current URL is in (see currentLocale above).
