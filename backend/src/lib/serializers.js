@@ -62,9 +62,20 @@ const serializeContract = (contract) => {
   return { ...rest, car: car ? serializeVehicle(car) : undefined };
 };
 
+// Admin reservation routes: full car record.
 const serializeReservation = (reservation) => {
   const { car, ...rest } = reservation;
   return { ...rest, car: car ? serializeVehicle(car) : undefined };
+};
+
+// Customer reservation routes (any registered user, own bookings only): the
+// embedded car gets the same public allow-list as /car/visitors/*. The
+// customer UI (user reservations list + detail, booking form) only shows
+// model, transmission, fuel type and image, so plate, chassis/engine no,
+// registration, km/fuel, notes, tracking flags and branch stay admin-only.
+const serializeCustomerReservation = (reservation) => {
+  const { car, ...rest } = reservation;
+  return { ...rest, car: car ? serializePublicVehicle(car) : undefined };
 };
 
 // Lightweight row shape for the admin dashboard's returns/departures tables
@@ -144,6 +155,7 @@ module.exports = {
   modelImageKey,
   serializeContract,
   serializeReservation,
+  serializeCustomerReservation,
   serializeScheduleRow,
   serializeHgsPendingRow,
   serializeInvoicePendingRow,

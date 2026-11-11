@@ -2,7 +2,7 @@ const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const { parseFrontendDateTime } = require("../../lib/dates");
 const { checkAvailability } = require("../../lib/availability");
-const { serializeReservation } = require("../../lib/serializers");
+const { serializeCustomerReservation } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 const { CAR_INCLUDE, ALLOWED_SORT_FIELDS, isAdmin } = require("./reservations.shared");
@@ -35,7 +35,7 @@ const createReservation = asyncHandler(async (req, res) => {
     include: CAR_INCLUDE,
   });
 
-  res.status(201).json(serializeReservation(reservation));
+  res.status(201).json(serializeCustomerReservation(reservation));
 });
 
 const getReservationById = asyncHandler(async (req, res) => {
@@ -48,7 +48,9 @@ const getReservationById = asyncHandler(async (req, res) => {
     throw new HttpError(403, "You do not have access to this reservation.");
   }
 
-  res.json(serializeReservation(reservation));
+  // Customer shape even for an admin caller — the admin screens (web + mobile)
+  // read the full record from /reservations/admin/:id/auth instead.
+  res.json(serializeCustomerReservation(reservation));
 });
 
 const getMyReservationsByPage = asyncHandler(async (req, res) => {
@@ -72,7 +74,7 @@ const getMyReservationsByPage = asyncHandler(async (req, res) => {
 
   res.json(
     buildPageResponse({
-      content: content.map(serializeReservation),
+      content: content.map(serializeCustomerReservation),
       totalElements,
       page,
       size,
