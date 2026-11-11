@@ -64,7 +64,7 @@ const BookingForm = () => {
     try {
       await services.reservation.createReservation(vehicle.id, dto);
       await utils.functions.swalToast(t("booking.successToast"), "success");
-      navigate(routes.userReservations);
+      navigate(routes.userReservations, { state: { justBooked: true } });
     } catch (error) {
       const conflict = error?.response?.status === 409;
       utils.functions.swalToast(

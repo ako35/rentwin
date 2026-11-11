@@ -203,5 +203,20 @@
     "show": "Haritayı göster",
     "open": "Google Haritalar'da aç",
     "hint": "Harita, gösterdiğinizde Google Haritalar'dan yüklenir."
+  },
+  "socialFollow": {
+    "button": "Facebook'ta Takip Et",
+    "contact": {
+      "title": "Bizi Facebook'ta takip edin",
+      "text": "Kampanyaları, filoya katılan yeni araçları ve duyuruları Facebook sayfamızda paylaşıyoruz."
+    },
+    "campaigns": {
+      "title": "Yeni kampanyaları kaçırmayın",
+      "text": "Yeni kampanyaları ve dönemsel fırsatları Facebook sayfamızda da duyuruyoruz."
+    },
+    "booked": {
+      "title": "Rentwin'i Facebook'ta takip edin",
+      "text": "Kampanyalardan ve filoya katılan yeni araçlardan ilk siz haberdar olun."
+    }
   }
 }

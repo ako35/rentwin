@@ -1,5 +1,6 @@
 .contact-info-container {
-  p {
+  // Only the intro paragraph — cards inside the column style their own <p>s.
+  > p {
     margin-top: 2rem;
     line-height: 1.7;
   }

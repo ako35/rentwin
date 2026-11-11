@@ -33,6 +33,7 @@ import PageHeader from './common/page-header/page-header'
 import PasswordInput from './common/password-input/password-input'
 import ReservationSearch from './common/reservation-search/reservation-search'
 import SectionHeader from './common/section-header/section-header'
+import SocialFollow from './common/social-follow/social-follow'
 import HomeHero from './common/home-hero/home-hero'
 import Spacer from './common/spacer/spacer'
 import StarRating from './common/star-rating/star-rating'
@@ -86,6 +87,7 @@ export{
     PasswordInput,
     ReservationSearch,
     SectionHeader,
+    SocialFollow,
     HomeHero,
     Spacer,
     StarRating,

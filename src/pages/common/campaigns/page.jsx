@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { CampaignCard, JsonLd, Loading, PageHeader, Spacer } from "../../../components";
+import { CampaignCard, JsonLd, Loading, PageHeader, SocialFollow, Spacer } from "../../../components";
 import { usePageMeta } from "../../../hooks/use-page-meta";
 import { breadcrumbLd } from "../../../utils/seo";
 import { services } from "../../../services";
@@ -48,6 +48,7 @@ const CampaignsPage = () => {
             ))}
           </div>
         )}
+        {!loading && <SocialFollow context="campaigns" className="campaigns-page__follow" />}
       </Container>
       <Spacer />
     </>

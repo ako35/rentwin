@@ -1,5 +1,5 @@
 import { Col, Container, Row } from "react-bootstrap";
-import { ContactForm, ContactInfo, ContactMap, JsonLd, PageHeader, Spacer } from "../../../components/";
+import { ContactForm, ContactInfo, ContactMap, JsonLd, PageHeader, SocialFollow, Spacer } from "../../../components/";
 import { useTranslation } from "react-i18next";
 import { usePageMeta } from "../../../hooks/use-page-meta";
 import { breadcrumbLd } from "../../../utils/seo";
@@ -26,6 +26,7 @@ const ContactPage = () => {
             <p>{t("desc")}</p>
             <Spacer />
             <ContactInfo />
+            <SocialFollow context="contact" className="mt-3" />
           </Col>
           <Col md={6}>
             <ContactForm />
