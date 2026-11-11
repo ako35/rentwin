@@ -27,6 +27,36 @@ const serializeVehicle = (vehicle, modelImageMap) => {
   return { ...rest, image: (images || []).map((image) => image.id) };
 };
 
+// What the unauthenticated /car/visitors/* routes may expose: only the fields
+// the public site renders (catalogue grid, homepage rail, detail page, booking
+// form, service landing pages). An allow-list on purpose — plate, chassis/
+// engine no, registration, km/fuel, notes, tracking flags, branch… stay
+// admin-only, and so does any column added to Vehicle later until it is
+// listed here. `createdAt` is here because the landing pages' client-side
+// groupFleetByModel (src/utils/vehicle-model.js) picks each model's canonical
+// unit as its earliest-listed one, the same rule the backend uses.
+const PUBLIC_VEHICLE_FIELDS = Object.freeze([
+  "id",
+  "brand",
+  "model",
+  "modelYear",
+  "transmission",
+  "fuelType",
+  "bodyType",
+  "color",
+  "dailyPrice",
+  "monthlyPrice",
+  "createdAt",
+]);
+
+const serializePublicVehicle = (vehicle, modelImageMap) => {
+  const full = serializeVehicle(vehicle, modelImageMap);
+  const safe = {};
+  for (const field of PUBLIC_VEHICLE_FIELDS) safe[field] = full[field] ?? null;
+  safe.image = full.image;
+  return safe;
+};
+
 const serializeContract = (contract) => {
   const { car, ...rest } = contract;
   return { ...rest, car: car ? serializeVehicle(car) : undefined };
@@ -109,6 +139,8 @@ const serializeKbsReleasePendingRow = (contract) => ({
 module.exports = {
   serializeUser,
   serializeVehicle,
+  serializePublicVehicle,
+  PUBLIC_VEHICLE_FIELDS,
   modelImageKey,
   serializeContract,
   serializeReservation,

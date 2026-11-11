@@ -5,6 +5,7 @@ const {
   getVehicleById,
   getVehicleByIdAdmin,
   getAllVehicles,
+  getAllVehiclesAdmin,
   getVehiclesByPage,
   getVehiclesByPageAdmin,
   getPriceList,
@@ -35,10 +36,13 @@ const ID = "([0-9a-fA-F-]{36})";
 
 // Order matters: literal segments ("all", "pages") must be registered
 // before the ":id" route, or they'd be swallowed as an id param.
+// Unauthenticated: these handlers serialize with serializePublicVehicle (an
+// allow-list) — anything internal belongs on a /car/admin/*/auth twin.
 router.get("/car/visitors/all", getAllVehicles);
 router.get("/car/visitors/pages", getVehiclesByPage);
 router.get("/car/visitors/:id", getVehicleById);
 
+router.get("/car/admin/all/auth", authenticate, requireAdmin, getAllVehiclesAdmin);
 router.get("/car/admin/pages/auth", authenticate, requireAdmin, getVehiclesByPageAdmin);
 router.get("/car/admin/price-list/auth", authenticate, requireAdmin, getPriceList);
 router.get("/car/admin/fleet-stats/auth", authenticate, requireAdmin, getFleetStats);

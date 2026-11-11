@@ -49,7 +49,7 @@ export const useContractData = ({ isCreate, contractId }) => {
 
   const loadRefData = async () => {
     const [v, loc] = await Promise.all([
-      services.vehicle.getVehicles(),
+      services.vehicle.getVehiclesAdmin(),
       services.location.getLocations().catch(() => []),
     ]);
     setVehicles(v || []);

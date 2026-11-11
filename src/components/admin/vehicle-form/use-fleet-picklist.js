@@ -13,7 +13,7 @@ export const useFleetPicklist = (formik) => {
   useEffect(() => {
     services.branch.getBranches().then(setBranches).catch(() => setBranches([]));
     services.vehicle
-      .getVehicles()
+      .getVehiclesAdmin()
       .then((list) =>
         setFleet(
           (list || []).map((v) => ({

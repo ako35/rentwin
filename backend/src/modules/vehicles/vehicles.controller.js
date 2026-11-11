@@ -1,6 +1,8 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
-const { serializeVehicle } = require("../../lib/serializers");
+// serializeVehicle = full record (admin routes only); serializePublicVehicle =
+// the allow-list every unauthenticated /car/visitors/* handler must use.
+const { serializeVehicle, serializePublicVehicle } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const { parseFrontendDateTime } = require("../../lib/dates");
 const { getBusyVehicleIds } = require("../../lib/availability");
@@ -41,7 +43,7 @@ const getVehicleById = asyncHandler(async (req, res) => {
   // (same source as the bot prerender — see lib/vehicle-models.js).
   const { canonicalId, variants } = await loadModelContext(vehicle);
   res.json({
-    ...serializeVehicle(vehicle, modelImages),
+    ...serializePublicVehicle(vehicle, modelImages),
     canonicalId,
     modelInfo: { variants, copy: getModelCopy(vehicle.brand, vehicle.model) },
   });
@@ -66,11 +68,22 @@ const getVehicleByIdAdmin = asyncHandler(async (req, res) => {
   });
 });
 
-const getAllVehicles = asyncHandler(async (req, res) => {
-  const [vehicles, modelImages] = await Promise.all([
+const loadUnsoldVehicles = () =>
+  Promise.all([
     prisma.vehicle.findMany({ where: { soldAt: null }, include: IMAGES_AND_BRANCH_INCLUDE }),
     loadModelImageMap(),
   ]);
+
+const getAllVehicles = asyncHandler(async (req, res) => {
+  const [vehicles, modelImages] = await loadUnsoldVehicles();
+  res.json(vehicles.map((vehicle) => serializePublicVehicle(vehicle, modelImages)));
+});
+
+// Admin twin of the public "all" list: full records (plate, km, fuel, …) for
+// the contract screen's car picker and the vehicle form's duplicate-plate
+// check, which used to read them off the public route.
+const getAllVehiclesAdmin = asyncHandler(async (req, res) => {
+  const [vehicles, modelImages] = await loadUnsoldVehicles();
   res.json(vehicles.map((vehicle) => serializeVehicle(vehicle, modelImages)));
 });
 
@@ -137,7 +150,7 @@ const getVehiclesByPage = asyncHandler(async (req, res) => {
 
     res.json(
       buildPageResponse({
-        content: content.map((vehicle) => serializeVehicle(vehicle, modelImages)),
+        content: content.map((vehicle) => serializePublicVehicle(vehicle, modelImages)),
         totalElements,
         page,
         size,
@@ -161,7 +174,7 @@ const getVehiclesByPage = asyncHandler(async (req, res) => {
 
   res.json(
     buildPageResponse({
-      content: content.map((vehicle) => serializeVehicle(vehicle, modelImages)),
+      content: content.map((vehicle) => serializePublicVehicle(vehicle, modelImages)),
       totalElements,
       page,
       size,
@@ -540,6 +553,7 @@ module.exports = {
   getVehicleById,
   getVehicleByIdAdmin,
   getAllVehicles,
+  getAllVehiclesAdmin,
   getVehiclesByPage,
   getVehiclesByPageAdmin,
   getPriceList,

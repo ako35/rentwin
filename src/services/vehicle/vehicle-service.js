@@ -14,6 +14,8 @@ export const getVehicleByIdAdmin = async (id) => {
   const response = await axios.get(`${API_URL}/car/admin/${id}/auth`, services.authHeader());
   return response.data;
 };
+// Public list — carries only the public fields (no plate, km, fuel, notes…).
+// Admin screens that need those use getVehiclesAdmin.
 export const getVehicles = async () => {
   const response = await axios.get(`${API_URL}/car/visitors/all`);
   return response.data;
@@ -37,6 +39,11 @@ export const getVehiclesByPage = async (
 };
 
 // ADMIN ENDPOINTS
+// Every unsold vehicle as a full record (plate, km, fuel, …).
+export const getVehiclesAdmin = async () => {
+  const response = await axios.get(`${API_URL}/car/admin/all/auth`, services.authHeader());
+  return response.data;
+};
 export const addVehicle = async(payload) => {
   const response = await axios.post(
     `${API_URL}/car/admin/add`,
