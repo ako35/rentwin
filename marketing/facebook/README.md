@@ -21,7 +21,7 @@ Bu klasörde:
 - [ ] **Eylem butonunu ayarla.** Önerim **"WhatsApp ile mesaj gönder"** (0507 350 31 35). Diğer seçenek, **"Rezervasyon yap"** butonunu şu adrese bağlamak:
   `https://rentwin.com.tr/vehicles?utm_source=facebook&utm_medium=social&utm_campaign=sayfa_butonu`
 - [ ] **Çalışma saatlerini kontrol et.** Sitedeki saatlerle aynı olmalı: Pazartesi–Cuma 09:00–21:00, Cumartesi 09:00–19:00, Pazar 09:00–17:00.
-- [ ] **Tanıtım gönderisini paylaş ve sabitle.** Aşağıdaki 1. gönderiyi paylaş, sonra gönderinin "…" menüsünden "Sayfanın başına sabitle"yi seç.
+- [ ] **Tanıtım gönderisini sabitle.** 1. gönderi 14 Kasım 20:30'a planlandı. Yayınlandıktan sonra gönderinin "…" menüsünden "Sayfanın başına sabitle"yi seç.
 - [ ] **Instagram aç ve sayfaya bağla.** Yer: Meta Business Suite › Ayarlar › Bağlı hesaplar. Böylece her gönderiyi tek tıkla iki yerde paylaşırsın. Instagram adresini ilettiğinde sitenin alt bilgisine ve Google'ın okuduğu işletme bilgilerine eklenebilir.
 - [ ] **Google İşletme Profili'ne ekle.** Sosyal profiller bölümüne Facebook sayfasının adresini gir.
 
@@ -52,23 +52,27 @@ Organik büyüme yavaştır; ilk ayda küçük bir bütçe süreci hızlandırı
 ## 4. Paylaşım takvimi: dört hafta, haftada üç gönderi
 
 - **Saat:** 20:30 (akşam en çok etkileşim alan saat) ya da 12:30.
-- **Planlama:** Meta Business Suite › Planlayıcı ile on iki gönderinin hepsi tek seferde planlanabilir.
 - **Linkler:** Linklerin sonundaki `utm_` ekleri, Google Analytics'te Facebook'tan gelen ziyaretçiyi ayrı görmeni sağlar. Silme.
 
-| # | Tarih | Görsel | Konu |
-|---|---|---|---|
-| 1 | Cmt 14 Kasım | `01-hos-geldiniz.png` (📌 sabitle) | Tanıtım |
-| 2 | Sal 17 Kasım | `02-ticari-arac-kiralama.png` | Ticari araç |
-| 3 | Per 19 Kasım | `10-kampanya-otomatik-egea.png` | Egea kampanyası |
-| 4 | Cmt 21 Kasım | `08-hangisi.png` | Etkileşim (A mı, B mi?) |
-| 5 | Sal 24 Kasım | `03-uzun-donem-kiralama.png` | Aylık kiralama |
-| 6 | Per 26 Kasım | `04-havalimani-teslim.png` | Havalimanı teslimi |
-| 7 | Cmt 28 Kasım | `06-kiralama-sartlari.png` | Kiralama şartları |
-| 8 | Sal 1 Aralık | `07-kurumsal-kiralama.png` | Kurumsal kiralama |
-| 9 | Per 3 Aralık | `11-kampanya-myvista.jpg` | MyVista kampanyası |
-| 10 | Cmt 5 Aralık | `09-calisma-saatleri.png` | Çalışma saatleri |
-| 11 | Sal 8 Aralık | `05-transit-cift-kabin.png` | Transit Çift Kabin |
-| 12 | Per 10 Aralık | (görsel yok, link önizlemesi) | Google yorumu çağrısı |
+> **Durum (12 Kasım 2026):** Aşağıda "Planlandı" yazan 7 gönderi Meta Business Suite'te 20:30'a planlandı.
+> Sayfada ayrıca bu plandan önce hazırlanmış **18 gönderi daha** var: 12 Kasım – 7 Aralık arası, saat 19:00; araç tanıtımları ve Reels videoları.
+> Bunlarla aynı konudaki 5 gönderi planlanmadı. Metinleri ve görselleri, ileride kullanmak için aşağıda duruyor.
+> Yeni bir gönderi planlamadan önce Meta Business Suite › İçerik › Planlananlar listesine bak.
+
+| # | Tarih | Görsel | Konu | Durum |
+|---|---|---|---|---|
+| 1 | Cmt 14 Kasım | `01-hos-geldiniz.png` (📌 yayınlanınca sabitle) | Tanıtım | ✅ Planlandı |
+| 2 | Sal 17 Kasım | `02-ticari-arac-kiralama.png` | Ticari araç | ✅ Planlandı |
+| 3 | Per 19 Kasım | `10-kampanya-otomatik-egea.png` | Egea kampanyası | ✅ Planlandı |
+| 4 | — | `08-hangisi.png` | Etkileşim (A mı, B mi?) | Planlanmadı: 7 Aralık'ta benzer anket var |
+| 5 | Sal 24 Kasım | `03-uzun-donem-kiralama.png` | Aylık kiralama | ✅ Planlandı |
+| 6 | — | `04-havalimani-teslim.png` | Havalimanı teslimi | Planlanmadı: 16 Kasım'da aynı konu var |
+| 7 | — | `06-kiralama-sartlari.png` | Kiralama şartları | Planlanmadı: 20 Kasım'da aynı konu var |
+| 8 | Sal 1 Aralık | `07-kurumsal-kiralama.png` | Kurumsal kiralama | ✅ Planlandı |
+| 9 | Per 3 Aralık | `11-kampanya-myvista.jpg` | MyVista kampanyası | ✅ Planlandı |
+| 10 | — | `09-calisma-saatleri.png` | Çalışma saatleri | Planlanmadı: 27 Kasım'da aynı konu var |
+| 11 | — | `05-transit-cift-kabin.png` | Transit Çift Kabin | Planlanmadı: 18 Kasım'da aynı konu var |
+| 12 | Per 10 Aralık | (görsel yok, link önizlemesi) | Google yorumu çağrısı | ✅ Planlandı |
 
 ### 1. Tanıtım (14 Kasım) · `01-hos-geldiniz.png` · 📌 sabitle
 
