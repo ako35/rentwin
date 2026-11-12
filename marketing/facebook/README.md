@@ -376,6 +376,8 @@ Facebook'un grup aramasında Aliağa ile ilgili 30 grup çıktı. En büyük 13'
 | [SATILIK KİRALIK ALİAĞA](https://www.facebook.com/groups/238716423317668/) | 7,9 bin | 25 | Açıklama: "her türlü araç gereçler" |
 | [Aliağa kiralık satılık sayfası](https://www.facebook.com/groups/1317184055359551/) | 3,4 bin | 49 | Kural yok, aktif |
 
+**Durum:** 12 Kasım 2026'da rentwin sayfası bu 4 gruba katıldı. Gruplar herkese açık olduğu için katılım onay beklemeden hemen gerçekleşti. Henüz paylaşım yapılmadı.
+
 **Paylaşım yapılmayacak gruplar:**
 - ALİAĞADA SATILIK KİRALIK (19 bin) ve Aliağa 2. el Araç alım satım (6,3 bin): kurallarında reklam ve tanıtım yasak.
 - ALİAĞALILAR PLATFORMU (19 bin): kent için fikir platformu.
