@@ -162,7 +162,7 @@ const rentwinMapsUrl = "https://maps.google.com/?cid=3109543909970773042";
 // as a footer icon and joins `sameAs` below. Mirrored in backend/src/lib/site.js.
 const rentwinSocial = {
   facebook: "https://www.facebook.com/rentwin.aliaga",
-  instagram: "",
+  instagram: "https://www.instagram.com/rentwin_tr/",
   youtube: "",
   x: "",
 };

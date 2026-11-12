@@ -261,3 +261,34 @@ Yorum yazmak için: https://g.page/r/CTKESQe2UScrEBM/review
 - **Google Analytics:** Edinme › Trafik edinme ekranındaki **facebook / social** satırı, Facebook'tan siteye gelen ziyaretçiyi ve rezervasyonu gösterir.
 - **Asıl ölçü:** Takipçi sayısı değil, Facebook'tan gelen WhatsApp mesajları ve rezervasyonlardır. İlk ay için 100+ takipçi makul bir hedeftir.
 - **Dört hafta sonra:** En iyi giden gönderi tipinden yenilerini hazırla (örneğin ticari araç veya kampanya).
+
+## 6. Instagram: [@rentwin_tr](https://www.instagram.com/rentwin_tr/)
+
+Instagram hesabı 12 Kasım 2026'da Facebook sayfasına bağlandı. Business Suite gelen kutusunun Instagram mesajlarına erişim izni kapalı; istenirse Ayarlar'dan açılabilir.
+
+Aşağıdaki 11 gönderi yalnızca Instagram'a planlandı. Görseller ve metinler Facebook'takilerle aynı, iki farkla:
+- Instagram'da metindeki linkler tıklanmadığı için link yerine "rentwin.com.tr" yazıyor ve Instagram'a uygun etiketler eklendi.
+- İki kampanya görseli 2:3 oranında olduğu ve Instagram akışı bunu kabul etmediği için 4:5 sürümleri kullanıldı: `10-kampanya-otomatik-egea-4x5.png` ve `11-kampanya-myvista-4x5.png`.
+
+| Tarih | Saat | Görsel | Konu |
+|---|---|---|---|
+| Per 12 Kasım | 19:30 | `06-kiralama-sartlari.png` | Kiralama şartları |
+| Per 12 Kasım | 20:00 | `04-havalimani-teslim.png` | Havalimanı teslimi |
+| Per 12 Kasım | 20:30 | `01-hos-geldiniz.png` (📌 yayınlanınca sabitle) | Tanıtım |
+| Cmt 14 Kasım | 20:30 | `02-ticari-arac-kiralama.png` | Ticari araç |
+| Sal 17 Kasım | 20:30 | `08-hangisi.png` | Etkileşim (A mı, B mi?) |
+| Per 19 Kasım | 20:30 | `10-kampanya-otomatik-egea-4x5.png` | Egea kampanyası |
+| Cmt 21 Kasım | 20:30 | `03-uzun-donem-kiralama.png` | Aylık kiralama |
+| Sal 24 Kasım | 20:30 | `05-transit-cift-kabin.png` | Transit Çift Kabin |
+| Per 26 Kasım | 20:30 | `07-kurumsal-kiralama.png` | Kurumsal kiralama |
+| Cmt 28 Kasım | 20:30 | `11-kampanya-myvista-4x5.png` | MyVista kampanyası |
+| Sal 1 Aralık | 20:30 | `09-calisma-saatleri.png` | Çalışma saatleri |
+
+İlk üç gönderi aynı akşam yarım saat arayla yayınlanıyor, böylece profil boş görünmüyor ve ızgaranın ilk satırı doluyor.
+
+**Instagram profilinde yapılacaklar:**
+- [ ] Adı **Rentwin Araç Kiralama** yap.
+- [ ] Biyografiyi yaz: "Aliağa ve İzmir'de günlük ve aylık araç kiralama. Havalimanı teslimi, depozito yok. 📞 0507 350 31 35"
+- [ ] Web sitesi olarak `rentwin.com.tr` ekle.
+- [ ] Kategoriyi "Araç Kiralama" seç ve iletişim butonlarını aç.
+- [ ] Facebook'taki gibi arkadaşlarını takip etmeye davet et; Facebook arkadaşlarını Instagram'da bulma özelliğini kullan.
