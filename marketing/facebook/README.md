@@ -306,7 +306,8 @@ Aliağa'nın yerel haber sayfalarının takipçileri doğrudan bölge halkı. Bu
 
 **Durum (12 Kasım 2026):**
 - Gönderildi: @aliaganinsesi (A) — hemen otomatik yanıt geldi: "Reklamlar ücretlidir". @aliaga.da.yasam (A) ve @aliaga.gundem (B) de gönderildi; yanıt bekleniyor.
-- Sırada: @aliagamedya, @aliagahaber3535, @candarlihakkinda, @eskifocalilar (A) ve 3 otel (C). Yeni hesap spam filtresine takılmasın diye günde 2–3 mesaj.
+- Aynı gün gönderildi: @aliagamedya (otomatik yanıt: "mesajınızı aldık, size ulaşacağız"), @aliagahaber3535, @candarlihakkinda, @eskifocalilar (A); @hamptonbyhiltonizmiraliaga ve @prestigehoteldonmez (C).
+- ⚠️ @hotelkaracam (C) **gönderilemedi** ("Failed to send"): Instagram yeni hesabın günlük mesaj sınırına takıldı. 1–2 gün sonra tekrar dene, ya da otelin web sitesindeki telefon / e-posta ile ulaş.
 
 ### A) Ücretsiz paylaşım isteği
 
