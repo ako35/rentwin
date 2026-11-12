@@ -34,10 +34,21 @@ const updateContract = asyncHandler(async (req, res) => {
   const parsedDropOff = parseFrontendDateTime(dropOffTime);
   const targetCarId = carId || existing.carId;
 
-  // Validates the date range and that the vehicle exists.
-  await checkAvailability(targetCarId, parsedPickUp, parsedDropOff, {
-    excludeContractId: existing.id,
-  });
+  // Validates the date range and that the vehicle exists and is still rentable
+  // (not sold / passive) — only needed when the car or the dates change. The
+  // screen saves the whole form on every "Kaydet", and a closed contract keeps
+  // its admin note, pricing, KABİS release and signature editable; without this
+  // a contract whose car was later sold or set passive could never be saved
+  // again, not even its note.
+  const carOrDatesChanged =
+    targetCarId !== existing.carId ||
+    parsedPickUp?.getTime() !== existing.pickUpTime?.getTime() ||
+    parsedDropOff?.getTime() !== existing.dropOffTime?.getTime();
+  if (carOrDatesChanged) {
+    await checkAvailability(targetCarId, parsedPickUp, parsedDropOff, {
+      excludeContractId: existing.id,
+    });
+  }
 
   const contractFields = pickContractFields(req.body);
 

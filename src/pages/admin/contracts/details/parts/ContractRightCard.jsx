@@ -19,7 +19,10 @@ import "./right-card.scss";
 
 const SUB_TABS = ["summary", "payments", "returnExtra", "extension", "vehicleChange"];
 // Sub tabs that stay editable on a closed (DONE / CANCELLED) contract.
-const OPEN_AFTER_CLOSE_SUB_TABS = ["payments", "returnExtra", "vehicleChange"];
+// "summary" is in for its Yönetici Notu (its only input): notes are often
+// written after the rental ends. "Kaydet" stays visible on closed contracts
+// (see ContractActions), so the note saves the usual way.
+const OPEN_AFTER_CLOSE_SUB_TABS = ["summary", "payments", "returnExtra", "vehicleChange"];
 
 // A titled, bordered section of the right column. Defined at module scope so its
 // identity is stable across re-renders.
@@ -141,8 +144,9 @@ const ContractRightCard = ({
         {/* Tahsilat and Dönüş Ekstra stay usable after closing — a collection
             often comes in once the rental has already ended, and return
             charges (HGS, damage, fuel…) are usually only known after the car is
-            back. Vehicle change keeps its history open and locks only its own
-            swap form (see VehicleChangeTab). Summary and extension stay locked. */}
+            back. The summary tab stays open for its admin note. Vehicle change
+            keeps its history open and locks only its own swap form (see
+            VehicleChangeTab). Extension stays locked. */}
         <fieldset
           className="contract-page__fieldset contract-page__sub-content"
           disabled={locked && !OPEN_AFTER_CLOSE_SUB_TABS.includes(subTab)}
