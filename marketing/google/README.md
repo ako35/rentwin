@@ -5,6 +5,8 @@ Rentwin'in Google İşletme Profili, Google Arama ve Haritalar'da "rentwin" ya d
 - Yorum bağlantısı: https://g.page/r/CTKESQe2UScrEBM/review
 - Gönderi türleri: **Güncelleme** (genel duyuru), **Teklif** (kampanya; başlangıç ve bitiş tarihi gösterir), **Etkinlik**.
 
+Yönetim: business.google.com/locations → Rentwin satırında "Yayın oluştur". Gönderiler: business.google.com/local/business/16904751201323570394/promote/updates. Yayından sonra Google aynı gönderiyi hesaptaki diğer işletmelere (Kaya Temizlik, WebWheel) kopyalamayı önerir; "Atla" seçilir.
+
 ## Kurallar
 
 - **Görsel:** Google gönderi görselini yatay 4:3 oranında gösterir. Facebook'taki 1080×1350 dikey görsellerin üstü ve altı kesilir. Bu yüzden Google için ayrı 1200×900 görsel kullanılır (`gorseller/`).
@@ -16,7 +18,7 @@ Rentwin'in Google İşletme Profili, Google Arama ve Haritalar'da "rentwin" ya d
 
 | # | Tarih | Tür | Konu | Görsel | Düğme | Durum |
 |---|---|---|---|---|---|---|
-| 1 | — | Güncelleme | Tanıtım | `01-tanitim.png` | Rezervasyon yap → /vehicles | Taslak, onay bekliyor |
+| 1 | 12 Kas 2026 | Güncelleme | Tanıtım | `01-tanitim.png` | Rezervasyon yap → /vehicles | Yayında |
 
 ### 1. Tanıtım (Güncelleme) · `gorseller/01-tanitim.png`
 
