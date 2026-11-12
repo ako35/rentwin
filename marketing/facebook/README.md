@@ -376,7 +376,15 @@ Facebook'un grup aramasında Aliağa ile ilgili 30 grup çıktı. En büyük 13'
 | [SATILIK KİRALIK ALİAĞA](https://www.facebook.com/groups/238716423317668/) | 7,9 bin | 25 | Açıklama: "her türlü araç gereçler" |
 | [Aliağa kiralık satılık sayfası](https://www.facebook.com/groups/1317184055359551/) | 3,4 bin | 49 | Kural yok, aktif |
 
-**Durum:** 12 Kasım 2026'da rentwin sayfası bu 4 gruba katıldı. Gruplar herkese açık olduğu için katılım onay beklemeden hemen gerçekleşti. Henüz paylaşım yapılmadı.
+**Durum:** 12 Kasım 2026'da rentwin sayfası bu 4 gruba katıldı. Gruplar herkese açık olduğu için katılım onay beklemeden hemen gerçekleşti. İlk paylaşım yapıldı (aşağıda).
+
+Paylaşımlar (her grupta en fazla haftada 1):
+
+| Tarih | Grup | Metin + görsel | Durum |
+|---|---|---|---|
+| 12 Kas 2026, 19:58 | İzmir Menemen Aliağa Foça Sahibinden Alım Satım (36K) | Yukarıdaki örnek ilan + `01-hos-geldiniz.png` | Yönetici onayı bekliyor |
+
+Not: Katılım sırasında sayfa yanlışlıkla ilgisiz bir gruba (Vezirköprü Galericiler Sitesi Traktör Pazarı) da katılmıştı; 12 Kasım'da bu gruptan çıkıldı. Grup ararken "Benzer gruplar" önerilerindeki "Gruba katıl" düğmelerine dikkat edin.
 
 **Paylaşım yapılmayacak gruplar:**
 - ALİAĞADA SATILIK KİRALIK (19 bin) ve Aliağa 2. el Araç alım satım (6,3 bin): kurallarında reklam ve tanıtım yasak.
