@@ -19,8 +19,8 @@ const TopMenu = () => {
       <Container className="top-bar__inner">
         <div className="top-bar__contact">
           <a href={`tel:${phone.replace(/\s/g, "")}`}>{phone}</a>
-          <span className="top-bar__sep" />
-          <a href={`mailto:${email}`}>{email}</a>
+          <span className="top-bar__sep top-bar__sep--email" />
+          <a className="top-bar__email" href={`mailto:${email}`}>{email}</a>
         </div>
         <div className="top-bar__right">
           <a

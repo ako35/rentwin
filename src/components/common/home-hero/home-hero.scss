@@ -20,6 +20,11 @@ $bp: 992px;
     padding-top: 116px;
   }
 
+  // Phones also show the 32px top bar above the header.
+  @media (max-width: 576px) {
+    padding-top: 148px;
+  }
+
   &::before {
     content: '';
     position: absolute;

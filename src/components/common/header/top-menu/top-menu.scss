@@ -9,13 +9,22 @@ $bpsm: 576px;
     background-color: v.$anchor-navy-deep;
     font-size: 0.8rem;
 
-    @media (max-width: $bpsm) {
-        display: none;
-    }
-
     &__inner {
         @include m.flexbox(row, space-between, center, 1rem);
         min-height: 38px;
+
+        // Phones get a slimmer strip: phone number left, social icons right.
+        // Its 32px is added to the page-header and home-hero top padding
+        // that clears the fixed header.
+        @media (max-width: $bpsm) {
+            min-height: 32px;
+        }
+    }
+
+    // No room for the e-mail on phones (it's on the contact page and footer).
+    &__email,
+    &__sep--email {
+        @media (max-width: $bpsm) { display: none; }
     }
 
     &__contact {

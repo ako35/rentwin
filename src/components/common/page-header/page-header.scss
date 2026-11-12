@@ -11,8 +11,9 @@
         radial-gradient(62% 130% at 82% -20%, rgba(v.$color1, 0.2), transparent 60%),
         v.$anchor-navy-deep;
 
+    // + 32px: the slim top bar that phones show above the header.
     @media (max-width: 576px) {
-        padding: 5.5rem 1rem 2rem;
+        padding: calc(5.5rem + 32px) 1rem 2rem;
     }
 
     &__inner {
