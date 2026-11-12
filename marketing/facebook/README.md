@@ -292,3 +292,68 @@ Aşağıdaki 11 gönderi yalnızca Instagram'a planlandı. Görseller ve metinle
 - [ ] Web sitesi olarak `rentwin.com.tr` ekle. Instagram bunu web sürümünde kilitliyor; telefondaki uygulamada Profili düzenle › Bağlantılar › Harici bağlantı ekle yolunu izle.
 - [x] Kategori: "Araç Kiralama" (zaten ayarlı). İletişim butonlarını uygulamadan açabilirsin.
 - [ ] Facebook'taki gibi arkadaşlarını takip etmeye davet et; Facebook arkadaşlarını Instagram'da bulma özelliğini kullan.
+
+## 7. Yerel sayfalara mesaj (Instagram DM)
+
+Aliağa'nın yerel haber sayfalarının takipçileri doğrudan bölge halkı. Bu sayfaların bir paylaşımı, tek tek takip etmekten çok daha fazla takipçi getirir. Mesajları **@rentwin_tr** hesabından **sen** gönder.
+
+**Göndermeden önce:**
+- Her mesaja `01-hos-geldiniz.png` görselini ekle.
+- İlk satırda sayfanın adını yaz ("Merhaba Aliağa'nın Sesi ekibi" gibi). Aynı metni aynı anda çok hesaba kopyalamak yeni hesaplarda spam filtresine takılır.
+- Günde 2–3 sayfaya yaz.
+- Yeni hesabın mesajı karşı tarafta "Mesaj istekleri" klasörüne düşebilir. 2–3 gün cevap gelmezse Facebook sayfası üzerinden de yazabilirsin.
+- Paylaşırlarsa hikâyende paylaşıp teşekkür et.
+
+### A) Ücretsiz paylaşım isteği
+
+Gönderilecek sayfalar: @aliaganinsesi (profilinde "gönderiler ücretsiz" yazıyor), @aliaga.da.yasam, @aliagamedya, @aliagahaber3535, @candarlihakkinda, @eskifocalilar.
+
+```
+Merhaba [Sayfa adı] ekibi, iyi günler 👋
+
+Aliağa'da hizmet veren yerel bir işletmeyiz: Rentwin Araç Kiralama (Atatürk Mah. 356 Sk., Aliağa). Aliağalılara duyurmak için aşağıdaki kısa tanıtımı sayfanızda paylaşma imkânınız olur mu? Görseli de ekledim.
+
+Desteğiniz için şimdiden çok teşekkür ederiz 🙏
+Rentwin Araç Kiralama · 0507 350 31 35
+```
+
+Sayfanın paylaşabileceği metin (mesajın devamına ekle):
+
+```
+📢 Aliağa'da yerel bir işletme: Rentwin Araç Kiralama
+
+Günlük ve aylık araç kiralama; binek araçlar, panelvan ve çift kabin kamyonet. Depozito yok, İzmir Adnan Menderes Havalimanı'nda teslim seçeneği var.
+
+📍 Atatürk Mah. 356 Sk. No: 16/31, Aliağa
+📞 0507 350 31 35 · 🌐 rentwin.com.tr
+📸 Instagram: @rentwin_tr
+```
+
+### B) Reklam fiyatı sorma
+
+Profilinde "reklam için iletişim" yazan sayfalar için, örneğin @aliaga.gundem.
+
+```
+Merhaba [Sayfa adı] ekibi, iyi günler.
+
+Aliağa'daki araç kiralama işletmemiz Rentwin için sayfanızda tanıtım yapmak istiyoruz. Gönderi ve hikâye paylaşımı için fiyatlarınızı ve şartlarınızı iletebilir misiniz?
+
+Teşekkürler,
+Rentwin Araç Kiralama · 0507 350 31 35
+```
+
+Gelen fiyatı Meta reklamıyla karşılaştır. Yerel sayfadaki tek bir paylaşım, aynı bütçeli birkaç günlük Meta reklamından daha çok takipçi getirebilir.
+
+### C) Oteller için iş birliği (isteğe bağlı)
+
+Gönderilecek hesaplar: @hamptonbyhiltonizmiraliaga, @prestigehoteldonmez, @hotelkaracam. Bölgeye iş için gelen otel misafirleri doğrudan potansiyel müşteri.
+
+```
+Merhaba [Otel adı] ekibi, iyi günler.
+
+Aliağa'da araç kiralama hizmeti veren Rentwin olarak misafirlerinize özel bir iş birliği önermek istiyoruz: araç ihtiyacı olan misafirlerinize otelde ya da havalimanında teslimle günlük veya aylık kiralama, otelinize özel indirimle. Uygun bir zamanda kısa bir görüşme yapabilir miyiz?
+
+Rentwin Araç Kiralama · 0507 350 31 35 · rentwin.com.tr
+```
+
+İndirim oranını göndermeden önce sen belirle; metin bilerek oran vermiyor.
