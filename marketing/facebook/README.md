@@ -362,3 +362,40 @@ Rentwin Araç Kiralama · 0507 350 31 35 · rentwin.com.tr
 ```
 
 İndirim oranını göndermeden önce sen belirle; metin bilerek oran vermiyor.
+
+## 8. Aliağa Facebook grupları
+
+Facebook'un grup aramasında Aliağa ile ilgili 30 grup çıktı. En büyük 13'ünün açıklaması ve kuralları 12 Kasım 2026'da tek tek incelendi.
+
+**İşletme paylaşımına uygun (kuralları yasaklamıyor):**
+
+| Grup | Üye | Bugünkü gönderi | Neden uygun |
+|---|---|---|---|
+| [İzmir Menemen Aliağa Foça Sahibinden Alım Satım](https://www.facebook.com/groups/900876050612671/) | 36 bin | 196 | Açıklama: "her türlü tarla arsa daire araç dükkan alım satımı" |
+| [Aliağa KİRALIK ve SATILIK](https://www.facebook.com/groups/aliaga.al.sat.kirala/) | 23 bin | 16 | Açıklama: "alınan satılan ve kiralanan her şey burada" |
+| [SATILIK KİRALIK ALİAĞA](https://www.facebook.com/groups/238716423317668/) | 7,9 bin | 25 | Açıklama: "her türlü araç gereçler" |
+| [Aliağa kiralık satılık sayfası](https://www.facebook.com/groups/1317184055359551/) | 3,4 bin | 49 | Kural yok, aktif |
+
+**Paylaşım yapılmayacak gruplar:**
+- ALİAĞADA SATILIK KİRALIK (19 bin) ve Aliağa 2. el Araç alım satım (6,3 bin): kurallarında reklam ve tanıtım yasak.
+- ALİAĞALILAR PLATFORMU (19 bin): kent için fikir platformu.
+- ALİAĞA BASIN (8,7 bin): haber grubu.
+- Diğerleri: 2. el eşya, el emeği ve iş ilanı grupları; konu uymuyor.
+
+**Nasıl paylaşılacak:**
+1. Gruplara **sayfa olarak** katıl. Katılım çoğu grupta yönetici onayı ister; üyelik soruları çıkarsa dürüstçe "Aliağa'da araç kiralama işletmesi" yaz.
+2. Her gruba **en fazla haftada bir** paylaşım yap. Aynı gün aynı metni birden çok gruba atma; Facebook bunu spam sayar.
+3. İlanda **fiyat ve telefon** olsun; bölgedeki grupların çoğu bunu zorunlu tutuyor. Görsel olarak `01-hos-geldiniz.png` ya da `02-ticari-arac-kiralama.png` kullan.
+4. Gelen yorumlara aynı gün cevap ver. Gruptan gelen biri ilanı beğenirse sayfaya davet edilebilir.
+
+Örnek ilan metni (gruba göre bir iki cümle değiştir):
+
+```
+🚗 Aliağa'da günlük ve aylık araç kiralama — Rentwin
+
+Binek araçlar, panelvan ve çift kabin kamyonet. Günlük 2.750 TL + KDV'den, aylık 45.000 TL + KDV'den başlayan fiyatlarla. Depozito yok, İzmir Adnan Menderes Havalimanı'nda teslim seçeneği var.
+
+📍 Atatürk Mah. 356 Sk. No: 16/31, Aliağa
+📞 / WhatsApp: 0507 350 31 35
+🌐 rentwin.com.tr
+```
