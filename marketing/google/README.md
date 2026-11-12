@@ -46,9 +46,22 @@ Facebook takvimindeki konular buraya uyarlanabilir (her biri için 1200×900 gö
 - Havalimanı teslimi
 - Güncel kampanyalar (Teklif türünde, tarih aralığıyla) → /kampanyalar
 
-## Profilde bir kerelik eksikler
+## Profil düzenlemeleri
 
-- [ ] Sosyal profiller: Facebook ve Instagram adresleri
-- [ ] Hizmetler: günlük, aylık, ticari araç, havalimanı teslimi (başlangıç fiyatlarıyla)
-- [ ] Fotoğraflar: ofis, araçlar, teslim anı
-- [ ] Ek kategoriler (ana kategori: Araç kiralama acentesi)
+13 Kasım 2026'da yapıldı (Google incelemesinden sonra yayınlanır; kategoriler ve sosyal profiller yaklaşık 10 dakika, hizmetler 1 güne kadar sürebilir):
+
+- [x] **Sosyal profiller:** Facebook zaten vardı; Instagram (https://www.instagram.com/rentwin_tr/) eklendi.
+- [x] **Ek kategoriler:** "Minibüs Kiralama Acentesi" ve "Kamyon Kiralama Acentesi" eklendi. Birincil "Araba Kiralama Şirketi" ve ek "Uzun Vadeli Araç Kiralama Hizmeti" olduğu gibi kaldı.
+- [x] **Hizmetler:** Birincil kategoriye "Ticari araç kiralama", "Havalimanı teslimi" ve "Kurumsal araç kiralama" eklendi. Mevcut "Uzun dönem araç kiralama" ve "Günlük kiralama" hizmetlerine açıklama yazıldı. Fiyatlar açıklamada "+ KDV'den başlayan" olarak geçiyor; fiyat alanı boş (KDV hariç tutar, KDV dahil sanılmasın diye).
+
+Yapılmayanlar:
+
+- [ ] **Vitrin fotoğrafı:** Google'ın "profilinizi tamamlayın" listesinde kalan tek madde bu. Profilde bir dış cephe fotoğrafı var. Gerçek fotoğraf gerekiyor (ofisin önü, tabela, araçlar, teslim anı); reklam görselleri ve üretici fotoğrafları bunun yerine geçmez.
+- [ ] **Açıklama:** Mevcut metin "lüks segment" ve "yol yardım desteği" diyor; filoda lüks araç yok, ticari araçlardan ve depozitosuz kiralamadan da bahsetmiyor. Önerilen metin aşağıda; onay bekliyor. Google açıklamada fiyat, kampanya ve bağlantı istemiyor.
+- [ ] **Yorumlar:** Profil 7 yorumla 5,0 puanda; Google "4 yeni müşteri yorumu" bildiriyor. Yanıtlanmamış yorumlara kısa bir teşekkür yazılmalı.
+
+Önerilen açıklama:
+
+```
+Rentwin, Aliağa'da günlük ve aylık araç kiralama hizmeti veren yerel bir işletmedir. Filomuzda binek araçların yanı sıra Fiorino, Doblo ve Ducato gibi panelvanlar ile Transit Çift Kabin kamyonet bulunur. Depozitosuz kiralama, İzmir Adnan Menderes Havalimanı'nda araç teslimi ve karşılama, şirketlere fatura ve aynı modelden birden fazla araçla toplu kiralama sunuyoruz. Atatürk Mahallesi'ndeki ofisimiz haftanın 7 günü açık; araçları ve fiyatları web sitemizden inceleyip online rezervasyon yapabilirsiniz.
+```
