@@ -57,10 +57,10 @@ Facebook takvimindeki konular buraya uyarlanabilir (her biri için 1200×900 gö
 Yapılmayanlar:
 
 - [ ] **Vitrin fotoğrafı:** Google'ın "profilinizi tamamlayın" listesinde kalan tek madde bu. Profilde bir dış cephe fotoğrafı var. Gerçek fotoğraf gerekiyor (ofisin önü, tabela, araçlar, teslim anı); reklam görselleri ve üretici fotoğrafları bunun yerine geçmez.
-- [ ] **Açıklama:** Mevcut metin "lüks segment" ve "yol yardım desteği" diyor; filoda lüks araç yok, ticari araçlardan ve depozitosuz kiralamadan da bahsetmiyor. Önerilen metin aşağıda; onay bekliyor. Google açıklamada fiyat, kampanya ve bağlantı istemiyor.
+- [x] **Açıklama:** Eski metin "lüks segment" ve "yol yardım desteği" diyordu; filoda lüks araç yok, ticari araçlar ve depozitosuz kiralama da geçmiyordu. 13 Kasım 2026'da kullanıcının onayıyla aşağıdaki metinle değiştirildi (Google incelemesi bekleniyor). Google açıklamada fiyat, kampanya ve bağlantı istemiyor.
 - [ ] **Yorumlar:** Profil 7 yorumla 5,0 puanda; Google "4 yeni müşteri yorumu" bildiriyor. Yanıtlanmamış yorumlara kısa bir teşekkür yazılmalı.
 
-Önerilen açıklama:
+Yeni açıklama:
 
 ```
 Rentwin, Aliağa'da günlük ve aylık araç kiralama hizmeti veren yerel bir işletmedir. Filomuzda binek araçların yanı sıra Fiorino, Doblo ve Ducato gibi panelvanlar ile Transit Çift Kabin kamyonet bulunur. Depozitosuz kiralama, İzmir Adnan Menderes Havalimanı'nda araç teslimi ve karşılama, şirketlere fatura ve aynı modelden birden fazla araçla toplu kiralama sunuyoruz. Atatürk Mahallesi'ndeki ofisimiz haftanın 7 günü açık; araçları ve fiyatları web sitemizden inceleyip online rezervasyon yapabilirsiniz.
