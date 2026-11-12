@@ -304,6 +304,10 @@ Aliağa'nın yerel haber sayfalarının takipçileri doğrudan bölge halkı. Bu
 - Yeni hesabın mesajı karşı tarafta "Mesaj istekleri" klasörüne düşebilir. 2–3 gün cevap gelmezse Facebook sayfası üzerinden de yazabilirsin.
 - Paylaşırlarsa hikâyende paylaşıp teşekkür et.
 
+**Durum (12 Kasım 2026):**
+- Gönderildi: @aliaganinsesi (A) — hemen otomatik yanıt geldi: "Reklamlar ücretlidir". @aliaga.da.yasam (A) ve @aliaga.gundem (B) de gönderildi; yanıt bekleniyor.
+- Sırada: @aliagamedya, @aliagahaber3535, @candarlihakkinda, @eskifocalilar (A) ve 3 otel (C). Yeni hesap spam filtresine takılmasın diye günde 2–3 mesaj.
+
 ### A) Ücretsiz paylaşım isteği
 
 Gönderilecek sayfalar: @aliaganinsesi (profilinde "gönderiler ücretsiz" yazıyor), @aliaga.da.yasam, @aliagamedya, @aliagahaber3535, @candarlihakkinda, @eskifocalilar.
