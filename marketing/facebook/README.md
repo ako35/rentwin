@@ -287,8 +287,8 @@ Aşağıdaki 11 gönderi yalnızca Instagram'a planlandı. Görseller ve metinle
 İlk üç gönderi aynı akşam yarım saat arayla yayınlanıyor, böylece profil boş görünmüyor ve ızgaranın ilk satırı doluyor.
 
 **Instagram profilinde yapılacaklar:**
-- [ ] Adı **Rentwin Araç Kiralama** yap.
-- [ ] Biyografiyi yaz: "Aliağa ve İzmir'de günlük ve aylık araç kiralama. Havalimanı teslimi, depozito yok. 📞 0507 350 31 35"
-- [ ] Web sitesi olarak `rentwin.com.tr` ekle.
-- [ ] Kategoriyi "Araç Kiralama" seç ve iletişim butonlarını aç.
+- [x] Ad: **Rentwin Araç Kiralama** (12 Kasım 2026)
+- [x] Biyografi: "Aliağa ve İzmir'de günlük ve aylık araç kiralama. Havalimanı teslimi, depozito yok. 📞 0507 350 31 35" (12 Kasım 2026)
+- [ ] Web sitesi olarak `rentwin.com.tr` ekle. Instagram bunu web sürümünde kilitliyor; telefondaki uygulamada Profili düzenle › Bağlantılar › Harici bağlantı ekle yolunu izle.
+- [x] Kategori: "Araç Kiralama" (zaten ayarlı). İletişim butonlarını uygulamadan açabilirsin.
 - [ ] Facebook'taki gibi arkadaşlarını takip etmeye davet et; Facebook arkadaşlarını Instagram'da bulma özelliğini kullan.
