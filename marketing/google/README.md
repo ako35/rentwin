@@ -53,11 +53,11 @@ Facebook takvimindeki konular buraya uyarlanabilir (her biri için 1200×900 gö
 - [x] **Sosyal profiller:** Facebook zaten vardı; Instagram (https://www.instagram.com/rentwin_tr/) eklendi.
 - [x] **Ek kategoriler:** "Minibüs Kiralama Acentesi" ve "Kamyon Kiralama Acentesi" eklendi. Birincil "Araba Kiralama Şirketi" ve ek "Uzun Vadeli Araç Kiralama Hizmeti" olduğu gibi kaldı.
 - [x] **Hizmetler:** Birincil kategoriye "Ticari araç kiralama", "Havalimanı teslimi" ve "Kurumsal araç kiralama" eklendi. Mevcut "Uzun dönem araç kiralama" ve "Günlük kiralama" hizmetlerine açıklama yazıldı. Fiyatlar açıklamada "+ KDV'den başlayan" olarak geçiyor; fiyat alanı boş (KDV hariç tutar, KDV dahil sanılmasın diye).
+- [x] **Açıklama:** Eski metin "lüks segment" ve "yol yardım desteği" diyordu; filoda lüks araç yok, ticari araçlar ve depozitosuz kiralama da geçmiyordu. 13 Kasım 2026'da kullanıcının onayıyla aşağıdaki metinle değiştirildi (Google incelemesi bekleniyor). Google açıklamada fiyat, kampanya ve bağlantı istemiyor.
 
 Yapılmayanlar:
 
 - [ ] **Vitrin fotoğrafı:** Google'ın "profilinizi tamamlayın" listesinde kalan tek madde bu. Profilde bir dış cephe fotoğrafı var. Gerçek fotoğraf gerekiyor (ofisin önü, tabela, araçlar, teslim anı); reklam görselleri ve üretici fotoğrafları bunun yerine geçmez.
-- [x] **Açıklama:** Eski metin "lüks segment" ve "yol yardım desteği" diyordu; filoda lüks araç yok, ticari araçlar ve depozitosuz kiralama da geçmiyordu. 13 Kasım 2026'da kullanıcının onayıyla aşağıdaki metinle değiştirildi (Google incelemesi bekleniyor). Google açıklamada fiyat, kampanya ve bağlantı istemiyor.
 - [ ] **Yorumlar:** Profil 7 yorumla 5,0 puanda; Google "4 yeni müşteri yorumu" bildiriyor. Yanıtlanmamış yorumlara kısa bir teşekkür yazılmalı.
 
 Yeni açıklama:
