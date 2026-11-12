@@ -1,9 +1,9 @@
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Col, Container, Row } from "react-bootstrap";
-import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 import { constants } from "../../../constants";
 import { AppLink, ContactInfo, QuickLink } from "../../";
+import { socialNetworks } from "../social-icons/networks";
 import "./footer.scss";
 
 const {
@@ -21,24 +21,7 @@ const {
     reviews,
     vehicles,
   },
-  website: { social = {} },
 } = constants;
-
-// react-icons 4.10 predates the X logo, so it's inlined (Simple Icons, CC0).
-const XIcon = () => (
-  <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true">
-    <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
-  </svg>
-);
-
-// Only profiles filled in constants `website.social` render — an empty
-// entry (account not opened yet) simply has no icon.
-const socialLinks = [
-  { key: "instagram", name: "Instagram", Icon: FaInstagram },
-  { key: "facebook", name: "Facebook", Icon: FaFacebookF },
-  { key: "youtube", name: "YouTube", Icon: FaYoutube },
-  { key: "x", name: "X", Icon: XIcon },
-].filter((network) => social[network.key]);
 
 const quickLinks = [
   { direct: home, key: "home" },
@@ -73,14 +56,14 @@ const Footer = () => {
               </AppLink>
               <p className="site-footer__slogan">{tHeader("slogan")}</p>
               <p className="site-footer__blurb">{t("blurb")}</p>
-              {socialLinks.length > 0 && (
+              {socialNetworks.length > 0 && (
                 <div className="site-footer__social">
                   <span className="site-footer__social-title">{t("followUs")}</span>
                   <ul>
-                    {socialLinks.map(({ key, name, Icon }) => (
+                    {socialNetworks.map(({ key, name, Icon, href }) => (
                       <li key={key}>
                         <a
-                          href={social[key]}
+                          href={href}
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={t("socialLabel", { network: name })}

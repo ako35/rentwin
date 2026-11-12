@@ -36,6 +36,11 @@ $bpsm: 576px;
         background-color: rgba(255, 255, 255, 0.22);
     }
 
+    &__right {
+        @include m.flexbox(row, flex-end, center, 0.8rem);
+        min-width: 0;
+    }
+
     &__address {
         @include m.flexbox(row, flex-end, center, 0.4rem);
         color: rgba(255, 255, 255, 0.7);
@@ -47,5 +52,32 @@ $bpsm: 576px;
         &:hover { color: #fff; }
 
         @media (max-width: 860px) { display: none; }
+    }
+
+    // The divider between address and icons goes with the address.
+    &__sep--address {
+        @media (max-width: 860px) { display: none; }
+    }
+
+    &__social {
+        @include m.reset-list;
+        @include m.flexbox(row, flex-end, center, 0.25rem);
+
+        a {
+            @include m.flexbox(row, center, center, 0);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: color 0.15s ease, background-color 0.15s ease;
+
+            &:hover,
+            &:focus-visible {
+                color: #fff;
+                background-color: rgba(255, 255, 255, 0.12);
+            }
+        }
     }
 }
