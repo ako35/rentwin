@@ -383,6 +383,7 @@ Paylaşımlar (her grupta en fazla haftada 1):
 | Tarih | Grup | Metin + görsel | Durum |
 |---|---|---|---|
 | 12 Kas 2026, 19:58 | İzmir Menemen Aliağa Foça Sahibinden Alım Satım (36K) | Yukarıdaki örnek ilan + `01-hos-geldiniz.png` | Yönetici onayı bekliyor |
+| 13 Kas 2026, 22:55 | Aliağa KİRALIK ve SATILIK (23K) | Ticari araç ilanı + `02-ticari-arac-kiralama.png` | Paylaşılmadı: zamanlanmış görev çalıştığında Chrome kapalıydı (Claude in Chrome bağlı değildi); elle ya da yeniden çalıştırılarak paylaşılmalı |
 
 Planlı paylaşımlar (zamanlanmış görevler, uygulama ve Chrome açıkken çalışır; her görev paylaşınca tabloya kendi satırını ekler):
 
