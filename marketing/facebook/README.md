@@ -384,6 +384,12 @@ Paylaşımlar (her grupta en fazla haftada 1):
 |---|---|---|---|
 | 12 Kas 2026, 19:58 | İzmir Menemen Aliağa Foça Sahibinden Alım Satım (36K) | Yukarıdaki örnek ilan + `01-hos-geldiniz.png` | Yönetici onayı bekliyor |
 
+Planlı paylaşımlar (zamanlanmış görevler, uygulama ve Chrome açıkken çalışır; her görev paylaşınca tabloya kendi satırını ekler):
+
+- 13 Kas 2026, 19:30: Aliağa KİRALIK ve SATILIK (23K), ticari araç ilanı + `02-ticari-arac-kiralama.png`
+- 14 Kas 2026, 19:30: SATILIK KİRALIK ALİAĞA (7,9K), aylık kiralama ilanı + `03-uzun-donem-kiralama.png`
+- 15 Kas 2026, 19:30: Aliağa kiralık satılık sayfası (3,4K), havalimanı teslimi ilanı + `04-havalimani-teslim.png`
+
 Not: Katılım sırasında sayfa yanlışlıkla ilgisiz bir gruba (Vezirköprü Galericiler Sitesi Traktör Pazarı) da katılmıştı; 12 Kasım'da bu gruptan çıkıldı. Grup ararken "Benzer gruplar" önerilerindeki "Gruba katıl" düğmelerine dikkat edin.
 
 **Paylaşım yapılmayacak gruplar:**
