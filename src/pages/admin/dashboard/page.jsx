@@ -26,7 +26,8 @@ const AdminDashboard = () => {
       const [stats, alerts, appointments, settings, hgs, invoices, kbs, kbsRelease, sign] = await Promise.all([
         services.vehicle.getFleetStats(branchId),
         services.vehicle.getExpiryAlerts(branchId),
-        services.vehicle.getInspectionAppointments(branchId).catch(() => []),
+        // Only open appointments: completed and cancelled ones stay on the vehicle's own tab.
+        services.vehicle.getInspectionAppointments(branchId, null, "SCHEDULED").catch(() => []),
         services.settings.getSettings().catch(() => null),
         services.contract.getHgsPendingContracts({ branchId }).catch(() => []),
         services.contract.getInvoicePendingContracts({ branchId }).catch(() => []),

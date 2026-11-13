@@ -158,10 +158,11 @@ export const getExpiryAlerts = async (branchId) => {
   );
   return response.data;
 };
-export const getInspectionAppointments = async (branchId, vehicleId) => {
+export const getInspectionAppointments = async (branchId, vehicleId, status) => {
   const params = new URLSearchParams();
   if (branchId) params.set("branchId", branchId);
   if (vehicleId) params.set("vehicleId", vehicleId);
+  if (status) params.set("status", status);
   const queryString = params.toString();
   const query = queryString ? `?${queryString}` : "";
   const response = await axios.get(
