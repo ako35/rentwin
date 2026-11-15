@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button, Dropdown, Spinner } from "react-bootstrap";
+import { FaWhatsapp } from "react-icons/fa";
 import { constants } from "../../../../../constants";
 import { FormErrorSummary } from "../../../../../components";
 import "./contract-actions.scss";
@@ -13,9 +14,11 @@ const PRINT_DOCS = ["sozlesme", "ek1", "tutanak"];
 // Edit (open): "Kontratı İptal Et", "Sil" | "Yazdır ▾", "Araç Teslim Al", "Kaydet".
 // Edit (closed DONE/CANCELLED): most of the form is read-only, but pricing
 // (right card's "Fiyat / Ödeme" panel) stays editable — so "Kaydet" shows
-// next to "Geri Aç" instead of disappearing.
+// next to "Geri Aç" instead of disappearing. A DONE contract whose customer
+// has a usable phone also gets "Google Yorumu İste": a WhatsApp link with a
+// ready review request — the admin still presses send in WhatsApp.
 const ContractActions = ({
-  isCreate, contractId, updating, deleting, canSave, status, errors,
+  isCreate, contractId, updating, deleting, canSave, status, errors, reviewRequestHref,
   onDiscard, onDelete, onVehicleReturn, onCancelContract, onReopen,
 }) => {
   const { t } = useTranslation("admin");
@@ -82,6 +85,18 @@ const ContractActions = ({
         )}
       </div>
       <div className="contract-page__actionbar-right">
+        {status === "DONE" && reviewRequestHref && (
+          <Button
+            as="a"
+            variant="outline-success"
+            href={reviewRequestHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={c("reviewRequest.title")}
+          >
+            <FaWhatsapp /> {c("reviewRequest.button")}
+          </Button>
+        )}
         {printMenu}
         {closed ? (
           <>

@@ -26,6 +26,7 @@ import {
   buildContractDto,
   buildVehicleOptions,
   buildRecordLabels,
+  toWhatsAppNumber,
 } from "./contract-helpers";
 import "./style.scss";
 
@@ -301,6 +302,18 @@ const ContractDetail = () => {
   const contractStatus = formik.values.status;
   const locked = !isCreate && (contractStatus === "DONE" || contractStatus === "CANCELLED");
 
+  // "Google Yorumu İste" on a returned contract: WhatsApp chat with the
+  // customer, review request pre-typed. No usable phone → no button.
+  const reviewPhone = toWhatsAppNumber(customer?.phoneNumber);
+  const reviewRequestHref = reviewPhone
+    ? `https://wa.me/${reviewPhone}?text=${encodeURIComponent(
+        t("reservations.contract.reviewRequest.message", {
+          name: (customer?.firstName || customer?.companyTitle || "").trim(),
+          url: constants.website.googleReviewUrl,
+        })
+      )}`
+    : "";
+
   if (loading) return <Loading />;
 
   return (
@@ -384,6 +397,7 @@ const ContractDetail = () => {
           canSave={isCreate ? formik.isValid : formik.isValid && formik.dirty}
           errors={isCreate ? formik.errors : undefined}
           status={contractStatus}
+          reviewRequestHref={reviewRequestHref}
           onDiscard={() => navigate(routes.adminContracts)}
           onDelete={handleDelete}
           onVehicleReturn={handleVehicleReturn}

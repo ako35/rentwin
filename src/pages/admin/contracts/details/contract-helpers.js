@@ -49,6 +49,18 @@ export const EMPTY_NEW_CUST = {
 export const formatMoney = (value, lang) =>
   Number(value || 0).toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+// wa.me wants the number in international form without "+" (90XXXXXXXXXX).
+// Customer phones are typed loosely ("0507 350 31 35", "+90 507…", "5073503135"),
+// so normalise Turkish mobile forms and keep anything already international.
+// Returns "" when the number can't be used.
+export const toWhatsAppNumber = (phone) => {
+  const digits = String(phone || "").replace(/\D/g, "");
+  if (digits.length === 10 && digits.startsWith("5")) return `90${digits}`;
+  if (digits.length === 11 && digits.startsWith("0")) return `9${digits}`;
+  if (digits.startsWith("00") && digits.length > 11) return digits.slice(2);
+  return digits.length >= 11 ? digits : "";
+};
+
 // Display name for a customer row: company title, else "First Last".
 export const custLabel = (u) => (u.companyTitle || `${u.firstName} ${u.lastName}`).trim();
 

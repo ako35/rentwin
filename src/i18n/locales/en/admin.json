@@ -642,6 +642,11 @@
       "cancelContract": "Cancel Contract",
       "reopenContract": "Reopen",
       "deleteContract": "Delete",
+      "reviewRequest": {
+        "button": "Ask for a Google Review",
+        "title": "Sends the customer a Google review request on WhatsApp",
+        "message": "Hi {{name}}, thank you for choosing Rentwin. If you have a moment, a short Google review would help us a lot: {{url}}"
+      },
       "returnConfirmTitle": "Has the vehicle been returned?",
       "returnConfirmText": "The contract will be marked as Done.",
       "returnModal": {

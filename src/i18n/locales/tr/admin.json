@@ -642,6 +642,11 @@
       "cancelContract": "Kontratı İptal Et",
       "reopenContract": "Geri Aç",
       "deleteContract": "Sil",
+      "reviewRequest": {
+        "button": "Google Yorumu İste",
+        "title": "Müşteriye WhatsApp'tan Google yorumu ricası gönderir",
+        "message": "Merhaba {{name}}, Rentwin'i tercih ettiğiniz için teşekkür ederiz. Deneyiminizi Google'da birkaç cümleyle paylaşırsanız bize çok yardımcı olur: {{url}}"
+      },
       "returnConfirmTitle": "Araç teslim alındı mı?",
       "returnConfirmText": "Kontrat 'Tamamlandı' olarak işaretlenecek.",
       "returnModal": {
