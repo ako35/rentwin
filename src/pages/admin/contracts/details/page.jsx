@@ -27,6 +27,7 @@ import {
   buildVehicleOptions,
   buildRecordLabels,
   toWhatsAppNumber,
+  titleCaseTr,
 } from "./contract-helpers";
 import "./style.scss";
 
@@ -308,7 +309,7 @@ const ContractDetail = () => {
   const reviewRequestHref = reviewPhone
     ? `https://wa.me/${reviewPhone}?text=${encodeURIComponent(
         t("reservations.contract.reviewRequest.message", {
-          name: (customer?.firstName || customer?.companyTitle || "").trim(),
+          name: titleCaseTr(customer?.firstName || customer?.companyTitle),
           url: constants.website.googleReviewUrl,
         })
       )}`

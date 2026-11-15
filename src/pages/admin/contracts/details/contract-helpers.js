@@ -61,6 +61,14 @@ export const toWhatsAppNumber = (phone) => {
   return digits.length >= 11 ? digits : "";
 };
 
+// Names are often stored in capitals ("FATMA", "EMRE CAN"); a message to the
+// customer greets them as "Fatma" / "Emre Can" (Turkish casing for İ/ı).
+export const titleCaseTr = (s) =>
+  String(s || "")
+    .trim()
+    .toLocaleLowerCase("tr-TR")
+    .replace(/(^|\s)(\S)/g, (m, space, ch) => space + ch.toLocaleUpperCase("tr-TR"));
+
 // Display name for a customer row: company title, else "First Last".
 export const custLabel = (u) => (u.companyTitle || `${u.firstName} ${u.lastName}`).trim();
 
