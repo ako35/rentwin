@@ -15,8 +15,17 @@
 |---|---|---|---|
 | 16 Kas 2026, 19:30 | Aliağa'da hangi aracı kiralardınız? 🚗 Rentwin araç kiralama #shorts | `marketing/facebook/reels/reel-filo.mp4` | https://youtube.com/shorts/qP5hvZZASXc |
 | 20 Kas 2026, 19:30 | İşiniz için araç mı lazım? 🚐 Aliağa ticari araç kiralama #shorts | `marketing/facebook/reels/reel-ticari.mp4` | https://youtube.com/shorts/KV-uJgjgNFI |
+| 17 Kas 2026, 20:30 | Hafta sonu hangisi? Fiat Egea mı, Renault Clio mu? 🤔 #shorts | `08-hangisi.png` → Shorts | https://youtube.com/shorts/wB7cBY5XRdI |
+| 18 Kas 2026, 20:30 | İzmir Havalimanı'nda aracınız sizi beklesin ✈️ Rentwin Aliağa #shorts | `04-havalimani-teslim.png` → Shorts | Studio'da planlı |
+| 19 Kas 2026, 20:30 | Kampanya: Otomatik Fiat Egea aylık 45.000 TL + KDV 🔥 Aliağa #shorts | `10-kampanya-otomatik-egea-4x5.png` → Shorts | Studio'da planlı |
+| 21 Kas 2026, 20:30 | Araç almadan aylık kiralayın 🗓️ Aliağa uzun dönem araç kiralama #shorts | `03-uzun-donem-kiralama.png` → Shorts | Studio'da planlı |
+| 22 Kas 2026, 20:30 | Araç kiralamak için neler gerekli? 📋 Rentwin Aliağa #shorts | `06-kiralama-sartlari.png` → Shorts | Studio'da planlı |
+| 24 Kas 2026, 20:30 | Ford Transit Çift Kabin kiralama 🛻 Ekip önde, ekipman arkada #shorts | `05-transit-cift-kabin.png` → Shorts | Studio'da planlı |
+| 26 Kas 2026, 20:30 | Şirketler için araç kiralama 🏗️ Aliağa kurumsal ve toplu kiralama #shorts | `07-kurumsal-kiralama.png` → Shorts | Studio'da planlı |
+| 28 Kas 2026, 20:30 | İzpek MyVista II Office firmalarına %25 indirim 🏢 Rentwin araç kiralama #shorts | `11-kampanya-myvista-4x5.png` → Shorts | Studio'da planlı |
+| 1 Ara 2026, 20:30 | Haftanın 7 günü Aliağa ofisimizdeyiz 🕘 Rentwin araç kiralama #shorts | `shorts/short-09-calisma-saatleri.mp4` | **Yüklenmedi**: 15 Kasım'da YouTube'un günlük yükleme sınırına takıldı (telefonla doğrulanmamış kanal). 24 saat sonra ya da kanal doğrulanınca yüklenecek. |
 
-15 Kasım'da sahibinin onayıyla yüklendi ve Facebook/Instagram Reels'leriyle aynı saate planlandı. "Çocuklara özel değil" işaretlendi. Açıklamalarda fiyat, WhatsApp, adres, site bağlantısı ve hashtag'ler var. Planlanan saate kadar gizli kalır.
+16 ve 20 Kasım Shorts'ları Facebook/Instagram Reels'leriyle aynı saate planlandı. Diğerleri, Instagram takvimindeki fotoğraf gönderilerinin görsellerinden üretildi (`make-shorts.cjs`: 4:5 görsel üstte, bulanık arka plan, 8 sn, yavaş yakınlaşma) ve Instagram'daki konu sırasıyla 20:30'a planlandı. Facebook/Instagram'la aynı konu olan tanıtım ve ticari araç görselleri tekrar yüklenmedi (16 ve 20 Kasım videoları aynı konuyu işliyor). "Çocuklara özel değil" işaretlendi. Açıklamalarda fiyat, WhatsApp, adres, site bağlantısı ve hashtag'ler var. Planlanan saate kadar gizli kalırlar. Not: telefonla doğrulanmamış kanallar günde ~10 video yükleyebiliyor; doğrulama (youtube.com/verify) bu sınırı kaldırır ve özel küçük resim yüklemeyi açar.
 
 ## Sıradaki işler
 
