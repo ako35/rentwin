@@ -51,6 +51,12 @@ Sıralama etkiye göre. **Sahibi** sütunu işin kimde olduğunu gösterir.
 | 7 | **Blog yazıları:** "Aliağa rent a car" (konum 45) ve uzun kuyruk aramalar için ayda 2 yazı. | Orta | Claude (taslak) · İşletme (onay) | Önerildi |
 | 8 | **Model sayfaları:** her araç için ayrı, birbirinin aynısı sayfalar yerine her model için tek, zengin bir sayfa. | Düşük-orta | Claude | Sonra |
 
+## Search Console uyarıları (15 Kasım 2026)
+
+"Kopya, Google kullanıcıdan farklı bir standart sayfa seçti" (26) ve "Tarandı - şu anda dizine eklenmiş değil" (3) doğrulamaları başarısız oldu. URL denetimi: İngilizce araç sayfaları o kadar kalıptı ki Google farklı modelleri bile kopya saydı (İngilizce Doblo → Isuzu). Düzeltme (aa1651b): `/en/vehicles/:id` artık `noindex, follow`, araç sayfalarında TR/EN hreflang yok, site haritası yalnız Türkçe araç sayfalarını listeliyor (59 → 46 adres). Canlıda doğrulandı, site haritası yeniden gönderildi.
+
+Aynı modelin birden fazla aracına ait sayfaların "Kopya" ya da "Alternatif sayfa" grubunda kalması beklenen durum. Doğrulama erken başlatılmadı; **1 Aralık 2026 10:00'da zamanlanmış görev** (`rentwin-gsc-indexing-followup`) raporlara bakacak, yalnızca güvenliyse doğrulamayı başlatacak ve ölçümleri aşağıya yazacak.
+
 ## 4. Nasıl ölçülecek
 
 - Her 2 haftada bir Search Console: "aliağa araç kiralama", "aliaga rent a car", "aliağa araç kiralama fiyatları" sorgularının 28 günlük ortalama konumu ve gösterimi.
