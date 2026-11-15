@@ -392,6 +392,15 @@ Planlı paylaşımlar (zamanlanmış görevler, uygulama ve Chrome açıkken ça
 - 14 Kas 2026, 19:30: SATILIK KİRALIK ALİAĞA (7,9K), aylık kiralama ilanı + `03-uzun-donem-kiralama.png`
 - 15 Kas 2026, 19:30: Aliağa kiralık satılık sayfası (3,4K), havalimanı teslimi ilanı + `04-havalimani-teslim.png`
 
+İkinci tur (15 Kasım'da sahibinin onayıyla planlandı; fotoğraf yerine Reels videoları, saat 19:30). Her görev önce o gruptaki ilk ilanın durumuna bakar: hâlâ onay bekliyorsa, reddedildiyse ya da kaldırıldıysa paylaşmaz (yöneticiyi rahatsız edip gruptan atılmamak için) ve nedenini tabloya yazar.
+
+- 19 Kas: İzmir Menemen Aliağa Foça (36K), `reels/reel-filo.mp4`, Metin A (`rentwin-group-video-36k`)
+- 22 Kas: SATILIK KİRALIK ALİAĞA (7,9K), `reels/reel-ticari.mp4`, Metin B (`rentwin-group-video-7900`)
+- 23 Kas: Aliağa kiralık satılık sayfası (3,4K), `reels/reel-ticari.mp4`, Metin B (`rentwin-group-video-3400`)
+- 24 Kas: Aliağa KİRALIK ve SATILIK (23K), `reels/reel-filo.mp4`, Metin A (`rentwin-group-video-23k`)
+
+Metin A: "🚗 Aliağa'da araç kiralama: binekten kamyonete — Rentwin" + Egea, Clio, Octavia, Doblo, Ducato, Transit Çift Kabin; günlük 2.750 / aylık 45.000 TL + KDV'den, depozito yok, havalimanı teslimi; adres, telefon, site. Metin B: "🚐 Aliağa'da ticari araç kiralama — Rentwin" + Fiorino, Doblo, Ducato, Transit Çift Kabin; şirket adına fatura, toplu kiralama; günlük 2.750 TL + KDV'den, depozito yok; adres, telefon, site.
+
 Not: Katılım sırasında sayfa yanlışlıkla ilgisiz bir gruba (Vezirköprü Galericiler Sitesi Traktör Pazarı) da katılmıştı; 12 Kasım'da bu gruptan çıkıldı. Grup ararken "Benzer gruplar" önerilerindeki "Gruba katıl" düğmelerine dikkat edin.
 
 **Paylaşım yapılmayacak gruplar:**
