@@ -293,6 +293,17 @@ Aşağıdaki 11 gönderi yalnızca Instagram'a planlandı. Görseller ve metinle
 - [x] Kategori: "Araç Kiralama" (zaten ayarlı). İletişim butonlarını uygulamadan açabilirsin.
 - [ ] Facebook'taki gibi arkadaşlarını takip etmeye davet et; Facebook arkadaşlarını Instagram'da bulma özelliğini kullan.
 
+**Yerel işletme takipleri, 2. tur (15 Kasım 2026, sahibinin onayıyla):** Instagram aramasıyla bulunup tek tek kontrol edilen 11 Aliağa/Çandarlı işletme ve kurum hesabı ~1 dakika arayla takip edildi; engel uyarısı çıkmadı:
+
+- Odalar: `aliagato1991` (Aliağa Ticaret Odası), `aliagaesnafodasi` (Aliağa Esnaf ve Sanatkarlar Odası)
+- Oteller: `etapaltinelaliaga`, `kymeotel`, `aliaga_otel`, `candarliresortotel`
+- Emlak: `aliagaemlak`, `aliagakilicemlak`, `yuvamemlak__`
+- Büyük işverenler ve yerel spor: `petkim.official`, `petkimspor`
+
+`starrafineriofficial` boş bir hesap çıktı (0 gönderi, tek takipçi); takip edilip hemen bırakıldı. Rakip rent a car hesapları ve bireysel kullanıcılar takip edilmedi. Sonuç: 23 takipçi, 75 takip (takip listesine bu oturum dışında da eklemeler yapılmış: 12 Kasım'da 22 takip vardı, 15 Kasım başında 64).
+
+Not: Başka hesapların takipçilerini toplu takip etmek Instagram kurallarına aykırı (spam/otomasyon) ve yeni hesapta engel riski taşıyor; bu yöntem kullanılmıyor.
+
 ## 7. Yerel sayfalara mesaj (Instagram DM)
 
 Aliağa'nın yerel haber sayfalarının takipçileri doğrudan bölge halkı. Bu sayfaların bir paylaşımı, tek tek takip etmekten çok daha fazla takipçi getirir. Mesajları **@rentwin_tr** hesabından **sen** gönder.
