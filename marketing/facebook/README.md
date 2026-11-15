@@ -459,5 +459,5 @@ rentwin.com.tr
 
 **Sırada:**
 - **Gerçek çekim Reels:** telefonla 10–20 saniyelik dikey çekimler (bir aracın etrafında yürüyüş, anahtar teslimi, ofisin önü, yolda sürüş) en çok izlenen içerik türü. Çekimler gelirse altyazı ve marka kartıyla düzenlenip planlanır.
-- **Beğenenleri davet:** Facebook gönderilerini beğenip sayfayı takip etmeyenler sayfaya davet edilebilir (her seferinde onayla).
+- **Beğenenleri davet:** 15 Kasım'da kontrol edildi: beğenenler yalnızca sayfanın kendisi ve sahibinin kişisel profiliydi, davet edilecek kimse yoktu. Sahibinin onayıyla **22 Kasım 11:00'da zamanlanmış görev** (`rentwin-fb-invite-reactors`) 12 Kasım'dan beri yayınlanan gönderi ve Reels'leri beğenip takip etmeyenleri davet edecek (en fazla 50, uyarı gelirse durur) ve sonucu buraya yazacak.
 - **Öne çıkarma:** bir Reels'i Aliağa + 20 km için 3 gün, günlük küçük bir bütçeyle öne çıkarmak takipçiyi en hızlı artıran ücretli yol (bütçe işletmede).
