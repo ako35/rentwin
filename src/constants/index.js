@@ -163,7 +163,7 @@ const rentwinMapsUrl = "https://maps.google.com/?cid=3109543909970773042";
 const rentwinSocial = {
   facebook: "https://www.facebook.com/rentwin.aliaga",
   instagram: "https://www.instagram.com/rentwin_tr/",
-  youtube: "",
+  youtube: "https://www.youtube.com/@rentwin_tr",
   x: "",
 };
 
