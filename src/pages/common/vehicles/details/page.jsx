@@ -52,13 +52,20 @@ const VehicleDetailsPage = () => {
     ? localizePath(`/vehicles/${vehicle.canonicalId}`, localeFromPath(window.location.pathname))
     : undefined;
 
+  // The English vehicle page stays out of the index (noindex, follow) and no
+  // vehicle page carries a TR/EN hreflang pair — Search Console folded the
+  // thin /en/vehicles/* pages into each other as duplicates. Mirrors backend
+  // seo-ld buildHead.
+  const english = localeFromPath(window.location.pathname) === "en";
   usePageMeta({
     title: vehicleName ? t("seoDetailsTitle", { name: vehicleName }) : t("detailsPageTitle"),
     description: vehicleName ? t("seoDetailsDescription", { name: vehicleName }) : undefined,
     image: imageUrl,
     canonical: canonicalPath,
     type: "product",
-    noindex: notFound,
+    noindex: notFound || english,
+    follow: english && !notFound,
+    hreflang: false,
     statusCode: notFound ? 404 : undefined,
   });
 

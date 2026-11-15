@@ -1453,9 +1453,18 @@ const buildHead = ({
     const canonical = canonicalVehicleId
       ? `${SITE_URL}${localizePath(`/vehicles/${canonicalVehicleId}`, locale)}`
       : `${SITE_URL}${localizePath(canonicalPath, locale)}`;
+    // The English vehicle page is the Turkish one under an English template:
+    // Search Console filed /en/vehicles/* as "Duplicate, Google chose
+    // different canonical" (even across models — Doblo folded into Isuzu) and
+    // "Crawled, not indexed". So it stays reachable but out of the index
+    // (noindex, follow — its links still count), and no vehicle page carries
+    // a TR/EN hreflang pair any more; the sitemap lists the TR page only.
+    const english = locale === "en";
     return {
       ...base(path),
-      canonical,
+      canonical: english ? null : canonical,
+      robots: english ? "noindex, follow" : "index, follow",
+      noHreflang: true,
       title:
         locale === "en" ? `Rent a ${name} | Rentwin` : `${name} Kiralama | Rentwin`,
       description:

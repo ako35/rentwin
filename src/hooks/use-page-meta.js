@@ -83,7 +83,13 @@ const removeAlternates = () => {
  * @param {string} [description]          used only with the (title, description) form
  *
  * Options: { title, description, image, canonical, type = "website",
- *            noindex = false, statusCode, monolingual = false }
+ *            noindex = false, follow = false, hreflang = true, statusCode,
+ *            monolingual = false }
+ *
+ * `follow`: with `noindex`, write "noindex, follow" (page kept out of the index
+ * but its links still count) instead of "noindex, nofollow".
+ * `hreflang`: false drops the TR/EN alternate pair (vehicle pages — their
+ * English twin is noindex; mirrors backend seo-ld buildHead `noHreflang`).
  *
  * `monolingual`: the page's content exists in Turkish only (blog posts — see
  * backend/src/lib/seo-ld.js buildHead). Canonical always points at the TR URL,
@@ -102,6 +108,8 @@ export const usePageMeta = (titleOrOptions, description) => {
     canonical,
     type = "website",
     noindex = false,
+    follow = false,
+    hreflang = true,
     statusCode,
     monolingual = false,
   } = options;
@@ -124,14 +132,14 @@ export const usePageMeta = (titleOrOptions, description) => {
     document.title = resolvedTitle;
     document.documentElement.lang = lang;
     setNamed("description", resolvedDesc);
-    setNamed("robots", noindex ? "noindex, nofollow" : "index, follow");
+    setNamed("robots", noindex ? (follow ? "noindex, follow" : "noindex, nofollow") : "index, follow");
     // A non-indexable URL should not point a canonical at itself.
     setCanonical(noindex ? null : url);
 
     // hreflang: tell search engines the TR and EN URLs are the same page in
     // two languages. Keyed off the URL, not the `noindex` page's own
     // content, so it stays correct even while e.g. a vehicle is loading.
-    if (noindex || monolingual) {
+    if (noindex || monolingual || !hreflang) {
       removeAlternates();
     } else {
       setAlternate("tr", `${SITE_URL}${canonicalPath}`);
@@ -168,5 +176,5 @@ export const usePageMeta = (titleOrOptions, description) => {
       const tag = document.head.querySelector('meta[name="render:status_code"]');
       if (tag) tag.remove();
     };
-  }, [title, desc, image, canonical, type, noindex, statusCode, monolingual]);
+  }, [title, desc, image, canonical, type, noindex, follow, hreflang, statusCode, monolingual]);
 };

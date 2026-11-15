@@ -45,10 +45,12 @@ const esc = (value) =>
 const renderHeadTags = (h) => {
   const ogUrl = h.canonical || h.url;
   // hreflang alternates — mirrors src/hooks/use-page-meta.js. Skipped for a
-  // noindex page (h.canonical is null then), same as the client does, and
-  // for a Turkish-only page (h.monolingual — blog posts), which has no
-  // English version to pair with.
-  const canonicalPath = h.path && !h.monolingual ? stripLocalePrefix(h.path) : null;
+  // noindex page (h.canonical is null then), same as the client does, for a
+  // Turkish-only page (h.monolingual — blog posts), which has no English
+  // version to pair with, and for a vehicle page (h.noHreflang — its English
+  // twin is noindex, see seo-ld buildHead).
+  const canonicalPath =
+    h.path && !h.monolingual && !h.noHreflang ? stripLocalePrefix(h.path) : null;
   return [
     `<title>${esc(h.title)}</title>`,
     `<meta name="description" content="${esc(h.description)}" />`,

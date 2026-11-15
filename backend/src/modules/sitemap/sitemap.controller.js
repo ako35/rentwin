@@ -66,8 +66,9 @@ const withEnglishTwin = (entry) => {
 const latest = (rows, field) =>
   rows.reduce((max, r) => (r[field] && r[field] > max ? r[field] : max), new Date(0));
 
-// Dynamic sitemap: static pages + every in-service vehicle + every location,
-// each doubled for its English ("/en/...") twin.
+// Dynamic sitemap: static pages and locations (each doubled for its English
+// "/en/..." twin), every model's canonical vehicle page (TR only) and blog
+// posts (TR only).
 const getSitemap = asyncHandler(async (req, res) => {
   const [vehicles, locations, campaigns, posts, reviewsAgg, modelImages] = await Promise.all([
     prisma.vehicle.findMany({
@@ -144,15 +145,15 @@ const getSitemap = asyncHandler(async (req, res) => {
         ...(r.path === "/kampanyalar" && campaignImageUrls.length ? { images: campaignImageUrls } : {}),
       })
     ),
-    ...canonicalVehicles.flatMap((v) =>
-      withEnglishTwin({
-        path: `/vehicles/${v.id}`,
-        lastmod: v.updatedAt,
-        changefreq: "weekly",
-        priority: "0.8",
-        image: vehicleImage(v),
-      })
-    ),
+    // Vehicle pages: TR only. /en/vehicles/:id is noindex (see seo-ld
+    // buildHead), so it isn't submitted and the TR entry has no hreflang pair.
+    ...canonicalVehicles.map((v) => ({
+      path: `/vehicles/${v.id}`,
+      lastmod: v.updatedAt,
+      changefreq: "weekly",
+      priority: "0.8",
+      image: vehicleImage(v),
+    })),
     ...locations.flatMap((l) =>
       withEnglishTwin({
         path: `/lokasyonlar/${slugify(l.name)}`,
