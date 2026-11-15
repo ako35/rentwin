@@ -1,0 +1,140 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+// Same language as the "Ne Yapıyoruz" panel right above it: soft mint panel,
+// white mini cards. Each network's own colour only on its icon and its action
+// pill (darker "ink" shade for text contrast), the way SocialFollow does it.
+.follow-us {
+    &__panel {
+        padding: 1.75rem;
+        background-color: v.$surface-mint;
+        border: 1px solid v.$color3;
+        border-radius: 20px;
+
+        @media (max-width: 900px) {
+            padding: 1.25rem;
+        }
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 1.6rem;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        color: v.$color2;
+    }
+
+    &__desc {
+        margin: 0.55rem 0 1.4rem;
+        font-size: 0.95rem;
+        line-height: 1.65;
+        color: v.$color-muted;
+    }
+
+    &__list {
+        @include m.reset-list;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.8rem;
+
+        // Below lg a third of the row is too narrow for name + handle + pill.
+        @media (max-width: 991.98px) {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__tile {
+        --brand: #{v.$color5};
+        --brand-ink: #{v.$color5};
+        --brand-tint: #eef2f6;
+
+        @include m.flexbox(row, flex-start, center, 0.8rem);
+        height: 100%;
+        padding: 0.9rem 1rem;
+        background-color: #fff;
+        border: 1px solid v.$color3;
+        border-radius: 14px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        text-decoration: none;
+        transition: box-shadow 0.15s ease, transform 0.15s ease;
+
+        &--instagram {
+            --brand: #e1306c;
+            --brand-ink: #c13584;
+            --brand-tint: #fdeaf1;
+        }
+
+        &--facebook {
+            --brand: #1877f2;
+            --brand-ink: #0b5cd5;
+            --brand-tint: #e8f1fe;
+        }
+
+        &--youtube {
+            --brand: #ff0000;
+            --brand-ink: #cc0000;
+            --brand-tint: #ffe8e8;
+        }
+
+        &:hover,
+        &:focus-visible {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px -16px rgba(15, 23, 42, 0.25);
+
+            .follow-us__action {
+                background-color: var(--brand-ink);
+                color: #fff;
+            }
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--brand-ink);
+            outline-offset: 2px;
+        }
+    }
+
+    &__icon {
+        @include m.flexbox(row, center, center, 0);
+        flex-shrink: 0;
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 12px;
+        background-color: var(--brand-tint);
+        color: var(--brand);
+        font-size: 1.3rem;
+    }
+
+    &__text {
+        @include m.flexbox(column, flex-start, flex-start, 0.05rem);
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    &__name {
+        font-size: 0.98rem;
+        font-weight: 700;
+        line-height: 1.3;
+        color: v.$color5;
+    }
+
+    &__handle {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.84rem;
+        color: v.$color-muted;
+    }
+
+    &__action {
+        flex-shrink: 0;
+        padding: 0.4rem 0.85rem;
+        border-radius: 999px;
+        background-color: var(--brand-tint);
+        color: var(--brand-ink);
+        font-size: 0.82rem;
+        font-weight: 700;
+        white-space: nowrap;
+        transition: background-color 0.15s ease, color 0.15s ease;
+    }
+}

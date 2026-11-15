@@ -12,9 +12,20 @@ const XIcon = () => (
   </svg>
 );
 
+// "@rentwin_tr" from ".../rentwin_tr/" or ".../@rentwin_tr".
+const handleFromUrl = (href) => {
+  try {
+    const path = new URL(href).pathname.replace(/^\/+|\/+$/g, "").replace(/^@/, "");
+    return path ? `@${path}` : "";
+  } catch {
+    return "";
+  }
+};
+
 // Rentwin's live social profiles in display order, shared by the header top
-// bar and the footer. Only profiles filled in constants `website.social` are
-// listed — an account not opened yet simply has no icon.
+// bar, the footer and the homepage FollowUs band. Only profiles filled in
+// constants `website.social` are listed — an account not opened yet simply
+// has no icon.
 export const socialNetworks = [
   { key: "instagram", name: "Instagram", Icon: FaInstagram },
   { key: "facebook", name: "Facebook", Icon: FaFacebookF },
@@ -22,4 +33,8 @@ export const socialNetworks = [
   { key: "x", name: "X", Icon: XIcon },
 ]
   .filter((network) => social[network.key])
-  .map((network) => ({ ...network, href: social[network.key] }));
+  .map((network) => ({
+    ...network,
+    href: social[network.key],
+    handle: handleFromUrl(social[network.key]),
+  }));

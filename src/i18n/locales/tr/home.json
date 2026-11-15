@@ -118,5 +118,15 @@
       { "id": 5, "title": "Havalimanı Teslim & Karşılama" },
       { "id": 6, "title": "Ticari Araç Kiralama", "route": "commercialRental" }
     ]
+  },
+  "followUs": {
+    "title": "Bizi takip edin",
+    "desc": "Yeni araçlar, kampanyalar ve kısa videolar ilk önce sosyal medya hesaplarımızda.",
+    "actions": {
+      "instagram": "Takip et",
+      "facebook": "Takip et",
+      "youtube": "Abone ol",
+      "x": "Takip et"
+    }
   }
 }

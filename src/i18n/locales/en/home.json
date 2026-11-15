@@ -118,5 +118,15 @@
       { "id": 5, "title": "Airport Delivery & Meet-and-Greet" },
       { "id": 6, "title": "Commercial Vehicle Rental", "route": "commercialRental" }
     ]
+  },
+  "followUs": {
+    "title": "Follow us",
+    "desc": "New vehicles, offers and short videos land on our social accounts first.",
+    "actions": {
+      "instagram": "Follow",
+      "facebook": "Follow",
+      "youtube": "Subscribe",
+      "x": "Follow"
+    }
   }
 }

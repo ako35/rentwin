@@ -40,6 +40,7 @@ import StarRating from './common/star-rating/star-rating'
 import ReviewCard from './common/reviews/review-card/review-card'
 import ReviewForm from './common/reviews/form/form'
 import ReviewsTeaser from './common/reviews-teaser/reviews-teaser'
+import FollowUs from './common/follow-us/follow-us'
 import UserAvatar from './common/user/avatar/avatar'
 import UserPasswordForm from './common/user/password-form/password-form'
 import UserProfileForm from './common/user/profile-form/profile-form'
@@ -94,6 +95,7 @@ export{
     ReviewCard,
     ReviewForm,
     ReviewsTeaser,
+    FollowUs,
     UserAvatar,
     UserPasswordForm,
     UserProfileForm,
