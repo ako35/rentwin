@@ -417,3 +417,47 @@ Binek araçlar, panelvan ve çift kabin kamyonet. Günlük 2.750 TL + KDV'den, a
 📞 / WhatsApp: 0507 350 31 35
 🌐 rentwin.com.tr
 ```
+
+## 9. Reels: büyümenin asıl kaynağı (15 Kasım 2026)
+
+**Neden:** Business Suite verisine göre (15 Kasım) tek Reels videosu (12 Kasım, 18 sn) **202 kez izlendi**. Fotoğraf gönderileri Facebook'ta 0–24, Instagram'da 28–58 kez gösterildi. Takipçi: Facebook 44 (12 Kasım'da 25), Instagram 22. Facebook ve Instagram yeni hesapları en çok Reels ile takipçi olmayanlara gösteriyor; plan bu yüzden Reels ağırlıklı.
+
+**Hazır videolar** (`reels/`, 1080×1920, 16 sn, sessiz; müzik Instagram uygulamasından eklenebilir):
+
+| Dosya | Konu | Kapak |
+|---|---|---|
+| `reel-filo.mp4` | "Aliağa'da hangi aracı kiralardınız?" Egea, Clio, Octavia, Doblo, Ducato, Transit + fiyat kartı | `reel-filo-kapak.png` |
+| `reel-ticari.mp4` | "İşiniz için araç mı lazım?" Fiorino, Doblo, Ducato, Transit + şirket avantajları | `reel-ticari-kapak.png` |
+
+Videolar headless Chrome ile çizilen sahnelerden ffmpeg ile üretildi (yavaş yakınlaşma + geçiş). Üretim betiği scratchpad'de (`reels/make-reel.cjs`); yeni sahne eklemek kolay.
+
+**Açıklamalar (Facebook + Instagram aynı):**
+
+```
+Aliağa'da hangi aracı kiralardınız? 🚗
+
+Sedan, hatchback, panelvan ya da çift kabin kamyonet; günlük 2.750 TL + KDV'den başlayan fiyatlarla, depozito yok.
+
+Online rezervasyon: rentwin.com.tr
+📞 WhatsApp: 0507 350 31 35
+
+#aliağa #aliağaaraçkiralama #izmiraraçkiralama #araçkiralama #rentacar #kiralıkaraç #izmir
+```
+
+```
+İşiniz için araç mı lazım? 🚐
+
+Fiorino, Doblo, Ducato ve Transit Çift Kabin; şirket adına fatura, aynı modelden toplu kiralama ve aylık tarife. Günlük 2.750 TL + KDV'den başlayan fiyatlar, depozito yok.
+
+Teklif için WhatsApp: 0507 350 31 35
+rentwin.com.tr
+
+#ticariaraçkiralama #panelvan #kamyonet #aliağa #izmir #araçkiralama
+```
+
+**Önerilen yayın:** "Filomuzdan" 16 Kasım 19:30, "Ticari araç" 20 Kasım 19:30 (17 Kasım'daki ticari araç fotoğraf gönderisiyle çakışmasın diye). Durum: onay bekliyor.
+
+**Sırada:**
+- **Gerçek çekim Reels:** telefonla 10–20 saniyelik dikey çekimler (bir aracın etrafında yürüyüş, anahtar teslimi, ofisin önü, yolda sürüş) en çok izlenen içerik türü. Çekimler gelirse altyazı ve marka kartıyla düzenlenip planlanır.
+- **Beğenenleri davet:** Facebook gönderilerini beğenip sayfayı takip etmeyenler sayfaya davet edilebilir (her seferinde onayla).
+- **Öne çıkarma:** bir Reels'i Aliağa + 20 km için 3 gün, günlük küçük bir bütçeyle öne çıkarmak takipçiyi en hızlı artıran ücretli yol (bütçe işletmede).
