@@ -7,7 +7,17 @@
 - **Görseller** (bu klasörde): `yt-profil.png` (800×800, yeşil "R"), `yt-kapak.png` (2560×1440). Kapaktaki yazılar her cihazda görünen 1546×423 alanın içinde.
 - **Açıklama:** Aliağa'da günlük ve aylık kiralama; binek, panelvan ve çift kabin kamyonet; depozito yok, havalimanı teslimi, şirketlere fatura. Altında adres, WhatsApp ve site.
 - **Bağlantılar:** Web sitesi, Instagram, Facebook. İletişim e-postası: info@rentwin.com.tr.
-- **Bağlantı verilen yerler:** sitenin üst şeridindeki ve alt bilgideki YouTube simgesi, `sameAs` yapısal verisi (`src/constants/index.js` ve `backend/src/lib/site.js`), Google İşletme Profili'nin sosyal profilleri (Google incelemesi bekleniyor).
+- **Bağlantı verilen yerler:** sitenin üst şeridindeki ve alt bilgideki YouTube simgesi, `sameAs` yapısal verisi (`src/constants/index.js` ve `backend/src/lib/site.js`), Google İşletme Profili'nin sosyal profilleri (Google incelemesi bekleniyor), Facebook sayfasının Hakkında › Sosyal medya bölümü (16 Kasım 2026, herkese açık, `youtube.com/@rentwin_tr`).
+
+## Kanal ayarları (16 Kasım 2026)
+
+- **Ülke:** Türkiye.
+- **Kanal anahtar kelimeleri:** rentwin, aliağa araç kiralama, aliağa rent a car, kiralık araç aliağa, izmir araç kiralama, izmir havalimanı araç kiralama, ticari araç kiralama, panelvan kiralama, kamyonet kiralama, uzun dönem araç kiralama, aylık araç kiralama, kurumsal araç kiralama, fiat egea kiralama.
+- **Yükleme varsayılanları** (Ayarlar › Yükleme varsayılanları; her yeni yüklemeye kendiliğinden gelir):
+  - Açıklama: çizgi + "Rentwin Araç Kiralama · Aliağa / İzmir", tek satırlık hizmet özeti, adres, telefon/WhatsApp, site, Instagram ve Facebook bağlantıları. Yeni videonun kendi metni bu bloğun **üstüne** yazılır; adres ve WhatsApp'ı tekrar yazmaya gerek yok.
+  - Etiketler: rentwin, aliağa araç kiralama, aliağa rent a car, araç kiralama, kiralık araç, izmir araç kiralama, ticari araç kiralama, uzun dönem araç kiralama, aliağa.
+  - Kategori "Arabalar ve Taşıtlar"; video dili ile başlık ve açıklama dili Türkçe.
+- **Video filigranı:** `yt-profil.png` (yeşil "R"), videonun tamamında. İzleyici üstüne gelince "Abone ol" düğmesi çıkar. Normal (yatay) videolarda görünür; Shorts oynatıcısı filigran göstermez.
 
 ## Shorts
 
