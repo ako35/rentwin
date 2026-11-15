@@ -455,7 +455,7 @@ rentwin.com.tr
 #ticariaraçkiralama #panelvan #kamyonet #aliağa #izmir #araçkiralama
 ```
 
-**Önerilen yayın:** "Filomuzdan" 16 Kasım 19:30, "Ticari araç" 20 Kasım 19:30 (17 Kasım'daki ticari araç fotoğraf gönderisiyle çakışmasın diye). Durum: onay bekliyor.
+**Yayın:** "Filomuzdan" 16 Kasım Pazartesi 19:30, "Ticari araç" 20 Kasım Cuma 19:30 (17 Kasım'daki ticari araç fotoğraf gönderisiyle çakışmasın diye). Durum: **15 Kasım'da Business Suite'te Facebook + Instagram için planlandı** (Reels oluşturucu: "Planla", her platformun tarih/saat alanı ayrı; saat alanına önce saat yazılıp sağ okla dakikaya geçilmeli). Sayfada kullanıcının önceden planladığı Reels'ler de var: 24, 26 Kasım ve 1, 3 Aralık 19:00.
 
 **Sırada:**
 - **Gerçek çekim Reels:** telefonla 10–20 saniyelik dikey çekimler (bir aracın etrafında yürüyüş, anahtar teslimi, ofisin önü, yolda sürüş) en çok izlenen içerik türü. Çekimler gelirse altyazı ve marka kartıyla düzenlenip planlanır.
