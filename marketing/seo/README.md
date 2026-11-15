@@ -42,7 +42,7 @@ Sıralama etkiye göre. **Sahibi** sütunu işin kimde olduğunu gösterir.
 
 | # | İş | Etki | Sahibi | Durum |
 |---|---|---|---|---|
-| 1 | **Düzenli yorum toplamak:** her teslimden sonra müşteriye yorum bağlantısını göndermek. Admin panelinde kontrat kapanınca WhatsApp'tan hazır "yorum rica" mesajı açan bir düğme. | Çok yüksek (Haritalar) | Kod: Claude · Gönderme: işletme | Önerildi |
+| 1 | **Düzenli yorum toplamak:** her teslimden sonra müşteriye yorum bağlantısını göndermek. Admin panelinde kontrat kapanınca WhatsApp'tan hazır "yorum rica" mesajı açan bir düğme. | Çok yüksek (Haritalar) | Kod: Claude · Gönderme: işletme | Düğme yayında (15 Kas): tamamlanan kontratta "Google Yorumu İste"; her teslimden sonra kullanılmalı |
 | 2 | **Google profiline gerçek fotoğraflar:** ofis, tabela, araçlar, teslim anı (en az 10). | Yüksek (Haritalar) | İşletme | Bekliyor |
 | 3 | **Haftalık Google gönderisi** (her gönderi onayla). | Orta | Claude | 1. gönderi 12 Kasım'da yayında |
 | 4 | **Dizin kayıtları:** Bing Places (Google profilinden içe aktarılabilir), Apple Business Connect, Yandex Business, Foursquare ve yerel rehberler. Adres, telefon ve site her yerde birebir aynı yazılmalı. | Yüksek (Haritalar + otorite) | Hesaplar: işletme · Doldurma: Claude | Önerildi |
