@@ -388,7 +388,7 @@ Paylaşımlar (her grupta en fazla haftada 1):
 
 Planlı paylaşımlar (zamanlanmış görevler, uygulama ve Chrome açıkken çalışır; her görev paylaşınca tabloya kendi satırını ekler):
 
-- 13 Kas 2026, 19:30: Aliağa KİRALIK ve SATILIK (23K), ticari araç ilanı + `02-ticari-arac-kiralama.png`
+- 13 Kas 2026, 19:30: Aliağa KİRALIK ve SATILIK (23K), ticari araç ilanı + `02-ticari-arac-kiralama.png` → Chrome kapalı olduğu için yapılamadı; **16 Kas 2026, 19:30'a** yeniden planlandı (aynı görev).
 - 14 Kas 2026, 19:30: SATILIK KİRALIK ALİAĞA (7,9K), aylık kiralama ilanı + `03-uzun-donem-kiralama.png`
 - 15 Kas 2026, 19:30: Aliağa kiralık satılık sayfası (3,4K), havalimanı teslimi ilanı + `04-havalimani-teslim.png`
 
