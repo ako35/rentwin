@@ -250,6 +250,8 @@ const resolvePath = async (reqPath) => {
         brand: true,
         model: true,
         bodyType: true,
+        transmission: true,
+        fuelType: true,
         dailyPrice: true,
         monthlyPrice: true,
         createdAt: true,

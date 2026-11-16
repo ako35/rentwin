@@ -12,7 +12,13 @@
     "contactForm": "İletişim Formu",
     "faqMore": "Yaş, belgeler, kilometre ve yakıt politikası gibi genel kiralama koşulları için",
     "faqMoreLink": "Sıkça Sorulan Sorular",
-    "faqMoreSuffix": " sayfasına bakın."
+    "faqMoreSuffix": " sayfasına bakın.",
+    "tableVehicle": "Araç",
+    "tableSpecs": "Vites / Yakıt",
+    "tableDaily": "Günlük",
+    "tableMonthly": "Aylık",
+    "tableNoPrice": "Fiyat için arayın",
+    "tableUnit": "TL + KDV"
   },
   "commercial": {
     "seoTitle": "Ticari Araç Kiralama Aliağa | Panelvan ve Kamyonet – Rentwin",
@@ -145,5 +151,79 @@
     "ctaText": "Kiralama süresini, araç tipini ve adedini iletin; size uygun aylık planı hazırlayıp hızlıca dönüş yapalım.",
     "relatedLead": "Panelvan, minibüs veya kamyonet arıyorsanız:",
     "relatedLabel": "Ticari Araç Kiralama"
+  },
+  "prices": {
+    "seoTitle": "Aliağa Araç Kiralama Fiyatları | Günlük ve Aylık – Rentwin",
+    "seoDescription": "Aliağa araç kiralama fiyatları: binek, panelvan ve kamyonetlerin güncel günlük ve aylık fiyatları tek tabloda. KDV hariç liste fiyatları, depozito yok.",
+    "serviceType": "Araç kiralama",
+    "pageTitle": "Araç Kiralama Fiyatları",
+    "heading": "Aliağa Araç Kiralama Fiyatları",
+    "lead": "Filomuzdaki tüm araçların güncel günlük ve aylık kiralama fiyatlarını aşağıdaki tabloda karşılaştırabilirsiniz. Fiyatlar KDV hariç liste fiyatıdır; aynı modelin farklı yıl ve vitesteki araçları için fiyat aralığı gösterilir.",
+    "fleetTitle": "Güncel Fiyat Listesi",
+    "fleetIntro": "Fiyatlar KDV hariçtir ve araç bazında güncellenir. Uygunluğu görmek ve rezervasyon yapmak için araç adına tıklayın.",
+    "typesTitle": "Fiyatı Neler Belirler?",
+    "types": [
+      {
+        "icon": "calendar",
+        "title": "Kiralama Süresi",
+        "text": "Aylık kiralamada günlük maliyet, günlük tarifeye göre belirgin şekilde düşer. Bir haftadan uzun ihtiyaçlarda aylık fiyatı da karşılaştırın."
+      },
+      {
+        "icon": "van",
+        "title": "Araç Tipi",
+        "text": "Ekonomik binek araçlar en uygun seçenektir; panelvan, minibüs ve çift kabin kamyonetler taşıma kapasitesine göre fiyatlandırılır."
+      },
+      {
+        "icon": "gear",
+        "title": "Vites ve Model Yılı",
+        "text": "Aynı modelde otomatik vites ya da daha yeni model yılı fiyatı değiştirebilir. Bu yüzden tabloda bazı modeller için fiyat aralığı yer alır."
+      }
+    ],
+    "whyTitle": "Fiyatlarımızda Neler Var?",
+    "why": [
+      "Depozito yok; nakit, kredi kartı veya havale / EFT ile ödeme",
+      "Her aracın günlük ve aylık fiyatı açıkça yazılı; fiyatlar KDV hariç",
+      "Bakımlı ve sigortalı araçlar",
+      "Kurumsal kiralamalarda şirket ünvanına fatura",
+      "Kilometre limiti ve aşım ücreti sözleşmede açıkça belirtilir",
+      "İzmir Adnan Menderes Havalimanı'nda teslim talep edilebilir"
+    ],
+    "howTitle": "Nasıl Kiralanır?",
+    "how": [
+      "Tablodan bütçenize ve ihtiyacınıza uygun aracı seçin.",
+      "Araç sayfasından tarihlerinize göre uygunluğu kontrol edip online rezervasyon yapın ya da teklif isteyin.",
+      "Sözleşmeyi imzalayıp aracınızı Aliağa ofisimizden ya da talep ederseniz İzmir Adnan Menderes Havalimanı'nda teslim alın."
+    ],
+    "faqTitle": "Araç Kiralama Fiyatları Hakkında Sık Sorulanlar",
+    "faq": [
+      {
+        "q": "Fiyatlara KDV dahil mi?",
+        "a": "Hayır. Tablodaki günlük ve aylık fiyatlar KDV hariç liste fiyatlarıdır; KDV kiralama sözleşmesinde ayrıca eklenir."
+      },
+      {
+        "q": "Depozito alıyor musunuz?",
+        "a": "Hayır, depozito talep etmiyoruz. Ödemeyi nakit, kredi kartı veya havale / EFT ile yapabilirsiniz."
+      },
+      {
+        "q": "Aylık kiralama günlük kiralamadan ne kadar avantajlı?",
+        "a": "Araca göre değişmekle birlikte aylık fiyat, aynı aracı 30 gün boyunca günlük tarifeyle kiralamaya göre belirgin şekilde düşüktür. İki tarifeyi tablodan yan yana karşılaştırabilirsiniz."
+      },
+      {
+        "q": "Kilometre sınırı var mı?",
+        "a": "Kilometre limiti ve aşım ücreti kiralama sözleşmesinde açıkça belirtilir. Tahmini kullanımınızı rezervasyon öncesinde bize iletirseniz size uygun seçeneği birlikte belirleyelim."
+      },
+      {
+        "q": "Neden bazı araçlarda fiyat aralığı yazıyor?",
+        "a": "Filomuzda aynı modelden farklı model yılı ve vites tipinde birden fazla araç bulunuyor. Aralık, o modeldeki en uygun ve en yüksek fiyatı gösterir; seçtiğiniz aracın kesin fiyatı araç sayfasında yazar."
+      },
+      {
+        "q": "Kampanyalı fiyatlar var mı?",
+        "a": "Dönemsel kampanyalarımızı Kampanyalar sayfasında yayınlıyoruz; her kampanyanın koşulları kendi açıklamasında yazar."
+      }
+    ],
+    "ctaTitle": "Tarihlerinize özel fiyat ister misiniz?",
+    "ctaText": "Kiralama tarihlerini, araç tipini ve adedini iletin; uygunluğu kontrol edip size hızlıca dönüş yapalım.",
+    "relatedLead": "Aylık veya daha uzun süreli ihtiyaçlar için:",
+    "relatedLabel": "Uzun Dönem Araç Kiralama"
   }
 }

@@ -11,6 +11,11 @@
         "seoTitle": "Rentwin Aliağa Ofisi | Adres ve Çalışma Saatleri",
         "seoDescription": "Rentwin Aliağa ofisi Atatürk Mah. 356 Sk. No: 16/31, Aliağa/İzmir adresinde, haftanın 7 günü açık. Aracınızı ofisten teslim alın veya havalimanı teslimi isteyin.",
         "heading": "Rentwin Aliağa Ofisi"
+      },
+      "izmir-havalimani": {
+        "seoTitle": "İzmir Havalimanı Araç Kiralama | Adnan Menderes Teslim – Rentwin",
+        "seoDescription": "İzmir Adnan Menderes Havalimanı'nda araç teslimi ve karşılama; inişten sonra aracınız hazır. Depozito yok, günlük ve aylık kiralama, KDV hariç açık fiyatlar.",
+        "heading": "İzmir Havalimanı Araç Kiralama"
       }
     },
     "seoTitle": "{{name}} Araç Kiralama | Rentwin",
@@ -32,6 +37,8 @@
     ],
     "faqLead": "Gerekli belgeler, kilometre limiti ve yakıt politikası gibi sorular için:",
     "faqLink": "Sıkça Sorulan Sorular",
+    "pricesLead": "Tüm araçların güncel günlük ve aylık fiyatları:",
+    "pricesLink": "Araç Kiralama Fiyatları",
     "mapTitle": "{{name}} Konumu",
     "vehiclesCta": "Araçları Gör",
     "reserveCta": "Hemen Rezervasyon Yap",
@@ -87,22 +94,50 @@
         ]
       },
       "izmir-havalimani": {
-        "title": "İzmir Adnan Menderes Havalimanı araç kiralama",
-        "lead": "İzmir'e uçakla geliyorsanız aracınızı İzmir Adnan Menderes Havalimanı'nda teslim alabilirsiniz. Havalimanı teslimi ve karşılama rezervasyon sırasında talep edilir; böylece inişten sonra doğrudan yola çıkabilirsiniz.",
+        "title": "Adnan Menderes Havalimanı'nda araç teslimi",
+        "lead": "İzmir'e uçakla geliyorsanız aracınızı İzmir Adnan Menderes Havalimanı'nda teslim alın. Havalimanı teslimini ve karşılamayı rezervasyon sırasında talep edersiniz; inişten sonra aracınızla doğrudan Aliağa'ya, İzmir merkezine ya da tatil yerinize yola çıkarsınız.",
         "why": [
-          "Havalimanında araç teslimi ve karşılama, rezervasyon sırasında talep edilebilir",
-          "Havalimanından Aliağa'ya, İzmir merkezine ve çevre ilçelere doğrudan devam edebilirsiniz",
+          "Havalimanında araç teslimi ve karşılama, rezervasyon sırasında talep edilir",
+          "Depozito yok; kimlik, ehliyet ve kiralayan adına kredi kartı yeterli",
           "Kalabalık gruplar ve bol bagajlı yolculuklar için geniş araç seçenekleri",
-          "Günlük ve aylık kiralama seçenekleri"
+          "Günlük ve aylık kiralama; her aracın fiyatı açıkça yazılı (KDV hariç)",
+          "Havalimanından Aliağa, Foça, Çandarlı ve İzmir merkezine doğrudan yolculuk"
         ],
         "how": [
-          "Alış tarih ve saatinizi seçip rezervasyona havalimanı teslim isteğinizi ekleyin.",
-          "Teslim ayrıntıları rezervasyon teyidinizde netleştirilir.",
-          "Havalimanında kimlik, ehliyet ve kartınızla aracınızı teslim alın; depozito talep edilmez."
+          "Aracınızı seçin; alış tarih ve saatini uçağınızın iniş saatine göre belirleyin.",
+          "Rezervasyonda havalimanı karşılama hizmetini seçin ve uçuş bilgilerinizi bize iletin; teslim ayrıntıları rezervasyon teyidinde netleşir.",
+          "İnişten sonra kimlik, ehliyet ve kartınızla aracınızı havalimanında teslim alın; depozito talep edilmez."
         ],
         "paragraphs": [
-          "İzmir Adnan Menderes Havalimanı'nda Rentwin araç teslimi ve karşılama hizmeti rezervasyon sırasında talep edilebilir. Alış tarih ve saatinizi seçip havalimanı teslim isteğinizi ekibimize iletin; teslim ayrıntılarını rezervasyon teyidinde netleştirin.",
-          "Havalimanından Aliağa'ya, İzmir merkezine veya çevre ilçelere devam edeceğiniz yolculuk için günlük ya da aylık kiralama seçeneklerini inceleyin. Uygun araçları görmek ve rezervasyon başlatmak için araç listemizi ziyaret edin."
+          "Rentwin'in ofisi Aliağa'dadır; İzmir Adnan Menderes Havalimanı'na araç teslimi ve karşılama hizmetini rezervasyonla veriyoruz. Havalimanı ile Aliağa arası yaklaşık 85 km'dir ve trafiğe bağlı olarak araçla 1 saat civarı sürer.",
+          "STAR Rafineri, Petkim ya da Aliağa limanındaki işler için gelenler, Foça ve Çandarlı'ya tatile gidenler aracını havalimanında teslim alıp doğrudan yola çıkabilir. Bölgede haftalarca çalışacaksanız aylık kiralama, günlük tarifeye göre belirgin şekilde daha avantajlıdır."
+        ],
+        "faqTitle": "İzmir Havalimanı araç kiralama: sık sorulan sorular",
+        "faq": [
+          {
+            "q": "İzmir Adnan Menderes Havalimanı'nda araç teslim alabilir miyim?",
+            "a": "Evet. Havalimanında araç teslimi ve karşılama hizmeti veriyoruz. Rezervasyon sırasında havalimanı karşılamayı seçip uçuş bilgilerinizi iletmeniz yeterli; teslim ayrıntıları rezervasyon teyidinde netleşir."
+          },
+          {
+            "q": "Havalimanında araç kiralamak için hangi belgeler gerekli?",
+            "a": "Havalimanında teslim alırken geçerli sürücü belgenizi, T.C. kimlik kartınızı (yabancı uyruklular için pasaport) ve kendi adınıza kredi kartınızı yanınızda bulundurun. Kiralama için en az 25 yaş ve en az 3 yıllık ehliyet şartı aranır; depozito alınmaz."
+          },
+          {
+            "q": "Havalimanından Aliağa'ya ne kadar sürede ulaşırım?",
+            "a": "İzmir Adnan Menderes Havalimanı ile Aliağa arası yaklaşık 85 km'dir; trafiğe bağlı olarak araçla 1 saat civarı sürer."
+          },
+          {
+            "q": "Havalimanı araç kiralama fiyatları ne kadar?",
+            "a": "Fiyatlar araca göre değişir ve KDV hariçtir. Tüm araçların güncel günlük ve aylık fiyatlarını Araç Kiralama Fiyatları sayfamızda karşılaştırabilirsiniz."
+          },
+          {
+            "q": "Aracı farklı bir yerde bırakabilir miyim?",
+            "a": "Evet. Aracı havalimanında teslim alıp farklı bir noktada bırakmak (tek yön kiralama) mümkündür; bu durumda sözleşmeye tek yön ücreti eklenir. Bırakmak istediğiniz yeri rezervasyonda belirtin."
+          },
+          {
+            "q": "Havalimanından aylık araç kiralayabilir miyim?",
+            "a": "Evet. Bölgede haftalarca ya da aylarca çalışacaksanız aylık kiralama, aynı aracı günlük tarifeyle kiralamaya göre belirgin şekilde daha avantajlıdır. Aylık fiyatlar KDV hariçtir."
+          }
         ]
       },
       "bursa": {

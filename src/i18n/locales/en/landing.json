@@ -12,7 +12,13 @@
     "contactForm": "Contact Form",
     "faqMore": "For general rental terms such as age, documents, mileage and fuel policy, see our",
     "faqMoreLink": "Frequently Asked Questions",
-    "faqMoreSuffix": "."
+    "faqMoreSuffix": ".",
+    "tableVehicle": "Vehicle",
+    "tableSpecs": "Transmission / Fuel",
+    "tableDaily": "Daily",
+    "tableMonthly": "Monthly",
+    "tableNoPrice": "Call for a price",
+    "tableUnit": "TL + VAT"
   },
   "commercial": {
     "seoTitle": "Commercial Vehicle Rental in Aliağa | Vans & Pickups – Rentwin",
@@ -145,5 +151,79 @@
     "ctaText": "Tell us the rental period, vehicle type and quantity; we will prepare a monthly plan that fits and get back to you quickly.",
     "relatedLead": "Looking for a panel van, minibus or pickup?",
     "relatedLabel": "Commercial Vehicle Rental"
+  },
+  "prices": {
+    "seoTitle": "Car Rental Prices in Aliağa | Daily & Monthly – Rentwin",
+    "seoDescription": "Car rental prices in Aliağa: current daily and monthly rates for cars, panel vans and pickups in one table. List prices excluding VAT, no deposit.",
+    "serviceType": "Car rental",
+    "pageTitle": "Car Rental Prices",
+    "heading": "Car Rental Prices in Aliağa",
+    "lead": "Compare the current daily and monthly rental prices of every vehicle in our fleet in the table below. Prices are list prices excluding VAT; where a model comes in different years or transmissions, a price range is shown.",
+    "fleetTitle": "Current Price List",
+    "fleetIntro": "Prices exclude VAT and are updated per vehicle. Click a vehicle name to check availability and book.",
+    "typesTitle": "What Affects the Price?",
+    "types": [
+      {
+        "icon": "calendar",
+        "title": "Rental Length",
+        "text": "With a monthly rental the cost per day drops well below the daily rate. For anything longer than a week, compare the monthly price too."
+      },
+      {
+        "icon": "van",
+        "title": "Vehicle Type",
+        "text": "Economy cars are the most affordable; panel vans, minibuses and double-cab pickups are priced by their carrying capacity."
+      },
+      {
+        "icon": "gear",
+        "title": "Transmission and Model Year",
+        "text": "Within one model, an automatic gearbox or a newer model year can change the price, which is why some models show a price range."
+      }
+    ],
+    "whyTitle": "What Our Prices Include",
+    "why": [
+      "No deposit; pay in cash, by credit card or by bank transfer",
+      "Every vehicle's daily and monthly price is shown up front; prices exclude VAT",
+      "Maintained, insured vehicles",
+      "Invoices issued to your company for corporate rentals",
+      "The mileage limit and any excess charge are stated in the contract",
+      "Delivery at İzmir Adnan Menderes Airport on request"
+    ],
+    "howTitle": "How to Rent",
+    "how": [
+      "Pick the vehicle that suits your budget and needs from the table.",
+      "Check availability for your dates on the vehicle page and book online, or request a quote.",
+      "Sign the contract and collect your vehicle at our Aliağa office or, on request, at İzmir Adnan Menderes Airport."
+    ],
+    "faqTitle": "Car Rental Prices: Frequently Asked Questions",
+    "faq": [
+      {
+        "q": "Do the prices include VAT?",
+        "a": "No. The daily and monthly prices in the table are list prices excluding VAT; VAT is added separately in the rental contract."
+      },
+      {
+        "q": "Do you take a deposit?",
+        "a": "No, we don't take a deposit. You can pay in cash, by credit card or by bank transfer."
+      },
+      {
+        "q": "How much cheaper is a monthly rental than a daily one?",
+        "a": "It depends on the vehicle, but the monthly price is well below renting the same vehicle for 30 days at the daily rate. You can compare both rates side by side in the table."
+      },
+      {
+        "q": "Is there a mileage limit?",
+        "a": "The mileage limit and any excess charge are stated clearly in the rental contract. Tell us your expected usage before booking and we will find the right option together."
+      },
+      {
+        "q": "Why do some vehicles show a price range?",
+        "a": "Our fleet has several units of the same model in different model years and transmissions. The range shows the lowest and highest price for that model; the exact price of the vehicle you choose is on its page."
+      },
+      {
+        "q": "Are there special offers?",
+        "a": "We publish seasonal offers on our Campaigns page; the terms of each offer are given in its description."
+      }
+    ],
+    "ctaTitle": "Want a price for your dates?",
+    "ctaText": "Send us your rental dates, the vehicle type and how many you need; we will check availability and get back to you quickly.",
+    "relatedLead": "For monthly or longer needs:",
+    "relatedLabel": "Long-Term Car Rental"
   }
 }

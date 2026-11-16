@@ -92,6 +92,7 @@ const marketingRoutes = () => [
   { path: "sss", element: lazyRoute(<FaqPage />) },
   { path: "ticari-arac-kiralama", element: lazyRoute(<LandingPage variant="commercial" />) },
   { path: "uzun-donem-arac-kiralama", element: lazyRoute(<LandingPage variant="longTerm" />) },
+  { path: "arac-kiralama-fiyatlari", element: lazyRoute(<LandingPage variant="prices" />) },
   {
     path: "lokasyonlar",
     children: [

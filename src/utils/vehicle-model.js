@@ -55,3 +55,46 @@ export const formatVariants = (variants, name, { t, tCommon, lang }) => {
     fuels,
   });
 };
+
+// The /arac-kiralama-fiyatlari price table: one row per model with the lowest
+// and highest daily / monthly list price across its units (units of one model
+// differ by year and transmission), its transmissions and fuels, and its
+// canonical unit's id for the link; unpriced models sort last.
+// Mirrors backend/src/lib/vehicle-models.js summarizeFleetPrices.
+const priceRange = (values) => {
+  const prices = values.map(Number).filter((p) => p > 0);
+  return prices.length ? { min: Math.min(...prices), max: Math.max(...prices) } : null;
+};
+const uniqueSorted = (values) => [...new Set(values.filter((v) => v != null && v !== ""))].sort();
+
+export const summarizeFleetPrices = (units) => {
+  const groups = new Map();
+  for (const unit of units) {
+    const key = modelKey(unit.brand, unit.model);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(unit);
+  }
+  const time = (d) => (d ? new Date(d).getTime() : 0);
+  const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+  return [...groups.values()]
+    .map((group) => {
+      const [head] = [...group].sort(
+        (a, b) => time(a.createdAt) - time(b.createdAt) || (a.id < b.id ? -1 : 1)
+      );
+      return {
+        id: head.id,
+        name: `${clean(head.brand)} ${clean(head.model)}`.trim(),
+        count: group.length,
+        transmissions: uniqueSorted(group.map((u) => u.transmission)),
+        fuelTypes: uniqueSorted(group.map((u) => u.fuelType)),
+        daily: priceRange(group.map((u) => u.dailyPrice)),
+        monthly: priceRange(group.map((u) => u.monthlyPrice)),
+      };
+    })
+    .sort(
+      (a, b) =>
+        (a.daily?.min ?? Infinity) - (b.daily?.min ?? Infinity) ||
+        (a.monthly?.min ?? Infinity) - (b.monthly?.min ?? Infinity) ||
+        a.name.localeCompare(b.name, "tr")
+    );
+};

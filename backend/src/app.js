@@ -158,6 +158,8 @@ app.get(
     "/en/ticari-arac-kiralama",
     "/uzun-donem-arac-kiralama",
     "/en/uzun-donem-arac-kiralama",
+    "/arac-kiralama-fiyatlari",
+    "/en/arac-kiralama-fiyatlari",
     "/privacy-policy",
     "/en/privacy-policy",
   ],

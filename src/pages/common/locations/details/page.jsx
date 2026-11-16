@@ -153,6 +153,9 @@ const LocationDetailPage = () => {
             {t("detail.reserveCta")}
           </AppLink>
         </div>
+        <p className="location-detail__faq location-detail__prices">
+          {t("detail.pricesLead")} <AppLink to={routes.priceList}>{t("detail.pricesLink")}</AppLink>
+        </p>
 
         <Spacer />
         <h2 className="location-detail__subtitle">{t("detail.whyTitle", { name })}</h2>

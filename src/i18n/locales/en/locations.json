@@ -11,6 +11,11 @@
         "seoTitle": "Rentwin Aliağa Office | Address & Opening Hours",
         "seoDescription": "Rentwin's Aliağa office is at Atatürk Mah. 356 Sk. No: 16/31, Aliağa/İzmir and open 7 days a week. Pick up your car at the office or request airport delivery.",
         "heading": "Rentwin Aliağa Office"
+      },
+      "izmir-havalimani": {
+        "seoTitle": "İzmir Airport Car Rental | Adnan Menderes Delivery – Rentwin",
+        "seoDescription": "Car delivery and meet-and-greet at İzmir Adnan Menderes Airport, ready when you land. No deposit, daily and monthly rental, clear prices excluding VAT.",
+        "heading": "İzmir Airport Car Rental"
       }
     },
     "seoTitle": "{{name}} Car Rental | Rentwin",
@@ -32,6 +37,8 @@
     ],
     "faqLead": "For questions about required documents, mileage limits, and the fuel policy, see:",
     "faqLink": "Frequently Asked Questions",
+    "pricesLead": "Current daily and monthly prices for every vehicle:",
+    "pricesLink": "Car Rental Prices",
     "mapTitle": "{{name}} Location",
     "vehiclesCta": "View Vehicles",
     "reserveCta": "Book Now",
@@ -87,22 +94,50 @@
         ]
       },
       "izmir-havalimani": {
-        "title": "Car rental at İzmir Adnan Menderes Airport",
-        "lead": "Flying into İzmir? You can collect your car at İzmir Adnan Menderes Airport. Airport delivery and meet-and-greet are requested when you book, so you can hit the road right after landing.",
+        "title": "Car delivery at Adnan Menderes Airport",
+        "lead": "Flying into İzmir? Collect your car at İzmir Adnan Menderes Airport. You request airport delivery and meet-and-greet when you book, and after landing you drive straight to Aliağa, central İzmir or your holiday spot.",
         "why": [
-          "Vehicle delivery and meet-and-greet at the airport can be requested when you book",
-          "Drive straight on from the airport to Aliağa, central İzmir, and nearby districts",
+          "Vehicle delivery and meet-and-greet at the airport are requested when you book",
+          "No deposit; an ID, a driving licence and a credit card in the renter's name are enough",
           "Roomy vehicles for groups and trips with lots of luggage",
-          "Daily and monthly rental options"
+          "Daily and monthly rental, with every vehicle's price shown up front (excluding VAT)",
+          "Drive straight from the airport to Aliağa, Foça, Çandarlı and central İzmir"
         ],
         "how": [
-          "Choose your pick-up date and time and add an airport delivery request to your booking.",
-          "Handover details are confirmed in your booking confirmation.",
-          "Collect your car at the airport with your ID, licence, and card — no deposit required."
+          "Choose your car and set the pick-up date and time to your flight's landing time.",
+          "Select the airport meet-and-greet service when booking and send us your flight details; handover details are confirmed in your booking confirmation.",
+          "After landing, collect your car at the airport with your ID, licence and card — no deposit required."
         ],
         "paragraphs": [
-          "Vehicle delivery and meet-and-greet at İzmir Adnan Menderes Airport can be requested when you book. Select your pick-up date and time and send the airport request to our team; confirm handover details with your booking confirmation.",
-          "Explore daily and monthly rental options for trips from the airport to Aliağa, central İzmir, and nearby districts. Visit our vehicle list to check available cars and start a reservation."
+          "Rentwin's office is in Aliağa, and we deliver cars with meet-and-greet to İzmir Adnan Menderes Airport by reservation. The airport is about 85 km from Aliağa, roughly an hour's drive depending on traffic.",
+          "Visitors working at STAR Refinery, Petkim or the Aliağa port, and holidaymakers heading to Foça and Çandarlı, can collect their car at the airport and set off straight away. If you will be working in the area for weeks, a monthly rental is considerably cheaper than the daily rate."
+        ],
+        "faqTitle": "İzmir Airport car rental: frequently asked questions",
+        "faq": [
+          {
+            "q": "Can I collect a car at İzmir Adnan Menderes Airport?",
+            "a": "Yes. We offer vehicle delivery and meet-and-greet at the airport. Select airport meet-and-greet when booking and send us your flight details; handover details are confirmed in your booking confirmation."
+          },
+          {
+            "q": "What documents do I need to rent a car at the airport?",
+            "a": "Bring your valid driving licence, your Turkish ID card (passport for foreign nationals) and a credit card in your own name to the handover at the airport. You need to be at least 25 with a licence held for at least 3 years; no deposit is taken."
+          },
+          {
+            "q": "How long does it take to get from the airport to Aliağa?",
+            "a": "İzmir Adnan Menderes Airport is about 85 km from Aliağa, roughly an hour's drive depending on traffic."
+          },
+          {
+            "q": "How much does airport car rental cost?",
+            "a": "Prices depend on the vehicle and exclude VAT. You can compare the current daily and monthly prices of every vehicle on our Car Rental Prices page."
+          },
+          {
+            "q": "Can I return the car somewhere else?",
+            "a": "Yes. You can collect the car at the airport and return it somewhere else (one-way rental); a one-way fee is then added to the contract. Tell us the drop-off point when you book."
+          },
+          {
+            "q": "Can I rent a car monthly from the airport?",
+            "a": "Yes. If you will be working in the area for weeks or months, a monthly rental is considerably cheaper than renting the same car at the daily rate. Monthly prices exclude VAT."
+          }
         ]
       },
       "bursa": {

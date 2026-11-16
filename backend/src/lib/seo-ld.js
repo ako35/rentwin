@@ -18,7 +18,7 @@
 // only the surrounding page chrome (titles, labels, breadcrumbs) is bilingual.
 
 const { SITE_URL, business, slugify, localeFromPath, localizePath, stripLocalePrefix } = require("./site");
-const { getModelCopy, groupFleetByModel } = require("./vehicle-models");
+const { getModelCopy, groupFleetByModel, summarizeFleetPrices } = require("./vehicle-models");
 const HOME_COPY = {
   tr: require("../../../src/i18n/locales/tr/home.json"),
   en: require("../../../src/i18n/locales/en/home.json"),
@@ -610,216 +610,35 @@ const LOCATIONS_COPY = {
   },
 };
 
-// Per-slug copy — mirrors locations.json `detail.local.*`. `lead`, `why` and
+// Per-slug copy — read straight from locations.json `detail.local.*` (no
+// hand-kept mirror any more). `lead`, `why` and
 // `how` replace LOCATIONS_COPY's shared template for that slug: with only the
 // city name swapped in, the location pages were ~35% identical and Search
 // Console folded Aliağa and İzmir Havalimanı into Bursa ("Duplicate, Google
 // chose different canonical than user").
-const LOCATION_LOCAL_COPY = {
-  tr: {
-    aliaga: {
-      title: "Aliağa'da araç kiralama hakkında",
-      lead:
-        "Aliağa, Rentwin'in merkez ofisinin bulunduğu yer. Aracınızı Atatürk Mahallesi'ndeki ofisimizden teslim alabilir, Aliağa'daki iş ve tatil yolculuklarınıza doğrudan buradan başlayabilirsiniz.",
-      why: [
-        "Atatürk Mah. 356 Sk.'deki ofisimizden aracınızı doğrudan teslim alabilirsiniz",
-        "Ofisimiz haftanın 7 günü açık: hafta içi 09:00–21:00, Cumartesi 09:00–19:00, Pazar 09:00–17:00",
-        "Sanayi bölgesindeki işler için binek araçların yanında panelvan ve çift kabin seçenekleri",
-        "Kısa süreli kiralamanın yanında aylık kiralama seçenekleri",
-      ],
-      how: [
-        "Alış–bırakış tarih ve saatlerinizi seçip Aliağa ofisindeki müsait araçları listeleyin.",
-        "Aracınızı ve ek hizmetleri belirleyip rezervasyonu oluşturun.",
-        "Ofis saatleri içinde kimlik, ehliyet ve kartınızla ofisimize gelip aracınızı teslim alın; depozito talep edilmez.",
-      ],
-      paragraphs: [
-        "Aliağa'daki Rentwin ofisi Atatürk Mah. 356 Sk. No: 16/31, 35800 Aliağa/İzmir adresindedir. STAR Rafineri, Petkim ve liman tesislerine iş seyahati için gelenler, rezervasyonla araç teslim alabilir.",
-        "Aliağa'dan Foça, Yeni Foça ve Çandarlı yönüne seyahat edebilir; İzmir Adnan Menderes Havalimanı'nda teslim ve karşılama talep edebilirsiniz. Ofis saatleri: Pazartesi–Cuma 09:00–21:00, Cumartesi 09:00–19:00, Pazar 09:00–17:00.",
-      ],
-      faqTitle: "Aliağa'da araç kiralama: sık sorulan sorular",
-      faq: [
-        {
-          q: "Aliağa'da aracı nereden teslim alırım?",
-          a: "Aracınızı Atatürk Mah. 356 Sk. No: 16/31, 35800 Aliağa/İzmir adresindeki ofisimizden, ofis saatleri içinde teslim alabilirsiniz. Belirttiğiniz bir adrese teslim için bizimle iletişime geçebilirsiniz.",
-        },
-        {
-          q: "STAR Rafineri, Petkim veya liman bölgesindeki bir iş için araç kiralayabilir miyim?",
-          a: "Evet. Bu bölgelere iş seyahatiyle gelenler rezervasyonla aracını Aliağa ofisimizden teslim alabilir. Saha işleri için binek araçların yanında panelvan ve çift kabin seçeneklerimiz de var.",
-        },
-        {
-          q: "Aliağa'da aylık araç kiralama yapıyor musunuz?",
-          a: "Evet. Kısa süreli kiralamanın yanında aylık kiralama seçeneklerimiz var. Fiyatlarımız KDV hariçtir; güncel aylık teklif için 0507 350 31 35 numarasını arayabilir ya da WhatsApp'tan yazabilirsiniz.",
-        },
-        {
-          q: "Aliağa'dan İzmir Adnan Menderes Havalimanı'na araç teslimi yapıyor musunuz?",
-          a: "Evet. Havalimanında araç teslimi ve karşılama hizmeti veriyoruz; talebinizi rezervasyon sırasında belirtmeniz yeterli.",
-        },
-        {
-          q: "Aracı Aliağa dışında bir yerde teslim edebilir miyim?",
-          a: "Evet, farklı lokasyonda teslim (tek yön kiralama) mümkündür. Bu hizmet için sözleşmeye tek yön ücreti eklenir; ayrıntılar için bizimle iletişime geçin.",
-        },
-        {
-          q: "Kiralamak için neler gerekiyor, depozito alıyor musunuz?",
-          a: "En az 25 yaşında olmanız ve en az 3 yıllık sürücü belgeniz olması gerekir. Geçerli sürücü belgesi, T.C. kimlik kartı (yabancı uyruklular için pasaport) ve kiralayan kişi adına kredi kartı yeterlidir. Depozito talep etmiyoruz.",
-        },
-      ],
-    },
-    "izmir-havalimani": {
-      title: "İzmir Adnan Menderes Havalimanı araç kiralama",
-      lead:
-        "İzmir'e uçakla geliyorsanız aracınızı İzmir Adnan Menderes Havalimanı'nda teslim alabilirsiniz. Havalimanı teslimi ve karşılama rezervasyon sırasında talep edilir; böylece inişten sonra doğrudan yola çıkabilirsiniz.",
-      why: [
-        "Havalimanında araç teslimi ve karşılama, rezervasyon sırasında talep edilebilir",
-        "Havalimanından Aliağa'ya, İzmir merkezine ve çevre ilçelere doğrudan devam edebilirsiniz",
-        "Kalabalık gruplar ve bol bagajlı yolculuklar için geniş araç seçenekleri",
-        "Günlük ve aylık kiralama seçenekleri",
-      ],
-      how: [
-        "Alış tarih ve saatinizi seçip rezervasyona havalimanı teslim isteğinizi ekleyin.",
-        "Teslim ayrıntıları rezervasyon teyidinizde netleştirilir.",
-        "Havalimanında kimlik, ehliyet ve kartınızla aracınızı teslim alın; depozito talep edilmez.",
-      ],
-      paragraphs: [
-        "İzmir Adnan Menderes Havalimanı'nda Rentwin araç teslimi ve karşılama hizmeti rezervasyon sırasında talep edilebilir. Alış tarih ve saatinizi seçip havalimanı teslim isteğinizi ekibimize iletin; teslim ayrıntılarını rezervasyon teyidinde netleştirin.",
-        "Havalimanından Aliağa'ya, İzmir merkezine veya çevre ilçelere devam edeceğiniz yolculuk için günlük ya da aylık kiralama seçeneklerini inceleyin. Uygun araçları görmek ve rezervasyon başlatmak için araç listemizi ziyaret edin.",
-      ],
-    },
-    bursa: {
-      title: "Bursa'da adrese araç teslimi",
-      lead:
-        "Bursa'da aracınızı sizinle belirlenen adrese teslim ediyoruz. Teslimat adresini ve saatini rezervasyon talebinizde belirtmeniz yeterli.",
-      why: [
-        "Araç, Bursa'da sizinle belirlenen adrese teslim edilir",
-        "Teslimat adresini ve saatini rezervasyon talebinizde siz belirlersiniz",
-        "Şehir içi kullanım için kompakt araçlardan ticari işler için panelvanlara kadar seçenekler",
-        "Kısa ve uzun dönem kiralama seçenekleri",
-      ],
-      how: [
-        "Alış–bırakış tarih ve saatlerinizi seçip müsait araçları listeleyin.",
-        "Rezervasyon talebinize Bursa'daki teslimat adresinizi ve tercih ettiğiniz saati ekleyin.",
-        "Araç belirlenen adrese getirildiğinde kimlik, ehliyet ve kartınızla teslim alın; depozito talep edilmez.",
-      ],
-      paragraphs: [
-        "Bursa'daki Rentwin araç kiralama hizmetinde araç, müşteriyle belirlenen adrese teslim edilir. Rezervasyon talebinizde teslimat adresinizi ve tercih ettiğiniz saati belirtin.",
-        "Yola çıkmadan önce araç müsaitliğini ve teslimat ayrıntılarını Rentwin ekibiyle teyit edin. Bursa seyahatinize uygun aracı görmek için araç listemizi inceleyin.",
-      ],
-    },
-  },
-  en: {
-    aliaga: {
-      title: "Renting a car in Aliağa",
-      lead:
-        "Aliağa is home to Rentwin's main office. Pick up your car at our office in the Atatürk neighbourhood and start your business or holiday trips around Aliağa right from there.",
-      why: [
-        "Pick up your car directly from our office on 356 Sk., Atatürk Mah.",
-        "Our office is open 7 days a week: weekdays 09:00–21:00, Saturday 09:00–19:00, Sunday 09:00–17:00",
-        "Panel vans and double-cab vans alongside cars for work in the industrial zone",
-        "Monthly rental options as well as short-term hire",
-      ],
-      how: [
-        "Choose your pick-up and drop-off dates and times to list the cars available at the Aliağa office.",
-        "Select your car and any extras and place the booking.",
-        "Come to our office during opening hours with your ID, licence, and card to collect your car — no deposit required.",
-      ],
-      paragraphs: [
-        "Rentwin's Aliağa office is at Atatürk Mah. 356 Sk. No: 16/31, 35800 Aliağa/İzmir. Visitors travelling for business to STAR Refinery, Petkim, and the port facilities can arrange vehicle pick-up with a reservation.",
-        "Travel from Aliağa toward Foça, Yeni Foça, and Çandarlı, or request vehicle delivery and meet-and-greet at İzmir Adnan Menderes Airport. Office hours: Monday–Friday 09:00–21:00, Saturday 09:00–19:00, Sunday 09:00–17:00.",
-      ],
-      faqTitle: "Renting a car in Aliağa: frequently asked questions",
-      faq: [
-        {
-          q: "Where do I pick up my car in Aliağa?",
-          a: "You can collect your car from our office at Atatürk Mah. 356 Sk. No: 16/31, 35800 Aliağa/İzmir during office hours. To have it delivered to an address you choose, contact us.",
-        },
-        {
-          q: "Can I rent a car for work at STAR Refinery, Petkim or the port area?",
-          a: "Yes. Visitors travelling for business to these sites can collect their car from our Aliağa office with a reservation. For site work we also offer panel vans and double-cab vans alongside cars.",
-        },
-        {
-          q: "Do you offer monthly car rental in Aliağa?",
-          a: "Yes. Alongside short-term hire we offer monthly rental. Our prices exclude VAT; for a current monthly quote call 0507 350 31 35 or message us on WhatsApp.",
-        },
-        {
-          q: "Can you deliver a car from Aliağa to İzmir Adnan Menderes Airport?",
-          a: "Yes. We offer vehicle delivery and meet-and-greet at the airport; just mention it when you book.",
-        },
-        {
-          q: "Can I return the car somewhere other than Aliağa?",
-          a: "Yes, one-way rental to a different location is possible. A one-way fee is added to the contract; contact us for details.",
-        },
-        {
-          q: "What do I need to rent, and do you take a deposit?",
-          a: "You must be at least 25 and have held a driving licence for at least 3 years. A valid driving licence, a Turkish ID card (passport for foreign nationals) and a credit card in the renter's name are enough. We don't take a deposit.",
-        },
-      ],
-    },
-    "izmir-havalimani": {
-      title: "Car rental at İzmir Adnan Menderes Airport",
-      lead:
-        "Flying into İzmir? You can collect your car at İzmir Adnan Menderes Airport. Airport delivery and meet-and-greet are requested when you book, so you can hit the road right after landing.",
-      why: [
-        "Vehicle delivery and meet-and-greet at the airport can be requested when you book",
-        "Drive straight on from the airport to Aliağa, central İzmir, and nearby districts",
-        "Roomy vehicles for groups and trips with lots of luggage",
-        "Daily and monthly rental options",
-      ],
-      how: [
-        "Choose your pick-up date and time and add an airport delivery request to your booking.",
-        "Handover details are confirmed in your booking confirmation.",
-        "Collect your car at the airport with your ID, licence, and card — no deposit required.",
-      ],
-      paragraphs: [
-        "Vehicle delivery and meet-and-greet at İzmir Adnan Menderes Airport can be requested when you book. Select your pick-up date and time and send the airport request to our team; confirm handover details with your booking confirmation.",
-        "Explore daily and monthly rental options for trips from the airport to Aliağa, central İzmir, and nearby districts. Visit our vehicle list to check available cars and start a reservation.",
-      ],
-    },
-    bursa: {
-      title: "Car delivery to your address in Bursa",
-      lead:
-        "In Bursa we deliver your car to an address agreed with you. Just include the delivery address and time in your booking request.",
-      why: [
-        "The car is delivered to an address in Bursa agreed with you",
-        "You set the delivery address and time in your booking request",
-        "Options from compact cars for the city to panel vans for business",
-        "Short- and long-term rental options",
-      ],
-      how: [
-        "Choose your pick-up and drop-off dates and times to list the available cars.",
-        "Add your delivery address in Bursa and preferred time to the booking request.",
-        "When the car arrives at the agreed address, collect it with your ID, licence, and card — no deposit required.",
-      ],
-      paragraphs: [
-        "For Rentwin car rentals in Bursa, the vehicle is delivered to an address agreed with the customer. Include your preferred delivery address and time with your booking request.",
-        "Before your trip, confirm vehicle availability and delivery details with the Rentwin team. Browse the fleet to choose a vehicle for your time in Bursa.",
-      ],
-    },
-  },
+const LOCATIONS_JSON = {
+  tr: require("../../../src/i18n/locales/tr/locations.json").detail,
+  en: require("../../../src/i18n/locales/en/locations.json").detail,
 };
+const LOCATION_LOCAL_COPY = { tr: LOCATIONS_JSON.tr.local, en: LOCATIONS_JSON.en.local };
 
-// Per-slug <title> / description / H1 overrides — mirrors
+// Per-slug <title> / description / H1 overrides — read from
 // src/i18n/locales/{tr,en}/locations.json detail.overrides. Aliağa is the
 // home office and the homepage already targets "Aliağa Araç Kiralama" (see
 // STATIC_META "/"); with the same title + H1 on /lokasyonlar/aliaga the two
 // pages competed for one query. The Aliağa page now aims at the office
 // itself (address, opening hours, pick-up) and leaves the head term to "/".
-const LOCATION_META_OVERRIDES = {
-  tr: {
-    aliaga: {
-      title: "Rentwin Aliağa Ofisi | Adres ve Çalışma Saatleri",
-      description:
-        "Rentwin Aliağa ofisi Atatürk Mah. 356 Sk. No: 16/31, Aliağa/İzmir adresinde, haftanın 7 günü açık. Aracınızı ofisten teslim alın veya havalimanı teslimi isteyin.",
-      heading: "Rentwin Aliağa Ofisi",
-    },
-  },
-  en: {
-    aliaga: {
-      title: "Rentwin Aliağa Office | Address & Opening Hours",
-      description:
-        "Rentwin's Aliağa office is at Atatürk Mah. 356 Sk. No: 16/31, Aliağa/İzmir and open 7 days a week. Pick up your car at the office or request airport delivery.",
-      heading: "Rentwin Aliağa Office",
-    },
-  },
-};
+const LOCATION_META_OVERRIDES = Object.fromEntries(
+  ["tr", "en"].map((locale) => [
+    locale,
+    Object.fromEntries(
+      Object.entries(LOCATIONS_JSON[locale].overrides).map(([slug, o]) => [
+        slug,
+        { title: o.seoTitle, description: o.seoDescription, heading: o.heading },
+      ])
+    ),
+  ])
+);
 
 const renderLocationDetailBody = ({ locationName, slug }, locale = "tr") => {
   const copy = LOCATIONS_COPY[locale];
@@ -830,6 +649,9 @@ const renderLocationDetailBody = ({ locationName, slug }, locale = "tr") => {
   return (
     `<main><h1>${htmlEsc(override?.heading || copy.heading(locationName))}</h1>` +
     `<p>${htmlEsc(local?.lead || copy.lead(locationName))}</p>` +
+    // Same price-list line as the client page, under the lead.
+    `<p>${htmlEsc(LOCATIONS_JSON[locale].pricesLead)} ` +
+    `<a href="${htmlEsc(`${SITE_URL}${localizePath("/arac-kiralama-fiyatlari", locale)}`)}">${htmlEsc(LOCATIONS_JSON[locale].pricesLink)}</a></p>` +
     `<h2>${htmlEsc(copy.whyTitle(locationName))}</h2>${list(local?.why || copy.why(locationName))}` +
     `<h2>${htmlEsc(copy.howTitle(locationName))}</h2>${steps(local?.how || copy.how(locationName))}` +
     (local
@@ -903,7 +725,7 @@ const VEHICLES_SEE_ALSO = Object.fromEntries(
   ["tr", "en"].map((locale) => {
     const nav = require(`../../../src/i18n/locales/${locale}/common.json`).nav;
     const lead = require(`../../../src/i18n/locales/${locale}/vehicles.json`).seoBody.seeAlso;
-    return [locale, { lead, commercial: nav.commercialRental, longTerm: nav.longTermRental }];
+    return [locale, { lead, commercial: nav.commercialRental, longTerm: nav.longTermRental, prices: nav.priceList }];
   })
 );
 
@@ -921,7 +743,8 @@ const renderVehiclesListBody = (vehicles = [], locale = "tr") => {
     // Same "see also" line as src/pages/common/vehicles/page.jsx.
     `<p>${htmlEsc(VEHICLES_SEE_ALSO[locale].lead)} ` +
     `<a href="${htmlEsc(SITE_URL + localizePath("/ticari-arac-kiralama", locale))}">${htmlEsc(VEHICLES_SEE_ALSO[locale].commercial)}</a> · ` +
-    `<a href="${htmlEsc(SITE_URL + localizePath("/uzun-donem-arac-kiralama", locale))}">${htmlEsc(VEHICLES_SEE_ALSO[locale].longTerm)}</a></p>` +
+    `<a href="${htmlEsc(SITE_URL + localizePath("/uzun-donem-arac-kiralama", locale))}">${htmlEsc(VEHICLES_SEE_ALSO[locale].longTerm)}</a> · ` +
+    `<a href="${htmlEsc(SITE_URL + localizePath("/arac-kiralama-fiyatlari", locale))}">${htmlEsc(VEHICLES_SEE_ALSO[locale].prices)}</a></p>` +
     "</main>"
   );
 };
@@ -1136,6 +959,40 @@ const LANDING_PAGES = {
     relatedPath: "/ticari-arac-kiralama",
     select: (models) => models.filter((m) => Number(m.monthlyPrice) > 0).sort(byPrice("monthlyPrice")),
   },
+  // The price list: the whole fleet as a table, one row per model with the
+  // price range across its units (summarizeFleetPrices).
+  "/arac-kiralama-fiyatlari": {
+    key: "prices",
+    monthly: false,
+    table: true,
+    relatedPath: "/uzun-donem-arac-kiralama",
+    select: (models) => models.sort(byPrice("dailyPrice")),
+  },
+};
+
+// "2.500" or "2.500 – 3.000" for a { min, max } range.
+const formatTryRange = (range) =>
+  range.min === range.max
+    ? Number(range.min).toLocaleString("tr-TR")
+    : `${Number(range.min).toLocaleString("tr-TR")} – ${Number(range.max).toLocaleString("tr-TR")}`;
+
+// rows: summarizeFleetPrices(fleet). Same columns as the client table.
+const renderPriceTable = (rows, locale) => {
+  const shared = LANDING_COPY[locale].shared;
+  const cell = (range) => (range ? `${htmlEsc(formatTryRange(range))} ${htmlEsc(shared.tableUnit)}` : htmlEsc(shared.tableNoPrice));
+  const labels = (values, map) => values.map((value) => map[locale][value] || value).join(", ");
+  const body = rows
+    .map(
+      (row) =>
+        `<tr><th scope="row"><a href="${htmlEsc(`${SITE_URL}${localizePath(`/vehicles/${row.id}`, locale)}`)}">${htmlEsc(row.name)}</a></th>` +
+        `<td>${htmlEsc(labels(row.transmissions, TRANSMISSION_LABELS))} · ${htmlEsc(labels(row.fuelTypes, FUEL_LABELS))}</td>` +
+        `<td>${cell(row.daily)}</td><td>${cell(row.monthly)}</td></tr>`
+    )
+    .join("");
+  return (
+    `<table><thead><tr><th>${htmlEsc(shared.tableVehicle)}</th><th>${htmlEsc(shared.tableSpecs)}</th>` +
+    `<th>${htmlEsc(shared.tableDaily)}</th><th>${htmlEsc(shared.tableMonthly)}</th></tr></thead><tbody>${body}</tbody></table>`
+  );
 };
 
 const formatTry = (value) => Number(value).toLocaleString("tr-TR");
@@ -1148,11 +1005,14 @@ const landingPrice = (page, v) => Number(page.monthly ? v.monthlyPrice : v.daily
 const landingVehicleName = (v) => `${(v.brand || "").trim()} ${(v.model || "").trim()}`.replace(/\s+/g, " ").trim();
 
 // vehicles: the page's models [{ id, brand, model, dailyPrice, monthlyPrice }]
-const renderLandingBody = ({ page, canonicalPath, vehicles }, locale = "tr") => {
+// priceRows: summarizeFleetPrices(fleet) — only for a `table` page
+const renderLandingBody = ({ page, canonicalPath, vehicles, priceRows = [] }, locale = "tr") => {
   const copy = LANDING_COPY[locale][page.key];
   const shared = LANDING_COPY[locale].shared;
   const card = CARD_COPY[locale];
-  const prices = vehicles.map((v) => landingPrice(page, v)).filter((p) => p > 0);
+  const prices = page.table
+    ? priceRows.map((row) => row.daily?.min).filter(Boolean)
+    : vehicles.map((v) => landingPrice(page, v)).filter((p) => p > 0);
   const from = prices.length
     ? shared[page.monthly ? "fromMonthly" : "fromDaily"].replace("{{price}}", formatTry(Math.min(...prices)))
     : null;
@@ -1173,7 +1033,13 @@ const renderLandingBody = ({ page, canonicalPath, vehicles }, locale = "tr") => 
     `<main><h1>${htmlEsc(copy.heading)}</h1><p>${htmlEsc(copy.lead)}</p>` +
     (from ? `<p>${htmlEsc(from)}</p>` : "") +
     `<section><h2>${htmlEsc(copy.fleetTitle)}</h2><p>${htmlEsc(copy.fleetIntro)}</p>` +
-    (vehicleItems ? `<ul>${vehicleItems}</ul>` : `<p>${htmlEsc(shared.fleetEmpty)}</p>`) +
+    (page.table
+      ? priceRows.length
+        ? renderPriceTable(priceRows, locale)
+        : `<p>${htmlEsc(shared.fleetEmpty)}</p>`
+      : vehicleItems
+        ? `<ul>${vehicleItems}</ul>`
+        : `<p>${htmlEsc(shared.fleetEmpty)}</p>`) +
     "</section>" +
     `<section><h2>${htmlEsc(copy.typesTitle)}</h2>` +
     copy.types.map((t) => `<h3>${htmlEsc(t.title)}</h3><p>${htmlEsc(t.text)}</p>`).join("") +
@@ -1194,6 +1060,8 @@ const renderLandingBody = ({ page, canonicalPath, vehicles }, locale = "tr") => 
 const buildLandingHead = ({ head, page, canonicalPath, fleet, locale }) => {
   const copy = LANDING_COPY[locale][page.key];
   const vehicles = page.select(groupFleetByModel(fleet || []));
+  const priceRows = page.table ? summarizeFleetPrices(fleet || []) : [];
+  const listed = page.table ? priceRows : vehicles;
   const jsonLd = [
     breadcrumbLd([{ name: NAV[locale].home, path: "/" }, { name: copy.pageTitle }], locale),
     serviceLd({
@@ -1205,14 +1073,14 @@ const buildLandingHead = ({ head, page, canonicalPath, fleet, locale }) => {
     }),
     faqLd(copy.faq),
   ];
-  if (vehicles.length) {
+  if (listed.length) {
     jsonLd.push(
       itemListLd({
         name: copy.fleetTitle,
-        itemListElement: vehicles.map((v, i) => ({
+        itemListElement: listed.map((v, i) => ({
           "@type": "ListItem",
           position: i + 1,
-          name: landingVehicleName(v),
+          name: v.name || landingVehicleName(v),
           url: `${SITE_URL}${localizePath(`/vehicles/${v.id}`, locale)}`,
         })),
       })
@@ -1223,7 +1091,7 @@ const buildLandingHead = ({ head, page, canonicalPath, fleet, locale }) => {
     title: copy.seoTitle,
     description: copy.seoDescription,
     jsonLd,
-    bodyHtml: renderLandingBody({ page, canonicalPath, vehicles }, locale),
+    bodyHtml: renderLandingBody({ page, canonicalPath, vehicles, priceRows }, locale),
   };
 };
 

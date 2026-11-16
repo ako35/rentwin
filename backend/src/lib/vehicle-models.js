@@ -271,9 +271,52 @@ const groupFleetByModel = (units) => {
     .map((u) => ({ ...u, bodyTypes: [...bodyTypes.get(modelKey(u.brand, u.model))] }));
 };
 
+// The /arac-kiralama-fiyatlari price table: one row per model with the lowest
+// and highest daily / monthly list price across its units — units of one model
+// differ by year and transmission (FIAT EGEA runs 2.500–3.000 TL a day), so a
+// single unit's price would misstate the model — plus its transmissions and
+// fuels and its canonical unit's id for the link. A model with no price at all
+// stays in (shown as "call for a price") but sorts last.
+// Mirrored in src/utils/vehicle-model.js summarizeFleetPrices.
+// units: active fleet units [{ id, brand, model, transmission, fuelType, dailyPrice, monthlyPrice, createdAt }]
+const priceRange = (values) => {
+  const prices = values.map(Number).filter((p) => p > 0);
+  return prices.length ? { min: Math.min(...prices), max: Math.max(...prices) } : null;
+};
+const summarizeFleetPrices = (units) => {
+  const canonical = buildCanonicalVehicleMap(units);
+  const groups = new Map();
+  for (const u of units) {
+    const key = modelKey(u.brand, u.model);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(u);
+  }
+  const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
+  return [...groups.values()]
+    .map((group) => {
+      const head = group.find((u) => canonical.get(u.id) === null) || group[0];
+      return {
+        id: head.id,
+        name: `${clean(head.brand)} ${clean(head.model)}`.trim(),
+        count: group.length,
+        transmissions: uniqueSorted(group.map((u) => u.transmission)),
+        fuelTypes: uniqueSorted(group.map((u) => u.fuelType)),
+        daily: priceRange(group.map((u) => u.dailyPrice)),
+        monthly: priceRange(group.map((u) => u.monthlyPrice)),
+      };
+    })
+    .sort(
+      (a, b) =>
+        (a.daily?.min ?? Infinity) - (b.daily?.min ?? Infinity) ||
+        (a.monthly?.min ?? Infinity) - (b.monthly?.min ?? Infinity) ||
+        a.name.localeCompare(b.name, "tr")
+    );
+};
+
 module.exports = {
   modelKey,
   groupFleetByModel,
+  summarizeFleetPrices,
   MODEL_COPY,
   getModelCopy,
   summarizeVariants,

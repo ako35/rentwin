@@ -41,6 +41,8 @@ const VehiclesPage = () => {
             <AppLink to={constants.routes.commercialRental}>{tCommon("nav.commercialRental")}</AppLink>
             {" · "}
             <AppLink to={constants.routes.longTermRental}>{tCommon("nav.longTermRental")}</AppLink>
+            {" · "}
+            <AppLink to={constants.routes.priceList}>{tCommon("nav.priceList")}</AppLink>
           </p>
         </Container>
       )}

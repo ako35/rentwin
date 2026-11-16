@@ -8,6 +8,7 @@ const {
   buildCanonicalVehicleMap,
   pickRelatedModels,
   groupFleetByModel,
+  summarizeFleetPrices,
 } = require("./vehicle-models");
 
 const unit = (id, brand, model, extra = {}) => ({
@@ -92,4 +93,25 @@ test("groupFleetByModel: one canonical unit per model, body types pooled across 
   assert.equal(transit.id, "t2"); // the earliest-listed unit is the canonical one
   assert.deepEqual([...transit.bodyTypes].sort(), ["BINEK", "KAMYONET"]);
   assert.deepEqual(groups.find((g) => g.id === "e1").bodyTypes, ["BINEK"]);
+});
+
+test("summarizeFleetPrices: one row per model with price ranges, cheapest first, unpriced last", () => {
+  const priced = (id, brand, model, daily, monthly, extra = {}) => ({ ...unit(id, brand, model, extra), dailyPrice: daily, monthlyPrice: monthly });
+  const rows = summarizeFleetPrices([
+    priced("e2", "FIAT", "EGEA", 3000, 60000, { createdAt: "2026-10-01", transmission: "Automatic" }),
+    priced("e1", "FİAT", "EGEA ", 2500, 45000, { createdAt: "2026-09-01" }),
+    priced("o1", "OPEL", "COMBO", null, null),
+    priced("t1", "FORD", "TRANSİT ÇİFT KABİN", 9000, 85000, { bodyType: "KAMYONET" }),
+  ]);
+  assert.deepEqual(
+    rows.map((r) => r.id),
+    ["e1", "t1", "o1"]
+  );
+  const egea = rows[0];
+  assert.equal(egea.name, "FİAT EGEA");
+  assert.equal(egea.count, 2);
+  assert.deepEqual(egea.daily, { min: 2500, max: 3000 });
+  assert.deepEqual(egea.monthly, { min: 45000, max: 60000 });
+  assert.deepEqual(egea.transmissions, ["Automatic", "Manual"]);
+  assert.equal(rows[2].daily, null);
 });

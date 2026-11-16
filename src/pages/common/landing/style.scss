@@ -82,6 +82,129 @@ $tint-border: rgba(62, 184, 70, 0.22);
 
   // The homepage "Popular Cars" tracks, a touch narrower so four cards share
   // a row at desktop width.
+  // /arac-kiralama-fiyatlari price table. A plain bordered table on wide
+  // screens; below 640px each row becomes a small card whose cells carry
+  // their column name (data-label), so nothing scrolls sideways on a phone.
+  &__prices {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: #fff;
+    border: 1px solid v.$color3;
+    border-radius: 14px;
+    overflow: hidden;
+    font-size: 0.95rem;
+
+    th,
+    td {
+      padding: 0.8rem 1rem;
+      text-align: left;
+      vertical-align: middle;
+      border-bottom: 1px solid v.$color3;
+    }
+
+    tbody tr:last-child > * {
+      border-bottom: 0;
+    }
+
+    thead th {
+      background-color: $tint;
+      color: v.$color5;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    tbody th {
+      font-weight: 700;
+
+      a {
+        color: v.$color5;
+        text-decoration: none;
+
+        &:hover,
+        &:focus-visible {
+          color: v.$color2;
+          text-decoration: underline;
+        }
+      }
+    }
+
+    td {
+      color: v.$color-muted;
+      white-space: nowrap;
+
+      strong {
+        color: v.$color5;
+        font-weight: 700;
+      }
+
+      small {
+        font-size: 0.78rem;
+      }
+    }
+
+    // The spec column may wrap ("Otomatik, Manuel · Dizel").
+    td:nth-of-type(1) {
+      white-space: normal;
+    }
+
+    &-none {
+      font-size: 0.85rem;
+      font-style: italic;
+    }
+
+    @media (max-width: 640px) {
+      border: 0;
+      border-radius: 0;
+      background: none;
+
+      thead {
+        display: none;
+      }
+
+      tbody {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      tr {
+        display: block;
+        padding: 0.85rem 1rem;
+        background-color: #fff;
+        border: 1px solid v.$color3;
+        border-radius: 12px;
+      }
+
+      th,
+      td {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.2rem 0;
+        border: 0;
+      }
+
+      tbody th {
+        padding-bottom: 0.45rem;
+        font-size: 1rem;
+      }
+
+      td::before {
+        content: attr(data-label);
+        color: v.$color5_3;
+        font-size: 0.82rem;
+      }
+
+      td:nth-of-type(1) {
+        text-align: right;
+      }
+    }
+  }
+
   &__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(245px, 265px));

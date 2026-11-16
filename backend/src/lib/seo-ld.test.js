@@ -58,9 +58,16 @@ for (const [path, locale] of [
           ? "Renting a car in Aliağa"
           : "Aliağa'da araç kiralama hakkında"
         : locale === "en"
-          ? "Car rental at İzmir Adnan Menderes Airport"
-          : "İzmir Adnan Menderes Havalimanı araç kiralama";
+          ? "Car delivery at Adnan Menderes Airport"
+          : "Adnan Menderes Havalimanı'nda araç teslimi";
     assert.ok(bodyHtml.includes(expectedTitle));
+    // Every location page links to the price list, like the client page.
+    assert.match(
+      bodyHtml,
+      locale === "en"
+        ? /\/en\/arac-kiralama-fiyatlari">Car Rental Prices<\/a>/
+        : /\/arac-kiralama-fiyatlari">Araç Kiralama Fiyatları<\/a>/
+    );
     if (slug === "aliaga") assert.ok(bodyHtml.includes("356 Sk."));
   });
 }
@@ -383,4 +390,36 @@ test("commercial landing lists a model when any of its units is commercial, once
   assert.equal(en.htmlLang, "en");
   assert.match(en.bodyHtml, /<h1>Monthly &amp; Long-Term Car Rental in Aliağa<\/h1>/);
   assert.match(en.bodyHtml, /href="https:\/\/rentwin\.com\.tr\/en\/vehicles\/e1"/);
+});
+
+test("price list page renders one table row per model with its price range, in both languages", () => {
+  const unit = (id, brand, model, transmission, fuelType, dailyPrice, monthlyPrice, createdAt) => ({
+    id, brand, model, bodyType: "BINEK", transmission, fuelType, dailyPrice, monthlyPrice, createdAt,
+  });
+  const fleet = [
+    unit("e2", "FIAT", "EGEA", "Automatic", "Diesel", 3000, 60000, "2026-10-01"),
+    unit("e1", "FIAT", "EGEA", "Manual", "Diesel", 2500, 45000, "2026-09-01"),
+    unit("o1", "OPEL", "COMBO", "Manual", "Diesel", null, null, "2026-09-02"),
+    unit("t1", "FORD", "TRANSİT ÇİFT KABİN", "Manual", "Diesel", 9000, 85000, "2026-09-03"),
+  ];
+  const head = buildHead({ path: "/arac-kiralama-fiyatlari", fleet });
+  assert.equal(head.title, "Aliağa Araç Kiralama Fiyatları | Günlük ve Aylık – Rentwin");
+  assert.equal(head.canonical, `${SITE_URL}/arac-kiralama-fiyatlari`);
+  assert.match(head.bodyHtml, /<h1>Aliağa Araç Kiralama Fiyatları<\/h1>/);
+  assert.match(head.bodyHtml, /Günlük 2\.500 TL \+ KDV'den başlayan fiyatlar/);
+  assert.match(head.bodyHtml, /<a href="https:\/\/rentwin\.com\.tr\/vehicles\/e1">FIAT EGEA<\/a><\/th><td>Otomatik, Manuel · Dizel<\/td><td>2\.500 – 3\.000 TL \+ KDV<\/td><td>45\.000 – 60\.000 TL \+ KDV<\/td>/);
+  assert.match(head.bodyHtml, /OPEL COMBO<\/a><\/th><td>[^<]*<\/td><td>Fiyat için arayın<\/td>/);
+  const rows = head.bodyHtml.match(/<tr><th scope="row">/g) || [];
+  assert.equal(rows.length, 3);
+  const list = head.jsonLd.find((ld) => ld["@type"] === "ItemList");
+  assert.deepEqual(
+    list.itemListElement.map((item) => item.url),
+    [`${SITE_URL}/vehicles/e1`, `${SITE_URL}/vehicles/t1`, `${SITE_URL}/vehicles/o1`]
+  );
+
+  const en = buildHead({ path: "/en/arac-kiralama-fiyatlari", fleet });
+  assert.equal(en.htmlLang, "en");
+  assert.match(en.bodyHtml, /<h1>Car Rental Prices in Aliağa<\/h1>/);
+  assert.match(en.bodyHtml, /2\.500 – 3\.000 TL \+ VAT/);
+  assert.match(en.bodyHtml, /Call for a price/);
 });

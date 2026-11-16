@@ -2,13 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Container } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { BsArrowRight, BsCheck2, BsPersonWorkspace, BsTelephoneFill, BsWhatsapp } from "react-icons/bs";
-import { PiBuildings, PiTruck, PiUsersThree, PiVan, PiWrench } from "react-icons/pi";
+import { PiBuildings, PiCalendar, PiGearSix, PiTruck, PiUsersThree, PiVan, PiWrench } from "react-icons/pi";
 import { AppLink, JsonLd, Loading, PageHeader, Spacer, VehicleGridCard } from "../../../components";
 import { usePageMeta, SITE_URL } from "../../../hooks/use-page-meta";
 import { useLocale } from "../../../hooks/use-locale";
 import { localizePath } from "../../../i18n/locale-routing";
 import { breadcrumbLd, faqLd, itemListLd, serviceLd } from "../../../utils/seo";
-import { groupFleetByModel } from "../../../utils/vehicle-model";
+import { groupFleetByModel, summarizeFleetPrices } from "../../../utils/vehicle-model";
 import { services } from "../../../services";
 import { constants } from "../../../constants";
 import "./style.scss";
@@ -22,6 +22,8 @@ const TYPE_ICONS = {
   building: <PiBuildings />,
   workspace: <BsPersonWorkspace />,
   tools: <PiWrench />,
+  calendar: <PiCalendar />,
+  gear: <PiGearSix />,
 };
 
 // Which fleet models each landing page lists — one entry per model
@@ -47,14 +49,31 @@ const VARIANTS = {
     monthly: true,
     select: (models) => models.filter((m) => Number(m.monthlyPrice) > 0).sort(byPrice("monthlyPrice")),
   },
+  // /arac-kiralama-fiyatlari: the whole fleet as a price table (one row per
+  // model, with the price range across its units — summarizeFleetPrices)
+  // instead of the card grid.
+  prices: {
+    path: routes.priceList,
+    relatedPath: routes.longTermRental,
+    monthly: false,
+    table: true,
+    select: (models) => models.sort(byPrice("dailyPrice")),
+  },
 };
+
+// "2.500" or "2.500 – 3.000" for a { min, max } range.
+const formatRange = (range) =>
+  range.min === range.max
+    ? range.min.toLocaleString("tr-TR")
+    : `${range.min.toLocaleString("tr-TR")} – ${range.max.toLocaleString("tr-TR")}`;
 
 const vehicleName = (v) => [v.brand, v.model].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
 const asArray = (value) => (Array.isArray(value) ? value : []);
 
-// Service landing pages — /ticari-arac-kiralama and /uzun-donem-arac-kiralama
-// (and their /en twins). One component, two copy blocks (locales/*/landing.json,
-// which the backend bot prerender also reads directly) and two fleet filters.
+// Service landing pages — /ticari-arac-kiralama, /uzun-donem-arac-kiralama and
+// the /arac-kiralama-fiyatlari price list (and their /en twins). One component,
+// one copy block per variant (locales/*/landing.json, which the backend bot
+// prerender also reads directly) and one fleet filter per variant.
 const LandingPage = ({ variant }) => {
   const config = VARIANTS[variant];
   const locale = useLocale();
@@ -86,24 +105,35 @@ const LandingPage = ({ variant }) => {
   }, [loadFleet, retryCount]);
 
   const vehicles = useMemo(() => config.select(groupFleetByModel(fleet)), [config, fleet]);
+  const priceRows = useMemo(() => (config.table ? summarizeFleetPrices(fleet) : []), [config, fleet]);
 
   const fromPrice = useMemo(() => {
-    const prices = vehicles
-      .map((v) => Number(config.monthly ? v.monthlyPrice : v.dailyPrice))
-      .filter((price) => price > 0);
+    const prices = config.table
+      ? priceRows.map((row) => row.daily?.min).filter(Boolean)
+      : vehicles.map((v) => Number(config.monthly ? v.monthlyPrice : v.dailyPrice)).filter((price) => price > 0);
     return prices.length ? Math.min(...prices) : null;
-  }, [vehicles, config]);
+  }, [vehicles, priceRows, config]);
 
   const itemListElement = useMemo(
     () =>
-      vehicles.map((v, index) => ({
+      (config.table ? priceRows : vehicles).map((v, index) => ({
         "@type": "ListItem",
         position: index + 1,
-        name: vehicleName(v),
+        name: v.name || vehicleName(v),
         url: `${SITE_URL}${localizePath(`${routes.vehicles}/${v.id}`, locale)}`,
       })),
-    [vehicles, locale]
+    [config, priceRows, vehicles, locale]
   );
+
+  const optionList = (values, group) => values.map((value) => tCommon(`options.${group}.${value}`)).join(", ");
+  const priceCell = (range) =>
+    range ? (
+      <>
+        <strong>{formatRange(range)}</strong> <small>{t("shared.tableUnit")}</small>
+      </>
+    ) : (
+      <span className="landing__prices-none">{t("shared.tableNoPrice")}</span>
+    );
 
   const faq = asArray(copy.faq);
 
@@ -163,8 +193,33 @@ const LandingPage = ({ variant }) => {
                 {t("shared.retry")}
               </button>
             </div>
-          ) : vehicles.length === 0 ? (
+          ) : (config.table ? priceRows : vehicles).length === 0 ? (
             <p className="landing__notice">{t("shared.fleetEmpty")}</p>
+          ) : config.table ? (
+            <table className="landing__prices">
+              <thead>
+                <tr>
+                  <th scope="col">{t("shared.tableVehicle")}</th>
+                  <th scope="col">{t("shared.tableSpecs")}</th>
+                  <th scope="col">{t("shared.tableDaily")}</th>
+                  <th scope="col">{t("shared.tableMonthly")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {priceRows.map((row) => (
+                  <tr key={row.id}>
+                    <th scope="row">
+                      <AppLink to={`${routes.vehicles}/${row.id}`}>{row.name}</AppLink>
+                    </th>
+                    <td data-label={t("shared.tableSpecs")}>
+                      {optionList(row.transmissions, "transmissionTypes")} · {optionList(row.fuelTypes, "fuelTypes")}
+                    </td>
+                    <td data-label={t("shared.tableDaily")}>{priceCell(row.daily)}</td>
+                    <td data-label={t("shared.tableMonthly")}>{priceCell(row.monthly)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           ) : (
             <div className="landing__grid">
               {vehicles.map((item) => (

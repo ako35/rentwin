@@ -135,6 +135,7 @@ const routes = {
   faq: "/sss",
   locations: "/lokasyonlar",
   longTermRental: "/uzun-donem-arac-kiralama",
+  priceList: "/arac-kiralama-fiyatlari",
   forbidden: "/forbidden",
   home: "/",
   login: "/auth/login",
