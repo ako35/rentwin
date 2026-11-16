@@ -62,6 +62,8 @@ Aynı modelin birden fazla aracına ait sayfaların "Kopya" ya da "Alternatif sa
 
 Sahibi "yine aşağı düştük" dedi. Search Console, son 28 gün: "aliağa araç kiralama" 22 gösterim, 7 tıklama, ortalama konum 11,4. "aliağa" geçen aramalarda günlük konum 9–14 Kasım arasında 10,8 → 59,6 → 52,2 → 19 → 32,5 → 2 oldu; günde 1–17 gösterim var. Düşüş kalıcı değil, düşük hacimden gelen dalgalanma. Havalimanı aramalarının hepsi `/lokasyonlar/izmir-havalimani` sayfasına düşüyordu (15 gösterim, konum 82,5); "fiyat" aramaları ana sayfaya (konum 2,5) ve `/vehicles` sayfasına (konum 56).
 
+Yayından sonra (16 Kasım) URL denetimi: `/arac-kiralama-fiyatlari` "URL Google'da yok" (yeni sayfa). `/lokasyonlar/izmir-havalimani` **dizinde değildi**: Google onu `/lokasyonlar/bursa` sayfasının kopyası saymış (son tarama 15 Kasım, yani yeni metinden önce). İkisi için de sahibinin onayıyla "Dizine eklenmesini iste" gönderildi. Sonuç 1 Aralık'taki zamanlanmış görevde (`rentwin-gsc-indexing-followup`) kontrol edilecek.
+
 ## 4. Nasıl ölçülecek
 
 - Her 2 haftada bir Search Console: "aliağa araç kiralama", "aliaga rent a car", "aliağa araç kiralama fiyatları" sorgularının 28 günlük ortalama konumu ve gösterimi.
