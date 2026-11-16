@@ -65,3 +65,39 @@ Yeni açıklama:
 ```
 Rentwin, Aliağa'da günlük ve aylık araç kiralama hizmeti veren yerel bir işletmedir. Filomuzda binek araçların yanı sıra Fiorino, Doblo ve Ducato gibi panelvanlar ile Transit Çift Kabin kamyonet bulunur. Depozitosuz kiralama, İzmir Adnan Menderes Havalimanı'nda araç teslimi ve karşılama, şirketlere fatura ve aynı modelden birden fazla araçla toplu kiralama sunuyoruz. Atatürk Mahallesi'ndeki ofisimiz haftanın 7 günü açık; araçları ve fiyatları web sitemizden inceleyip online rezervasyon yapabilirsiniz.
 ```
+
+## Haritalar'da üst sıra planı (16 Kasım 2026)
+
+Sahibi: "Haritalar'da arandığında en üstte çıkmam lazım."
+
+### Ölçüm
+
+"aliağa araç kiralama" araması, 16 Kasım:
+
+| Yer | Rentwin'in sırası | İlk üç |
+|---|---|---|
+| Google Haritalar uygulaması (oturum kapalı, Aliağa merkezi) | **1.** (reklamsız) | Rentwin, Şair Turizm, Dinç |
+| Google Arama "Yerler" kutusu (oturum kapalı, "Aliağa, Samurlu") | İlk 3'te yok | Acar, Ensar, Dinç |
+| Sahibinin kendi Chrome'u (kişiselleştirilmiş) | 1. | Rentwin, Şair, Dinç |
+
+Rakipler (Arama kutusu): **Aliağa Acar Araç kiralama - Rent a Car** 5,0 (8 yorum), saat 22:00'ye kadar açık · **Aliağa Ensar Rent A Car** 4,6 (34), 24 saat açık · **Dinç Oto Kiralama Aliağa Dinç Rent a Car Aliağa** 4,8 (36). Rentwin: 5,0 (**6** yorum), 21:00'de kapanıyor.
+
+Çıkarımlar:
+
+- Arama kutusundaki üç işletmenin üçünün de adında "Aliağa" ve "Araç kiralama / Rent a Car" geçiyor. Acar 8 yorumla 1. sırada; yani orada en belirleyici etken ad. Google kurallarına göre ad yalnızca tabelada ve belgelerde kullanılan gerçek ad olabilir. Ada anahtar kelime eklemek profilin askıya alınmasına yol açabilir. Hesapta Haritalar kısıtlaması olduğu için bu risk daha da büyük.
+- Yorum sayısı: Rentwin 6, Ensar 34, Dinç 36. **Rumeysa Koçan'ın yorumu Google tarafından kaldırılmış** (7'den 6'ya düştü). Sahiple aynı soyadı taşıdığı için Google büyük ihtimalle bağlantılı kişi yorumu saydı. Aile, çalışan ve tanıdıklardan yorum istenmemeli.
+- "Şu anda açık" filtresi ve "açık olan" işletmeler öne çıkıyor. Ensar 24 saat, Acar 22:00'ye kadar açık.
+- Profilde boş alanlar var: açılış tarihi, özellikler (ödeme, hizmet seçenekleri, otopark, erişilebilirlik), ürünler ve fotoğraflar.
+
+### Yapılacaklar
+
+| # | İş | Kim | Durum |
+|---|---|---|---|
+| 1 | **Her müşteriden yorum istemek:** teslimde QR kart (`gorseller/yorum-qr-kart-a6.png`, A6 baskı; ofis masası ve araçların güneşliği), kontrat kapanınca admin panelindeki "Google Yorumu İste" WhatsApp düğmesi. Herkese sorulur ("memnunsanız" denmez), karşılığında hiçbir şey verilmez. Aile, çalışan ve tanıdıklardan yorum istenmez. Hedef: 3 ayda 30+ yorum. | İşletme | QR kart hazır (16 Kas) |
+| 2 | **İşletme adı:** tabelada "Rentwin Araç Kiralama" yazıyorsa (ya da öyle bir tabela asılırsa) profildeki ad "Rentwin Araç Kiralama" yapılır. "Aliağa" eklenmez. | Karar: işletme · Düzenleme: Claude | Karar bekleniyor |
+| 3 | **Profil boşlukları:** ödeme seçenekleri (nakit, kredi kartı, havale), hizmet seçenekleri, "Online hizmet saatleri" (online rezervasyon 7/24), açılış tarihi. | Claude (onayla) | Önerildi |
+| 4 | **Ürünler:** fiyat sayfasındaki 13 model, günlük "…'den başlayan" fiyat ve araç sayfası bağlantısıyla Google profiline ürün olarak eklenir. | Claude (onayla) | Önerildi |
+| 5 | **Gerçek fotoğraflar:** ofis girişi ve tabela, ofis içi, araçlar (dış ve iç), teslim anı; en az 10, sonra her ay birkaç yeni fotoğraf. | İşletme çeker · Claude yükler | Bekliyor |
+| 6 | **Haftalık Google gönderisi** (her gönderi onayla). | Claude | 1 gönderi yayında |
+| 7 | **Dizin kayıtları:** Bulurum.com ("Yer siteleri"nde çıkıyor), Yandex Business, Bing Places, Apple Business Connect, Foursquare. Ad, adres ve telefon her yerde birebir aynı. | Hesaplar: işletme · Doldurma: Claude | Önerildi |
+| 8 | **Çalışma saatleri:** gerçekten telefonla veya WhatsApp'tan hizmet veriliyorsa saatler uzatılabilir. Gerçek olmayan saat yazılmaz. | Karar: işletme | Önerildi |
