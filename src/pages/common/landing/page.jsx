@@ -127,10 +127,12 @@ const LandingPage = ({ variant }) => {
 
   const optionList = (values, group) => values.map((value) => tCommon(`options.${group}.${value}`)).join(", ");
   const priceCell = (range) =>
+    // One wrapper, so on phones (flex row: label · value) the price and its
+    // unit stay together on the right instead of being spread apart.
     range ? (
-      <>
+      <span>
         <strong>{formatRange(range)}</strong> <small>{t("shared.tableUnit")}</small>
-      </>
+      </span>
     ) : (
       <span className="landing__prices-none">{t("shared.tableNoPrice")}</span>
     );
