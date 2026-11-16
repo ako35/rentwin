@@ -46,7 +46,8 @@ Sıralama etkiye göre. **Sahibi** sütunu işin kimde olduğunu gösterir.
 | 2 | **Google profiline gerçek fotoğraflar:** ofis, tabela, araçlar, teslim anı (en az 10). | Yüksek (Haritalar) | İşletme | Bekliyor |
 | 3 | **Haftalık Google gönderisi** (her gönderi onayla). | Orta | Claude | 1. gönderi 12 Kasım'da yayında |
 | 4 | **Dizin kayıtları:** Bing Places (Google profilinden içe aktarılabilir), Apple Business Connect, Yandex Business, Foursquare ve yerel rehberler. Adres, telefon ve site her yerde birebir aynı yazılmalı. | Yüksek (Haritalar + otorite) | Hesaplar: işletme · Doldurma: Claude | Önerildi |
-| 5 | **Fiyat listesi sayfası** (`/fiyatlar`): model bazında günlük ve aylık başlangıç fiyatları. "aliağa araç kiralama fiyatları" aramasını hedefler. | Orta-yüksek | Kod: Claude · Fiyat onayı: işletme | Önerildi |
+| 5 | **Fiyat listesi sayfası** (`/arac-kiralama-fiyatlari`): model bazında günlük ve aylık fiyat (aralık) tablosu. "aliağa araç kiralama fiyatları" aramasını hedefler. Fiyatlar admin panelindeki araç kayıtlarından otomatik gelir. | Orta-yüksek | Kod: Claude · Fiyat onayı: işletme | Yayında (16 Kas, ca1e92f), sahibi onayladı |
+| 5b | **Havalimanı sayfası** (`/lokasyonlar/izmir-havalimani`): ayrı yeni sayfa yerine mevcut sayfa güçlendirildi (iki sayfa aynı aramada yarışmasın diye). Yeni başlık "İzmir Havalimanı Araç Kiralama", yeni metin, 6 soruluk SSS, fiyat sayfasına bağlantı. | Orta (rekabet çok yüksek) | Claude | Yayında (16 Kas, ca1e92f) |
 | 6 | **Bağlantı kazanmak:** yolcu360 / enuygun gibi platformlara tedarikçi olarak katılmak (hem bağlantı hem rezervasyon), yerel haber sitelerinde tanıtım haberi (DM'ler atıldı, bkz. `marketing/facebook/README.md` §7), ALOSBİ ve Aliağa Ticaret Odası üye rehberleri. | Yüksek (organik) | İşletme + Claude | Kısmen başladı |
 | 7 | **Blog yazıları:** "Aliağa rent a car" (konum 45) ve uzun kuyruk aramalar için ayda 2 yazı. | Orta | Claude (taslak) · İşletme (onay) | Önerildi |
 | 8 | **Model sayfaları:** her araç için ayrı, birbirinin aynısı sayfalar yerine her model için tek, zengin bir sayfa. | Düşük-orta | Claude | Sonra |
@@ -56,6 +57,10 @@ Sıralama etkiye göre. **Sahibi** sütunu işin kimde olduğunu gösterir.
 "Kopya, Google kullanıcıdan farklı bir standart sayfa seçti" (26) ve "Tarandı - şu anda dizine eklenmiş değil" (3) doğrulamaları başarısız oldu. URL denetimi: İngilizce araç sayfaları o kadar kalıptı ki Google farklı modelleri bile kopya saydı (İngilizce Doblo → Isuzu). Düzeltme (aa1651b): `/en/vehicles/:id` artık `noindex, follow`, araç sayfalarında TR/EN hreflang yok, site haritası yalnız Türkçe araç sayfalarını listeliyor (59 → 46 adres). Canlıda doğrulandı, site haritası yeniden gönderildi.
 
 Aynı modelin birden fazla aracına ait sayfaların "Kopya" ya da "Alternatif sayfa" grubunda kalması beklenen durum. Doğrulama erken başlatılmadı; **1 Aralık 2026 10:00'da zamanlanmış görev** (`rentwin-gsc-indexing-followup`) raporlara bakacak, yalnızca güvenliyse doğrulamayı başlatacak ve ölçümleri aşağıya yazacak.
+
+## 16 Kasım 2026 ölçümü
+
+Sahibi "yine aşağı düştük" dedi. Search Console, son 28 gün: "aliağa araç kiralama" 22 gösterim, 7 tıklama, ortalama konum 11,4. "aliağa" geçen aramalarda günlük konum 9–14 Kasım arasında 10,8 → 59,6 → 52,2 → 19 → 32,5 → 2 oldu; günde 1–17 gösterim var. Düşüş kalıcı değil, düşük hacimden gelen dalgalanma. Havalimanı aramalarının hepsi `/lokasyonlar/izmir-havalimani` sayfasına düşüyordu (15 gösterim, konum 82,5); "fiyat" aramaları ana sayfaya (konum 2,5) ve `/vehicles` sayfasına (konum 56).
 
 ## 4. Nasıl ölçülecek
 
