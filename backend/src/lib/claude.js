@@ -181,6 +181,11 @@ const interpretInvoiceInstruction = async ({ context, instruction, schema }) => 
     );
   } catch (err) {
     console.error("[claude invoice]", err?.name, err?.status, err?.error?.error?.type || err?.error?.type, err?.message);
+    if (err instanceof Anthropic.AuthenticationError) {
+      const e = new Error("Yapay zekâ anahtarı (ANTHROPIC_API_KEY) geçersiz. Vercel ortam değişkenlerinde güncellenmesi gerekiyor.");
+      e.code = "AI_CONFIG";
+      throw e;
+    }
     if (err instanceof Anthropic.RateLimitError) {
       const e = new Error("Yapay zekâ hız sınırına takıldı. Birkaç dakika sonra tekrar deneyin.");
       e.code = "AI_QUOTA";
