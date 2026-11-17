@@ -74,12 +74,9 @@ const InvoiceAiAssistant = ({ contractId, money, onApply, onClose }) => {
         </button>
       </div>
 
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-          run();
-        }}
-      >
+      {/* No <form> here: this panel sits inside the contract page's own form,
+          and a nested form submit reloads the page. Enter / the button call run(). */}
+      <div>
         <Form.Control
           as="textarea"
           rows={2}
@@ -103,11 +100,11 @@ const InvoiceAiAssistant = ({ contractId, money, onApply, onClose }) => {
               </button>
             ))}
           </div>
-          <Button type="submit" size="sm" disabled={busy || !instruction.trim()}>
+          <Button type="button" size="sm" disabled={busy || !instruction.trim()} onClick={() => run()}>
             {busy ? <Spinner animation="border" size="sm" /> : <BsStars />} {busy ? a("working") : a("run")}
           </Button>
         </div>
-      </Form>
+      </div>
 
       {draft && (
         <div className="inv-ai__draft">
