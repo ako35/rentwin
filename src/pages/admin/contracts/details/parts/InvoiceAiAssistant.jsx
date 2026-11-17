@@ -8,7 +8,7 @@ import "./invoice-ai.scss";
 
 const trDate = (iso) => (iso ? iso.split("-").reverse().join(".") : "…");
 // "ALİAĞA VERGİ DAİRESİ" already says it — only bare names get " VD".
-const vd = (office) => (/VERG[İI]s*DA[İI]RES|(^|s)V.?D.?$/i.test(office) ? office : `${office} VD`);
+const vd = (office) => (/VERG[İI]\s*DA[İI]RES|(^|\s)V\.?D\.?$/i.test(office) ? office : `${office} VD`);
 
 // "Yapay zekâ ile hazırla": the admin writes an instruction, Claude picks the
 // period and billable items, the backend prices them from the contract
