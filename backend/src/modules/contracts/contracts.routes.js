@@ -36,6 +36,8 @@ const {
   deleteInvoicePdf,
 } = require("./contracts.controller");
 
+const { draftInvoice } = require("./invoice-draft.controller");
+
 const router = Router();
 
 router.get("/contracts/admin/schedule/auth", authenticate, requireAdmin, getAdminSchedule);
@@ -84,6 +86,7 @@ router.patch(
   updateVehicleChangeKbs
 );
 router.get("/contracts/admin/:id/invoices/auth", authenticate, requireAdmin, listInvoices);
+router.post("/contracts/admin/:id/invoices/ai-draft/auth", authenticate, requireAdmin, draftInvoice);
 router.get(
   "/contracts/admin/invoices/:invoiceId/pdf-url/auth",
   authenticate,

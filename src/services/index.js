@@ -2,7 +2,7 @@ import { deleteMessage, getMessage, getMessagesByPage, sendMessage } from "./con
 
 import { cancelReservation, confirmReservation, convertReservationToContract, createReservation, createReservationAdmin, getReservationById, getReservationByIdAdmin, getReservationSchedule, getReservationsByPage, getReservationsByPageAdmin, isVehicleAvailable, updateReservationAdmin } from "./reservation/reservation-service";
 
-import { cancelContract, changeVehicle, createContract, createInvoice, deleteContract, deleteExtension, deleteInvoice, deleteInvoicePdf, downloadContractReports, extendContract, getAdminSchedule, getAvailableCars, getContractByIdAdmin, getContractsByPage, getContractsByUser, getContractsByVehicle, getHgsPendingContracts, getInvoicePdfDownloadUrl, getInvoicePendingContracts, getInvoices, getKbsPendingContracts, getKbsReleasePendingContracts, getKbsSwapPendingChanges, getSignPendingContracts, reopenContract, returnContract, updateContract, updateInvoice, updateVehicleChangeKbs, uploadInvoicePdf } from "./contract/contract-service";
+import { cancelContract, changeVehicle, createContract, createInvoice, deleteContract, deleteExtension, deleteInvoice, deleteInvoicePdf, downloadContractReports, extendContract, getAdminSchedule, getAvailableCars, getContractByIdAdmin, getContractsByPage, getContractsByUser, getContractsByVehicle, getHgsPendingContracts, getInvoicePdfDownloadUrl, getInvoicePendingContracts, getInvoices, getKbsPendingContracts, getKbsReleasePendingContracts, getKbsSwapPendingChanges, getSignPendingContracts, reopenContract, returnContract, updateContract, updateInvoice, updateVehicleChangeKbs, uploadInvoicePdf, draftInvoiceWithAi } from "./contract/contract-service";
 
 import { addContractRecord, deleteContractRecord, getContractRecords, updateContractRecord } from "./contract/contract-record-service";
 import { getContractPhotos, deleteContractPhoto } from "./contract/contract-photo-service";
@@ -102,6 +102,7 @@ export const services = {
         getKbsReleasePendingContracts,
         getKbsSwapPendingChanges,
         updateVehicleChangeKbs,
+        draftInvoiceWithAi,
         getSignPendingContracts,
         downloadContractReports,
         getRecords: getContractRecords,

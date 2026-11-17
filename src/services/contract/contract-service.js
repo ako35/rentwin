@@ -153,6 +153,16 @@ export const getInvoicePdfDownloadUrl = async (invoiceId) => {
   return response.data.url;
 };
 
+// "Yapay zekâ ile hazırla": { instruction } -> priced invoice draft (nothing saved).
+export const draftInvoiceWithAi = async (id, instruction) => {
+  const response = await axios.post(
+    `${API_URL}/contracts/admin/${id}/invoices/ai-draft/auth`,
+    { instruction },
+    { ...services.authHeader(), timeout: 90000 }
+  );
+  return response.data;
+};
+
 export const createInvoice = async (id, payload = {}) => {
   const response = await axios.post(
     `${API_URL}/contracts/admin/${id}/invoice/auth`,

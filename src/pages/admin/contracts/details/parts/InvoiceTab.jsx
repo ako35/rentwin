@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Spinner, Table } from "react-bootstrap";
 import moment from "moment/moment";
-import { BsFileEarmarkPdf, BsReceipt, BsTrash, BsUpload } from "react-icons/bs";
+import { BsFileEarmarkPdf, BsReceipt, BsStars, BsTrash, BsUpload } from "react-icons/bs";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import SaveFirstHint from "./SaveFirstHint";
 import InvoiceScan from "./InvoiceScan";
+import InvoiceAiAssistant from "./InvoiceAiAssistant";
 import "./invoice-tab.scss";
 
 // Top tab: the invoices raised against this contract. A contract can carry
@@ -46,6 +47,7 @@ const InvoiceTab = ({
   const [saving, setSaving] = useState(false);
   const [attempted, setAttempted] = useState(false);
   const [pdfBusyId, setPdfBusyId] = useState(null);
+  const [aiOpen, setAiOpen] = useState(false);
 
   if (isCreate) return <SaveFirstHint />;
 
@@ -90,6 +92,24 @@ const InvoiceTab = ({
     });
   };
   const close = () => setForm(null);
+
+  // A draft from "Yapay zekâ ile hazırla" opens the regular add form with its
+  // period, amount and buyer filled in; the invoice number stays empty until
+  // the invoice is actually issued in TÜRMOB / Unidox.
+  const applyAiDraft = (draft) => {
+    setAiOpen(false);
+    setAttempted(false);
+    const summary = draft.lines.map((l) => l.description).join("; ");
+    setForm({
+      ...emptyForm(),
+      periodFrom: draft.periodFrom || "",
+      periodTo: draft.periodTo || "",
+      grossAmount: String(draft.grossTotal),
+      customerTitle: draft.billTo?.title || defaultCustomerTitle || "",
+      taxNo: draft.billTo?.type === "Kurumsal" ? draft.billTo.taxNo || "" : "",
+      note: (draft.note || summary).slice(0, 250),
+    });
+  };
 
   const numberMissing = !(form?.number || "").trim();
 
@@ -244,12 +264,26 @@ const InvoiceTab = ({
           <span>{c("invoice.invoicedTotal")}</span>
           <strong>{money(invoicedTotal)} TL</strong>
         </div>
-        {!form && (
-          <Button type="button" size="sm" onClick={openAdd}>
-            + {c("invoice.addBtn")}
-          </Button>
+        {!form && !aiOpen && (
+          <div className="contract-page__inv-head-actions">
+            <Button type="button" size="sm" variant="outline-primary" onClick={() => setAiOpen(true)}>
+              <BsStars /> {c("invoice.ai.open")}
+            </Button>
+            <Button type="button" size="sm" onClick={openAdd}>
+              + {c("invoice.addBtn")}
+            </Button>
+          </div>
         )}
       </div>
+
+      {aiOpen && !form && (
+        <InvoiceAiAssistant
+          contractId={contractId}
+          money={money}
+          onApply={applyAiDraft}
+          onClose={() => setAiOpen(false)}
+        />
+      )}
 
       <Table hover size="sm" className="contract-page__inv-table mb-0">
         <thead>
