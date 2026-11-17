@@ -19,11 +19,12 @@ const AdminDashboard = () => {
   const [invoicePending, setInvoicePending] = useState([]);
   const [kbsPending, setKbsPending] = useState([]);
   const [kbsReleasePending, setKbsReleasePending] = useState([]);
+  const [kbsSwapPending, setKbsSwapPending] = useState([]);
   const [signPending, setSignPending] = useState([]);
 
   const loadData = async () => {
     try {
-      const [stats, alerts, appointments, settings, hgs, invoices, kbs, kbsRelease, sign] = await Promise.all([
+      const [stats, alerts, appointments, settings, hgs, invoices, kbs, kbsRelease, kbsSwap, sign] = await Promise.all([
         services.vehicle.getFleetStats(branchId),
         services.vehicle.getExpiryAlerts(branchId),
         // Only open appointments: completed and cancelled ones stay on the vehicle's own tab.
@@ -33,6 +34,7 @@ const AdminDashboard = () => {
         services.contract.getInvoicePendingContracts({ branchId }).catch(() => []),
         services.contract.getKbsPendingContracts({ branchId }).catch(() => []),
         services.contract.getKbsReleasePendingContracts({ branchId }).catch(() => []),
+        services.contract.getKbsSwapPendingChanges({ branchId }).catch(() => []),
         services.contract.getSignPendingContracts({ branchId }).catch(() => []),
       ]);
       setFleetStats(stats);
@@ -43,6 +45,7 @@ const AdminDashboard = () => {
       setInvoicePending(Array.isArray(invoices) ? invoices : []);
       setKbsPending(Array.isArray(kbs) ? kbs : []);
       setKbsReleasePending(Array.isArray(kbsRelease) ? kbsRelease : []);
+      setKbsSwapPending(Array.isArray(kbsSwap) ? kbsSwap : []);
       setSignPending(Array.isArray(sign) ? sign : []);
     } catch (error) {
       console.log(error);
@@ -90,6 +93,7 @@ const AdminDashboard = () => {
             invoicePending={invoicePending}
             kbsPending={kbsPending}
             kbsReleasePending={kbsReleasePending}
+            kbsSwapPending={kbsSwapPending}
             signPending={signPending}
           />
 

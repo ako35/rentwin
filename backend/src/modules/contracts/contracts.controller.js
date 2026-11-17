@@ -9,7 +9,7 @@ const { customerTotals } = require("../users/customer-fields");
 const { CAR_INCLUDE } = require("./contracts.shared");
 const { num, pickContractFields, rentalTerm } = require("./contract-fields");
 const { recomputeContractFinancials, contractUnitPrice } = require("./contract-financials");
-const { kbsStamp } = require("./kbs");
+const { kbsStamp, kbsSwapUpdate } = require("./kbs");
 
 const invoiceWithDownloadUrl = async (invoice) => ({
   ...invoice,
@@ -351,6 +351,20 @@ const changeVehicle = asyncHandler(async (req, res) => {
   res.json(serializeContract(updated));
 });
 
+// KABİS follow-up for one vehicle swap: { oldReleased?, newNotified? } ticks
+// or unticks "previous car released" / "new car filed" (kbs.js kbsSwapUpdate).
+// Saved on its own, like the contract-level release on a closed contract —
+// it stays usable after the contract is closed.
+const updateVehicleChangeKbs = asyncHandler(async (req, res) => {
+  const change = await prisma.contractVehicleChange.findUnique({ where: { id: req.params.changeId } });
+  if (!change || change.contractId !== req.params.id) throw new HttpError(404, "Vehicle change not found.");
+  const data = kbsSwapUpdate(change, req.body, req.user);
+  const updated = data
+    ? await prisma.contractVehicleChange.update({ where: { id: change.id }, data })
+    : change;
+  res.json(updated);
+});
+
 // gross is VAT-inclusive; split it into net + tax at the contract's rate.
 const splitVat = (gross, rate) => {
   const net = round2(gross / (1 + (rate ?? 20) / 100));
@@ -556,6 +570,7 @@ module.exports = {
   extendContract,
   deleteExtension,
   changeVehicle,
+  updateVehicleChangeKbs,
   listInvoices,
   getInvoicePdfDownloadUrl,
   createInvoice,

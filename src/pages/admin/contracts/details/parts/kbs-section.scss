@@ -11,6 +11,8 @@
 
     &.is-reported { border-left-color: v.$color1; }
     &.is-released { border-left-color: v.$color2; }
+    // A vehicle swap still waiting on its KABİS steps overrides the status colour.
+    &.has-swap-pending { border-left-color: #f59e0b; }
   }
 
   &__kbs-row {
@@ -172,5 +174,44 @@
     cursor: pointer;
 
     &:hover { color: v.$accent-rose; }
+  }
+
+  // Vehicle swaps: previous car released / new car filed, one block per swap.
+  &__kbs-swaps {
+    margin-top: 0.9rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--rw-line);
+  }
+
+  &__kbs-swap + &__kbs-swap {
+    margin-top: 0.75rem;
+  }
+
+  &__kbs-swap-head {
+    margin: 0 0 0.45rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--rw-ink-soft);
+  }
+
+  &__kbs-swap-step {
+    @include m.flexbox(row, space-between, center, 0.5rem);
+    flex-wrap: wrap;
+    padding: 0.3rem 0;
+
+    .form-check { margin: 0; min-height: auto; padding-left: 2.6rem; }
+    .form-check-input { width: 2rem; height: 1.1rem; margin-left: -2.6rem; cursor: pointer; }
+    .form-check-label { font-size: 0.85rem; font-weight: 600; color: #9a6a00; cursor: pointer; }
+
+    &.is-done .form-check-label { color: var(--rw-ink); }
+  }
+
+  &__kbs-swap-stamp {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: v.$color1;
+    white-space: nowrap;
   }
 }

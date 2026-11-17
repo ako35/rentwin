@@ -101,7 +101,8 @@ const VehicleChangeTab = ({
         newCarFuelEighths: form.newCarFuelEighths,
         note: form.note,
       });
-      utils.functions.swalToast(t("reservations.toasts.updateSuccess"), "success");
+      // The swap opens two KABİS steps (KbsSection) — say so right away.
+      utils.functions.swalToast(c("vehicleChange.kbsReminder"), "success", 8000);
       setForm(EMPTY_FORM);
       onChanged();
     } catch (error) {

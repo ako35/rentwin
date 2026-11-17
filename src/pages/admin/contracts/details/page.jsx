@@ -351,7 +351,13 @@ const ContractDetail = () => {
                 sits outside the fieldset that locks the rest of the form;
                 `locked` still keeps its own filing fields read-only. */}
             {!isCreate && (
-              <KbsSection formik={formik} locked={locked} onReleaseLocked={handleKbsReleaseLocked} />
+              <KbsSection
+                formik={formik}
+                locked={locked}
+                onReleaseLocked={handleKbsReleaseLocked}
+                contractId={contractId}
+                vehicleChanges={vehicleChanges}
+              />
             )}
             {/* Same reasoning as KABİS above: signing is tracked at hand-back
                 as often as at pickup, so this stays usable after the contract

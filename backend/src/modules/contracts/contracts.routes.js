@@ -13,6 +13,7 @@ const {
   getInvoicePendingContracts,
   getKbsPendingContracts,
   getKbsReleasePendingContracts,
+  getKbsSwapPendingChanges,
   getSignPendingContracts,
   returnContract,
   cancelContract,
@@ -25,6 +26,7 @@ const {
   extendContract,
   deleteExtension,
   changeVehicle,
+  updateVehicleChangeKbs,
   listInvoices,
   getInvoicePdfDownloadUrl,
   createInvoice,
@@ -51,6 +53,7 @@ router.get(
   requireAdmin,
   getKbsReleasePendingContracts
 );
+router.get("/contracts/admin/kbs-swap-pending/auth", authenticate, requireAdmin, getKbsSwapPendingChanges);
 router.get("/contracts/admin/sign-pending/auth", authenticate, requireAdmin, getSignPendingContracts);
 router.get("/contracts/admin/all/auth", authenticate, requireAdmin, getContractsByPage);
 router.get("/contracts/admin/by-user/:userId/auth", authenticate, requireAdmin, getContractsByUser);
@@ -74,6 +77,12 @@ router.delete(
   deleteExtension
 );
 router.post("/contracts/admin/:id/change-vehicle/auth", authenticate, requireAdmin, changeVehicle);
+router.patch(
+  "/contracts/admin/:id/vehicle-changes/:changeId/kbs/auth",
+  authenticate,
+  requireAdmin,
+  updateVehicleChangeKbs
+);
 router.get("/contracts/admin/:id/invoices/auth", authenticate, requireAdmin, listInvoices);
 router.get(
   "/contracts/admin/invoices/:invoiceId/pdf-url/auth",

@@ -596,6 +596,13 @@ model ContractVehicleChange {
   newCarKm          Int? // new car's odometer at hand-over (prefilled from the vehicle, editable)
   newCarFuelEighths Int? // new car's fuel / charge gauge at hand-over, 0-8
   note              String?
+  // KABİS follow-up for the swap (only meaningful once the contract itself
+  // was filed): the previous car's record released (çıkış) and the new car
+  // filed (giriş). Each *By is the acting admin, stamped on null -> set.
+  kbsOldReleasedAt  DateTime?
+  kbsOldReleasedBy  String?
+  kbsNewNotifiedAt  DateTime?
+  kbsNewNotifiedBy  String?
   createdAt         DateTime @default(now())
 }
 

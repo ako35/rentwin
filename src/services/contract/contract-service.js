@@ -116,6 +116,27 @@ export const changeVehicle = async (id, payload) => {
   return response.data;
 };
 
+// KABİS follow-up for one swap: { oldReleased?, newNotified? } (booleans).
+// Saved on its own, also on a closed contract.
+export const updateVehicleChangeKbs = async (contractId, changeId, payload) => {
+  const response = await axios.patch(
+    `${API_URL}/contracts/admin/${contractId}/vehicle-changes/${changeId}/kbs/auth`,
+    payload,
+    services.authHeader()
+  );
+  return response.data;
+};
+
+// Admin dashboard alert bar: vehicle swaps whose KABİS follow-up (previous
+// car released / new car filed) is still open.
+export const getKbsSwapPendingChanges = async ({ branchId } = {}) => {
+  const response = await axios.get(
+    `${API_URL}/contracts/admin/kbs-swap-pending/auth${branchId ? `?branchId=${branchId}` : ""}`,
+    services.authHeader()
+  );
+  return response.data;
+};
+
 export const getInvoices = async (id) => {
   const response = await axios.get(
     `${API_URL}/contracts/admin/${id}/invoices/auth`,

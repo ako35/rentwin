@@ -31,12 +31,39 @@ const DATE_STORE = "YYYY-MM-DD";
 // (see admin/settings/page.jsx) and picks which one a given rental was
 // actually filed under — stored as a name snapshot on the contract
 // (kbsSystem), so renaming/deleting a portal later never touches past rows.
-const KbsSection = ({ formik, locked = false, onReleaseLocked }) => {
+//
+// A mid-contract vehicle swap (VehicleChangeTab) needs two more KABİS steps:
+// release the previous car's record and file the new car. Once the rental is
+// filed, each swap gets its own pair of switches here, saved straight away
+// (not with "Kaydet", so it also works on a closed contract) and stamped with
+// the acting admin; open ones also list on the dashboard's KABİS tab.
+const plateOf = (label) => String(label || "").split(" — ").pop();
+
+const KbsSection = ({ formik, locked = false, onReleaseLocked, contractId, vehicleChanges = [] }) => {
   const { t } = useTranslation("admin");
-  const c = (key) => t(`reservations.contract.kbs.${key}`);
+  const c = (key, opts) => t(`reservations.contract.kbs.${key}`, opts);
 
   const [systemNames, setSystemNames] = useState([]);
   const [releasing, setReleasing] = useState(false);
+  const [swaps, setSwaps] = useState(vehicleChanges);
+  const [savingSwap, setSavingSwap] = useState(null);
+
+  useEffect(() => {
+    setSwaps(vehicleChanges);
+  }, [vehicleChanges]);
+
+  const toggleSwapStep = async (swap, key, checked) => {
+    setSavingSwap(`${swap.id}:${key}`);
+    try {
+      const updated = await services.contract.updateVehicleChangeKbs(contractId, swap.id, { [key]: checked });
+      setSwaps((list) => list.map((s) => (s.id === swap.id ? { ...s, ...updated } : s)));
+      utils.functions.swalToast(c("swapSaved"), "success", 2500);
+    } catch {
+      utils.functions.swalToast(c("swapError"), "error");
+    } finally {
+      setSavingSwap(null);
+    }
+  };
 
   useEffect(() => {
     services.kabisSystem
@@ -130,10 +157,13 @@ const KbsSection = ({ formik, locked = false, onReleaseLocked }) => {
   };
 
   const badgeText = { pending: c("statusPending"), reported: c("statusDone"), released: c("statusReleased") }[status];
+  const showSwaps = status !== "pending" && swaps.length > 0;
+  const swapPending = showSwaps && swaps.some((s) => !s.kbsOldReleasedAt || !s.kbsNewNotifiedAt);
+  const stamp = (by, at) => c("swapStamp", { name: by || "—", date: moment(at).format("DD.MM.YYYY HH:mm") });
   const BadgeIcon = { pending: BsShieldExclamation, reported: BsShieldCheck, released: BsShieldFillCheck }[status];
 
   return (
-    <section className={`contract-card contract-page__kbs is-${status}`}>
+    <section className={`contract-card contract-page__kbs is-${status}${swapPending ? " has-swap-pending" : ""}`}>
       <h3>{c("title")}</h3>
 
       <div className="contract-page__kbs-row">
@@ -237,6 +267,37 @@ const KbsSection = ({ formik, locked = false, onReleaseLocked }) => {
               </button>
             </div>
           )}
+        </div>
+      )}
+
+      {showSwaps && (
+        <div className="contract-page__kbs-swaps">
+          {swaps.map((swap) => {
+            const steps = [
+              { key: "oldReleased", at: swap.kbsOldReleasedAt, by: swap.kbsOldReleasedBy, label: c("swapOld", { plate: plateOf(swap.previousCarLabel) }) },
+              { key: "newNotified", at: swap.kbsNewNotifiedAt, by: swap.kbsNewNotifiedBy, label: c("swapNew", { plate: plateOf(swap.newCarLabel) }) },
+            ];
+            return (
+              <div key={swap.id} className="contract-page__kbs-swap">
+                <p className="contract-page__kbs-swap-head">
+                  {c("swapTitle")} · {moment.utc(swap.changeDate).format("DD.MM.YYYY HH:mm")}
+                </p>
+                {steps.map((step) => (
+                  <div key={step.key} className={`contract-page__kbs-swap-step${step.at ? " is-done" : ""}`}>
+                    <Form.Check
+                      type="switch"
+                      id={`kbs-swap-${swap.id}-${step.key}`}
+                      label={step.label}
+                      checked={!!step.at}
+                      disabled={savingSwap === `${swap.id}:${step.key}`}
+                      onChange={(e) => toggleSwapStep(swap, step.key, e.target.checked)}
+                    />
+                    {step.at && <span className="contract-page__kbs-swap-stamp">{stamp(step.by, step.at)}</span>}
+                  </div>
+                ))}
+              </div>
+            );
+          })}
         </div>
       )}
     </section>

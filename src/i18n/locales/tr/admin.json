@@ -809,7 +809,8 @@
         "noAvailable": "Seçili tarih için müsait araç yok.",
         "range": "{{from}} → {{to}}",
         "showHistory": "Önceki Değişiklikleri Gör ({{count}})",
-        "hideHistory": "Değişiklik Geçmişini Gizle"
+        "hideHistory": "Değişiklik Geçmişini Gizle",
+        "kbsReminder": "Araç değiştirildi. KABİS'te eski aracı düşüp yeni aracı bildirmeyi unutmayın; KABİS kartından işaretleyin."
       },
       "currentClass": "Geçerli Sınıf",
       "changeVehicle": "Değiştir",
@@ -856,7 +857,13 @@
         "releaseConfirmTextClosed": "Kontrat kapatılmış olsa da KABİS çıkış bildirimi düşülecek. Onaylıyor musunuz?",
         "releasedDate": "Çıkış tarihi",
         "releaseUndo": "Çıkışı geri al",
-        "closedWarning": "Kontrat kapatıldı ancak KABİS çıkış bildirimi henüz yapılmadı. Çıkışı buradan yapabilirsiniz."
+        "closedWarning": "Kontrat kapatıldı ancak KABİS çıkış bildirimi henüz yapılmadı. Çıkışı buradan yapabilirsiniz.",
+        "swapTitle": "Araç değişikliği",
+        "swapOld": "Eski araç {{plate}} düşüldü",
+        "swapNew": "Yeni araç {{plate}} bildirildi",
+        "swapStamp": "{{name}} · {{date}}",
+        "swapSaved": "KABİS durumu kaydedildi.",
+        "swapError": "KABİS durumu kaydedilemedi."
       },
       "signature": {
         "title": "İmza Takibi",
@@ -1456,6 +1463,10 @@
     "kbsReleasePending": "KABİS Çıkışı",
     "kbsReleasePendingHead": "Kapatıldı ama KABİS çıkışı yapılmamış kontratlar",
     "kbsReleasePendingNone": "KABİS çıkışı bekleyen kapalı kontrat yok",
+    "kbsSwapPendingHead": "Araç değişikliği yapılmış, KABİS'i tamamlanmamış kontratlar",
+    "kbsSwapPendingNone": "KABİS bekleyen araç değişikliği yok",
+    "kbsSwapOld": "Eski araç düşülmedi",
+    "kbsSwapNew": "Yeni araç bildirilmedi",
     "signPending": "İmza",
     "signPendingHead": "Henüz imzalandı olarak işaretlenmemiş kontratlar",
     "signPendingNone": "İmza bekleyen kontrat yok",
@@ -1472,6 +1483,9 @@
       "contractNo": "Kontrat No",
       "customer": "Müşteri",
       "closedAt": "Kapanış Tarihi",
+      "swap": "Değişiklik",
+      "changeDate": "Değişiklik Tarihi",
+      "kbsTodo": "Bekleyen",
       "pickUpDate": "Alış Tarihi",
       "status": "Durum",
       "appointmentType": "İşlem",

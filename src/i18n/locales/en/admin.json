@@ -809,7 +809,8 @@
         "noAvailable": "No vehicle is available for the selected date.",
         "range": "{{from}} → {{to}}",
         "showHistory": "Show Previous Changes ({{count}})",
-        "hideHistory": "Hide Change History"
+        "hideHistory": "Hide Change History",
+        "kbsReminder": "Vehicle changed. Remember to release the previous car and file the new one in KABİS; tick them on the KABİS card."
       },
       "currentClass": "Current Class",
       "changeVehicle": "Change",
@@ -856,7 +857,13 @@
         "releaseConfirmTextClosed": "The contract is already closed, but the KABİS release notification will still be filed. Do you confirm?",
         "releasedDate": "Release date",
         "releaseUndo": "Undo release",
-        "closedWarning": "The contract is closed but the KABİS release notification hasn't been filed yet. You can release it here."
+        "closedWarning": "The contract is closed but the KABİS release notification hasn't been filed yet. You can release it here.",
+        "swapTitle": "Vehicle change",
+        "swapOld": "Previous car {{plate}} released",
+        "swapNew": "New car {{plate}} filed",
+        "swapStamp": "{{name}} · {{date}}",
+        "swapSaved": "KABİS status saved.",
+        "swapError": "Couldn't save the KABİS status."
       },
       "signature": {
         "title": "Signature Tracking",
@@ -1456,6 +1463,10 @@
     "kbsReleasePending": "KABİS Release",
     "kbsReleasePendingHead": "Closed contracts still filed in KABİS without a release",
     "kbsReleasePendingNone": "No closed contract is waiting for a KABİS release",
+    "kbsSwapPendingHead": "Contracts with a vehicle change whose KABİS steps aren't done",
+    "kbsSwapPendingNone": "No vehicle change waiting on KABİS",
+    "kbsSwapOld": "Previous car not released",
+    "kbsSwapNew": "New car not filed",
     "signPending": "Signature",
     "signPendingHead": "Contracts not yet marked as signed",
     "signPendingNone": "No contract is waiting for a signature",
@@ -1472,6 +1483,9 @@
       "contractNo": "Contract No",
       "customer": "Customer",
       "closedAt": "Closed On",
+      "swap": "Change",
+      "changeDate": "Change Date",
+      "kbsTodo": "Pending",
       "pickUpDate": "Pick-up Date",
       "status": "Status",
       "appointmentType": "Service",

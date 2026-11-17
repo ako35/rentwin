@@ -77,6 +77,46 @@ const ClosedContractsTable = ({ rows }) => {
   );
 };
 
+// Vehicle swaps whose KABİS steps (previous car released / new car filed)
+// are still open — one row per swap, linking to its contract.
+const plateOf = (label) => String(label || "").split(" — ").pop();
+const KbsSwapTable = ({ rows }) => {
+  const { t } = useTranslation("admin");
+  return (
+    <table className="maintenance-alert-bar__table maintenance-alert-bar__table--kbs">
+      <thead>
+        <tr>
+          <th>{t("alertBar.col.contractNo")}</th>
+          <th>{t("alertBar.col.swap")}</th>
+          <th>{t("alertBar.col.customer")}</th>
+          <th>{t("alertBar.col.changeDate")}</th>
+          <th>{t("alertBar.col.kbsTodo")}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr key={row.id} className="maintenance-alert-bar__rowlink row-link-host">
+            <td>
+              <RowLink to={`${constants.routes.adminContracts}/${row.contractId}`} label={row.contractNo || plateOf(row.newCarLabel)} />
+              {row.contractNo || "—"}
+            </td>
+            <td className="maintenance-alert-bar__plate">
+              {plateOf(row.previousCarLabel)} → {plateOf(row.newCarLabel)}
+            </td>
+            <td title={custName(row.user)}>{custName(row.user)}</td>
+            <td>{utils.functions.getDateUTC(row.changeDate)}</td>
+            <td>
+              {[row.pending?.oldRelease && t("alertBar.kbsSwapOld"), row.pending?.newFiling && t("alertBar.kbsSwapNew")]
+                .filter(Boolean)
+                .join(" · ")}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
 // HGS Kontrolü, KABİS Bekleyen and Fatura Bekleyen (open MONTHLY leg) all mix
 // open and closed contracts — the check/filing/invoicing is due before the
 // rental is over, not only once it's returned — so their rows carry their
@@ -123,6 +163,7 @@ const MaintenanceAlertBar = ({
   invoicePending = [],
   kbsPending = [],
   kbsReleasePending = [],
+  kbsSwapPending = [],
   signPending = [],
   inspectionAppointments = [],
   appointmentReminderDays = 7,
@@ -133,7 +174,7 @@ const MaintenanceAlertBar = ({
   const categories = alerts?.categories || {};
   const isSpecialTab = (key) =>
     key === HGS_KEY || key === INVOICE_KEY || key === KBS_KEY || key === SIGN_KEY || key === APPOINTMENT_KEY;
-  const kbsCount = kbsPending.length + kbsReleasePending.length;
+  const kbsCount = kbsPending.length + kbsReleasePending.length + kbsSwapPending.length;
 
   const activeList = open && !isSpecialTab(open) ? categories[open] || [] : [];
 
@@ -346,6 +387,15 @@ const MaintenanceAlertBar = ({
             <div className="maintenance-alert-bar__empty">{t("alertBar.kbsReleasePendingNone")}</div>
           ) : (
             <ClosedContractsTable rows={kbsReleasePending} />
+          )}
+
+          <div className="maintenance-alert-bar__panel-head maintenance-alert-bar__panel-head--sub">
+            {t("alertBar.kbsSwapPendingHead")}
+          </div>
+          {kbsSwapPending.length === 0 ? (
+            <div className="maintenance-alert-bar__empty">{t("alertBar.kbsSwapPendingNone")}</div>
+          ) : (
+            <KbsSwapTable rows={kbsSwapPending} />
           )}
         </div>
       )}

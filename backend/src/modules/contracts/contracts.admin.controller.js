@@ -21,6 +21,7 @@ const { syncContractDebit, voidContractLedger, restoreContractLedger } = require
 const { getBusyVehicleIds } = require("../../lib/availability");
 const { loadModelImageMap } = require("../vehicles/vehicles.shared");
 const { readSettings } = require("../settings/settings.controller");
+const { kbsSwapPending } = require("./kbs");
 
 const RETURN_CHARGE_CATEGORIES = [
   "KM_EXCESS",
@@ -669,6 +670,46 @@ const getKbsReleasePendingContracts = asyncHandler(async (req, res) => {
   res.json(contracts.map(serializeKbsReleasePendingRow));
 });
 
+// Vehicle swaps whose KABİS follow-up is still open: the previous car's
+// record not released and/or the new car not filed (kbs.js kbsSwapPending).
+// Only on contracts that were filed in KABİS at all (an unfiled one already
+// shows under getKbsPendingContracts) and not cancelled. Oldest swap first.
+const getKbsSwapPendingChanges = asyncHandler(async (req, res) => {
+  const { branchId } = req.query;
+  const changes = await prisma.contractVehicleChange.findMany({
+    where: {
+      OR: [{ kbsOldReleasedAt: null }, { kbsNewNotifiedAt: null }],
+      contract: {
+        status: { not: "CANCELLED" },
+        kbsNotifiedAt: { not: null },
+        ...(branchId ? { car: { branchId } } : {}),
+      },
+    },
+    orderBy: { changeDate: "asc" },
+    include: { contract: { include: { user: true } } },
+  });
+
+  res.json(
+    changes.map((change) => ({
+      id: change.id,
+      contractId: change.contractId,
+      contractNo: change.contract.contractNo,
+      status: change.contract.status,
+      user: change.contract.user
+        ? {
+            firstName: change.contract.user.firstName,
+            lastName: change.contract.user.lastName,
+            companyTitle: change.contract.user.companyTitle,
+          }
+        : null,
+      changeDate: change.changeDate,
+      previousCarLabel: change.previousCarLabel,
+      newCarLabel: change.newCarLabel,
+      pending: kbsSwapPending(change),
+    }))
+  );
+});
+
 // Contracts whose printed contract hasn't been marked signed yet — open or
 // already closed, but not cancelled. Same rationale as the KABİS pending
 // panel: signing is meant to happen around pickup, so an open contract
@@ -700,6 +741,7 @@ module.exports = {
   getInvoicePendingContracts,
   getKbsPendingContracts,
   getKbsReleasePendingContracts,
+  getKbsSwapPendingChanges,
   getSignPendingContracts,
   returnContract,
   cancelContract,
