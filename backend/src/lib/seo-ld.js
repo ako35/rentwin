@@ -51,7 +51,8 @@ const autoRentalLd = ({ reviewSummary, reviews } = {}) => ({
   "@context": "https://schema.org",
   "@type": "AutoRental",
   "@id": ORG_ID,
-  name: business.name,
+  name: business.businessName,
+  alternateName: business.name,
   url: `${SITE_URL}/`,
   logo: `${SITE_URL}/logo_full.png`,
   image: `${SITE_URL}/logo_full.png`,
@@ -156,7 +157,7 @@ const serviceLd = ({ name, serviceType, description, path, locale = "tr" }) => (
   serviceType,
   description,
   url: `${SITE_URL}${localizePath(path, locale)}`,
-  provider: { "@type": "AutoRental", "@id": ORG_ID, name: business.name },
+  provider: { "@type": "AutoRental", "@id": ORG_ID, name: business.businessName },
   areaServed: [
     { "@type": "City", name: "Aliağa" },
     { "@type": "City", name: "İzmir" },

@@ -24,6 +24,9 @@ const SOCIAL = {
 
 const business = {
   name: "Rentwin",
+  // Full business name (office sign + Google Business Profile since
+  // 2026-11-17) — the AutoRental JSON-LD name. Mirrors src/constants/index.js.
+  businessName: "Rentwin Araç Kiralama",
   email: "info@rentwin.com.tr",
   phoneE164: "+905073503135",
   // 2026-10-14: corrected to match src/constants/index.js — was the stale

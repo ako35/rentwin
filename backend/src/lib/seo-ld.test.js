@@ -327,6 +327,12 @@ for (const [prefix, copy] of [
   });
 }
 
+test("the local business carries the full name, with the brand as alternateName", () => {
+  const ld = autoRentalLd();
+  assert.equal(ld.name, "Rentwin Araç Kiralama");
+  assert.equal(ld.alternateName, "Rentwin");
+});
+
 test("business sameAs lists every live social profile", () => {
   const { business } = require("./site");
   const { sameAs } = autoRentalLd();

@@ -171,6 +171,11 @@ const rentwinSocial = {
 
 const website = {
   name: "Rentwin",
+  // The business's full name — on the office sign since 2026-11-17 and the
+  // Google Business Profile name. Used for the AutoRental (local business)
+  // JSON-LD; `name` stays the short brand (site name, prints, alt texts).
+  // Mirrored in backend/src/lib/site.js.
+  businessName: "Rentwin Araç Kiralama",
   url: "https://rentwin.com.tr",
   address: rentwinAddress,
   streetAddress: "Atatürk Mah. 356 Sk. No: 16/31",
