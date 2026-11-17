@@ -15,7 +15,7 @@ Bu klasörde:
 ## 1. Bugün: sayfayı hazırla (15 dakika)
 
 - [ ] **Sayfayı takip et.** Kendi kişisel hesabınla ve çalışanlarının hesaplarıyla sayfayı takip et. Hiç takipçisi olmayan bir sayfa, yeni gelen ziyaretçiye güven vermez.
-- [ ] **Sayfa adını değiştir.** Şu anki ad "rentwin". Tabela ve Google profiliyle aynı olsun diye **"Rentwin Araç Kiralama"** yapılıyor ("Aliağa" eklenmez; ad her yerde birebir aynı olmalı). 17 Kasım 2026: istek Ayarlar › Genel Sayfa ayarları › Adın üzerinden hazırlandı; Facebook gönderim için hesap şifresini istiyor, sahibi girecek. İnceleme 3 güne kadar sürebilir; onaydan sonra ad 60 gün değiştirilemez. Instagram ve YouTube'da ad zaten "Rentwin Araç Kiralama".
+- [x] **Sayfa adını değiştir.** Eski ad "rentwin". Tabela ve Google profiliyle aynı olsun diye **"Rentwin Araç Kiralama"** yapıldı ("Aliağa" eklenmez; ad her yerde birebir aynı olmalı). 17 Kasım 2026: istek Ayarlar › Genel Sayfa ayarları › Adın üzerinden hazırlandı, sahibi şifresini girip gönderdi; ad hemen sayfada göründü. Ad 60 gün boyunca (16 Ocak 2027'ye kadar) tekrar değiştirilemez. Instagram ve YouTube'da ad zaten "Rentwin Araç Kiralama".
 - [ ] **Tanıtım yazısını düzelt.** Şu anki yazıda virgülden sonra boşluk eksik. Önerilen yazı (83 karakter; sınır 101):
   `Aliağa ve İzmir’de günlük ve aylık araç kiralama. Havalimanı teslimi, depozito yok.`
 - [ ] **Eylem butonunu ayarla.** Önerim **"WhatsApp ile mesaj gönder"** (0507 350 31 35). Diğer seçenek, **"Rezervasyon yap"** butonunu şu adrese bağlamak:
