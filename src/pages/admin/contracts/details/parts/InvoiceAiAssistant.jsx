@@ -7,6 +7,8 @@ import { utils } from "../../../../../utils";
 import "./invoice-ai.scss";
 
 const trDate = (iso) => (iso ? iso.split("-").reverse().join(".") : "…");
+// "ALİAĞA VERGİ DAİRESİ" already says it — only bare names get " VD".
+const vd = (office) => (/VERG[İI]s*DA[İI]RES|(^|s)V.?D.?$/i.test(office) ? office : `${office} VD`);
 
 // "Yapay zekâ ile hazırla": the admin writes an instruction, Claude picks the
 // period and billable items, the backend prices them from the contract
@@ -46,7 +48,7 @@ const InvoiceAiAssistant = ({ contractId, money, onApply, onClose }) => {
         `${i + 1}) ${l.description} — ${l.quantity} ${l.unit} × ${money(l.unitPriceNet)} TL, KDV %${l.vatRate} — ${a("lineNet")} ${money(l.netAmount)} TL`
     );
     const text = [
-      `${a("buyer")}: ${b.title}${b.taxNo ? ` (${b.taxNoLabel} ${b.taxNo}${b.taxOffice ? `, ${b.taxOffice} VD` : ""})` : ""}`,
+      `${a("buyer")}: ${b.title}${b.taxNo ? ` (${b.taxNoLabel} ${b.taxNo}${b.taxOffice ? `, ${vd(b.taxOffice)}` : ""})` : ""}`,
       b.address ? `${a("address")}: ${b.address}` : null,
       draft.periodFrom ? `${a("period")}: ${trDate(draft.periodFrom)} – ${trDate(draft.periodTo)}` : null,
       ...rows,
@@ -118,7 +120,7 @@ const InvoiceAiAssistant = ({ contractId, money, onApply, onClose }) => {
               <span>{a("buyer")}</span>
               <strong>{draft.billTo.title || "—"}</strong>
               <em>
-                {[draft.billTo.taxNo && `${draft.billTo.taxNoLabel} ${draft.billTo.taxNo}`, draft.billTo.taxOffice && `${draft.billTo.taxOffice} VD`]
+                {[draft.billTo.taxNo && `${draft.billTo.taxNoLabel} ${draft.billTo.taxNo}`, draft.billTo.taxOffice && vd(draft.billTo.taxOffice)]
                   .filter(Boolean)
                   .join(" · ") || "—"}
               </em>

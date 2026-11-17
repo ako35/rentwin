@@ -165,7 +165,7 @@ const lineFromGross = ({ kind, description, gross, vatRate, quantity = 1, unit =
 // dropped with a warning instead of guessed.
 const computeInvoiceDraft = (contract, ai) => {
   const vatRate = contract.vatRate ?? 20;
-  const warnings = [...(ai.warnings || [])];
+  let warnings = [...(ai.warnings || [])];
   const lines = [];
   const unit = unitPriceOf(contract);
 
@@ -272,7 +272,12 @@ const computeInvoiceDraft = (contract, ai) => {
     for (const inv of contract.invoices || []) {
       const a = isoDay(inv.periodFrom);
       const b = isoDay(inv.periodTo);
-      if (a && b && a < pt && pf < b) warnings.push(`Bu dönem ${inv.number} numaralı faturanın dönemiyle (${trDay(a)} – ${trDay(b)}) çakışıyor.`);
+      if (a && b && a < pt && pf < b) {
+        // One overlap message per invoice: the model often words the same
+        // point itself — keep the precise server-side one.
+        warnings = warnings.filter((w) => !w.includes(inv.number));
+        warnings.push(`Bu dönem ${inv.number} numaralı faturanın dönemiyle (${trDay(a)} – ${trDay(b)}) çakışıyor.`);
+      }
     }
   }
   if (!contract.lessorCompany) warnings.push("Kontratta kiraya veren şirket (Şair / Movilo) seçili değil; faturanın hangi şirketten kesileceğini kontrol edin.");
