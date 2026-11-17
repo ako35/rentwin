@@ -110,6 +110,7 @@ const routes = {
   adminBlog: "/admin/blog",
   adminCampaigns: "/admin/campaigns",
   adminReviews: "/admin/reviews",
+  adminGoogleReviews: "/admin/reviews/google",
   adminComingSoon: "/admin/coming-soon",
   adminContactMessages: "/admin/contact-messages",
   adminDashboard: "/admin",

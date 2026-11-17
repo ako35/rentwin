@@ -36,3 +36,19 @@ export const deleteReview = async (id) => {
   const response = await axios.delete(`${API_URL}/reviews/${id}`, services.authHeader());
   return response.data;
 };
+
+// "Google Yorumu İste" (/admin/reviews/google): customers with a returned
+// rental, { pending, requested }. Opening the WhatsApp request marks the
+// customer as asked; clearing undoes it.
+export const getGoogleReviewRequests = async () => {
+  const response = await axios.get(`${API_URL}/reviews/google-requests`, services.authHeader());
+  return response.data;
+};
+export const markGoogleReviewRequested = async (userId) => {
+  const response = await axios.post(`${API_URL}/reviews/google-requests/${userId}`, {}, services.authHeader());
+  return response.data;
+};
+export const clearGoogleReviewRequested = async (userId) => {
+  const response = await axios.delete(`${API_URL}/reviews/google-requests/${userId}`, services.authHeader());
+  return response.data;
+};

@@ -1415,6 +1415,7 @@
     "campaigns": "Campaigns",
     "blog": "Blog",
     "reviews": "Reviews",
+    "googleReviews": "Ask for Google Reviews",
     "backToWebsite": "Back To Website",
     "logout": "Logout",
     "logoutConfirmTitle": "Logout",
@@ -1855,6 +1856,30 @@
     "deleteText": "You won't be able to revert this action!",
     "actionSuccess": "Action completed.",
     "actionError": "There was an error completing the action."
+  },
+  "googleReviewsPage": {
+    "title": "Ask for Google Reviews",
+    "hint": "Customers who returned a car, latest return first. “Open in WhatsApp” opens the message ready to send; you press Send. Don't send it to family, staff or friends: Google removes those reviews.",
+    "views": {
+      "pending": "Not asked",
+      "requested": "Asked"
+    },
+    "table": {
+      "customer": "Customer",
+      "lastReturn": "Last return",
+      "rentals": "Rentals",
+      "requestedAt": "Asked on",
+      "actions": "Action"
+    },
+    "open": "Open in WhatsApp",
+    "noPhone": "No phone",
+    "undo": "Undo",
+    "empty": {
+      "pending": "Everyone has been asked. New returns show up here.",
+      "requested": "Nobody has been asked yet."
+    },
+    "loadError": "Couldn't load the list.",
+    "saveError": "Couldn't save; the list was reloaded."
   },
   "comingSoon": {
     "title": "Coming Soon",

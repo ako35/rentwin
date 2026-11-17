@@ -9,6 +9,9 @@ const {
   approveReview,
   rejectReview,
   deleteReview,
+  getGoogleReviewRequests,
+  markGoogleReviewRequested,
+  clearGoogleReviewRequested,
 } = require("./reviews.controller");
 
 const router = Router();
@@ -17,6 +20,9 @@ router.post("/reviews/visitors", publicWriteLimiter, submitReview);
 router.get("/reviews", getReviews);
 
 router.get("/reviews/pages", authenticate, requireAdmin, getReviewsByPageAdmin);
+router.get("/reviews/google-requests", authenticate, requireAdmin, getGoogleReviewRequests);
+router.post("/reviews/google-requests/:userId", authenticate, requireAdmin, markGoogleReviewRequested);
+router.delete("/reviews/google-requests/:userId", authenticate, requireAdmin, clearGoogleReviewRequested);
 router.post("/reviews/:id/approve", authenticate, requireAdmin, approveReview);
 router.post("/reviews/:id/reject", authenticate, requireAdmin, rejectReview);
 router.delete("/reviews/:id", authenticate, requireAdmin, deleteReview);

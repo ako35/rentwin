@@ -9,6 +9,7 @@ const {
   maskName,
   round1,
 } = require("./reviews.shared");
+const { summarizeGoogleReviewCandidates } = require("./google-review-requests");
 
 const ALLOWED_SORT_FIELDS = ["id", "createdAt", "rating", "status"];
 const STATUSES = ["PENDING", "APPROVED", "REJECTED"];
@@ -103,6 +104,43 @@ const deleteReview = asyncHandler(async (req, res) => {
   res.json({ message: "Review deleted." });
 });
 
+// Admin — "Google Yorumu İste": customers with a returned rental, split into
+// not-yet-asked / asked (google-review-requests.js). A few dozen rows, so no
+// paging.
+const getGoogleReviewRequests = asyncHandler(async (req, res) => {
+  const users = await prisma.user.findMany({
+    where: { contracts: { some: { status: "DONE" } } },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      companyTitle: true,
+      phoneNumber: true,
+      roles: true,
+      googleReviewRequestedAt: true,
+      contracts: { where: { status: "DONE" }, select: { returnedAt: true, dropOffTime: true } },
+    },
+  });
+  res.json(summarizeGoogleReviewCandidates(users));
+});
+
+// Admin — stamped when the WhatsApp request is opened (this list or the
+// contract page's "Google Yorumu İste" button); DELETE undoes it.
+const setGoogleReviewRequested = (requested) =>
+  asyncHandler(async (req, res) => {
+    const user = await prisma.user.findUnique({ where: { id: req.params.userId }, select: { id: true } });
+    if (!user) throw new HttpError(404, "Customer not found.");
+    const updated = await prisma.user.update({
+      where: { id: user.id },
+      data: { googleReviewRequestedAt: requested ? new Date() : null },
+      select: { id: true, googleReviewRequestedAt: true },
+    });
+    res.json({ id: updated.id, requestedAt: updated.googleReviewRequestedAt });
+  });
+
+const markGoogleReviewRequested = setGoogleReviewRequested(true);
+const clearGoogleReviewRequested = setGoogleReviewRequested(false);
+
 module.exports = {
   submitReview,
   getReviews,
@@ -110,4 +148,7 @@ module.exports = {
   approveReview,
   rejectReview,
   deleteReview,
+  getGoogleReviewRequests,
+  markGoogleReviewRequested,
+  clearGoogleReviewRequested,
 };

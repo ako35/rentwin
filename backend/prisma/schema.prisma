@@ -133,6 +133,7 @@ model User {
   district             String?
   active               Boolean         @default(true)
   notes                String?
+  googleReviewRequestedAt DateTime? // last time the admin opened the "Google yorumu iste" WhatsApp message for this customer; null = never asked
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
   reservations         Reservation[]   @relation("ReservationCustomer")

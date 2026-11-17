@@ -1415,6 +1415,7 @@
     "campaigns": "Kampanyalar",
     "blog": "Blog",
     "reviews": "Yorumlar",
+    "googleReviews": "Google Yorumu İste",
     "backToWebsite": "Web Sitesine Dön",
     "logout": "Çıkış Yap",
     "logoutConfirmTitle": "Çıkış Yap",
@@ -1855,6 +1856,30 @@
     "deleteText": "Bu işlemi geri alamazsınız!",
     "actionSuccess": "İşlem tamamlandı.",
     "actionError": "İşlem sırasında bir hata oluştu."
+  },
+  "googleReviewsPage": {
+    "title": "Google Yorumu İste",
+    "hint": "Aracı teslim etmiş müşteriler, en son teslim en üstte. “WhatsApp'ta aç” mesajı hazır yazılmış olarak açar, Gönder'e siz basarsınız. Aile, çalışan ve tanıdıklara göndermeyin: Google bu yorumları kaldırıyor.",
+    "views": {
+      "pending": "İstenmedi",
+      "requested": "İstendi"
+    },
+    "table": {
+      "customer": "Müşteri",
+      "lastReturn": "Son teslim",
+      "rentals": "Kiralama",
+      "requestedAt": "İstendiği gün",
+      "actions": "İşlem"
+    },
+    "open": "WhatsApp'ta aç",
+    "noPhone": "Telefon yok",
+    "undo": "Geri al",
+    "empty": {
+      "pending": "Yorum istenmemiş müşteri kalmadı. Yeni teslimler burada görünür.",
+      "requested": "Henüz kimseden yorum istenmedi."
+    },
+    "loadError": "Liste yüklenemedi.",
+    "saveError": "Kaydedilemedi, liste yenilendi."
   },
   "comingSoon": {
     "title": "Yakında",

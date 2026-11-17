@@ -1,0 +1,65 @@
+.admin-google-reviews {
+    &__toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 0.5rem;
+
+        h2 {
+            font-size: 1.3rem;
+            color: var(--rw-ink-strong);
+            margin: 0;
+        }
+    }
+
+    &__count {
+        display: inline-block;
+        min-width: 1.4rem;
+        margin-left: 0.4rem;
+        padding: 0 0.35rem;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.08);
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1.4rem;
+        text-align: center;
+    }
+
+    .btn-primary &__count {
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+    &__hint {
+        color: var(--rw-ink-soft);
+        font-size: 0.85rem;
+        max-width: 760px;
+        margin-bottom: 1rem;
+    }
+
+    &__table td {
+        vertical-align: middle;
+    }
+
+    &__name {
+        font-weight: 500;
+    }
+
+    &__actions {
+        white-space: nowrap;
+        text-align: right;
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+    }
+
+    &__muted,
+    &__empty {
+        color: var(--rw-ink-subtle);
+        font-size: 0.85rem;
+    }
+}

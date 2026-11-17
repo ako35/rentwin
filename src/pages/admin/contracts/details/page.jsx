@@ -314,6 +314,10 @@ const ContractDetail = () => {
         })
       )}`
     : "";
+  // Opening it also ticks the customer off the "Google Yorumu İste" list.
+  const handleReviewRequest = () => {
+    if (customer?.id) services.review.markGoogleReviewRequested(customer.id).catch(() => {});
+  };
 
   if (loading) return <Loading />;
 
@@ -399,6 +403,7 @@ const ContractDetail = () => {
           errors={isCreate ? formik.errors : undefined}
           status={contractStatus}
           reviewRequestHref={reviewRequestHref}
+          onReviewRequest={handleReviewRequest}
           onDiscard={() => navigate(routes.adminContracts)}
           onDelete={handleDelete}
           onVehicleReturn={handleVehicleReturn}

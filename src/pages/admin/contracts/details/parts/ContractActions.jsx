@@ -18,7 +18,7 @@ const PRINT_DOCS = ["sozlesme", "ek1", "tutanak"];
 // has a usable phone also gets "Google Yorumu İste": a WhatsApp link with a
 // ready review request — the admin still presses send in WhatsApp.
 const ContractActions = ({
-  isCreate, contractId, updating, deleting, canSave, status, errors, reviewRequestHref,
+  isCreate, contractId, updating, deleting, canSave, status, errors, reviewRequestHref, onReviewRequest,
   onDiscard, onDelete, onVehicleReturn, onCancelContract, onReopen,
 }) => {
   const { t } = useTranslation("admin");
@@ -92,6 +92,7 @@ const ContractActions = ({
             href={reviewRequestHref}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={onReviewRequest}
             title={c("reviewRequest.title")}
           >
             <FaWhatsapp /> {c("reviewRequest.button")}

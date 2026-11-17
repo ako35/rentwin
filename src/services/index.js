@@ -25,7 +25,17 @@ import { addExtra, deleteExtra, getExtras, updateExtra } from "./extra/extra-ser
 import { addAnnouncement, deleteAnnouncement, getActiveAnnouncements, getAnnouncements, updateAnnouncement } from "./announcement/announcement-service";
 import { addCampaign, deleteCampaign, getCampaigns, getCampaignsAdmin, updateCampaign, uploadCampaignImage } from "./campaign/campaign-service";
 import { addBlogPost, deleteBlogPost, getBlogPostBySlug, getBlogPosts, getBlogPostsAdmin, updateBlogPost, uploadBlogImage } from "./blog/blog-service";
-import { approveReview, deleteReview, getReviews, getReviewsByPageAdmin, rejectReview, submitReview } from "./review/review-service";
+import {
+  approveReview,
+  clearGoogleReviewRequested,
+  deleteReview,
+  getGoogleReviewRequests,
+  getReviews,
+  getReviewsByPageAdmin,
+  markGoogleReviewRequested,
+  rejectReview,
+  submitReview,
+} from "./review/review-service";
 import { getSettings, updateSettings } from "./settings/settings-service";
 import { getKabisSystems, addKabisSystem, deleteKabisSystem } from "./kabis-system/kabis-system-service";
 
@@ -222,6 +232,9 @@ export const services = {
         approveReview,
         rejectReview,
         deleteReview,
+        getGoogleReviewRequests,
+        markGoogleReviewRequested,
+        clearGoogleReviewRequested,
     },
     ledger: {
         getUserLedger,
