@@ -4,6 +4,15 @@ Aliağa Ticaret Odası üyelerinden çıkarılan iletişim listesine (`C:\temp\A
 
 Fiyatlar 17 Kasım 2026'da sitedeki fiyat sayfasından (`/arac-kiralama-fiyatlari`) alındı; değişirse e-postadaki tabloyu da güncelleyin. Metindeki her avantaj sitede zaten yazan bir bilgi (depozito yok, şirkete fatura, bakım ve muayene takibi, havalimanı teslimi, 7 gün açık ofis, toplu kiralama).
 
+## Gönderim planı (17 Kasım 2026)
+
+- **Alıcılar:** "İletişim Bulunanlar" sayfasından e-postası olan, önceliği Düşük olmayan firmalar; aynı adresi paylaşan şubeler birleştirildi; perakende zincirleri, Rentwin'in kendi şirketleri (Şair Turizm, Movilo) ve araç kiralama rakipleri (NACE 77.1) çıkarıldı. Sonuç: **175 adres** (45 büyük tesis şablonu, 130 KOBİ şablonu).
+- **Takvim:** iş günlerinde günde en fazla 40: 18, 19, 20, 23 Kasım (40'ar) ve 24 Kasım (15).
+- **Gönderen:** info@rentwin.com.tr, webmail https://webmail.maillb.com (Atak Domain "Mail LB"); oturumu sahibi açar. İmza: Ali Koçan.
+- **Akış:** Zamanlanmış görev `rentwin-b2b-teklif-epostalari` her iş günü ~09:30'da o günün partisini ve örnek metinleri gösterir, webmail'e kendi adresine örnek taslak kaydeder, **sahibinin sohbette açık onayını bekler**, sonra tek tek gönderir. Geri dönen ve "çıkmak istiyorum" diyen adresleri işaretler; yanıtlara cevap vermez.
+- **Dosyalar (depoda değil):** `C:\temp\rentwin-b2b\send-plan.json` (alıcı, konu, metin, durum), `Gonderim-Plani.xlsx` (takip tablosu), `mark.cjs` (durum kaydı).
+- Tüm partiler bitince görev kendini kapatır ve yanıt vermeyenlere tek bir hatırlatma (Şablon 3) için ayrı görev önerir.
+
 ## Gönderirken
 
 - **Kimden:** Mümkünse `info@rentwin.com.tr` adresinden. Gmail gibi ücretsiz adresler firmalarda daha sık spam'e düşer.
