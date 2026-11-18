@@ -13,6 +13,10 @@ Fiyatlar 17 Kasım 2026'da sitedeki fiyat sayfasından (`/arac-kiralama-fiyatlar
 - **Dosyalar (depoda değil):** `C:\temp\rentwin-b2b\send-plan.json` (alıcı, konu, metin, durum), `Gonderim-Plani.xlsx` (takip tablosu), `mark.cjs` (durum kaydı).
 - Tüm partiler bitince görev kendini kapatır ve yanıt vermeyenlere tek bir hatırlatma (Şablon 3) için ayrı görev önerir.
 
+18 Kasım 2026: sahibinin isteğiyle Citroën C3, Isuzu NPR3D ve Fiat Ducato tekliflerden çıkarıldı (şablonlar ve bekleyen tüm e-postalar).
+
+**Gönderim kaydı:** 18 Kasım 2026, 1. parti: 40 e-posta gönderildi (sabahki görev webmail oturumu kapalı olduğu için durdu; sahibinin onayıyla ana oturumdan gönderildi). 1 geri dönüş: info@tupras.com.tr (alıcının posta kutusu dolu; alternatif kurumsal.iletisim@tupras.com.tr, sahibinin onayı gerekir). 1 otomatik yanıt ("ilgili ekiplere iletildi"). Kalan 135 firma iş günü partileriyle (19, 20, 23, 24 Kasım).
+
 ## Gönderirken
 
 - **Kimden:** Mümkünse `info@rentwin.com.tr` adresinden. Gmail gibi ücretsiz adresler firmalarda daha sık spam'e düşer.
@@ -40,12 +44,12 @@ Aliağa'da faaliyet gösteren Rentwin Araç Kiralama olarak tesisinizin binek ve
 
 Aylık kiralama fiyatlarımızdan bazıları (KDV hariç):
 
-  Binek    Citroën C3, Fiat Egea .................. 45.000 TL'den
+  Binek    Fiat Egea .............................. 45.000 TL'den
            Renault Clio ........................... 55.000 TL
            Renault Taliant, Skoda Octavia (otomatik) 75.000 TL
   Ticari   Fiat Fiorino ........................... 55.000 TL
            Fiat Doblo ............................. 60.000 TL
-           Fiat Ducato, Ford Transit Çift Kabin ... 85.000 TL
+           Ford Transit Çift Kabin ................ 85.000 TL
   Personel Citroën Jumpy SpaceTourer (otomatik) .. 110.000 TL
 
 Kurumsal kiralamalarda:
@@ -85,9 +89,8 @@ Aliağa'dan Rentwin Araç Kiralama olarak yazıyorum. Şantiye, saha ve servis i
 Aylık fiyatlarımızdan bazıları (KDV hariç):
 - Fiat Fiorino: 55.000 TL
 - Fiat Doblo: 60.000 TL
-- Ford Transit Çift Kabin / Fiat Ducato: 85.000 TL
-- Isuzu NPR3D kamyonet: 110.000 TL
-- Binek (Citroën C3, Fiat Egea): 45.000 TL'den
+- Ford Transit Çift Kabin: 85.000 TL
+- Binek (Fiat Egea): 45.000 TL'den
 
 Depozito almıyoruz, faturayı şirketinize kesiyoruz. Aynı modelden birden fazla aracımız olduğu için ekibinize toplu araç verebiliyoruz. Bakım ve muayene takibi bizde; ofisimiz Aliağa'da ve haftanın 7 günü açık.
 
