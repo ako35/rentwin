@@ -8,6 +8,12 @@
   ],
   "routes": [
     {
+      "src": "/(.*)",
+      "has": [{ "type": "host", "value": "www.rentwin.com.tr" }],
+      "status": 308,
+      "headers": { "Location": "https://rentwin.com.tr/$1" }
+    },
+    {
       "src": "/araclar/ford-transit/?",
       "status": 301,
       "dest": "/vehicles/4bd9e816-44af-462f-a178-c79111cca207"

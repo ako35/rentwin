@@ -5,5 +5,18 @@ Disallow: /auth
 Disallow: /user
 Disallow: /forbidden
 Disallow: /api/
+# Public, read-only endpoints the pages load their content from. Google renders
+# pages with JavaScript, and the app replaces the prerendered HTML with what it
+# fetches from these; blocked, every location/vehicle/blog page renders as the
+# same "could not load" template and Google folds them together as duplicates.
+Allow: /api/locations
+Allow: /api/branches
+Allow: /api/campaigns
+Allow: /api/blog
+Allow: /api/reviews
+Allow: /api/car/visitors/
+Allow: /api/files/display/
+# Longer than the Allow rules above, so admin endpoints stay disallowed.
+Disallow: /api/*/admin/
 
 Sitemap: https://rentwin.com.tr/sitemap.xml
