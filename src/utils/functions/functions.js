@@ -177,3 +177,10 @@ export const getDateUTC = (dateTime) => {
 export const getTimeUTC = (dateTime) => {
     return moment.utc(dateTime).format("HH:mm")
 }
+
+// Wall-clock pickUpTime / dropOffTime for display ("28.11.2026 10:00").
+// formatDateTime is for real instants (createdAt, updatedAt) and shifts by
+// the browser's offset, which showed a 10:00 pick-up as 1:00 PM.
+export const formatWallDateTime = (dateTime) => {
+    return dateTime ? moment.utc(dateTime).format("DD.MM.YYYY HH:mm") : ""
+}

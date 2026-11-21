@@ -30,11 +30,11 @@ const UserReservationDetailsAccordion = (props) => {
                 },
                 {
                     label: t("reservations.details.pickUpTime"),
-                    value: utils.functions.formatDateTime(pickUpTime),
+                    value: utils.functions.formatWallDateTime(pickUpTime),
                 },
                 {
                     label: t("reservations.details.dropOffTime"),
-                    value: utils.functions.formatDateTime(dropOffTime),
+                    value: utils.functions.formatWallDateTime(dropOffTime),
                 },
                 {
                     label: t("reservations.details.status"),

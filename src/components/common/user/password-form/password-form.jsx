@@ -55,9 +55,9 @@ const UserPasswordForm = () => {
   return (
     <Form noValidate onSubmit={formik.handleSubmit}>
       <fieldset disabled={builtIn}>
-        {passwordItems.map((item) => {
-          <PasswordInput key={item.name} formik={formik} {...item} />;
-        })}
+        {passwordItems.map((item) => (
+          <PasswordInput key={item.name} formik={formik} {...item} />
+        ))}
         <Button
           type="submit"
           disabled={!(formik.isValid && formik.dirty) || loading}

@@ -17,5 +17,13 @@ module.exports = {
       { allowConstantExport: true },
     ],
     'react/prop-types': 'off',
+    // A .map() callback with a block body and no `return` renders nothing.
+    // That silently emptied the customer's reservations list and hid the
+    // password fields on the profile page for months, so make it an error.
+    'array-callback-return': ['error', { checkForEach: false }],
+    'no-unused-expressions': [
+      'error',
+      { allowShortCircuit: true, allowTernary: true, enforceForJSX: true },
+    ],
   },
 }

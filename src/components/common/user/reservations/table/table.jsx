@@ -41,10 +41,10 @@ const UserReservationsTable = (props) => {
               reservation?.car?.model,
               `${
                 reservation?.pickUpLocation
-              } - ${utils.functions.formatDateTime(reservation?.pickUpTime)}`,
+              } - ${utils.functions.formatWallDateTime(reservation?.pickUpTime)}`,
               `${
                 reservation?.dropOffLocation
-              } - ${utils.functions.formatDateTime(reservation?.dropOffTime)}`,
+              } - ${utils.functions.formatWallDateTime(reservation?.dropOffTime)}`,
             ].map((item, index) => (
               <td key={index}>{item}</td>
             ))}

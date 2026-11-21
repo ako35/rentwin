@@ -14,6 +14,7 @@ import {
   getTime,
   getDateUTC,
   getTimeUTC,
+  formatWallDateTime,
 } from "./functions/functions";
 
 // INITIAL VALUES
@@ -76,6 +77,7 @@ export const utils = {
     getTime,
     getDateUTC,
     getTimeUTC,
+    formatWallDateTime,
   },
   initialValues: {
     loginFormInitialValues,
