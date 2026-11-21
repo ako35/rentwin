@@ -58,7 +58,11 @@
     "noReservation": "—",
     "noRented": "No rented vehicles.",
     "noAvailable": "No available vehicles.",
-    "rowHint": "Click a Rented row for its contract, an Available row for the vehicle page."
+    "rowHint": "Click a Rented row for its contract, an Available row for the vehicle page.",
+    "dropOffShort": "Drop-off",
+    "reservationShort": "Reservation",
+    "noUpcomingReservation": "No upcoming reservation",
+    "cardHint": "Tap a Rented card for its contract, an Available card for the vehicle page."
   },
   "scheduleTable": {
     "windows": {

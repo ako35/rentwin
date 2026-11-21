@@ -58,7 +58,11 @@
     "noReservation": "—",
     "noRented": "Kirada araç yok.",
     "noAvailable": "Boşta araç yok.",
-    "rowHint": "Kontrat için Kirada satırına, araç sayfası için Boşta satırına tıklayın."
+    "rowHint": "Kontrat için Kirada satırına, araç sayfası için Boşta satırına tıklayın.",
+    "dropOffShort": "Bırakış",
+    "reservationShort": "Rezervasyon",
+    "noUpcomingReservation": "Yaklaşan rezervasyon yok",
+    "cardHint": "Kontrat için Kirada kartına, araç sayfası için Boşta kartına dokunun."
   },
   "scheduleTable": {
     "windows": {

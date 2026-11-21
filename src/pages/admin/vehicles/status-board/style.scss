@@ -195,4 +195,149 @@
     color: v.$color5_4;
     text-align: center;
   }
+
+  // Dar ekran (telefon / ana ekrana eklenen uygulama): tablolar yerine kartlar,
+  // dashboard'daki program kartlarıyla aynı düzen (schedule-table.scss).
+  &__cards,
+  &__hint-cards {
+    display: none;
+  }
+
+  @media (max-width: 575.98px) {
+    &__table-wrap,
+    &__hint-table {
+      display: none;
+    }
+
+    &__hint-cards {
+      display: inline;
+    }
+
+    &__cards {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.6rem;
+    }
+
+    &__head {
+      padding: 0.75rem 0.8rem;
+    }
+
+    &__search {
+      flex: 1 1 100%;
+      min-width: 0;
+    }
+  }
+
+  &__cards-empty {
+    text-align: center;
+    padding: 1.25rem 0;
+    font-size: 0.82rem;
+    color: v.$color5_3;
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    color: v.$color5;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid v.$color3;
+    border-radius: 8px;
+    padding: 0.6rem 0.7rem;
+
+    &:hover,
+    &:active {
+      color: v.$color5;
+      background-color: v.$color4;
+    }
+
+    &:focus-visible {
+      outline: 2px solid v.$color1;
+      outline-offset: 2px;
+    }
+
+    &--overdue {
+      background-color: rgba(185, 58, 58, 0.08);
+      border-color: rgba(185, 58, 58, 0.35);
+    }
+  }
+
+  &__card-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.5rem;
+  }
+
+  &__card-plate {
+    color: v.$color1;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    border: 1.5px solid currentColor;
+    border-radius: 4px;
+    padding: 0 0.4rem;
+    white-space: nowrap;
+  }
+
+  &__card-vehicle {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: v.$color5_3;
+  }
+
+  &__card-due {
+    margin-left: auto;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background-color: v.$color3;
+    color: #1f6f31;
+  }
+
+  &__card--overdue &__card-due {
+    background-color: #b93a3a;
+    color: #fff;
+  }
+
+  &__card-when {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.15rem 0.5rem;
+    font-size: 0.85rem;
+
+    strong {
+      font-size: 1rem;
+      color: #1f6f31;
+    }
+  }
+
+  &__card--overdue &__card-when strong {
+    color: #b93a3a;
+  }
+
+  &__card-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: v.$color5_3;
+  }
+
+  &__card-none,
+  &__card-specs {
+    font-size: 0.78rem;
+    color: v.$color5_3;
+  }
+
+  &__card-customer {
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
 }

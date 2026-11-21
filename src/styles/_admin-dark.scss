@@ -775,6 +775,25 @@
       }
       &__row:hover td { background-color: var(--rw-hover); }
       &__empty { color: var(--rw-ink-muted); }
+
+      /* phone-width cards. The cards are <a>s, so the generic admin link
+         colour above would turn their text blue — give each part its own. */
+      &__card {
+        background-color: var(--rw-inset);
+        border-color: var(--rw-line);
+        &:hover, &:active { background-color: var(--rw-hover); }
+      }
+      &__card--overdue {
+        background-color: rgba(225, 29, 72, 0.12);
+        border-color: rgba(225, 29, 72, 0.35);
+      }
+      &__card-plate { color: #86efac; }
+      &__card-when, &__card-customer { color: var(--rw-ink); }
+      &__card-vehicle, &__card-label, &__card-none, &__card-specs, &__cards-empty { color: var(--rw-ink-muted); }
+      &__card-due { background-color: rgba(34, 197, 94, 0.18); color: #bbf7d0; }
+      &__card--overdue .status-board__card-due { background-color: #b93a3a; color: #fff; }
+      &__card-when strong { color: #86efac; }
+      &__card--overdue .status-board__card-when strong { color: #fda4af; }
     }
 
     /* ---- KABİS system / admin account lists (Ayarlar) --------------- */
