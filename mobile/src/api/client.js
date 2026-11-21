@@ -4,6 +4,9 @@ import { getToken, clearSession } from "../auth/session";
 
 export const API_URL = Constants.expoConfig.extra.apiUrl;
 
+// axios.create is axios's documented way to make an instance; the named
+// `create` export the lint rule suggests is the same function.
+// eslint-disable-next-line import/no-named-as-default-member
 const http = axios.create({ baseURL: API_URL });
 
 // AuthContext registers this so a dead token anywhere sends the user back to
