@@ -73,9 +73,13 @@ const serializeReservation = (reservation) => {
 // customer UI (user reservations list + detail, booking form) only shows
 // model, transmission, fuel type and image, so plate, chassis/engine no,
 // registration, km/fuel, notes, tracking flags and branch stay admin-only.
-const serializeCustomerReservation = (reservation) => {
+// Pass modelImageMap where the car's photo is shown (the customer's
+// reservation detail) so it resolves to the same model photo the public
+// pages use; without it only the vehicle's own photos count, and most
+// vehicles have none.
+const serializeCustomerReservation = (reservation, modelImageMap) => {
   const { car, ...rest } = reservation;
-  return { ...rest, car: car ? serializePublicVehicle(car) : undefined };
+  return { ...rest, car: car ? serializePublicVehicle(car, modelImageMap) : undefined };
 };
 
 // Lightweight row shape for the admin dashboard's returns/departures tables

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
+    "test": "node --test",
     "postinstall": "prisma generate && node scripts/migrate-on-deploy.js && node scripts/backfill-recompute-contracts.js && node scripts/backfill-orphan-ledger.js",
     "migrate": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",

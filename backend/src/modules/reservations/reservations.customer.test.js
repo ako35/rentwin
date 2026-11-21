@@ -63,8 +63,10 @@ const ADMIN = { id: "user-admin-1", roles: ["Administrator"] };
 
 let reservations;
 let nextId;
+let modelImages = [];
 const resetDb = () => {
   nextId = 1;
+  modelImages = [];
   reservations = [
     {
       id: "rsv-own-1",
@@ -107,6 +109,7 @@ const withIncludes = (row, include = {}) => {
 };
 
 const fakePrisma = {
+  vehicleModelImage: { findMany: async () => modelImages.map((row) => ({ ...row })) },
   vehicle: { findUnique: async ({ where }) => (where.id === CAR.id ? { ...CAR } : null) },
   contract: { findFirst: async () => null },
   user: { findUnique: async ({ where }) => ({ id: where.id }) },
@@ -263,6 +266,18 @@ test("GET /reservations/:id/auth: owner gets public-only car, others get 403", a
   // the admin screens use /reservations/admin/:id/auth (tested below).
   const asAdmin = await call(customer.getReservationById, { user: ADMIN, params: { id: "rsv-own-1" } });
   assertCustomerCar(asAdmin.body.car);
+});
+
+test("GET /reservations/:id/auth shows the model photo when the car has one", async () => {
+  resetDb();
+  const own = await call(customer.getReservationById, { user: CUSTOMER, params: { id: "rsv-own-1" } });
+  assert.deepEqual(own.body.car.image, ["img-clio"]);
+
+  modelImages = [{ id: "model-clio", brand: "Renault", model: "Clio", color: "" }];
+  const withModel = await call(customer.getReservationById, { user: CUSTOMER, params: { id: "rsv-own-1" } });
+  assert.deepEqual(withModel.body.car.image, ["model-clio"]);
+  assert.deepEqual(Object.keys(withModel.body.car).sort(), [...PUBLIC_KEYS].sort());
+  assertNoSecrets(withModel.body);
 });
 
 test("admin reservation routes keep the full car record", async () => {

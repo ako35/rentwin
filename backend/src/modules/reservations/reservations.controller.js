@@ -6,6 +6,7 @@ const { serializeCustomerReservation } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 const { CAR_INCLUDE, ALLOWED_SORT_FIELDS, isAdmin } = require("./reservations.shared");
+const { loadModelImageMap } = require("../vehicles/vehicles.shared");
 
 // Customer-facing booking: hold a car for a date range. Starts PENDING; admin
 // confirms or converts it to a contract.
@@ -39,10 +40,13 @@ const createReservation = asyncHandler(async (req, res) => {
 });
 
 const getReservationById = asyncHandler(async (req, res) => {
-  const reservation = await prisma.reservation.findUnique({
-    where: { id: req.params.id },
-    include: CAR_INCLUDE,
-  });
+  const [reservation, modelImageMap] = await Promise.all([
+    prisma.reservation.findUnique({
+      where: { id: req.params.id },
+      include: CAR_INCLUDE,
+    }),
+    loadModelImageMap(),
+  ]);
   if (!reservation) throw new HttpError(404, "Reservation not found.");
   if (reservation.userId !== req.user.id && !isAdmin(req.user)) {
     throw new HttpError(403, "You do not have access to this reservation.");
@@ -50,7 +54,7 @@ const getReservationById = asyncHandler(async (req, res) => {
 
   // Customer shape even for an admin caller — the admin screens (web + mobile)
   // read the full record from /reservations/admin/:id/auth instead.
-  res.json(serializeCustomerReservation(reservation));
+  res.json(serializeCustomerReservation(reservation, modelImageMap));
 });
 
 const getMyReservationsByPage = asyncHandler(async (req, res) => {
@@ -74,7 +78,7 @@ const getMyReservationsByPage = asyncHandler(async (req, res) => {
 
   res.json(
     buildPageResponse({
-      content: content.map(serializeCustomerReservation),
+      content: content.map((reservation) => serializeCustomerReservation(reservation)),
       totalElements,
       page,
       size,
