@@ -31,8 +31,8 @@ import {
 } from "../../components/admin";
 import { COLORS } from "../../constants/theme";
 import UpdateBanner from "../../components/UpdateBanner";
-import { wallTime } from "../../utils/format";
-import { customerName, wallDate } from "../../utils/admin";
+import { wallTime, wallDate, wallDayName } from "../../utils/format";
+import { customerName } from "../../utils/admin";
 
 function GreetingHeader({ user, selectedBranch, onOpenBranchPicker }) {
   const hour = new Date().getHours();
@@ -205,9 +205,82 @@ function AlertsSection({
   );
 }
 
+// Kontrat saatleri UTC alanlarına yazılmış Türkiye duvar saati; "bugün" ve
+// gecikme hesabı da aynı eksende (nowWall) yapılır.
+const HOUR_MS = 3600000;
+const DAY_MS = 24 * HOUR_MS;
+const wallDayKey = (ms) => new Date(ms).toISOString().slice(0, 10);
+
+const lateLabel = (iso, nowWall) => {
+  const late = nowWall - Date.parse(iso);
+  if (!nowWall || !(late > 0)) return null;
+  if (late >= DAY_MS) return `${Math.floor(late / DAY_MS)} gün gecikti`;
+  if (late >= HOUR_MS) return `${Math.floor(late / HOUR_MS)} saat gecikti`;
+  return "Gecikti";
+};
+
+const dayLabel = (iso, nowWall) => {
+  const t = Date.parse(iso);
+  if (Number.isNaN(t)) return "—";
+  if (nowWall && wallDayKey(t) === wallDayKey(nowWall)) return "Bugün";
+  return `${wallDate(iso)} ${wallDayName(iso)}`;
+};
+
+const stamp = (iso) => `${wallDate(iso)} ${wallTime(iso)}`;
+
+// Her bilgi kendi satırında ve sarabilir (sabit genişlikli sütun yok), böylece
+// küçük ekranda ya da büyük yazı boyutunda tarih/plaka kesilmez.
+function ScheduleRow({ row, timeField, locationField, nowWall }) {
+  const iso = row[timeField];
+  const late = lateLabel(iso, nowWall);
+  const carName = [row.car?.brand, row.car?.model].filter(Boolean).join(" ");
+  const location = row[locationField];
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.scheduleRow,
+        late && styles.scheduleRowLate,
+        pressed && { opacity: 0.7 },
+      ]}
+      onPress={() => router.push(`/(admin)/contracts/${row.id}`)}
+      accessibilityRole="button"
+      accessibilityLabel={`${row.car?.licensePlate || "Araç"}, ${dayLabel(iso, nowWall)} ${wallTime(iso)}, kontrat detayını aç`}
+    >
+      <View style={styles.scheduleTop}>
+        <View style={styles.plateBadge}>
+          <Text style={styles.plateText}>{row.car?.licensePlate || "Plaka yok"}</Text>
+        </View>
+        {carName ? <Text style={styles.scheduleCar}>{carName}</Text> : null}
+        {late ? (
+          <View style={styles.lateBadge}>
+            <Text style={styles.lateText}>{late}</Text>
+          </View>
+        ) : null}
+      </View>
+
+      <View style={styles.scheduleWhen}>
+        <Text style={[styles.scheduleDay, late && styles.textLate]}>🕐 {dayLabel(iso, nowWall)}</Text>
+        <Text style={[styles.scheduleTime, late && styles.textLate]}>{wallTime(iso)}</Text>
+        {location ? <Text style={styles.schedulePlace}>📍 {location}</Text> : null}
+      </View>
+
+      <Text style={styles.scheduleCustomer}>👤 {customerName(row)}</Text>
+
+      <View style={styles.scheduleFoot}>
+        <Text style={styles.scheduleSpan}>
+          {stamp(row.pickUpTime)} → {stamp(row.dropOffTime)}
+        </Text>
+        <Text style={styles.scheduleOpen}>
+          {row.contractNo ? `${row.contractNo} ` : ""}›
+        </Text>
+      </View>
+    </Pressable>
+  );
+}
+
 // Liste geciken kayıtları da içerir (backend alt sınır koymuyor) — tarihi
 // geçmiş olanlar kırmızı işaretlenir.
-function ScheduleGroup({ title, emoji, tint, rows, timeField, nowWall }) {
+function ScheduleGroup({ title, emoji, tint, rows, timeField, locationField, nowWall }) {
   if (!rows.length) return null;
   return (
     <View style={styles.scheduleGroup}>
@@ -218,25 +291,15 @@ function ScheduleGroup({ title, emoji, tint, rows, timeField, nowWall }) {
         <Text style={styles.scheduleLabel}>{title}</Text>
         <Text style={styles.scheduleCount}>{rows.length}</Text>
       </View>
-      {rows.map((r) => {
-        const overdue = Date.parse(r[timeField]) < nowWall;
-        return (
-          <Pressable
-            key={r.id}
-            style={({ pressed }) => [styles.scheduleRow, pressed && { opacity: 0.7 }]}
-            onPress={() => router.push(`/(admin)/contracts/${r.id}`)}
-          >
-            <Text style={[styles.scheduleTime, overdue && { color: COLORS.red }]}>
-              {overdue ? wallDate(r[timeField]) : wallTime(r[timeField])}
-            </Text>
-            <View style={styles.scheduleCopy}>
-              <Text style={styles.schedulePlate}>{r.car?.licensePlate || "—"}</Text>
-              <Text style={styles.scheduleCustomer} numberOfLines={1}>{customerName(r)}</Text>
-            </View>
-            <Text style={styles.scheduleArrow}>›</Text>
-          </Pressable>
-        );
-      })}
+      {rows.map((r) => (
+        <ScheduleRow
+          key={r.id}
+          row={r}
+          timeField={timeField}
+          locationField={locationField}
+          nowWall={nowWall}
+        />
+      ))}
     </View>
   );
 }
@@ -252,6 +315,7 @@ function TodayScheduleSection({ departures, returns, nowWall }) {
         tint={COLORS.greenSoft}
         rows={departures}
         timeField="pickUpTime"
+        locationField="pickUpLocation"
         nowWall={nowWall}
       />
       <ScheduleGroup
@@ -260,6 +324,7 @@ function TodayScheduleSection({ departures, returns, nowWall }) {
         tint={COLORS.redSoft}
         rows={returns}
         timeField="dropOffTime"
+        locationField="dropOffLocation"
         nowWall={nowWall}
       />
     </SectionCard>
@@ -498,18 +563,46 @@ const styles = StyleSheet.create({
   scheduleLabel:    { flex: 1, fontSize: 13, color: COLORS.muted, fontWeight: "700" },
   scheduleCount:    { fontSize: 16, color: COLORS.ink, fontWeight: "800" },
   scheduleRow:      {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.line,
+    backgroundColor: COLORS.canvas,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: COLORS.line,
+    padding: 12,
+    marginTop: 8,
+    gap: 8,
   },
-  scheduleTime:     { width: 54, fontSize: 13, fontWeight: "800", color: COLORS.ink, fontVariant: ["tabular-nums"] },
-  scheduleCopy:     { flex: 1 },
-  schedulePlate:    { fontSize: 14, fontWeight: "800", color: COLORS.ink },
-  scheduleCustomer: { fontSize: 12, color: COLORS.muted, marginTop: 1 },
-  scheduleArrow:    { color: COLORS.muted, fontSize: 20 },
+  scheduleRowLate:  { backgroundColor: COLORS.redSoft, borderColor: "#f1cfc8" },
+  scheduleTop:      { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 8 },
+  plateBadge:       {
+    backgroundColor: "#fff",
+    borderWidth: 1.5,
+    borderColor: COLORS.ink,
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  plateText:        { fontSize: 15, fontWeight: "900", color: COLORS.ink, letterSpacing: 0.5 },
+  scheduleCar:      { flexShrink: 1, fontSize: 13, fontWeight: "700", color: COLORS.muted },
+  lateBadge:        { backgroundColor: COLORS.red, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
+  lateText:         { color: "#fff", fontSize: 11, fontWeight: "800" },
+  scheduleWhen:     { flexDirection: "row", flexWrap: "wrap", alignItems: "baseline", columnGap: 8, rowGap: 2 },
+  scheduleDay:      { fontSize: 14, fontWeight: "700", color: COLORS.ink },
+  scheduleTime:     { fontSize: 18, fontWeight: "900", color: COLORS.green, fontVariant: ["tabular-nums"] },
+  textLate:         { color: COLORS.red },
+  schedulePlace:    { fontSize: 13, color: COLORS.muted },
+  scheduleCustomer: { fontSize: 14, fontWeight: "600", color: COLORS.ink },
+  scheduleFoot:     {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 6,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.line,
+  },
+  scheduleSpan:     { fontSize: 12, color: COLORS.muted, fontVariant: ["tabular-nums"] },
+  scheduleOpen:     { fontSize: 13, fontWeight: "800", color: COLORS.green },
 
   qaGrid:    { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   qaButton:  {
