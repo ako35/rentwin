@@ -77,7 +77,10 @@
     "customer": "Müşteri",
     "days": "Gün",
     "noRecords": "Kayıt bulunamadı",
-    "loadError": "Program yüklenirken bir hata oluştu"
+    "loadError": "Program yüklenirken bir hata oluştu",
+    "today": "Bugün",
+    "daysLeft": "{{days}} gün kaldı",
+    "daysLate": "{{days}} gün gecikti"
   },
   "vehicles": {
     "newVehicle": "Yeni Araç",

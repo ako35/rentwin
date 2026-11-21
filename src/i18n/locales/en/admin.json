@@ -77,7 +77,10 @@
     "customer": "Customer",
     "days": "Days",
     "noRecords": "No records found",
-    "loadError": "There was an error loading the schedule"
+    "loadError": "There was an error loading the schedule",
+    "today": "Today",
+    "daysLeft": "{{days}} days left",
+    "daysLate": "{{days}} days overdue"
   },
   "vehicles": {
     "newVehicle": "New Vehicle",

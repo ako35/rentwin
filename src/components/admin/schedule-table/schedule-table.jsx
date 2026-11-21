@@ -44,6 +44,37 @@ const ScheduleTable = ({ title, type, dateField, branchId, source = "contract", 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window, branchId]);
 
+  const items = rows.map((row) => {
+    const target = row[dateField];
+    // target is a wall-clock pickUp/dropOff value (see
+    // utils/functions/functions.js getDateUTC) — read its calendar
+    // date with the UTC-based helper first, then diff two local
+    // midnights. Diffing moment.utc(target) directly against
+    // moment() would compare different absolute instants (UTC
+    // midnight vs. local midnight) and could throw the day count
+    // off by one near local midnight.
+    const daysRemaining = moment(utils.functions.getDateUTC(target))
+      .startOf("day")
+      .diff(moment().startOf("day"), "days");
+    return {
+      row,
+      target,
+      daysRemaining,
+      customerName:
+        row.user?.companyTitle || `${row.user?.firstName || ""} ${row.user?.lastName || ""}`.trim(),
+      vehicle: [row.car?.brand, row.car?.model].filter(Boolean).join(" "),
+      location: dateField === "pickUpTime" ? row.pickUpLocation : row.dropOffLocation,
+      goToDetails: () =>
+        navigate(`${isReservation ? routes.adminReservations : routes.adminContracts}/${row.id}`),
+    };
+  });
+
+  const dueLabel = (days) => {
+    if (days === 0) return t("scheduleTable.today");
+    if (days > 0) return t("scheduleTable.daysLeft", { days });
+    return t("scheduleTable.daysLate", { days: -days });
+  };
+
   return (
     <div className="schedule-table">
       <div className="schedule-table__header">
@@ -84,45 +115,59 @@ const ScheduleTable = ({ title, type, dateField, branchId, source = "contract", 
               </tr>
             )}
             {!loading &&
-              rows.map((row) => {
-                const target = row[dateField];
-                // target is a wall-clock pickUp/dropOff value (see
-                // utils/functions/functions.js getDateUTC) — read its calendar
-                // date with the UTC-based helper first, then diff two local
-                // midnights. Diffing moment.utc(target) directly against
-                // moment() would compare different absolute instants (UTC
-                // midnight vs. local midnight) and could throw the day count
-                // off by one near local midnight.
-                const daysRemaining = moment(utils.functions.getDateUTC(target))
-                  .startOf("day")
-                  .diff(moment().startOf("day"), "days");
-                const goToDetails = () =>
-                  navigate(`${isReservation ? routes.adminReservations : routes.adminContracts}/${row.id}`);
-                return (
-                  <tr
-                    key={row.id}
-                    onClick={goToDetails}
-                    className={daysRemaining < 0 ? "schedule-table__row--overdue" : ""}
-                  >
-                    <td>{utils.functions.getDateUTC(target)}</td>
-                    <td>{utils.functions.getTimeUTC(target)}</td>
-                    <td className="schedule-table__plate">{row.car?.licensePlate}</td>
-                    <td className="schedule-table__vehicle">{row.car?.brand} {row.car?.model}</td>
-                    {(() => {
-                      const customerName =
-                        row.user?.companyTitle || `${row.user?.firstName || ""} ${row.user?.lastName || ""}`.trim();
-                      return (
-                        <td className="schedule-table__customer" title={customerName}>
-                          {customerName}
-                        </td>
-                      );
-                    })()}
-                    <td>{daysRemaining}</td>
-                  </tr>
-                );
-              })}
+              items.map(({ row, target, daysRemaining, customerName, vehicle, goToDetails }) => (
+                <tr
+                  key={row.id}
+                  onClick={goToDetails}
+                  className={daysRemaining < 0 ? "schedule-table__row--overdue" : ""}
+                >
+                  <td>{utils.functions.getDateUTC(target)}</td>
+                  <td>{utils.functions.getTimeUTC(target)}</td>
+                  <td className="schedule-table__plate">{row.car?.licensePlate}</td>
+                  <td className="schedule-table__vehicle">{vehicle}</td>
+                  <td className="schedule-table__customer" title={customerName}>
+                    {customerName}
+                  </td>
+                  <td>{daysRemaining}</td>
+                </tr>
+              ))}
           </tbody>
         </Table>
+      </div>
+
+      {/* Telefonda tablonun dar sütunları tarihi ve plakayı "…" ile kesiyordu.
+          Dar ekranda tablo gizlenir ve her kayıt, bilgileri alt alta gösteren
+          bir karta dönüşür (görünürlük schedule-table.scss'teki media query'de). */}
+      <div className="schedule-table__cards">
+        {loading && (
+          <div className="schedule-table__cards-state">
+            <Spinner animation="border" size="sm" />
+          </div>
+        )}
+        {!loading && items.length === 0 && (
+          <div className="schedule-table__cards-state">{t("scheduleTable.noRecords")}</div>
+        )}
+        {!loading &&
+          items.map(({ row, target, daysRemaining, customerName, vehicle, location, goToDetails }) => (
+            <button
+              type="button"
+              key={row.id}
+              onClick={goToDetails}
+              className={`schedule-table__card${daysRemaining < 0 ? " schedule-table__card--overdue" : ""}`}
+            >
+              <span className="schedule-table__card-top">
+                <span className="schedule-table__card-plate">{row.car?.licensePlate || "—"}</span>
+                {vehicle && <span className="schedule-table__card-vehicle">{vehicle}</span>}
+                <span className="schedule-table__card-due">{dueLabel(daysRemaining)}</span>
+              </span>
+              <span className="schedule-table__card-when">
+                <span>{moment.utc(target).format("DD.MM.YYYY")}</span>
+                <strong>{utils.functions.getTimeUTC(target)}</strong>
+                {location && <span className="schedule-table__card-place">{location}</span>}
+              </span>
+              {customerName && <span className="schedule-table__card-customer">{customerName}</span>}
+            </button>
+          ))}
       </div>
     </div>
   );

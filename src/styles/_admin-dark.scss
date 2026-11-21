@@ -672,6 +672,26 @@
       .branch-table thead th { color: var(--rw-ink-soft); }
     }
 
+    /* dashboard schedule cards (phone width) */
+    .admin-layout {
+      .schedule-table__card {
+        background-color: var(--rw-inset);
+        border-color: var(--rw-line);
+        color: var(--rw-ink);
+      }
+      .schedule-table__card--overdue {
+        background-color: rgba(225, 29, 72, 0.12);
+        border-color: rgba(225, 29, 72, 0.35);
+      }
+      .schedule-table__card-plate { color: #fda4af; }
+      .schedule-table__card-vehicle,
+      .schedule-table__card-place,
+      .schedule-table__cards-state { color: var(--rw-ink-muted); }
+      .schedule-table__card-due { background-color: rgba(34, 197, 94, 0.18); color: #bbf7d0; }
+      .schedule-table__card-when strong { color: #86efac; }
+      .schedule-table__card--overdue .schedule-table__card-when strong { color: #fda4af; }
+    }
+
     /* the brand-green header bands read as neon on a dark ground — knock them
        back to a deep green, keep the white text */
     .admin-layout :is(

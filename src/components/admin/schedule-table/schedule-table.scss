@@ -118,4 +118,121 @@
         color: v.$color5_3;
         font-size: 0.8rem;
     }
+
+    // Dar ekran (telefon / ana ekrana eklenen uygulama): tablo yerine kartlar.
+    &__cards {
+        display: none;
+    }
+
+    @media (max-width: 575.98px) {
+        &__table-container {
+            display: none;
+        }
+
+        &__cards {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 26rem;
+            overflow-y: auto;
+        }
+    }
+
+    &__cards-state {
+        text-align: center;
+        padding: 0.75rem;
+        font-size: 0.8rem;
+        color: v.$color5_3;
+    }
+
+    &__card {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        width: 100%;
+        text-align: left;
+        font: inherit;
+        color: inherit;
+        background-color: #fff;
+        border: 1px solid v.$color3;
+        border-radius: 8px;
+        padding: 0.6rem 0.7rem;
+        cursor: pointer;
+
+        &:active {
+            background-color: v.$color2_5;
+        }
+
+        &--overdue {
+            background-color: rgba(185, 58, 58, 0.08);
+            border-color: rgba(185, 58, 58, 0.35);
+        }
+    }
+
+    &__card-top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem 0.5rem;
+    }
+
+    &__card-plate {
+        color: #b93a3a;
+        font-size: 0.95rem;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        border: 1.5px solid currentColor;
+        border-radius: 4px;
+        padding: 0 0.4rem;
+        white-space: nowrap;
+    }
+
+    &__card-vehicle {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: v.$color5_3;
+    }
+
+    &__card-due {
+        margin-left: auto;
+        font-size: 0.7rem;
+        font-weight: 700;
+        white-space: nowrap;
+        padding: 0.1rem 0.5rem;
+        border-radius: 999px;
+        background-color: v.$color3;
+        color: #1f6f31;
+    }
+
+    &__card--overdue &__card-due {
+        background-color: #b93a3a;
+        color: #fff;
+    }
+
+    &__card-when {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0.15rem 0.5rem;
+        font-size: 0.85rem;
+
+        strong {
+            font-size: 1rem;
+            color: #1f6f31;
+        }
+    }
+
+    &__card--overdue &__card-when strong {
+        color: #b93a3a;
+    }
+
+    &__card-place {
+        font-size: 0.75rem;
+        color: v.$color5_3;
+    }
+
+    &__card-customer {
+        font-size: 0.82rem;
+        font-weight: 600;
+    }
 }
