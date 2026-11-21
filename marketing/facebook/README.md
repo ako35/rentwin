@@ -448,6 +448,9 @@ Binek araçlar, panelvan ve çift kabin kamyonet. Günlük 2.750 TL + KDV'den, a
 |---|---|---|
 | `reel-filo.mp4` | "Aliağa'da hangi aracı kiralardınız?" Egea, Clio, Octavia, Doblo, Ducato, Transit + fiyat kartı | `reel-filo-kapak.png` |
 | `reel-ticari.mp4` | "İşiniz için araç mı lazım?" Fiorino, Doblo, Ducato, Transit + şirket avantajları | `reel-ticari-kapak.png` |
+| `reel-octavia-gercek.mp4` | **İlk gerçek çekim (20 Kasım):** Octavia otomatik yıkamada ("Her kiralamadan önce araçlarımız yıkanıp hazırlanır") → gece benzinlikte ("Skoda Octavia · Aliağa'da kiralık") → Rentwin kapanış kartı. 18 sn, sessiz; kaynak videolar `marketing/google/gorseller/`. **Planlandı: Pazar 22 Kasım 2026 19:00**, Facebook'ta "Melodius" (Maxfield) müziğiyle ve "araç kiralama, Aliağa, Skoda Octavia, rent a car" etiketleriyle; Instagram'da (@rentwin_tr) ayrı gönderi, müziksiz. Yüklemede 7 MB'lık yeniden kodlanmış kopya kullanıldı (Chrome yükleme sınırı 10 MB) | — |
+
+**Not (20 Kasım):** Business Suite, müzik eklenmiş (düzenlenmiş) Reels'i Instagram'da planlamıyor ("Düzenlenmiş Instagram Reels videosu planlanamıyor"). Müzikli Reels için Facebook ve Instagram ayrı ayrı planlanır: Facebook müzikli, Instagram müziksiz. Instagram'a müzik eklemek gerekiyorsa gönderi Instagram uygulamasından yapılmalı.
 
 Videolar headless Chrome ile çizilen sahnelerden ffmpeg ile üretildi (yavaş yakınlaşma + geçiş). Üretim betiği scratchpad'de (`reels/make-reel.cjs`); yeni sahne eklemek kolay.
 

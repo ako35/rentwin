@@ -19,6 +19,7 @@ Yönetim: business.google.com/locations → Rentwin satırında "Yayın oluştur
 | # | Tarih | Tür | Konu | Görsel | Düğme | Durum |
 |---|---|---|---|---|---|---|
 | 1 | 12 Kas 2026 | Güncelleme | Tanıtım | `01-tanitim.png` | Rezervasyon yap → /vehicles | Yayında |
+| 2 | 21 Kas 2026 | Güncelleme | Skoda Octavia | `skoda-octavia-gece-cami.jpg` (gerçek çekim) | Daha fazla bilgi → /vehicles | İncelemede (Google onayladı; UTM eklenince yeniden incelemeye girdi) |
 
 ### 1. Tanıtım (Güncelleme) · `gorseller/01-tanitim.png`
 
@@ -37,6 +38,18 @@ Araçları ve fiyatları görmek için "Rezervasyon yap" düğmesine dokunun.
 
 Düğme: **Rezervasyon yap** → https://rentwin.com.tr/vehicles?utm_source=google&utm_medium=business_profile&utm_campaign=tanitim
 
+### 2. Skoda Octavia (Güncelleme) · `gorseller/skoda-octavia-gece-cami.jpg`
+
+Sahibin gönderdiği gece fotoğrafı (1200×1600, dikey). Google 4:3 kırpıyor; önizlemede araç ve cami görünüyor.
+
+```
+Skoda Octavia filomuzda! Aliağa'da günlük ve aylık kiralama, depozito yok, İzmir Adnan Menderes Havalimanı'nda teslim. Her kiralamadan önce araçlarımız yıkanıp hazırlanır. Fiyatlar ve rezervasyon: rentwin.com.tr
+```
+
+Düğme: **Daha fazla bilgi** → https://rentwin.com.tr/vehicles?utm_source=google&utm_medium=business_profile&utm_campaign=skoda-octavia
+
+Aynı çekimden Facebook ve Instagram Reels'i 22 Kasım 19:00'a planlandı (bkz. `marketing/facebook/README.md` §9).
+
 ## Sıradaki adaylar
 
 Facebook takvimindeki konular buraya uyarlanabilir (her biri için 1200×900 görsel gerekir):
@@ -54,7 +67,7 @@ Facebook takvimindeki konular buraya uyarlanabilir (her biri için 1200×900 gö
 - [x] **Ek kategoriler:** "Minibüs Kiralama Acentesi" ve "Kamyon Kiralama Acentesi" eklendi. Birincil "Araba Kiralama Şirketi" ve ek "Uzun Vadeli Araç Kiralama Hizmeti" olduğu gibi kaldı.
 - [x] **Hizmetler:** Birincil kategoriye "Ticari araç kiralama", "Havalimanı teslimi" ve "Kurumsal araç kiralama" eklendi. Mevcut "Uzun dönem araç kiralama" ve "Günlük kiralama" hizmetlerine açıklama yazıldı. Fiyatlar açıklamada "+ KDV'den başlayan" olarak geçiyor; fiyat alanı boş (KDV hariç tutar, KDV dahil sanılmasın diye).
 - [x] **Açıklama:** Eski metin "lüks segment" ve "yol yardım desteği" diyordu; filoda lüks araç yok, ticari araçlar ve depozitosuz kiralama da geçmiyordu. 13 Kasım 2026'da kullanıcının onayıyla aşağıdaki metinle değiştirildi (Google incelemesi bekleniyor). Google açıklamada fiyat, kampanya ve bağlantı istemiyor.
-- [x] **Yorumlar:** Profil 7 yorumla 5,0 puanda. Yanıtsız 4 yoruma (Süheyla Göres, Sibel Ucan, Rumeysa Koçan, Nur Gül) kullanıcının onayıyla kişiye özel kısa teşekkür yanıtı yazıldı; Google yanıtları inceledikten sonra yayınlar. Önceki 3 yorumda aynı kalıp yanıt duruyor. Samet adlı kullanıcının İngilizce yorumunda başka bir firmanın (Aytucar) adı geçiyor. 17 Kasım: Emre Can Çetin'in 5 yıldızlı yeni yorumuna ("ilgi ve alakalarından dolayı çok teşekkür ederiz") sahibinin onayıyla yanıt verildi; profil yine 7 yorum, 5,0 ve 7 yorumun hepsi yanıtlı. İşletme panelinde yorum beğenme düğmesi yok; Haritalar'daki "Faydalı" düğmesi sahibin hesabından kullanılmıyor (hesap Haritalar'da kısıtlı).
+- [x] **Yorumlar:** Profil 7 yorumla 5,0 puanda. Yanıtsız 4 yoruma (Süheyla Göres, Sibel Ucan, Rumeysa Koçan, Nur Gül) kullanıcının onayıyla kişiye özel kısa teşekkür yanıtı yazıldı; Google yanıtları inceledikten sonra yayınlar. Önceki 3 yorumda aynı kalıp yanıt duruyor. Samet adlı kullanıcının İngilizce yorumunda başka bir firmanın (Aytucar) adı geçiyor. 17 Kasım: Emre Can Çetin'in 5 yıldızlı yeni yorumuna ("ilgi ve alakalarından dolayı çok teşekkür ederiz") sahibinin onayıyla yanıt verildi; profil yine 7 yorum, 5,0 ve 7 yorumun hepsi yanıtlı. İşletme panelinde yorum beğenme düğmesi yok; Haritalar'daki "Faydalı" düğmesi sahibin hesabından kullanılmıyor (hesap Haritalar'da kısıtlı). 20 Kasım: Haritalar'daki "Beğen" düğmesi sahibin hesabından çalıştı; Talha Doğanay'ın yorumu (yanıtı da yayında) beğenildi. Profil 8 yorum, 5,0.
 
 Yapılmayanlar:
 
@@ -98,7 +111,7 @@ Rakipler (Arama kutusu): **Aliağa Acar Araç kiralama - Rent a Car** 5,0 (8 yor
 | 3 | **Profil boşlukları:** ödeme seçenekleri, hizmet seçenekleri, "Online hizmet saatleri" (online rezervasyon 7/24), açılış tarihi. | Claude (onayla) | 17 Kas: "Kredi kartı kabul ediyor", "Gerçek mekanda hizmet sunuluyor" ve her gün 24 saat online hizmet saatleri eklendi (Google incelemesinde). Nakit/havale için ayrı seçenek yok. Açılış tarihi işletmeden bekleniyor. |
 | 4 | **Ürünler → Hizmetler:** 17 Kas'ta 10 model ürün olarak eklendi (`urunler/`), Google hepsini **"Taşıtlar" politikasıyla reddetti**: alışveriş kuralları motorlu taşıtların ürün olarak gösterilmesine izin vermiyor (kiralama dahil). İtiraz edilmedi. Aynı bilgi kurala uygun şekilde **Hizmetler**'e eklendi: "Binek araç kiralama" (6 model, günlük 2.500 / aylık 45.000 TL + KDV'den), "Minibüs ve yolcu vanı kiralama" (Jumpy SpaceTourer), "Kamyonet kiralama" (Transit Çift Kabin, Isuzu NPR3D). "Günlük kiralama"daki eski 2.750 TL, 2.500 TL'ye düzeltildi. | Claude (onayla) | Hizmetler yayında; reddedilen 10 ürün sahibinin onayıyla 17 Kas'ta panelden silindi (ürün listesi boş, görseller `urunler/` klasöründe duruyor) |
 | 5 | **Gerçek fotoğraflar:** ofis girişi ve tabela, ofis içi, araçlar (dış ve iç), teslim anı; en az 10, sonra her ay birkaç yeni fotoğraf. | İşletme çeker · Claude yükler | Bekliyor |
-| 6 | **Haftalık Google gönderisi** (her gönderi onayla). | Claude | 1 gönderi yayında |
+| 6 | **Haftalık Google gönderisi** (her gönderi onayla). | Claude | 2 gönderi (12 ve 21 Kas) |
 | 7 | **Dizin kayıtları:** Bulurum.com ("Yer siteleri"nde çıkıyor), Yandex Business, Bing Places, Apple Business Connect, Foursquare. Ad, adres ve telefon her yerde birebir aynı. | Hesaplar: işletme · Doldurma: Claude | Önerildi |
 | 8 | **Çalışma saatleri:** gerçekten telefonla veya WhatsApp'tan hizmet veriliyorsa saatler uzatılabilir. Gerçek olmayan saat yazılmaz. | Karar: işletme | Önerildi |
 

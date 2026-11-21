@@ -44,7 +44,7 @@ Sıralama etkiye göre. **Sahibi** sütunu işin kimde olduğunu gösterir.
 |---|---|---|---|---|
 | 1 | **Düzenli yorum toplamak:** her teslimden sonra müşteriye yorum bağlantısını göndermek. Admin panelinde kontrat kapanınca WhatsApp'tan hazır "yorum rica" mesajı açan bir düğme. | Çok yüksek (Haritalar) | Kod: Claude · Gönderme: işletme | Düğme yayında (15 Kas): tamamlanan kontratta "Google Yorumu İste"; her teslimden sonra kullanılmalı |
 | 2 | **Google profiline gerçek fotoğraflar:** ofis, tabela, araçlar, teslim anı (en az 10). | Yüksek (Haritalar) | İşletme | Bekliyor |
-| 3 | **Haftalık Google gönderisi** (her gönderi onayla). | Orta | Claude | 1. gönderi 12 Kasım'da yayında |
+| 3 | **Haftalık Google gönderisi** (her gönderi onayla). | Orta | Claude | 1. gönderi 12 Kasım'da, 2. (Skoda Octavia) 21 Kasım'da |
 | 4 | **Dizin kayıtları:** Bing Places (Google profilinden içe aktarılabilir), Apple Business Connect, Yandex Business, Foursquare ve yerel rehberler. Adres, telefon ve site her yerde birebir aynı yazılmalı. | Yüksek (Haritalar + otorite) | Hesaplar: işletme · Doldurma: Claude | Önerildi |
 | 5 | **Fiyat listesi sayfası** (`/arac-kiralama-fiyatlari`): model bazında günlük ve aylık fiyat (aralık) tablosu. "aliağa araç kiralama fiyatları" aramasını hedefler. Fiyatlar admin panelindeki araç kayıtlarından otomatik gelir. | Orta-yüksek | Kod: Claude · Fiyat onayı: işletme | Yayında (16 Kas, ca1e92f), sahibi onayladı |
 | 5b | **Havalimanı sayfası** (`/lokasyonlar/izmir-havalimani`): ayrı yeni sayfa yerine mevcut sayfa güçlendirildi (iki sayfa aynı aramada yarışmasın diye). Yeni başlık "İzmir Havalimanı Araç Kiralama", yeni metin, 6 soruluk SSS, fiyat sayfasına bağlantı. | Orta (rekabet çok yüksek) | Claude | Yayında (16 Kas, ca1e92f) |
@@ -63,6 +63,20 @@ Aynı modelin birden fazla aracına ait sayfaların "Kopya" ya da "Alternatif sa
 Sahibi "yine aşağı düştük" dedi. Search Console, son 28 gün: "aliağa araç kiralama" 22 gösterim, 7 tıklama, ortalama konum 11,4. "aliağa" geçen aramalarda günlük konum 9–14 Kasım arasında 10,8 → 59,6 → 52,2 → 19 → 32,5 → 2 oldu; günde 1–17 gösterim var. Düşüş kalıcı değil, düşük hacimden gelen dalgalanma. Havalimanı aramalarının hepsi `/lokasyonlar/izmir-havalimani` sayfasına düşüyordu (15 gösterim, konum 82,5); "fiyat" aramaları ana sayfaya (konum 2,5) ve `/vehicles` sayfasına (konum 56).
 
 Yayından sonra (16 Kasım) URL denetimi: `/arac-kiralama-fiyatlari` "URL Google'da yok" (yeni sayfa). `/lokasyonlar/izmir-havalimani` **dizinde değildi**: Google onu `/lokasyonlar/bursa` sayfasının kopyası saymış (son tarama 15 Kasım, yani yeni metinden önce). İkisi için de sahibinin onayıyla "Dizine eklenmesini iste" gönderildi. Sonuç 1 Aralık'taki zamanlanmış görevde (`rentwin-gsc-indexing-followup`) kontrol edilecek.
+
+## 19–20 Kasım 2026: asıl teknik sorun bulundu
+
+Sahibi, "aliağa araç kiralama" aramasında Dinç Oto Kiralama'nın Instagram sayfasının bizim sitemizin üstünde çıktığını gösterdi. Search Console, son 28 gün (20 Eki – 16 Kas): "aliağa araç kiralama" 38 gösterim, 7 tıklama, ortalama konum 10,5; "aliağa rent a car" konum 40,4.
+
+**Bulgu 1: Google lokasyon sayfalarını boş görüyordu.** `robots.txt` dosyası `/api/` yolunu tamamen kapatıyordu. Sayfalar içeriklerini (lokasyon, araç, blog, kampanya, görsel) bu yoldan çekiyor ve uygulama açılırken bot için hazırlanan HTML'i silip yerine çektiği veriyi koyuyor. Google sayfayı JavaScript ile açtığında veriye ulaşamıyor, her lokasyon sayfası "Lokasyon bilgileri şu anda yüklenemedi" ekranına dönüşüyordu. Search Console canlı testinin ekran görüntüsü (19 Kasım) tam olarak bunu gösterdi. `/lokasyonlar/aliaga` ve `/lokasyonlar/izmir-havalimani` sayfalarının `/lokasyonlar/bursa` sayfasının kopyası sayılmasının nedeni buydu (metin değişiklikleri bu yüzden işe yaramadı). Araç ve blog sayfalarındaki "Kopya" uyarılarının bir kısmı da büyük ihtimalle aynı nedenden.
+
+**Bulgu 2: `www.rentwin.com.tr` yönlendirilmiyordu.** Site www'lu adreste de 200 ile açılıyordu; Google bazı sayfaları (örneğin `/uzun-donem-arac-kiralama`) www'lu adresle dizine almıştı.
+
+**Düzeltme (20 Kasım, 93158e1, sahibinin onayıyla yayında):** `robots.txt` herkese açık, salt okunur veri yollarına izin veriyor (`/api/locations`, `/api/branches`, `/api/campaigns`, `/api/blog`, `/api/reviews`, `/api/car/visitors/`, `/api/files/display/`); yönetim yolları (`/api/*/admin/`) ve geri kalan `/api/` kapalı. `vercel.json`: `www.rentwin.com.tr` → `https://rentwin.com.tr` (308).
+
+**Bulgu 3: Şair Turizm'in ayrı Google profili.** "Şair Turizm Oto Kiralama" profili: 4,9 puan, 36 yorum, kategori "Araba Kiralama Şirketi", adres İzpek ofis, 356. Sk. Kat 2 No 17 (artı kodu QXV9+62; Rentwin QXV9+59), telefon 0544 150 30 30, çalışma saati girilmemiş. Aynı binada, aynı kategoride iki profil var; Google bu durumda genelde birini yerel sonuçlarda gizler, iki profil birbirinin önünü keser. sairturizm.com da "aliağa araç kiralama" aramasında çıkıyor ama rentwin.com.tr'ye bağlantı vermiyor. rentacarss.com'daki Rentwin kaydında görünen 0544 150 30 30 numarası da Şair Turizm'in numarası. **Karar sahibinde:** (a) Şair Turizm'in ana kategorisini transfer/turizm yönüne çekmek (sitesinde VIP transfer hizmeti var), (b) sairturizm.com'dan rentwin.com.tr'ye bağlantı vermek.
+
+**Dinç'in Instagram'ı neden üstte:** Instagram'ın alan adı çok güçlü; profil adında "Oto Kiralama", açıklamasında "Aliağa/İZMİR" geçiyor, 700+ takipçisi var. Bizim sitemiz yeni, dış bağlantısı az ve ana lokasyon sayfası yukarıdaki hata yüzünden dizinde değildi.
 
 ## 4. Nasıl ölçülecek
 
