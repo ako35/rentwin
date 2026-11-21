@@ -49,19 +49,29 @@ export const getAdminVehiclesColumns = (t, tCommon, showSold = false) => {
         {
             name: t("table.vehicle.image"),
             width: "80px",
-            selector: (row) => (
-                <img
-                    src={`${API_URL}/files/display/${row?.image[0]}`}
-                    alt={row?.model}
-                    title={row?.model}
-                    width={60}
-                    height={38}
-                    style={{
-                        objectFit: "contain",
-                        pointerEvents: "none",
-                    }}
-                />
-            ),
+            // A vehicle saved without a photo has an empty image list; asking
+            // for /files/display/undefined just 404s and shows a broken icon.
+            selector: (row) =>
+                row?.image?.[0] ? (
+                    <img
+                        src={`${API_URL}/files/display/${row.image[0]}`}
+                        alt={row?.model}
+                        title={row?.model}
+                        width={60}
+                        height={38}
+                        style={{
+                            objectFit: "contain",
+                            pointerEvents: "none",
+                        }}
+                    />
+                ) : (
+                    <span
+                        title={row?.model}
+                        style={{ display: "inline-block", width: 60, textAlign: "center", color: "#9ca3af" }}
+                    >
+                        —
+                    </span>
+                ),
         },
         {
             name: t("table.vehicle.plate"),

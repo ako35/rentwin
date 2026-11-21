@@ -2,10 +2,25 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const SEARCH_STORAGE_KEY = "rentwinReservationSearch";
 
+// A search is kept across reloads so the visitor doesn't retype it, but only
+// while its pick-up is still ahead. A search saved days ago would otherwise
+// keep filtering /vehicles by availability for dates that have already
+// passed (and prefill the booking form with them).
+const isStillAhead = (criteria) => {
+    if (!criteria?.pickUpDate) return false;
+    const pickUp = new Date(`${criteria.pickUpDate}T${criteria.pickUpTime || "23:59"}`);
+    return !Number.isNaN(pickUp.getTime()) && pickUp.getTime() > Date.now();
+};
+
 const loadSearchCriteria = () => {
     try {
         const raw = localStorage.getItem(SEARCH_STORAGE_KEY);
-        return raw ? JSON.parse(raw) : null;
+        const criteria = raw ? JSON.parse(raw) : null;
+        if (criteria && !isStillAhead(criteria)) {
+            localStorage.removeItem(SEARCH_STORAGE_KEY);
+            return null;
+        }
+        return criteria;
     } catch {
         return null;
     }
