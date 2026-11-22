@@ -206,17 +206,18 @@
     "hint": "Harita, gösterdiğinizde Google Haritalar'dan yüklenir."
   },
   "socialFollow": {
-    "button": "Facebook'ta Takip Et",
+    "instagramButton": "Instagram'da Takip Et",
+    "facebookButton": "Facebook",
     "contact": {
-      "title": "Bizi Facebook'ta takip edin",
-      "text": "Kampanyaları, filoya katılan yeni araçları ve duyuruları Facebook sayfamızda paylaşıyoruz."
+      "title": "Bizi Instagram'da takip edin",
+      "text": "Kampanyaları, filoya katılan yeni araçları ve duyuruları Instagram ve Facebook hesaplarımızda paylaşıyoruz."
     },
     "campaigns": {
       "title": "Yeni kampanyaları kaçırmayın",
-      "text": "Yeni kampanyaları ve dönemsel fırsatları Facebook sayfamızda da duyuruyoruz."
+      "text": "Yeni kampanyaları ve dönemsel fırsatları Instagram ve Facebook hesaplarımızda da duyuruyoruz."
     },
     "booked": {
-      "title": "Rentwin'i Facebook'ta takip edin",
+      "title": "Rentwin'i Instagram'da takip edin",
       "text": "Kampanyalardan ve filoya katılan yeni araçlardan ilk siz haberdar olun."
     }
   }

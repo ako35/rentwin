@@ -1,14 +1,18 @@
 @use '../../../styles/variables' as v;
 @use '../../../styles/mixins' as m;
 
-// Same card language as the contact-info tiles; Facebook's own blue only on
-// the icon and the button, the way the WhatsApp button uses WhatsApp green.
+// Same card language as the contact-info tiles; each network's own colour
+// only on the icon and its button, the way the WhatsApp button uses WhatsApp
+// green.
 $facebook: #1877f2;
+$instagram: #d62976;
+$instagram-gradient: linear-gradient(45deg, #feda75 0%, #fa7e1e 25%, #d62976 50%, #962fbf 75%, #4f5bd5 100%);
 
 .social-follow {
   @include m.flexbox(row, flex-start, center, 0.9rem);
   // Wraps by available width, not viewport: in a narrow column (contact page)
-  // the button drops to its own full-width row; elsewhere it sits on the right.
+  // the buttons drop to their own full-width row; elsewhere they sit on the
+  // right.
   flex-wrap: wrap;
   padding: 0.9rem 1rem;
   background-color: #fff;
@@ -22,9 +26,18 @@ $facebook: #1877f2;
     width: 2.6rem;
     height: 2.6rem;
     border-radius: 12px;
+    font-size: 1.15rem;
+  }
+
+  &--facebook &__icon {
     background-color: rgba($facebook, 0.1);
     color: $facebook;
-    font-size: 1.15rem;
+  }
+
+  &--instagram &__icon {
+    background: $instagram-gradient;
+    color: #fff;
+    font-size: 1.3rem;
   }
 
   &__body {
@@ -47,12 +60,17 @@ $facebook: #1877f2;
     color: v.$color-muted;
   }
 
-  &__button {
+  &__actions {
+    @include m.flexbox(row, flex-start, stretch, 0.5rem);
     flex: 1 0 auto;
-    text-align: center;
+    flex-wrap: wrap;
+  }
+
+  &__button {
+    @include m.flexbox(row, center, center, 0.45rem);
+    flex: 1 0 auto;
     padding: 0.6rem 1rem;
     border-radius: 10px;
-    background-color: $facebook;
     color: #fff;
     font-size: 0.9rem;
     font-weight: 700;
@@ -64,6 +82,25 @@ $facebook: #1877f2;
       color: #fff;
       filter: brightness(0.93);
       transform: translateY(-1px);
+    }
+
+    &--instagram {
+      background: $instagram-gradient;
+    }
+
+    &--facebook {
+      background-color: $facebook;
+    }
+  }
+
+  // With Instagram leading, Facebook is the quieter second option.
+  &--instagram &__button--facebook {
+    flex: 0 0 auto;
+    background-color: rgba($facebook, 0.1);
+    color: $facebook;
+
+    &:hover {
+      color: $facebook;
     }
   }
 }

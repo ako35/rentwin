@@ -206,17 +206,18 @@
     "hint": "The map loads from Google Maps when you show it."
   },
   "socialFollow": {
-    "button": "Follow on Facebook",
+    "instagramButton": "Follow on Instagram",
+    "facebookButton": "Facebook",
     "contact": {
-      "title": "Follow us on Facebook",
-      "text": "We share campaigns, new vehicles joining the fleet and announcements on our Facebook page."
+      "title": "Follow us on Instagram",
+      "text": "We share campaigns, new vehicles joining the fleet and announcements on our Instagram and Facebook accounts."
     },
     "campaigns": {
       "title": "Don't miss new campaigns",
-      "text": "We also announce new campaigns and seasonal offers on our Facebook page."
+      "text": "We also announce new campaigns and seasonal offers on our Instagram and Facebook accounts."
     },
     "booked": {
-      "title": "Follow Rentwin on Facebook",
+      "title": "Follow Rentwin on Instagram",
       "text": "Be the first to hear about campaigns and new vehicles joining the fleet."
     }
   }

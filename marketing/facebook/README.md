@@ -484,3 +484,41 @@ rentwin.com.tr
 - **Gerçek çekim Reels:** telefonla 10–20 saniyelik dikey çekimler (bir aracın etrafında yürüyüş, anahtar teslimi, ofisin önü, yolda sürüş) en çok izlenen içerik türü. Çekimler gelirse altyazı ve marka kartıyla düzenlenip planlanır.
 - **Beğenenleri davet:** 15 Kasım'da kontrol edildi: beğenenler yalnızca sayfanın kendisi ve sahibinin kişisel profiliydi, davet edilecek kimse yoktu. Sahibinin onayıyla **22 Kasım 11:00'da zamanlanmış görev** (`rentwin-fb-invite-reactors`) 12 Kasım'dan beri yayınlanan gönderi ve Reels'leri **ve dört Aliağa grubundaki yayınlanmış ilanlarımızı** beğenip takip etmeyenleri davet edecek (en fazla 50, uyarı gelirse durur; grup ilanlarında "Davet Et" düğmesi çıkmazsa atlar) ve sonucu buraya yazacak. Grup üyelerine tek tek arkadaşlık isteği ya da takip yapılmıyor: Facebook bunu spam sayıyor ve sayfayı yöneten kişisel hesap kısıtlanabilir.
 - **Öne çıkarma:** bir Reels'i Aliağa + 15–20 km için birkaç gün öne çıkarmak takipçiyi en hızlı artıran ücretli yol. 15 Kasım'da Business Suite'in öne çıkarma ekranında (yayınlamadan) bakıldı: varsayılan bütçe günlük 50 TL, Meta'nın tahmini günde 1.900–3.700 gösterim (Türkiye geneli varsayılan kitleyle). Yayınlamadan önce sahibinin yapması gerekenler: reklam hesabında Meta'nın "ayrım gözetmeme ilkesi"ni onaylamak, telefon numarasını doğrulamak ve bir ödeme yöntemi eklemek. Öneri: 5 gün × günlük 50–100 TL (toplam 250–500 TL), konum Aliağa + 15 km, yaş 25–60, hedef "profil ziyareti / takip". Durum: 15 Kasım, sahibi "şimdilik reklam yok" dedi; ücretsiz yöntemlerle (Reels, grup ilanları, davetler) devam.
+
+## 10. Instagram: paylaşım dışı büyüme (22 Kasım 2026)
+
+Sahibi: "Sadece Reels ve gönderiyle değil, farklı yöntemlerle, şimdilik organik yoldan takipçi artıralım."
+
+**Durum (22 Kasım):** 461 takipçi, 1.121 takip, 9 gönderi; öne çıkan hikâye yok, biyografide site bağlantısı yok. 15 Kasım'da 23 takipçi / 75 takip vardı. Takipçi listesinden örnek: çoğu gerçek kişi ve işletme ama Aliağa dışından (Trabzon, Bursa, Erzincan, İzmir merkez). Bu, toplu takip edip geri takip bekleme yönteminin tipik sonucu.
+
+**Toplu takip hakkında:** Yeni hesapta günde yüzlerce takip, Instagram'ın "işlem engeli"ne ve erişim kısıtlamasına yol açabilir; otomatik takip uygulamaları hesabın kapatılmasına kadar gidebilir. Aliağa dışından gelen takipçiler de müşteri olmuyor; üstelik Instagram Reels'leri önce takipçilere gösterdiği için videolar yanlış kitleye gidiyor. Öneri: rastgele toplu takibi bırakmak; günde en fazla 20–30 takip, yalnızca Aliağa, Foça, Çandarlı, Menemen, Bergama ve Dikili'deki kişi ve işletmeler. Takip sayısını takipçinin çok üstünde tutmamak için, bir haftada geri takip etmeyen yerel olmayan hesapları günde en fazla 30–50 olacak şekilde yavaş yavaş bırakmak.
+
+**Paylaşım dışı yöntemler:**
+
+| # | Yöntem | Kim | Durum |
+|---|---|---|---|
+| 1 | **Telefon rehberinden öneri:** Instagram hesabına işletme numarası 0507 350 31 35 kayıtlı olursa, numarayı rehberine kaydetmiş müşterilere (WhatsApp'tan yazışan herkes) Rentwin "Önerilen" olarak çıkar. Yol: Ayarlar › Hesaplar Merkezi › Kişisel bilgiler › İletişim bilgileri. | İşletme (hesap ayarı) | Önerildi |
+| 2 | **Teslimde etiket ricası:** "Aracınızla bir story paylaşıp @rentwin_tr'yi etiketlerseniz hikâyemizde paylaşırız." Etiketli story'ler yeniden paylaşılır; müşterinin Aliağalı arkadaşları hesabı görür. Karşılığında indirim ya da hediye verilmez. | İşletme | Önerildi |
+| 3 | **Ortak gönderi (Collab):** Instagram'ın "Ortak çalışan davet et" özelliğiyle tek gönderi iki hesabın akışında birden çıkar. İlk aday MyVista Office (zaten kampanya ortağı; Instagram hesabı aramada bulunamadı, kullanıcı adı sahibinden istenecek). Sonra oteller (@hamptonbyhiltonizmiraliaga, @etapaltinelaliaga, @prestigehoteldonmez, @yildizotelaliaga35) ve kafeler (@seyircafealiaga, @nostaljicaferestaurant, @keyfimcecafealiaga). | Anlaşma: işletme · Mesaj taslağı ve gönderi: Claude (onayla) | Aday listesi hazır |
+| 4 | **Yerel etkileşim rutini:** Aliağa konum etiketli gönderilerde ve yerel işletme/haber sayfalarının paylaşımlarında günde 10–15 gerçek yorum ve beğeni (@rentwin_tr hesabından). Kalıp yorum ve emoji yığını yok; her yorum gönderiye özel. | Claude (yorumlar onayla) ya da işletme | Önerildi |
+| 5 | **Profil eksikleri:** biyografiye `rentwin.com.tr` bağlantısı (yalnızca uygulamadan) ve öne çıkan hikâyeler: Araçlar, Fiyatlar, Yorumlar, Havalimanı, Nasıl Kiralanır. Görselleri ve kapakları Claude hazırlar; öne çıkanlar uygulamadan eklenir. | Claude + işletme | Önerildi |
+| 6 | **Sitede Instagram kartı:** iletişim, kampanyalar ve rezervasyon sonrası kartı artık önce Instagram'ı gösteriyor, Facebook ikinci düğme. | Claude | Hazır, yayın onayı bekliyor |
+| 7 | **Diğer kanallar:** WhatsApp Business profil açıklamasına ve info@rentwin.com.tr e-posta imzasına Instagram bağlantısı. Google profilinde zaten bağlı. | İşletme | Önerildi |
+| 8 | **Yerel içerik üreticisiyle takas (isteğe bağlı):** Aliağa'daki küçük bir içerik üreticisine 1 günlük ücretsiz kiralama karşılığında dürüst bir Reels/story; paylaşımda "#işbirliği" yazılması zorunlu (Reklam Kurulu kuralı). | Karar: işletme | Önerildi |
+
+Kullanılmayanlar: takipçi/beğeni satın almak, otomatik takip ve beğeni uygulamaları, başka hesapların takipçilerini toplu takip etmek. Çekiliş, sahibinin 9 Kasım kararıyla yapılmıyor.
+
+**Mesaj sonuçları (22 Kasım 2026, 12 Kasım'da yazılan yerel hesaplar):**
+
+| Hesap | Cevap |
+|---|---|
+| @aliaga.gundem | Fiyat listesi: 2 story 900 TL · 1 gönderi + 5 story 3.000 TL · 2 gönderi + 12 story 6.000 TL · aylık 4 gönderi + 20 story 10.000 TL · @bergamamagazin ile birlikte 12.000 TL |
+| @aliaga.da.yasam | "Reklam çalışması yapabiliriz birlikte" (ücretli) |
+| @eskifocalilar (Foça) | "İlan vermek istiyorsanız şartlarımızı iletebilirim" (ücretli) |
+| @aliaganinsesi | "Reklamlar ücretlidir" |
+| @aliagamedya, @aliagahaber3535, @candarlihakkinda | Cevap yok |
+| @hamptonbyhiltonizmiraliaga, @prestigehoteldonmez, @hotelkaracam | Cevap yok |
+
+Ücretsiz paylaşım kabul eden olmadı; olumlu dönenlerin hepsi ücretli. Otellere Instagram yerine yüz yüze gitmek daha etkili.
+
+Sahibi 22 Kasım'da bu sayfaların takipçilerini her gün otomatik olarak belli sayıda takip etmeyi istedi. Yapılmadı: başka hesapların takipçilerini otomatik takip etmek Instagram kurallarına aykırı (yapay takipçi toplama), hesap 1.121 takiple zaten riskli bölgede ve bu takipçiler geri takip için takip ediliyor. Bu kitleye kurallara uygun ulaşmanın yolları: o sayfalarda ücretli story (en ucuzu @aliaga.gundem, 2 story 900 TL), ortak gönderi ve yerel etkileşim (§10).
