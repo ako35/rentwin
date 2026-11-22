@@ -120,6 +120,26 @@ Search Console'da konum 2 görünürken canlı aramada sitenin olmaması çeliş
 | 7 | Dizin kayıtları ve hatalı kayıtların düzeltilmesi: Bulurum.com ve İzmir İş Rehberi (ikisi de bu aramada ilk sayfada), Yandex, Bing Places, Apple Business Connect; rentacarss.com'daki yanlış telefon. | Hesaplar: işletme · Doldurma: Claude | Ad, adres, telefon her yerde birebir aynı. |
 | 8 | Ayda 2 blog yazısı (ör. "Aliağa'da aylık araç kiralama rehberi", "Petkim/STAR projeleri için araç"). | Claude taslak · İşletme onay | 22 Kas: 3 yazı sahibinin onayıyla yayında (gezi rotaları, ticari araç seçimi, proje ekipleri için araç planlama). Taslaklar ve konu seçimi: `marketing/blog/taslaklar-kasim-2026.md`. Dizine ekleme isteği 23 Kasım görevinde. |
 
+### 22 Kasım akşam ölçümü (Pazar ~22:00, sahibinin Chrome'u)
+
+Google Haritalar, reklamlar hariç sıra:
+
+| Arama | Rentwin | Önündekiler |
+|---|---|---|
+| aliağa araç kiralama | **6.** | Ensar (34 yorum, 24 saat), Gümüş (9, 24 saat), Dinç (36), Acar (8), Şair (38) |
+| araç kiralama (ofis çevresi) | **7.** | Ensar, Baran (1, 24 saat), Dinç, Gümüş (24 saat), Cemak (9), Acar |
+| aliağa rent a car | ilk 8'de yok | Adında "Aliağa" ya da "Rent a Car" geçenler ve 24 saat açıklar |
+
+Profil 10 yorum, 5,0; cevapsız yorum yok. Cemal Eyüboğlu'nun 2 hafta önceki yorumu (o zaman cevaplanmış) sayıya yeni eklendi. Google'ın "profilinizi tamamlayın" listesinde kalan tek madde **vitrin fotoğrafı** (ofisin dışarıdan görünüşü). Yorum isteği hâlâ 68 müşteriden yalnızca 3'üne gitmiş.
+
+Bu ölçümden çıkanlar:
+
+- **Gece saatinde 24 saat açık olanlar öne geçiyor.** Ensar, Gümüş ve Baran Rentwin'in önünde. Saat uzatma ancak telefon ya da WhatsApp'tan gerçekten hizmet veriliyorsa yapılabilir.
+- **Adında "Aliağa" ve "Rent a Car" geçen rakipler kelime avantajı alıyor.** Bu bizim için yasak; ada kelime eklemek profilin askıya alınmasına yol açar.
+- **Kalan en büyük fark yorum sayısı.** Ensar 34, Dinç 36, Şair 38; Rentwin 10.
+- **Hatalı rehber kaydı:** "rentwin aliaga" aramasında rentacarss.com, Rentwin adının yanında Şair'in telefonunu (0544 150 30 30) gösteriyor. Kayıt düzeltilmeli.
+- **Listedeki iki satır:** Şair Turizm şirketi ve Emre Can Çetin de yorum isteği listesinde. İkisine istek gönderilmemeli.
+
 ## 4. Nasıl ölçülecek
 
 - Her 2 haftada bir Search Console: "aliağa araç kiralama", "aliaga rent a car", "aliağa araç kiralama fiyatları" sorgularının 28 günlük ortalama konumu ve gösterimi.
