@@ -1,8 +1,8 @@
 {
   "pageTitle": "Our Vehicles",
   "detailsPageTitle": "Vehicle Details",
-  "seoTitle": "Car Rental in Aliağa & İzmir | Rentwin",
-  "seoDescription": "Daily and monthly car rental in Aliağa. Request delivery and meet-and-greet at İzmir Adnan Menderes Airport, then book online.",
+  "seoTitle": "Rental Fleet: Cars, Panel Vans and Pickups | Rentwin",
+  "seoDescription": "The vehicles in Rentwin's rental fleet: cars such as the Egea, Clio and Octavia, Fiorino, Doblo and Ducato panel vans, and a double-cab pickup. Check availability and book online.",
   "seoDetailsTitle": "Rent a {{name}} | Rentwin",
   "seoDetailsDescription": "Rent the {{name}} with Rentwin. Great rates, smooth handover, and dependable service — book your reservation now.",
   "seoIntro": "Daily and long-term car rental in Aliağa and İzmir — a well-maintained, fully insured fleet with transparent pricing.",
@@ -10,7 +10,7 @@
     "title": "Renting a Car with Rentwin",
     "seeAlso": "See also:",
     "paragraphs": [
-      "Rentwin's Aliağa and İzmir fleet includes hatchbacks, sedans, SUVs, and commercial vehicles. Filter by make, transmission, and fuel type to choose a car for a daily or monthly rental.",
+      "Rentwin's fleet includes cars, panel vans, a double-cab pickup and a passenger van. Filter by make, transmission, and fuel type to choose a vehicle for a daily or monthly rental.",
       "Pick-up can be arranged at our Aliağa office or, on request, at İzmir Adnan Menderes Airport. Mention airport delivery and meet-and-greet when booking; confirm any different return location with our team.",
       "Contact us about corporate and long-term fleet needs. Rental terms, mileage, and fuel policies are explained in the contract; check vehicle details and availability before booking."
     ]
@@ -38,7 +38,7 @@
     "vehicleModels": {
       "title1": "Vehicle",
       "title2": "Models",
-      "desc": "Explore our diverse range of high-quality vehicles. Whether you're seeking a fuel-efficient compact for city trips, a robust SUV for outdoor adventures, or a luxury sedan for utmost comfort, our comprehensive fleet is sure to cater to your specific needs."
+      "desc": "Browse the models in our fleet: fuel-efficient cars for errands and daily trips, panel vans for moving goods, and a double-cab pickup for crews and their equipment."
     }
   },
   "card": {

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { GiCarKey, GiAirplaneDeparture, GiTimeSynchronization } from "react-icons/gi";
 import { PiVan } from "react-icons/pi";
 import { TbBuildingSkyscraper } from "react-icons/tb";
-import { RiVipDiamondLine } from "react-icons/ri";
+import { MdAirportShuttle } from "react-icons/md";
 import { constants } from "../../../../constants";
 import AppLink from "../../app-link/app-link";
 import "./what-we-do.scss";
@@ -12,7 +12,7 @@ const serviceIcons = [
   <GiCarKey key="0" />,
   <TbBuildingSkyscraper key="1" />,
   <GiTimeSynchronization key="2" />,
-  <RiVipDiamondLine key="3" />,
+  <MdAirportShuttle key="3" />,
   <GiAirplaneDeparture key="4" />,
   <PiVan key="5" />,
 ];

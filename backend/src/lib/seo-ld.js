@@ -81,6 +81,7 @@ const autoRentalLd = ({ reviewSummary, reviews } = {}) => ({
     : {}),
   hasMap: business.mapUrl,
   areaServed: [
+    { "@type": "City", name: "Aliağa" },
     { "@type": "State", name: "İzmir" },
     { "@type": "Country", name: "Türkiye" },
   ],
@@ -705,7 +706,7 @@ const VEHICLES_LIST_COPY = {
     intro: "Aliağa'da günlük ve aylık araç kiralama; İzmir Adnan Menderes Havalimanı'nda teslim ve karşılama talebi. Bakımlı filo ve şeffaf kiralama koşulları.",
     aboutTitle: "Rentwin ile Araç Kiralama",
     aboutParagraphs: [
-      "Rentwin'in Aliağa ve İzmir'deki araç filosunda hatchback, sedan, SUV ve ticari araç seçenekleri bulunur. Marka, vites ve yakıt tipine göre filtreleyerek günlük veya aylık kiralama için uygun aracı seçebilirsiniz.",
+      "Rentwin filosunda binek araçlar, panelvanlar, çift kabin kamyonet ve yolcu vanı bulunur. Marka, vites ve yakıt tipine göre filtreleyerek günlük veya aylık kiralama için uygun aracı seçebilirsiniz.",
       "Araç teslim noktası Aliağa ofisimiz veya talep üzerine İzmir Adnan Menderes Havalimanı olabilir. Havalimanı teslimi ve karşılama isteğinizi rezervasyon sırasında belirtin; farklı noktada iade seçeneklerini ekibimizle netleştirin.",
       "Kurumsal ve uzun dönem filo ihtiyacınız için bizimle iletişime geçebilirsiniz. Kiralama koşulları, kilometre ve yakıt politikası sözleşmede açıklanır; rezervasyon öncesinde araç detaylarını ve uygunluk durumunu kontrol edin.",
     ],
@@ -715,7 +716,7 @@ const VEHICLES_LIST_COPY = {
     intro: "Daily and monthly car rental in Aliağa, with airport delivery and meet-and-greet available on request at İzmir Adnan Menderes Airport.",
     aboutTitle: "Renting a Car with Rentwin",
     aboutParagraphs: [
-      "Rentwin's Aliağa and İzmir fleet includes hatchbacks, sedans, SUVs, and commercial vehicles. Filter by make, transmission, and fuel type to choose a car for a daily or monthly rental.",
+      "Rentwin's fleet includes cars, panel vans, a double-cab pickup and a passenger van. Filter by make, transmission, and fuel type to choose a vehicle for a daily or monthly rental.",
       "Pick-up can be arranged at our Aliağa office or, on request, at İzmir Adnan Menderes Airport. Mention airport delivery and meet-and-greet when booking; confirm any different return location with our team.",
       "Contact us about corporate and long-term fleet needs. Rental terms, mileage, and fuel policies are explained in the contract; check vehicle details and availability before booking.",
     ],
@@ -837,19 +838,45 @@ const renderAboutBody = (locale = "tr") => {
   );
 };
 
-const renderHomeBody = (locale = "tr") => {
+// home.json `localGuide.links[].route` → path. Mirrors LINK_TARGETS in
+// src/components/common/local-guide/local-guide.jsx.
+const HOME_LINK_PATHS = {
+  aliagaOffice: "/lokasyonlar/aliaga",
+  airport: "/lokasyonlar/izmir-havalimani",
+  priceList: "/arac-kiralama-fiyatlari",
+  longTermRental: "/uzun-donem-arac-kiralama",
+  commercialRental: "/ticari-arac-kiralama",
+};
+
+// Mirrors src/pages/common/home/page.jsx. The bare Turkish "/" already ships
+// the hero (with the page's only H1) as index.html's static snapshot, so the
+// prerender appends just the sections below it there (includeHero: false);
+// "/en" has no snapshot in its language and gets the whole body.
+const renderHomeBody = (locale = "tr", { includeHero = true } = {}) => {
   const c = HOME_COPY[locale];
-  return (
-    `<main><h1>${htmlEsc(c.hero.title)}</h1>` +
-    `<p>${htmlEsc(c.hero.lead)}</p>` +
-    `<ul>${c.hero.trust.map((item) => `<li>${htmlEsc(item)}</li>`).join("")}</ul>` +
+  const guide = c.localGuide;
+  const hero = includeHero
+    ? `<h1>${htmlEsc(c.hero.title)}</h1>` +
+      `<p>${htmlEsc(c.hero.lead)}</p>` +
+      `<ul>${c.hero.trust.map((item) => `<li>${htmlEsc(item)}</li>`).join("")}</ul>`
+    : "";
+  const sections =
     `<h2>${htmlEsc(c.sections.popularCars.title1)} ${htmlEsc(c.sections.popularCars.title2)}</h2>` +
     `<p>${htmlEsc(c.sections.popularCars.desc)}</p>` +
+    `<h2>${htmlEsc(c.sections.bestOffers.title1)} ${htmlEsc(c.sections.bestOffers.title2)}</h2>` +
+    c.offers.map((offer) => `<h3>${htmlEsc(offer.title)}</h3><p>${htmlEsc(offer.desc)}</p>`).join("") +
     `<h2>${htmlEsc(c.whatWeDo.title)}</h2><p>${htmlEsc(c.whatWeDo.desc)}</p>` +
     `<ul>${c.whatWeDo.services.map((service) => `<li>${htmlEsc(service.title)}</li>`).join("")}</ul>` +
-    `<p><a href="${htmlEsc(localizePath("/vehicles", locale))}">${htmlEsc(c.hero.browseCta)}</a></p>` +
-    "</main>"
-  );
+    `<h2>${htmlEsc(guide.title)}</h2>` +
+    guide.paragraphs.map((p) => `<p>${htmlEsc(p)}</p>`).join("") +
+    `<h3>${htmlEsc(guide.linksTitle)}</h3><ul>` +
+    guide.links
+      .filter((link) => HOME_LINK_PATHS[link.route])
+      .map((link) => htmlLink(`${SITE_URL}${localizePath(HOME_LINK_PATHS[link.route], locale)}`, link.label))
+      .join("") +
+    "</ul>" +
+    `<p><a href="${htmlEsc(localizePath("/vehicles", locale))}">${htmlEsc(c.hero.browseCta)}</a></p>`;
+  return includeHero ? `<main>${hero}${sections}</main>` : `<section>${sections}</section>`;
 };
 
 const renderPrivacyPolicyBody = (locale = "tr") => {
@@ -1107,9 +1134,9 @@ const STATIC_META = {
       jsonLd: (locale) => [webSiteLd(locale)],
     },
     "/vehicles": {
-      title: "Aliağa ve İzmir Araç Kiralama | Rentwin",
+      title: "Kiralık Araçlar: Binek, Panelvan ve Kamyonet | Rentwin",
       description:
-        "Aliağa'da günlük ve aylık araç kiralama. İzmir Adnan Menderes Havalimanı'nda teslim ve karşılama talep edin; araçları inceleyip online rezervasyon yapın.",
+        "Rentwin filosundaki kiralık araçlar: Egea, Clio ve Octavia gibi binek araçlar, Fiorino, Doblo ve Ducato panelvanlar, çift kabin kamyonet. Müsaitliği görün, online rezervasyon yapın.",
       jsonLd: (locale) => [breadcrumbLd([{ name: NAV.tr.home, path: "/" }, { name: "Araçlarımız" }], locale)],
     },
     "/lokasyonlar": {
@@ -1184,9 +1211,9 @@ const STATIC_META = {
       jsonLd: (locale) => [webSiteLd(locale)],
     },
     "/vehicles": {
-      title: "Car Rental in Aliağa & İzmir | Rentwin",
+      title: "Rental Fleet: Cars, Panel Vans and Pickups | Rentwin",
       description:
-        "Daily and monthly car rental in Aliağa. Request delivery and meet-and-greet at İzmir Adnan Menderes Airport, then book online.",
+        "The vehicles in Rentwin's rental fleet: cars such as the Egea, Clio and Octavia, Fiorino, Doblo and Ducato panel vans, and a double-cab pickup. Check availability and book online.",
       jsonLd: (locale) => [breadcrumbLd([{ name: NAV.en.home, path: "/" }, { name: "Our Vehicles" }], locale)],
     },
     "/lokasyonlar": {
@@ -1515,15 +1542,16 @@ const buildHead = ({
     if (canonicalPath === "/" || canonicalPath === "/yorumlar") {
       head.jsonLd.push(autoRentalLd({ reviewSummary, reviews }));
     }
-    // "/" keeps its static hero snapshot (index.html) — only /yorumlar needs
-    // its #root filled in here (it has no such snapshot of its own).
+    // "/" keeps its static hero snapshot (index.html); the prerender appends
+    // the rest of the homepage (renderHomeBody, below) after it. /yorumlar
+    // has no snapshot of its own, so its whole #root is filled in here.
     if (canonicalPath === "/yorumlar") head.bodyHtml = renderReviewsBody(reviewSummary, reviews, locale);
 
     if (canonicalPath === "/sss") head.bodyHtml = renderFaqBody(locale);
     if (canonicalPath === "/about") head.bodyHtml = renderAboutBody(locale);
     if (canonicalPath === "/contact") head.bodyHtml = renderContactBody(locale);
     if (canonicalPath === "/privacy-policy") head.bodyHtml = renderPrivacyPolicyBody(locale);
-    if (canonicalPath === "/" && path !== "/") head.bodyHtml = renderHomeBody(locale);
+    if (canonicalPath === "/") head.bodyHtml = renderHomeBody(locale, { includeHero: path !== "/" });
 
     return head;
   }

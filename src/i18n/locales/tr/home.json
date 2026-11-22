@@ -33,7 +33,7 @@
     "popularCars": {
       "title1": "Popüler",
       "title2": "Araçlar",
-      "desc": "En çok tercih edilen modeller: ekonomik hatchback'lerden ferah SUV'lara, Aliağa ve İzmir'de hemen kiralayabileceğiniz bakımlı araçlar."
+      "desc": "En çok tercih edilen modeller: ekonomik binek araçlardan panelvan ve çift kabin kamyonetlere, Aliağa ofisimizden hemen kiralayabileceğiniz bakımlı araçlar."
     },
     "bestOffers": {
       "title1": "En İyi",
@@ -53,33 +53,33 @@
   },
   "offers": [
     {
-      "title": "Şehir Kaşifi",
-      "desc": "Şehir Kaşifi teklifimizle kentin ritmine kendinizi bırakın. Kompakt, yakıt tasarruflu araç filomuz, kalabalık sokaklarda ve dar park alanlarında rahatça ilerlemeniz için idealdir. Sorunsuz bir sürüş için sezgisel teknoloji özellikleri ve seçebileceğiniz şık modellerle şehir içi yolculuğunuzu keyifli bir gezintiye dönüştürün.",
+      "title": "Günlük Binek Araç",
+      "desc": "Fiat Egea, Renault Clio, Citroen C3 ve Fiat Panda gibi yakıt tasarruflu binek araçlar. Aliağa içindeki işleriniz, İzmir yolu ve kısa seyahatler için günlük kiralayın.",
       "direction": ""
     },
     {
-      "title": "Doğa Maceracısı",
-      "desc": "Doğa Maceracısı paketimizle vahşi doğaya adım atın. Farklı arazi koşullarını kaldırabilen sağlam SUV seçkimiz, off-road maceraları veya kamp gezileri için mükemmeldir. Gelişmiş 4 çeker özellikleri ve geniş iç mekanlarıyla araçlarımız, varış noktanız ne olursa olsun rahat ve keyifli bir yolculuk sağlar.",
+      "title": "Aylık Kiralama",
+      "desc": "Bir haftadan uzun ihtiyaçlarda aylık tarife, aynı aracı günlük fiyatla kiralamaktan belirgin şekilde daha uygundur. Proje süresince ya da kendi aracınız serviste olduğu sürece kullanın.",
       "direction": ""
     },
     {
-      "title": "Yönetici Konforu",
-      "desc": "Yönetici Konforu teklifimizle lüksün ve konforun doruğunun tadını çıkarın. Premium sedanlarımız, üstün bir sürüş deneyimi için şıklık, sofistike tasarım ve teknolojiyi kusursuz bir şekilde birleştirir. Şık iç mekanlar, son teknoloji özellikler ve pürüzsüz performansla her yolculuğu birinci sınıf bir deneyime dönüştürün.",
+      "title": "Panelvan ve Hafif Ticari",
+      "desc": "Fiat Fiorino, Fiat Doblo, Opel Combo ve Fiat Ducato ile malzeme taşıma, dağıtım ve teknik servis işleri. Günlük ya da aylık kiralayabilirsiniz.",
       "direction": ""
     },
     {
-      "title": "Aile Eğlencesi",
-      "desc": "Aile Eğlencesi paketimizle unutulmaz aile anıları biriktirin. Geniş van ve SUV seçeneklerimiz, sevdikleriniz ve eşyalarınız için bol yer sunar. Üst düzey güvenlik özellikleri ve konfor artırıcı donanımlarla, ailenizin yolculuğunun eğlenceli, rahat ve güvenli olmasını sağlarken içiniz rahat olsun.",
+      "title": "Çift Kabin ve Kamyonet",
+      "desc": "Ford Transit Çift Kabin ile ekibi ve ekipmanı tek araçla sahaya götürün. Şantiye, bakım ve sanayi tesislerindeki saha işleri için uygundur.",
       "direction": "right"
     },
     {
-      "title": "Çevre Dostu",
-      "desc": "Çevre Dostu teklifimizle sürdürülebilir yaşamı benimseyin. Elektrikli ve hibrit modellerden oluşan yelpazemiz, verimli performans ile çevre dostu teknoloji arasında mükemmel bir denge sunar. Modern sürüş teknolojisinin tüm kolaylıklarından yararlanırken karbon ayak izinizi azalttığınızı bilerek güvenle sürün.",
+      "title": "Havalimanında Teslim",
+      "desc": "İzmir Adnan Menderes Havalimanı'nda araç teslimi ve karşılama. Talebinizi rezervasyon sırasında belirtmeniz yeterli.",
       "direction": "right"
     },
     {
-      "title": "Sportif Deneyim",
-      "desc": "Heyecan arayanlar Sportif Deneyim paketimizle sevinecek. Optimum hız ve kontrol için ince ayarlanmış yüksek performanslı bir spor arabanın direksiyonuna geçin. Son teknoloji ve zarif tasarımlarla bu araçlar, eşi benzeri olmayan bir sürüş deneyimi sunmak için üretildi. Açık yolun heyecanını hiç olmadığı gibi hissedin.",
+      "title": "Şirketlere Faturalı Kiralama",
+      "desc": "Şirket adına fatura, aynı modelden birden fazla araçla toplu kiralama ve depozitosuz kiralama. Aliağa'daki firmalar için aylık teklif hazırlıyoruz.",
       "direction": "right"
     }
   ],
@@ -114,9 +114,26 @@
       { "id": 1, "title": "Bireysel Araç Kiralama" },
       { "id": 2, "title": "Kurumsal Filo Çözümleri" },
       { "id": 3, "title": "Uzun Dönem Kiralama Programları", "route": "longTermRental" },
-      { "id": 4, "title": "Premium Otomobil Kiralama" },
+      { "id": 4, "title": "Minibüs ve Yolcu Vanı Kiralama" },
       { "id": 5, "title": "Havalimanı Teslim & Karşılama" },
       { "id": 6, "title": "Ticari Araç Kiralama", "route": "commercialRental" }
+    ]
+  },
+  "localGuide": {
+    "title": "Aliağa'da Araç Kiralama",
+    "paragraphs": [
+      "Rentwin, Aliağa merkezde Atatürk Mahallesi 356. Sokak'taki ofisinden günlük, haftalık ve aylık araç kiralar. Filomuzda binek araçların yanında panelvanlar, çift kabin kamyonet ve yolcu vanı bulunur; aracınızı ofisimizden teslim alıp işiniz bitince yine ofisimize bırakabilirsiniz.",
+      "Aliağa'da araç ihtiyacının büyük kısmı sanayi bölgesinden gelir. STAR Rafineri, Petkim, ALOSBİ ve Nemrut Körfezi'ndeki limanlarda çalışan ekipler ile bu tesislerde iş yapan firmalar için aylık binek ve ticari araç kiralıyor, şirket adına fatura kesiyoruz.",
+      "İzmir'e uçakla gelip Aliağa'ya geçecekseniz aracınızı İzmir Adnan Menderes Havalimanı'nda teslim alabilirsiniz. Foça, Yeni Foça, Çandarlı, Menemen ve Bergama yönündeki yolculuklarınız için de aracı Aliağa ofisimizden alabilirsiniz.",
+      "Kiralamak için en az 25 yaşında olmanız ve en az 3 yıllık sürücü belgeniz olması yeterlidir; depozito istemiyoruz. Ofisimiz haftanın 7 günü açıktır. Fiyatlarımız KDV hariçtir ve her model için fiyat listesinde yer alır."
+    ],
+    "linksTitle": "Aliağa'da kiralama için",
+    "links": [
+      { "route": "aliagaOffice", "label": "Aliağa ofisimizin adresi ve çalışma saatleri" },
+      { "route": "priceList", "label": "Aliağa araç kiralama fiyatları" },
+      { "route": "longTermRental", "label": "Aliağa'da aylık ve uzun dönem araç kiralama" },
+      { "route": "commercialRental", "label": "Aliağa'da ticari araç, panelvan ve kamyonet kiralama" },
+      { "route": "airport", "label": "İzmir Havalimanı'nda araç teslimi" }
     ]
   },
   "followUs": {

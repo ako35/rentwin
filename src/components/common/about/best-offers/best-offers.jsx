@@ -1,17 +1,20 @@
 import { Col, Container, Row } from "react-bootstrap"
 import {OfferItem, SectionHeader} from "../../../"
 import { useTranslation } from "react-i18next"
-import { MdFamilyRestroom, MdOutlineWorkspacePremium } from "react-icons/md"
-import { GiEcology, GiCarWheel, GiModernCity, GiCircleForest,  } from "react-icons/gi"
+import { MdBusinessCenter, MdDateRange } from "react-icons/md"
+import { GiAirplaneArrival, GiCityCar, GiTruck } from "react-icons/gi"
+import { PiVan } from "react-icons/pi"
 import './best-offers.scss'
 
+// Same order as home.json `offers`: daily car, monthly, panel van,
+// double-cab pickup, airport delivery, company rentals.
 const offerIcons = [
-  <GiModernCity key={0} />,
-  <GiCircleForest key={1} />,
-  <MdOutlineWorkspacePremium key={2} />,
-  <MdFamilyRestroom key={3} />,
-  <GiEcology key={4} />,
-  <GiCarWheel key={5} />,
+  <GiCityCar key={0} />,
+  <MdDateRange key={1} />,
+  <PiVan key={2} />,
+  <GiTruck key={3} />,
+  <GiAirplaneArrival key={4} />,
+  <MdBusinessCenter key={5} />,
 ]
 
 const BestOffers = () => {

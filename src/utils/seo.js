@@ -55,6 +55,7 @@ export const autoRentalLd = ({ reviewSummary, reviews } = {}) => ({
     : {}),
   hasMap: website.mapUrl,
   areaServed: [
+    { "@type": "City", name: "Aliağa" },
     { "@type": "State", name: "İzmir" },
     { "@type": "Country", name: "Türkiye" },
   ],

@@ -78,6 +78,48 @@ Sahibi, "aliağa araç kiralama" aramasında Dinç Oto Kiralama'nın Instagram s
 
 **Dinç'in Instagram'ı neden üstte:** Instagram'ın alan adı çok güçlü; profil adında "Oto Kiralama", açıklamasında "Aliağa/İZMİR" geçiyor, 700+ takipçisi var. Bizim sitemiz yeni, dış bağlantısı az ve ana lokasyon sayfası yukarıdaki hata yüzünden dizinde değildi.
 
+## 22 Kasım 2026: "yine aşağıdayız" ölçümü ve kalıcı plan
+
+Sahibi: "Hem Haritalar'da hem aramada aşağıdayız; bazen yukarı çıkıp bazen düşüyoruz, kalıcı olarak üstte durmamız lazım."
+
+**Search Console ("aliağa" geçen bütün aramalar, günlük):** 16–21 Kasım arasında günde 6–21 gösterim. Bu, önceki haftaların 3-4 katı. Konum 17–20 Kasım'da 4,0 → 2,8 → 1,8 → 2,0, 21 Kasım'da 11,0. Son 28 günde "aliağa araç kiralama" 74 gösterim, 7 tıklama, konum 7,0. Önemli sayfaların 10'u da dizinde (`/`, `/lokasyonlar/aliaga`, `/lokasyonlar/izmir-havalimani` dahil); 20 Kasım'daki robots düzeltmesi tuttu.
+
+**Canlı Google (sahibinin Chrome'u, "Aliağa, Samurlu"):**
+
+- Arama sayfası: Haritalar kutusunda Ensar (34 yorum, 24 saat), Acar (8), Gümüş (9, 24 saat). "Yerler" listesinin ilk 10'unda Rentwin yok; organik sonuçların ilk 30'unda da yok.
+- Google Haritalar: 2 reklamdan sonra Rentwin **6.** (Ensar, Acar, Gümüş, Bulut, Baran, Rentwin). Profil: 9 yorum, 5,0. Pazar günü 17:00'de kapanıyor; Ensar ve Gümüş 24 saat açık.
+
+Search Console'da konum 2 görünürken canlı aramada sitenin olmaması çelişki değil. O günlerde Haritalar kutusunda çıkıyorduk; kutudaki sıra yer değiştirince gösterim de konum da düşüyor. Dalgalanmanın büyük kısmı Haritalar kutusundan geliyor.
+
+**Dalgalanmanın nedenleri:**
+
+1. **Yorum sayısı az, gelişi düzensiz.** Rentwin 9, Ensar 34, Dinç 36, Şair Turizm 38. Admin → "Google Yorumu İste" listesinde aracı teslim etmiş 67 müşterinin **yalnızca 3'üne** istek gönderilmiş; 64'üne hiç gönderilmemiş.
+2. **Aynı binada aynı kategoride iki profil (Şair Turizm).** Google aynı adresteki benzer işletmelerden birini yerel sonuçlarda sık sık gizler; hangisini gizlediği aramadan aramaya değişir. Bu, "bazen var bazen yok" durumunun klasik nedeni. Karar hâlâ sahibinde (Bulgu 3, 19–20 Kasım).
+3. **Çalışan yorumu riski.** Ekip bölümünde Operasyon Direktörü olarak görünen Emre Can Çetin'in 17 Kasım tarihli 5 yıldızlı yorumu var. Google çalışan yorumlarını kaldırıyor (Rumeysa Koçan'ın yorumu da böyle gitti) ve tekrar eden durumlarda profili filtreleyebiliyor. Yorumu kendisinin silmesi daha güvenli.
+4. **Ana sayfa ile `/vehicles` aynı aramada yarışıyordu.** "aliağa araç kiralama" için Google bazen `/` (66 gösterim, konum 3,0), bazen `/vehicles` (39 gösterim, konum 8,9) sayfasını seçiyordu. İkisinin başlığı ve açıklaması neredeyse aynıydı.
+5. **Ana sayfa içerik olarak zayıftı.** Botlara giden HTML'de yalnızca hero vardı (~60 kelime). Tarayıcıdaki hâlinde de "En İyi Tekliflerimiz" bölümü hazır şablondan kalmaydı ve filoda olmayan SUV, off-road, lüks sedan, elektrikli ve spor araç anlatıyordu.
+
+**Sitede yapılanlar (22 Kasım, yayın bekliyor):**
+
+- Ana sayfaya "Aliağa'da Araç Kiralama" bölümü: ofis, sanayi bölgesi (STAR, Petkim, ALOSBİ, Nemrut limanları), havalimanı teslimi, yakın ilçeler, kiralama şartları ve Aliağa ofisi, fiyat listesi, aylık kiralama, ticari araç ve havalimanı sayfalarına açıklayıcı bağlantılar.
+- "En İyi Tekliflerimiz" gerçek hizmetlerle yeniden yazıldı (günlük binek, aylık, panelvan, çift kabin, havalimanı, şirketlere faturalı). "Ne Yapıyoruz"daki "Premium Otomobil Kiralama" yerine "Minibüs ve Yolcu Vanı Kiralama". Popüler araçlar ve araç listesi metinlerinden SUV ve lüks sedan çıkarıldı.
+- `/vehicles` başlığı "Kiralık Araçlar: Binek, Panelvan ve Kamyonet | Rentwin" oldu; "Aliağa araç kiralama" artık yalnızca ana sayfanın hedefi.
+- Botlara giden ana sayfa HTML'i artık hero'nun altında bütün bölümleri (Aliağa bölümü dahil) içeriyor.
+- Yapısal veride (AutoRental) `areaServed` listesinin başına Aliağa (City) eklendi.
+
+**Kalıcı üst sıra için yapılacaklar (sıra etkiye göre):**
+
+| # | İş | Kim | Not |
+|---|---|---|---|
+| 1 | 64 müşteriye yorum isteği: günde 8–10 kişi, 1 hafta içinde bitecek şekilde. Sonra her teslimde aynı gün. | İşletme | Hepsi bir günde gönderilmez; ani yorum yığılması Google'ın filtresine takılabilir. Hedef: Aralık sonunda 30+ yorum. |
+| 2 | Şair Turizm profili kararı: ana kategoriyi transfer/turizm yapmak ya da profilleri ayrıştırmak; sairturizm.com'dan rentwin.com.tr'ye bağlantı. | Karar: işletme · Uygulama: Claude | Dalgalanmanın en olası Haritalar nedeni. |
+| 3 | Emre Can Çetin'in yorumunu kendisinin silmesi. Aile, çalışan ve tanıdıktan yorum istenmez. | İşletme | |
+| 4 | Gerçek fotoğraflar: tabela, ofis, araçlar, teslim anı (10+), sonra her ay birkaç yeni. | İşletme çeker · Claude yükler | Hâlâ bekliyor. |
+| 5 | Çalışma saatleri: telefon ve WhatsApp'tan gerçekten hizmet veriliyorsa saatler uzatılır (özellikle Pazar). Gerçek olmayan saat yazılmaz. | Karar: işletme | "Şu an açık" olanlar öne çıkıyor. |
+| 6 | Haftalık Google gönderisi. | Claude (onayla) | |
+| 7 | Dizin kayıtları ve hatalı kayıtların düzeltilmesi: Bulurum.com ve İzmir İş Rehberi (ikisi de bu aramada ilk sayfada), Yandex, Bing Places, Apple Business Connect; rentacarss.com'daki yanlış telefon. | Hesaplar: işletme · Doldurma: Claude | Ad, adres, telefon her yerde birebir aynı. |
+| 8 | Ayda 2 blog yazısı (ör. "Aliağa'da aylık araç kiralama rehberi", "Petkim/STAR projeleri için araç"). | Claude taslak · İşletme onay | |
+
 ## 4. Nasıl ölçülecek
 
 - Her 2 haftada bir Search Console: "aliağa araç kiralama", "aliaga rent a car", "aliağa araç kiralama fiyatları" sorgularının 28 günlük ortalama konumu ve gösterimi.

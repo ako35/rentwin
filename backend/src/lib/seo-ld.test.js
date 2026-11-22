@@ -113,8 +113,32 @@ test("home and vehicle metadata target local rental searches in both languages",
   assert.equal(enVehicles.description, enVehiclesCopy.seoDescription);
   assert.match(trHome.title, /Aliağa Araç Kiralama/);
   assert.match(enHome.title, /Car Rental in Aliağa/);
-  for (const page of [trHome, enHome, trVehicles, enVehicles]) {
+  for (const page of [trHome, enHome]) {
     assert.match(page.description, /Adnan Menderes Airport|Adnan Menderes Havalimanı/);
+  }
+});
+
+// Google kept swapping "/" and "/vehicles" for "aliağa araç kiralama"
+// (Search Console, Aug–Nov 2026: 66 vs 39 impressions on the same query)
+// while both carried near-identical titles. The fleet page now describes the
+// fleet and leaves the head term to the homepage.
+test("the vehicles list no longer competes with the homepage for the head term", () => {
+  for (const [home, vehicles] of [
+    ["/", "/vehicles"],
+    ["/en", "/en/vehicles"],
+  ]) {
+    const homeHead = buildHead({ path: home });
+    const vehiclesHead = buildHead({ path: vehicles });
+    assert.notEqual(vehiclesHead.title, homeHead.title);
+    assert.notEqual(vehiclesHead.description, homeHead.description);
+    assert.doesNotMatch(vehiclesHead.title, /Aliağa Araç Kiralama|Araç Kiralama|Car Rental in Aliağa/);
+  }
+});
+
+test("homepage copy only promises vehicle types the fleet has", () => {
+  for (const copy of [trHomeCopy, enHomeCopy, trVehiclesCopy, enVehiclesCopy]) {
+    const text = JSON.stringify(copy);
+    assert.doesNotMatch(text, /SUV|off-road|4 çeker|4-wheel|spor araba|sports car|hibrit|hybrid|Premium/i);
   }
 });
 

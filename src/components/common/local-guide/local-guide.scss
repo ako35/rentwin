@@ -1,0 +1,56 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/mixins' as m;
+
+.local-guide {
+    display: grid;
+    grid-template-columns: 1fr minmax(240px, 340px);
+    gap: 2rem;
+    align-items: start;
+
+    @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    &__title {
+        margin: 0 0 0.9rem;
+        font-size: 1.6rem;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        color: v.$color2;
+    }
+
+    &__copy p {
+        margin: 0 0 0.9rem;
+        font-size: 0.97rem;
+        line-height: 1.7;
+        color: v.$color-muted;
+    }
+
+    &__links {
+        padding: 1.25rem 1.4rem;
+        background-color: v.$surface-mint;
+        border: 1px solid v.$color3;
+        border-radius: 16px;
+
+        ul {
+            @include m.reset-list;
+            display: grid;
+            gap: 0.6rem;
+        }
+
+        a {
+            color: v.$color2;
+            font-weight: 600;
+            line-height: 1.45;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+    }
+
+    &__links-title {
+        margin: 0 0 0.8rem;
+        font-size: 1.05rem;
+        font-weight: 800;
+    }
+}

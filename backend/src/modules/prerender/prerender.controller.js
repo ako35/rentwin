@@ -105,12 +105,13 @@ const ROOT_OPEN = '<div id="root">';
 // runs that script, so without this it would read the homepage's hero copy
 // under e.g. the vehicles-listing page's <head> — worse than an empty body.
 // A plain regex can't safely find the *matching* closing </div> (the hero
-// snapshot has nested <div>s of its own), so walk tag depth instead. Always
-// replaces (with head.bodyHtml, or "" otherwise) — every path this runs for
-// is, by construction, never the bare "/" (see vercel.json / app.js).
-const replaceRootContent = (html, bodyHtml) => {
+// snapshot has nested <div>s of its own), so walk tag depth instead.
+// Returns { contentStart, contentEnd } of #root's inner HTML, or null when
+// #root is missing or unbalanced (callers then leave the HTML untouched
+// rather than mangle it).
+const findRootContent = (html) => {
   const start = html.indexOf(ROOT_OPEN);
-  if (start === -1) return html;
+  if (start === -1) return null;
   const contentStart = start + ROOT_OPEN.length;
   const tagRe = /<div\b[^>]*>|<\/div>/g;
   tagRe.lastIndex = contentStart;
@@ -118,11 +119,25 @@ const replaceRootContent = (html, bodyHtml) => {
   let match;
   while ((match = tagRe.exec(html))) {
     depth += match[0] === "</div>" ? -1 : 1;
-    if (depth === 0) {
-      return html.slice(0, contentStart) + bodyHtml + html.slice(match.index);
-    }
+    if (depth === 0) return { contentStart, contentEnd: match.index };
   }
-  return html; // unbalanced/not found — leave untouched rather than mangle it
+  return null;
+};
+
+// Every route but the bare "/": #root's snapshot is swapped for the page's
+// own body (head.bodyHtml, or "" when it has none).
+const replaceRootContent = (html, bodyHtml) => {
+  const root = findRootContent(html);
+  if (!root) return html;
+  return html.slice(0, root.contentStart) + bodyHtml + html.slice(root.contentEnd);
+};
+
+// The bare "/": the hero snapshot stays and the rest of the homepage is
+// added after it, inside #root.
+const appendToRootContent = (html, bodyHtml) => {
+  const root = findRootContent(html);
+  if (!root || !bodyHtml) return html;
+  return html.slice(0, root.contentEnd) + bodyHtml + html.slice(root.contentEnd);
 };
 
 const inject = (shell, head) => {
@@ -135,18 +150,17 @@ const inject = (shell, head) => {
   }
   html = html.replace(/<html lang="[^"]*"/, `<html lang="${head.htmlLang}"`);
   // The bare (Turkish) "/" ships its own real hero-snapshot content in #root
-  // already — that IS this page's prerendered body (see the ROOT_OPEN
-  // comment above), so it's left untouched here rather than wiped to "" like
-  // every other route's #root. ("/" now reaches this function too — see
-  // vercel.json / app.js — so this is no longer unconditional.) Checked
-  // against the raw request path, not the canonicalized one, so "/en" (whose
-  // canonical path is also "/") keeps its existing behavior below — the
-  // Turkish snapshot is the wrong language for it, an empty #root is not a
-  // new regression there. Some other routes (currently /kampanyalar) carry
-  // their own server-rendered body so a JS-less crawler reads real content
-  // for that page; every remaining route gets an empty #root, same as a
-  // browser ends up with before React mounts.
-  if (head.path !== "/") {
+  // already (see the ROOT_OPEN comment above), so it is kept, and the rest
+  // of the homepage (head.bodyHtml: popular cars, offers, services, the
+  // Aliağa guide) is appended after it — without that a JS-less crawler
+  // read only the ~60-word hero on the page that ranks for "aliağa araç
+  // kiralama". Checked against the raw request path, not the canonicalized
+  // one, so "/en" (whose canonical path is also "/") gets its whole English
+  // body instead of the Turkish snapshot. Every other route's #root is
+  // replaced with its own server-rendered body, or emptied when it has none.
+  if (head.path === "/") {
+    html = appendToRootContent(html, head.bodyHtml);
+  } else {
     html = replaceRootContent(html, head.bodyHtml || "");
   }
   return html;
@@ -348,4 +362,4 @@ const renderPage = async (req, res) => {
   }
 };
 
-module.exports = { renderPage, renderHeadTags, renderLd };
+module.exports = { renderPage, renderHeadTags, renderLd, inject };

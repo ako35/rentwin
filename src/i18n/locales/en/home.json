@@ -33,7 +33,7 @@
     "popularCars": {
       "title1": "Popular",
       "title2": "Cars",
-      "desc": "Our most-booked models: from economical hatchbacks to roomy SUVs, well-maintained cars you can rent today in Aliağa and İzmir."
+      "desc": "Our most-booked models: from economical cars to panel vans and double-cab pickups, well-maintained vehicles you can rent today from our Aliağa office."
     },
     "bestOffers": {
       "title1": "Get Our",
@@ -53,33 +53,33 @@
   },
   "offers": [
     {
-      "title": "City Explorer",
-      "desc": "Immerse yourself in the rhythm of the city with our City Explorer offer. Our fleet of compact, fuel-efficient vehicles is perfect for navigating the bustling streets and tight parking spaces of the urban jungle. With intuitive tech features for a seamless drive and a range of stylish models to choose from, you'll transform your city commute into a joyride.",
+      "title": "Everyday Cars",
+      "desc": "Fuel-efficient cars such as the Fiat Egea, Renault Clio, Citroen C3 and Fiat Panda. Rent by the day for errands in Aliağa, the drive to İzmir and short trips.",
       "direction": ""
     },
     {
-      "title": "Nature Adventurer",
-      "desc": "Venture into the wild with our Nature Adventurer package. Our selection of rugged SUVs is built to handle diverse terrains, making them perfect for off-road escapades or camping trips. Equipped with advanced 4-wheel drive capabilities and spacious interiors, our vehicles ensure a smooth and comfortable journey, regardless of the destination.",
+      "title": "Monthly Rental",
+      "desc": "For anything longer than a week, the monthly rate is clearly cheaper than renting the same car by the day. Keep it for the length of a project or while your own car is in the shop.",
       "direction": ""
     },
     {
-      "title": "Executive Comfort",
-      "desc": "Indulge in the epitome of luxury and comfort with our Executive Comfort offer. Our premium sedans provide a seamless blend of style, sophistication, and technology, ensuring an exceptional driving experience. With plush interiors, state-of-the-art tech features, and smooth performance, make every journey feel like a first-class ride.",
+      "title": "Panel Vans and Light Commercials",
+      "desc": "The Fiat Fiorino, Fiat Doblo, Opel Combo and Fiat Ducato for moving materials, deliveries and service calls. Rent by the day or by the month.",
       "direction": ""
     },
     {
-      "title": "Family Fun",
-      "desc": "Make unforgettable family memories with our Family Fun package. Our range of spacious vans and SUVs offer ample room for all your loved ones and luggage. With top-tier safety features and comfort-enhancing amenities, enjoy peace of mind while ensuring your family's journey is fun, comfortable, and safe.",
+      "title": "Double-Cab Pickups",
+      "desc": "Take the crew and the equipment to site in one vehicle with the Ford Transit Double Cab. Suited to construction, maintenance and field work at industrial sites.",
       "direction": "right"
     },
     {
-      "title": "Eco-Friendly",
-      "desc": "Embrace sustainable living with our Eco-Friendly offer. Our range of electric and hybrid models offers the perfect balance between efficient performance and eco-friendly technology. Drive with confidence, knowing you're reducing your carbon footprint while enjoying all the conveniences of modern driving technology.",
+      "title": "Airport Delivery",
+      "desc": "Vehicle delivery and meet-and-greet at İzmir Adnan Menderes Airport. Just mention it when you book.",
       "direction": "right"
     },
     {
-      "title": "Sporty Experience",
-      "desc": "Thrill-seekers will rejoice with our Sporty Experience package. Get behind the wheel of a high-performance sports car, finely tuned for optimum speed and control. With cutting-edge technology and sleek designs, these vehicles are built to deliver a driving experience like no other. Feel the exhilaration of the open road like never before.",
+      "title": "Invoiced Company Rentals",
+      "desc": "Invoices in your company's name, several cars of the same model on one rental, and no deposit. We prepare monthly quotes for companies in Aliağa.",
       "direction": "right"
     }
   ],
@@ -114,9 +114,26 @@
       { "id": 1, "title": "Individual Vehicle Rental" },
       { "id": 2, "title": "Corporate Fleet Solutions" },
       { "id": 3, "title": "Extended Lease Programs", "route": "longTermRental" },
-      { "id": 4, "title": "Premium Automobile Hire" },
+      { "id": 4, "title": "Minibus and Passenger Van Rental" },
       { "id": 5, "title": "Airport Delivery & Meet-and-Greet" },
       { "id": 6, "title": "Commercial Vehicle Rental", "route": "commercialRental" }
+    ]
+  },
+  "localGuide": {
+    "title": "Car Rental in Aliağa",
+    "paragraphs": [
+      "Rentwin rents cars by the day, week and month from its office on 356. Sokak in Atatürk Mahallesi, central Aliağa. Besides cars, the fleet has panel vans, a double-cab pickup and a passenger van; pick your vehicle up at our office and bring it back there when you are done.",
+      "Most of the demand for rental vehicles in Aliağa comes from the industrial zone. We rent cars and commercial vehicles by the month to crews working at the STAR Refinery, Petkim, ALOSBİ and the Nemrut Bay ports, and to the companies working at these sites, with invoices in the company's name.",
+      "If you fly into İzmir on your way to Aliağa, you can collect your car at İzmir Adnan Menderes Airport. For trips towards Foça, Yeni Foça, Çandarlı, Menemen and Bergama, you can pick the car up from our Aliağa office.",
+      "To rent, you need to be at least 25 and have held a driving licence for at least 3 years; we do not take a deposit. Our office is open 7 days a week. Our prices exclude VAT and are listed for every model on the price list."
+    ],
+    "linksTitle": "Renting in Aliağa",
+    "links": [
+      { "route": "aliagaOffice", "label": "Our Aliağa office: address and opening hours" },
+      { "route": "priceList", "label": "Car rental prices in Aliağa" },
+      { "route": "longTermRental", "label": "Monthly and long-term car rental in Aliağa" },
+      { "route": "commercialRental", "label": "Commercial vehicle, panel van and pickup rental in Aliağa" },
+      { "route": "airport", "label": "Car delivery at İzmir Airport" }
     ]
   },
   "followUs": {

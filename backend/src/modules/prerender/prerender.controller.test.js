@@ -1,10 +1,42 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { renderPage, renderHeadTags, renderLd } = require("./prerender.controller");
+const { renderPage, renderHeadTags, renderLd, inject } = require("./prerender.controller");
 const { buildHead } = require("../../lib/seo-ld");
 const { SITE_URL } = require("../../lib/site");
+const trHomeCopy = require("../../../../src/i18n/locales/tr/home.json");
+const enHomeCopy = require("../../../../src/i18n/locales/en/home.json");
 
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// A cut-down index.html: SEO markers plus the TR homepage-hero snapshot,
+// which has nested <div>s of its own.
+const SHELL =
+  '<!DOCTYPE html><html lang="tr"><head><!--SEO:START--><!--SEO:END--><!--SEO:LD--></head><body>' +
+  '<div id="root"><section class="home-hero"><div class="container"><div class="home-hero__copy">' +
+  '<h1 class="home-hero__title">Aliağa Araç Kiralama</h1></div></div></section></div>' +
+  "<script>/* app */</script></body></html>";
+
+const rootOf = (html) => html.slice(html.indexOf('<div id="root">'), html.indexOf("<script>"));
+
+test("bare / keeps the hero snapshot and appends the rest of the homepage", () => {
+  const root = rootOf(inject(SHELL, buildHead({ path: "/" })));
+  assert.equal((root.match(/<h1\b/g) || []).length, 1);
+  assert.ok(root.indexOf("home-hero__title") < root.indexOf(`<h2>${trHomeCopy.localGuide.title}</h2>`));
+  for (const paragraph of trHomeCopy.localGuide.paragraphs) {
+    assert.ok(root.includes(paragraph.replace(/"/g, "&quot;")), paragraph);
+  }
+  assert.ok(root.includes(`href="${SITE_URL}/lokasyonlar/aliaga"`));
+  assert.ok(root.includes(`href="${SITE_URL}/arac-kiralama-fiyatlari"`));
+  assert.ok(root.endsWith("</div>"), "appended content stays inside #root");
+});
+
+test("/en swaps the Turkish snapshot for its own English homepage body", () => {
+  const root = rootOf(inject(SHELL, buildHead({ path: "/en" })));
+  assert.doesNotMatch(root, /home-hero__title/);
+  assert.ok(root.includes(`<h1>${enHomeCopy.hero.title}</h1>`));
+  assert.ok(root.includes(`<h2>${enHomeCopy.localGuide.title}</h2>`));
+  assert.ok(root.includes(`href="${SITE_URL}/en/lokasyonlar/aliaga"`));
+});
 
 test("Turkish-only blog post head has no hreflang pair or og:locale:alternate", () => {
   const html = renderHeadTags(
