@@ -98,9 +98,7 @@ const Footer = () => {
           <Col lg={6} xl={3}>
             <h2>{t("workingHours")}</h2>
             <ul className="site-footer__hours">
-              <li>{t("hours.weekdays")}</li>
-              <li>{t("hours.saturday")}</li>
-              <li>{t("hours.sunday")}</li>
+              <li>{t("hours.everyDay")}</li>
             </ul>
           </Col>
 

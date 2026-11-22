@@ -42,10 +42,14 @@ const business = {
   social: SOCIAL,
   // Verified public profiles only — an unverifiable sameAs hurts rich results.
   sameAs: [MAPS_URL, ...Object.values(SOCIAL).filter(Boolean)],
+  // Open 24 hours every day (owner's decision, 2026-11-22; matches the Google
+  // Business Profile). Keep in sync with src/constants/index.js.
   openingHours: [
-    { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "21:00" },
-    { days: ["Saturday"], opens: "09:00", closes: "19:00" },
-    { days: ["Sunday"], opens: "09:00", closes: "17:00" },
+    {
+      days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      opens: "00:00",
+      closes: "23:59",
+    },
   ],
 };
 

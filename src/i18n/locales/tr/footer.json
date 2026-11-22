@@ -6,9 +6,7 @@
  "socialLabel": "Rentwin {{network}} hesabı",
  "blurb": "Güvenli, konforlu ve şeffaf fiyatlarla hızlı araç kiralama hizmeti.",
  "hours": {
-  "weekdays": "Pzt - Cuma: 09:00 - 21:00",
-  "saturday": "Cumartesi: 09:00 - 19:00",
-  "sunday": "Pazar: 09:00 - 17:00"
+  "everyDay": "Her gün: 24 saat açık"
  },
  "copyright": "Rentwin. Tüm hakları saklıdır."
 }
