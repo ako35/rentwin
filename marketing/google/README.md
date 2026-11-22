@@ -72,7 +72,7 @@ Facebook takvimindeki konular buraya uyarlanabilir (her biri için 1200×900 gö
 Yapılmayanlar:
 
 - [ ] **Vitrin fotoğrafı:** Google'ın "profilinizi tamamlayın" listesinde kalan tek madde bu. Profilde bir dış cephe fotoğrafı var. Gerçek fotoğraf gerekiyor (ofisin önü, tabela, araçlar, teslim anı); reklam görselleri ve üretici fotoğrafları bunun yerine geçmez.
-  - 22 Kasım: Profildeki medya şunlar: "ŞAİR rentwin" tabelası, Skoda Octavia gece cami fotoğrafı, yıkama videosu (0:14) ve gece benzinlik videosu (0:07). Sahibinin onayıyla bu iki videodan çıkarılan iki kare de eklendi (`skoda-octavia-yikama-kare.jpg`, `skoda-octavia-gece-benzinlik-kare.jpg`; Google incelemesinde). Kapak fotoğrafı ve logo hâlâ boş. Eksik çekimler: ofis içi, teslim anı, Skoda dışındaki araçlar (Egea, Doblo, Fiorino, Transit Çift Kabin).
+  - 22 Kasım: Profildeki medya şunlar: "ŞAİR rentwin" tabelası, Skoda Octavia gece cami fotoğrafı, yıkama videosu (0:14) ve gece benzinlik videosu (0:07). Sahibinin onayıyla bu iki videodan çıkarılan iki kare de eklendi (`skoda-octavia-yikama-kare.jpg`, `skoda-octavia-gece-benzinlik-kare.jpg`; Google incelemesinde). Aynı gün sahibinin onayıyla logo ve kapak fotoğrafı da eklendi. Logo, Instagram profil görseliyle aynı yeşil "R" (`logo-rentwin-1080.png`); hemen yayına girdi. Kapak, cami önündeki Skoda Octavia fotoğrafının 16:9 kırpımı (`kapak-skoda-octavia-cami-1200x675.jpg`); Google incelemesinde ("Beklemede"). Eksik çekimler: ofis içi, teslim anı, Skoda dışındaki araçlar (Egea, Doblo, Fiorino, Transit Çift Kabin).
 
 Yeni açıklama:
 
