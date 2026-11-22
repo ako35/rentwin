@@ -13,6 +13,16 @@ import "../style.scss";
 const { routes } = constants;
 const API_URL = import.meta.env.VITE_APP_API_URL;
 
+// The admin's Quill editor saves every link with target="_blank" (plus a
+// matching rel), so links to our own pages inside a post opened a new tab.
+// Drop both attributes from same-site links ("/..." or rentwin.com.tr) so
+// they open in place; external links keep them.
+const SITE_HREF = /\shref="(?:https?:\/\/(?:www\.)?rentwin\.com\.tr)?\/(?!\/)/i;
+const openSiteLinksInPlace =(html = "") =>
+  html.replace(/<a\s[^>]*>/gi, (tag) =>
+    SITE_HREF.test(tag) ? tag.replace(/\s(?:target|rel)="[^"]*"/gi, "") : tag
+  );
+
 const BlogDetailPage = () => {
   const { slug } = useParams();
   const { t, i18n } = useTranslation("blog");
@@ -103,7 +113,7 @@ const BlogDetailPage = () => {
           </div>
         )}
 
-        <div className="blog-post__content" dangerouslySetInnerHTML={{ __html: post.content }} />
+        <div className="blog-post__content" dangerouslySetInnerHTML={{ __html: openSiteLinksInPlace(post.content) }} />
       </Container>
       <Spacer />
     </>
