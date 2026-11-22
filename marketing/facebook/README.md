@@ -522,3 +522,9 @@ Kullanılmayanlar: takipçi/beğeni satın almak, otomatik takip ve beğeni uygu
 Ücretsiz paylaşım kabul eden olmadı; olumlu dönenlerin hepsi ücretli. Otellere Instagram yerine yüz yüze gitmek daha etkili.
 
 Sahibi 22 Kasım'da bu sayfaların takipçilerini her gün otomatik olarak belli sayıda takip etmeyi istedi. Yapılmadı: başka hesapların takipçilerini otomatik takip etmek Instagram kurallarına aykırı (yapay takipçi toplama), hesap 1.121 takiple zaten riskli bölgede ve bu takipçiler geri takip için takip ediliyor. Bu kitleye kurallara uygun ulaşmanın yolları: o sayfalarda ücretli story (en ucuzu @aliaga.gundem, 2 story 900 TL), ortak gönderi ve yerel etkileşim (§10).
+
+22 Kasım, sahibinin onayıyla gönderilen cevaplar: @aliaga.da.yasam ve @eskifocalilar'a "gönderi ve story fiyatlarınızı ve şartlarınızı iletebilir misiniz?", @aliaga.gundem'e "fiyatları ilettiğiniz için teşekkürler, değerlendirip dönüş yapacağız". Henüz hiçbir ücretli paylaşım kabul edilmedi.
+
+**Düzenli rutinler (22 Kasım'da kuruldu, zamanlanmış görevler):**
+- `rentwin-instagram-yerel-etkilesim` — Pazartesi–Cumartesi 11:00: yerel sayfaların son paylaşımlarına yorum taslakları; sahibi onaylamadan yorum yazılmaz. Kurallar ve kayıt: `C:\workspace\rentwin-sosyal-medya\etkilesim\README.md`, `log.md`.
+- `rentwin-instagram-haftalik-takip` — Çarşamba 15:00: tek tek kontrol edilen 10–15 yerel işletme hesabı takip edilir. Kayıt: `C:\workspace\rentwin-sosyal-medya\etkilesim\takip-log.md`.
