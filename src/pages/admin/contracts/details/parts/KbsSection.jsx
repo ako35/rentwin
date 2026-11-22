@@ -13,7 +13,7 @@ import {
 import moment from "moment/moment";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
-import { kbsStatus } from "../contract-helpers";
+import { kbsStatus, kabisSystemFor } from "../contract-helpers";
 import "./kbs-section.scss";
 
 const DATE_DISPLAY = "DD.MM.YYYY";
@@ -31,6 +31,9 @@ const DATE_STORE = "YYYY-MM-DD";
 // (see admin/settings/page.jsx) and picks which one a given rental was
 // actually filed under — stored as a name snapshot on the contract
 // (kbsSystem), so renaming/deleting a portal later never touches past rows.
+// The portal defaults to the one belonging to the contract's lessor company
+// (kabisSystemFor) and follows that company if it changes, unless the
+// operator has picked a different portal by hand.
 //
 // A mid-contract vehicle swap (VehicleChangeTab) needs two more KABİS steps:
 // release the previous car's record and file the new car. Once the rental is
@@ -120,10 +123,29 @@ const KbsSection = ({ formik, locked = false, onReleaseLocked, contractId, vehic
     else el.focus();
   };
 
+  const lessorCompany = formik.values.lessorCompany;
+
+  // The lessor company changed on the form while the rental is filed: move
+  // the portal along with it, but only if it still shows the previous
+  // company's portal (or none). A portal picked by hand stays as it is.
+  const prevLessorRef = useRef(lessorCompany);
+  useEffect(() => {
+    const prevLessor = prevLessorRef.current;
+    prevLessorRef.current = lessorCompany;
+    if (prevLessor === lessorCompany || fieldsDisabled || status === "pending") return;
+    const next = kabisSystemFor(lessorCompany, systemNames);
+    const current = formik.values.kbsSystem;
+    if (next && (!current || current === kabisSystemFor(prevLessor, systemNames))) {
+      formik.setFieldValue("kbsSystem", next);
+    }
+    // Reacts to the company changing only; formik itself is a new object on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lessorCompany]);
+
   const toggleReport = (checked) => {
     formik.setFieldValue("kbsNotifiedAt", checked ? moment().format("YYYY-MM-DD") : "");
     if (checked && !formik.values.kbsSystem) {
-      formik.setFieldValue("kbsSystem", systemNames[0] || "");
+      formik.setFieldValue("kbsSystem", kabisSystemFor(lessorCompany, systemNames) || systemNames[0] || "");
     }
     if (!checked) {
       formik.setFieldValue("kbsNotifiedBy", "");

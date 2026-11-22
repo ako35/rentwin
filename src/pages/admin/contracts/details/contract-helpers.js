@@ -38,6 +38,24 @@ export const kbsStatus = (v) => {
   return "pending";
 };
 
+// Each lessor company files its rentals in its own KABİS portal, and the
+// portals listed in Ayarlar carry the company in their name ("ŞAİR EMNİYET",
+// "MOVİLO JANDARMA"). Compared without Turkish letters and case, so "Sair
+// Emniyet" or "Movilo" still match.
+const LESSOR_KABIS_KEYWORDS = { SAIR: "SAIR", MOVILO: "MOVILO" };
+const plainUpper = (value) =>
+  String(value || "")
+    .toLocaleUpperCase("tr")
+    .replace(/[ŞİÖÜÇĞ]/g, (ch) => ({ Ş: "S", İ: "I", Ö: "O", Ü: "U", Ç: "C", Ğ: "G" })[ch]);
+
+// The KABİS portal (by name) that belongs to `lessorCompany`, or "" when the
+// company is unset or no portal name mentions it.
+export const kabisSystemFor = (lessorCompany, systemNames = []) => {
+  const keyword = LESSOR_KABIS_KEYWORDS[lessorCompany];
+  if (!keyword) return "";
+  return systemNames.find((name) => plainUpper(name).includes(keyword)) || "";
+};
+
 // Blank "Yeni Müşteri" quick-add form.
 export const EMPTY_NEW_CUST = {
   customerType: "Bireysel", companyTitle: "", taxOffice: "",
