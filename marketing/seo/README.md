@@ -118,7 +118,7 @@ Search Console'da konum 2 görünürken canlı aramada sitenin olmaması çeliş
 | 5 | Çalışma saatleri: telefon ve WhatsApp'tan gerçekten hizmet veriliyorsa saatler uzatılır (özellikle Pazar). Gerçek olmayan saat yazılmaz. | Karar: işletme | "Şu an açık" olanlar öne çıkıyor. |
 | 6 | Haftalık Google gönderisi. | Claude (onayla) | |
 | 7 | Dizin kayıtları ve hatalı kayıtların düzeltilmesi: Bulurum.com ve İzmir İş Rehberi (ikisi de bu aramada ilk sayfada), Yandex, Bing Places, Apple Business Connect; rentacarss.com'daki yanlış telefon. | Hesaplar: işletme · Doldurma: Claude | Ad, adres, telefon her yerde birebir aynı. |
-| 8 | Ayda 2 blog yazısı (ör. "Aliağa'da aylık araç kiralama rehberi", "Petkim/STAR projeleri için araç"). | Claude taslak · İşletme onay | |
+| 8 | Ayda 2 blog yazısı (ör. "Aliağa'da aylık araç kiralama rehberi", "Petkim/STAR projeleri için araç"). | Claude taslak · İşletme onay | 22 Kas: 3 yazı sahibinin onayıyla yayında (gezi rotaları, ticari araç seçimi, proje ekipleri için araç planlama). Taslaklar ve konu seçimi: `marketing/blog/taslaklar-kasim-2026.md`. Dizine ekleme isteği 23 Kasım görevinde. |
 
 ## 4. Nasıl ölçülecek
 
