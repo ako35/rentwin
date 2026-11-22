@@ -114,7 +114,7 @@ Rakipler (Arama kutusu): **Aliağa Acar Araç kiralama - Rent a Car** 5,0 (8 yor
 | 5 | **Gerçek fotoğraflar:** ofis girişi ve tabela, ofis içi, araçlar (dış ve iç), teslim anı; en az 10, sonra her ay birkaç yeni fotoğraf. | İşletme çeker · Claude yükler | Bekliyor |
 | 6 | **Haftalık Google gönderisi** (her gönderi onayla). | Claude | 2 gönderi (12 ve 21 Kas). 22 Kas'ta zamanlanmış görev kuruldu (`rentwin-google-haftalik-gonderi`, her Perşembe 10:00): konu seçer, bilgileri canlı siteden doğrular, görseli hazırlar, taslağı sahibine gösterir; onaydan sonra yayınlayıp bu dosyaya yazar. |
 | 7 | **Dizin kayıtları:** Bulurum.com ("Yer siteleri"nde çıkıyor), Yandex Business, Bing Places, Apple Business Connect, Foursquare. Ad, adres ve telefon her yerde birebir aynı. | Hesaplar: işletme · Doldurma: Claude | Önerildi |
-| 8 | **Çalışma saatleri:** gerçekten telefonla veya WhatsApp'tan hizmet veriliyorsa saatler uzatılabilir. Gerçek olmayan saat yazılmaz. | Karar: işletme | 22 Kas: sahibinin isteğiyle ("24 saat açık yaz") Google profilinde her gün 24 saat açık yapıldı (Google incelemesinde). Sitedeki saatler (footer, Aliağa lokasyon sayfası, yapısal veri) hâlâ 09:00–21:00 / Cmt 19:00 / Pzr 17:00. |
+| 8 | **Çalışma saatleri:** gerçekten telefonla veya WhatsApp'tan hizmet veriliyorsa saatler uzatılabilir. Gerçek olmayan saat yazılmaz. | Karar: işletme | 22 Kas: sahibinin isteğiyle ("24 saat açık yaz") Google profilinde her gün 24 saat açık yapıldı (Google incelemesinde). Aynı gün sahibinin isteğiyle site de 24 saat açık yapıldı (b27e61d): footer, ana sayfa SSS, Aliağa lokasyon sayfası ve açıklaması, ticari sayfa, yapısal veri (her gün 00:00–23:59). |
 
 ### 17 Kasım ölçümü
 
