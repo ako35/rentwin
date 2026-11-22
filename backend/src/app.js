@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const HttpError = require("./lib/http-error");
 
 const authRoutes = require("./modules/auth/auth.routes");
 const documentAiRoutes = require("./modules/document-ai/document-ai.routes");
@@ -63,7 +64,8 @@ app.use(
   cors({
     origin(origin, callback) {
       if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error("Not allowed by CORS"));
+      // A 403 the error handler answers quietly, not a logged 500.
+      return callback(new HttpError(403, "Origin not allowed."));
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],

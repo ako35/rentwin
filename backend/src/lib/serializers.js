@@ -3,6 +3,38 @@ const serializeUser = (user) => {
   return safeUser;
 };
 
+// What a signed-in user gets back about their own account (GET/PUT /user).
+// An allow-list, so the office's private notes about the customer, the review
+// request date, the active flag and any column added later stay admin-only.
+const SELF_USER_FIELDS = [
+  "id",
+  "firstName",
+  "lastName",
+  "email",
+  "phoneNumber",
+  "address",
+  "zipCode",
+  "roles",
+  "builtIn",
+  "customerType",
+  "customerCode",
+  "companyTitle",
+  "taxOffice",
+  "nationalId",
+  "authorizedNationalId",
+  "birthDate",
+  "city",
+  "district",
+  "createdAt",
+  "updatedAt",
+];
+
+const serializeSelf = (user) => {
+  const out = {};
+  for (const field of SELF_USER_FIELDS) if (field in user) out[field] = user[field];
+  return out;
+};
+
 // Make+model(+colour) key for VehicleModelImage lookups — normalized the same
 // way the model-image API stores brand/model/color (trim + TR-uppercase).
 // color defaults to "" (the generic/no-colour-specific image), so every
@@ -153,6 +185,8 @@ const serializeKbsReleasePendingRow = (contract) => ({
 
 module.exports = {
   serializeUser,
+  serializeSelf,
+  SELF_USER_FIELDS,
   serializeVehicle,
   serializePublicVehicle,
   PUBLIC_VEHICLE_FIELDS,

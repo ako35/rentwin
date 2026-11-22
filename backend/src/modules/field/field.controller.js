@@ -8,16 +8,9 @@ const asyncHandler = require("../../middleware/async-handler");
 const { modelImageKey } = require("../../lib/serializers");
 const { loadModelImageMap } = require("../vehicles/vehicles.shared");
 const { num } = require("../contracts/contract-fields");
-
-// Contract times are naive Turkey wall-clock stored as UTC (the admin form
-// sends "MM/DD/YYYY HH:mm" and the server parses it as UTC), so the crew's
-// "today" must be cut on that same wall-clock, not on the server's UTC day —
-// otherwise the list rolls over at 03:00 local. Türkiye has no DST.
-const TR_OFFSET_MS = 3 * 60 * 60 * 1000;
-const wallDayStart = (offsetDays = 0) => {
-  const wall = new Date(Date.now() + TR_OFFSET_MS);
-  return new Date(Date.UTC(wall.getUTCFullYear(), wall.getUTCMonth(), wall.getUTCDate() + offsetDays));
-};
+// The crew's "today" is cut on the Turkey wall-clock day (see lib/dates.js),
+// otherwise the list would roll over at 03:00 local.
+const { wallDayStart } = require("../../lib/dates");
 
 // A pickup nobody photographed is only worth chasing for a day; contracts
 // handed over before the app existed would otherwise sit in the list forever.

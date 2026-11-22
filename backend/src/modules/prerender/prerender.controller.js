@@ -86,9 +86,15 @@ const renderHeadTags = (h) => {
     .join("\n    ");
 };
 
+// Approved visitor reviews end up in these blocks, so a "</script>" in a
+// review must not close the tag: escaping "<" keeps the JSON identical for
+// parsers while making the text inert as HTML.
 const renderLd = (blocks) =>
   blocks
-    .map((data) => `<script type="application/ld+json">\n${JSON.stringify(data)}\n</script>`)
+    .map(
+      (data) =>
+        `<script type="application/ld+json">\n${JSON.stringify(data).replace(/</g, "\\u003c")}\n</script>`
+    )
     .join("\n  ");
 
 const ROOT_OPEN = '<div id="root">';
@@ -342,4 +348,4 @@ const renderPage = async (req, res) => {
   }
 };
 
-module.exports = { renderPage, renderHeadTags };
+module.exports = { renderPage, renderHeadTags, renderLd };

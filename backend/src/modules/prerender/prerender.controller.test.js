@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { renderPage, renderHeadTags } = require("./prerender.controller");
+const { renderPage, renderHeadTags, renderLd } = require("./prerender.controller");
 const { buildHead } = require("../../lib/seo-ld");
 const { SITE_URL } = require("../../lib/site");
 
@@ -103,4 +103,13 @@ test("prerender failures return 503 instead of an empty page with 200", async (t
   assert.match(response.body, /noindex, nofollow/);
   assert.equal(errors.length, 1);
   assert.match(errors[0][1].message, /shell unavailable/);
+});
+
+test("JSON-LD from a visitor review cannot close its script tag", () => {
+  const review = { "@type": "Review", reviewBody: "Harika</script><script>alert(1)</script>" };
+  const html = renderLd([review]);
+  // Exactly one closing tag: the block's own.
+  assert.equal(html.match(/<\/script>/g).length, 1);
+  const json = html.replace(/^<script type="application\/ld\+json">\n/, "").replace(/\n<\/script>$/, "");
+  assert.deepEqual(JSON.parse(json), review);
 });

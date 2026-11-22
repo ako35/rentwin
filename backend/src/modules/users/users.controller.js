@@ -1,8 +1,13 @@
 const prisma = require("../../lib/prisma");
 const { deletePrivateFile } = require("../../lib/storage");
 const HttpError = require("../../lib/http-error");
-const { hashPassword, comparePassword } = require("../../lib/password");
-const { serializeUser } = require("../../lib/serializers");
+const {
+  hashPassword,
+  comparePassword,
+  assertUsablePassword,
+  DEFAULT_CUSTOMER_PASSWORD,
+} = require("../../lib/password");
+const { serializeUser, serializeSelf } = require("../../lib/serializers");
 const { parsePageParams, buildPageResponse } = require("../../lib/pagination");
 const asyncHandler = require("../../middleware/async-handler");
 const { summarizeCustomerReturns } = require("./customer-score");
@@ -17,26 +22,36 @@ const {
 const ALLOWED_SORT_FIELDS = ["id", "firstName", "lastName", "email", "createdAt"];
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  res.json(req.user);
+  res.json(serializeSelf(req.user));
 });
 
 const updateCurrentUser = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, phoneNumber, address, zipCode } = req.body;
 
-  const user = await prisma.user.update({
-    where: { id: req.user.id },
-    data: { firstName, lastName, email, phoneNumber, address, zipCode: String(zipCode) },
-  });
+  // A field left out of the request stays as it is (Prisma skips undefined).
+  // The old String(zipCode) saved the text "undefined" when it was missing.
+  const text = (value) => (value == null ? undefined : String(value).trim());
+  const data = {
+    firstName: text(firstName),
+    lastName: text(lastName),
+    email: text(email),
+    phoneNumber: text(phoneNumber),
+    address: text(address),
+    zipCode: text(zipCode),
+  };
+  if (data.firstName === "" || data.lastName === "" || data.email === "") {
+    throw new HttpError(400, "Ad, soyad ve e-posta boş bırakılamaz.");
+  }
 
-  res.json(serializeUser(user));
+  const user = await prisma.user.update({ where: { id: req.user.id }, data });
+
+  res.json(serializeSelf(user));
 });
 
 const changePassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
 
-  if (!newPassword || String(newPassword).length < 8) {
-    throw new HttpError(400, "Yeni şifre en az 8 karakter olmalıdır.");
-  }
+  assertUsablePassword(newPassword);
 
   const user = await prisma.user.findUnique({ where: { id: req.user.id } });
   const valid = await comparePassword(oldPassword || "", user.passwordHash);
@@ -150,7 +165,8 @@ const createUserAdmin = asyncHandler(async (req, res) => {
 
   // Email is intentionally not unique for admin-created customers: the same
   // address may belong to several customer records.
-  const passwordHash = await hashPassword(password || "Rentwin123.");
+  if (password) assertUsablePassword(password);
+  const passwordHash = await hashPassword(password || DEFAULT_CUSTOMER_PASSWORD);
 
   const data = {
     firstName: firstName || "",
@@ -207,6 +223,7 @@ const updateUserAdmin = asyncHandler(async (req, res) => {
     zipCode: zipCode == null ? "" : String(zipCode),
   };
   if (password) {
+    assertUsablePassword(password);
     data.passwordHash = await hashPassword(password);
   }
   applyCustomerFields(req.body, data);

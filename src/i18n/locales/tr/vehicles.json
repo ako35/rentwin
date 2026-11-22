@@ -94,7 +94,11 @@
     "successToast": "Rezervasyonunuz başarıyla alındı! Onay için en kısa sürede sizinle iletişime geçeceğiz.",
     "genericError": "Rezervasyon işlemi sırasında bir hata oluştu!",
     "dateOrderError": "Alış tarihi, bırakış tarihinden en az 1 saat önce olmalıdır!",
-    "notAvailableError": "Bu araç seçilen tarihler için artık müsait değil. Lütfen tarihleri değiştirin."
+    "notAvailableError": "Bu araç seçilen tarihler için artık müsait değil. Lütfen tarihleri değiştirin.",
+    "pastDateError": "Alış tarihi geçmişte olamaz.",
+    "tooFarError": "Rezervasyon en fazla 1 yıl sonrası için yapılabilir.",
+    "tooLongError": "Online rezervasyon en fazla 90 gün olabilir. Daha uzun kiralamalar için bizi arayın.",
+    "pendingLimitError": "Onay bekleyen en fazla 3 rezervasyonunuz olabilir. Mevcut taleplerinizin onaylanmasını bekleyin veya bizi arayın."
   },
   "sort": {
     "label": "Sırala",

@@ -12,6 +12,15 @@ import moment from "moment/moment";
 
 const { routes } = constants;
 
+// Error codes the backend sends when a request breaks the customer booking
+// limits (backend/src/modules/reservations/reservations.controller.js).
+const LIMIT_ERROR_KEYS = {
+  RESERVATION_IN_PAST: "booking.pastDateError",
+  RESERVATION_TOO_FAR: "booking.tooFarError",
+  RESERVATION_TOO_LONG: "booking.tooLongError",
+  RESERVATION_PENDING_LIMIT: "booking.pendingLimitError",
+};
+
 // Public vehicle-detail booking. The visitor came here from an availability-
 // filtered search, so there is no separate "check availability" step: filling
 // the form and consenting creates a PENDING reservation straight away (the
@@ -66,9 +75,10 @@ const BookingForm = () => {
       await utils.functions.swalToast(t("booking.successToast"), "success");
       navigate(routes.userReservations, { state: { justBooked: true } });
     } catch (error) {
+      const limitKey = LIMIT_ERROR_KEYS[error?.response?.data?.code];
       const conflict = error?.response?.status === 409;
       utils.functions.swalToast(
-        t(conflict ? "booking.notAvailableError" : "booking.genericError"),
+        t(limitKey || (conflict ? "booking.notAvailableError" : "booking.genericError")),
         "error"
       );
     } finally {

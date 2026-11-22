@@ -20,6 +20,17 @@ const parseFrontendDateTime = (value) => {
   return iso.isValid() ? iso.toDate() : null;
 };
 
+// Rental times are Turkey wall-clock stored as UTC (the forms send
+// "MM/DD/YYYY HH:mm" and the server parses it as UTC), so "today" must be cut
+// on that same wall-clock, not on the server's UTC day. Türkiye has no DST.
+const TR_OFFSET_MS = 3 * 60 * 60 * 1000;
+
+// Midnight of the wall-clock day `offsetDays` from today, on the stored scale.
+const wallDayStart = (offsetDays = 0) => {
+  const wall = new Date(Date.now() + TR_OFFSET_MS);
+  return new Date(Date.UTC(wall.getUTCFullYear(), wall.getUTCMonth(), wall.getUTCDate() + offsetDays));
+};
+
 const hoursBetween = (start, end) => (end.getTime() - start.getTime()) / (1000 * 60 * 60);
 
 const round2 = (value) => Math.round(value * 100) / 100;
@@ -36,4 +47,4 @@ const resolveWindow = (window) => {
   return { from, to };
 };
 
-module.exports = { parseFrontendDateTime, hoursBetween, round2, resolveWindow };
+module.exports = { parseFrontendDateTime, wallDayStart, hoursBetween, round2, resolveWindow };

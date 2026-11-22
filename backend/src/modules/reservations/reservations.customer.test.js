@@ -9,6 +9,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const path = require("node:path");
+const dayjs = require("dayjs");
 
 const PRIVATE = {
   licensePlate: "35 RZV 001",
@@ -121,7 +122,13 @@ const fakePrisma = {
     },
     findMany: async ({ where = {}, include } = {}) =>
       reservations.filter((r) => !where.userId || r.userId === where.userId).map((r) => withIncludes(r, include)),
-    count: async ({ where = {} } = {}) => reservations.filter((r) => !where.userId || r.userId === where.userId).length,
+    count: async ({ where = {} } = {}) =>
+      reservations.filter(
+        (r) =>
+          (!where.userId || r.userId === where.userId) &&
+          (!where.status || r.status === where.status) &&
+          (!where.pickUpTime?.gte || r.pickUpTime >= where.pickUpTime.gte)
+      ).length,
     create: async ({ data, include }) => {
       const row = { id: `rsv-new-${nextId++}`, createdAt: new Date(), updatedAt: new Date(), ...data };
       reservations.push(row);
@@ -217,23 +224,70 @@ test("serializeCustomerReservation keeps reservation fields, trims the car", () 
   assert.equal(serializeCustomerReservation(reservations[0]).car, undefined);
 });
 
-test("POST /reservations/add returns the new booking with a public-only car", async () => {
-  resetDb();
-  const { status, body } = await call(customer.createReservation, {
-    user: CUSTOMER,
-    query: { carId: CAR.id },
+// "MM/DD/YYYY HH:mm:ss" (what the booking form sends) `days` from today, so
+// the booking-window limits keep passing whatever day the tests run on.
+const formDate = (days, time = "10:00:00") => `${dayjs().add(days, "day").format("MM/DD/YYYY")} ${time}`;
+
+const book = (user, pickUpDays, dropOffDays, query = { carId: CAR.id }) =>
+  call(customer.createReservation, {
+    user,
+    query,
     body: {
-      pickUpTime: "01/10/2027 10:00:00",
-      dropOffTime: "01/14/2027 10:00:00",
+      pickUpTime: formDate(pickUpDays),
+      dropOffTime: formDate(dropOffDays),
       pickUpLocation: "İzmir Havalimanı",
       dropOffLocation: "İzmir Havalimanı",
     },
   });
+
+const rejectsWithCode = (promise, status, code) =>
+  assert.rejects(promise, (err) => {
+    assert.equal(err.status, status);
+    if (code) assert.equal(err.code, code);
+    return true;
+  });
+
+test("POST /reservations/add returns the new booking with a public-only car", async () => {
+  resetDb();
+  const { status, body } = await book(CUSTOMER, 50, 54);
   assert.equal(status, 201);
   assert.equal(body.userId, CUSTOMER.id);
   assert.equal(body.status, "PENDING");
   assertCustomerCar(body.car);
   assertNoSecrets(body);
+});
+
+test("POST /reservations/add refuses past, far-off and months-long requests", async () => {
+  resetDb();
+  await rejectsWithCode(book(CUSTOMER, -2, 3), 400, "RESERVATION_IN_PAST");
+  await rejectsWithCode(book(CUSTOMER, 370, 372), 400, "RESERVATION_TOO_FAR");
+  await rejectsWithCode(book(CUSTOMER, 5, 5 + 91), 400, "RESERVATION_TOO_LONG");
+  await rejectsWithCode(book(CUSTOMER, 5, 6, {}), 400);
+  // The longest allowed request still goes through.
+  assert.equal((await book(CUSTOMER, 5, 5 + 90)).status, 201);
+});
+
+test("POST /reservations/add caps a customer's upcoming pending requests at 3", async () => {
+  resetDb();
+  const pending = (id, daysAhead) => ({
+    id,
+    userId: OTHER_CUSTOMER.id,
+    carId: CAR.id,
+    pickUpLocation: "Aliağa",
+    dropOffLocation: "Aliağa",
+    pickUpTime: dayjs().add(daysAhead, "day").toDate(),
+    dropOffTime: dayjs().add(daysAhead + 1, "day").toDate(),
+    status: "PENDING",
+    note: null,
+  });
+  // An old request nobody answered doesn't count.
+  reservations.push(pending("rsv-old", -30));
+  assert.equal((await book(OTHER_CUSTOMER, 20, 21)).status, 201);
+  assert.equal((await book(OTHER_CUSTOMER, 30, 31)).status, 201);
+  assert.equal((await book(OTHER_CUSTOMER, 40, 41)).status, 201);
+  await rejectsWithCode(book(OTHER_CUSTOMER, 60, 61), 409, "RESERVATION_PENDING_LIMIT");
+  // Another customer is unaffected.
+  assert.equal((await book(CUSTOMER, 70, 71)).status, 201);
 });
 
 test("GET /reservations/auth/all lists only the caller's bookings, public-only cars", async () => {

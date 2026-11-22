@@ -94,7 +94,11 @@
     "successToast": "Your reservation has been received. We will contact you shortly to confirm it.",
     "genericError": "There is an error occurred during rent operation!",
     "dateOrderError": "Pick up date must be minimum 1 hour before drop off date!",
-    "notAvailableError": "This vehicle is no longer available for the selected dates. Please change the dates."
+    "notAvailableError": "This vehicle is no longer available for the selected dates. Please change the dates.",
+    "pastDateError": "The pick-up date cannot be in the past.",
+    "tooFarError": "Reservations can be made up to 1 year ahead.",
+    "tooLongError": "Online reservations can be at most 90 days. Please call us for longer rentals.",
+    "pendingLimitError": "You can have at most 3 reservations awaiting confirmation. Please wait for them to be confirmed or call us."
   },
   "sort": {
     "label": "Sort by",

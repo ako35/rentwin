@@ -1,5 +1,5 @@
 const prisma = require("../lib/prisma");
-const { verifyToken } = require("../lib/jwt");
+const { verifyToken, passwordStamp } = require("../lib/jwt");
 const asyncHandler = require("./async-handler");
 
 const authenticate = asyncHandler(async (req, res, next) => {
@@ -18,7 +18,10 @@ const authenticate = asyncHandler(async (req, res, next) => {
   }
 
   const user = await prisma.user.findUnique({ where: { id: payload.sub } });
-  if (!user) {
+  // A token signed before the account's last password change no longer
+  // counts. Tokens from before the stamp existed carry none; they stay valid
+  // until they expire (7 days) so nobody is logged out by the deploy.
+  if (!user || (payload.pwd !== undefined && payload.pwd !== passwordStamp(user.passwordHash))) {
     return res.status(401).json({ message: "Invalid or expired token." });
   }
 

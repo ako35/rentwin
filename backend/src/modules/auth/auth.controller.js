@@ -1,6 +1,6 @@
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
-const { hashPassword, comparePassword } = require("../../lib/password");
+const { hashPassword, comparePassword, assertUsablePassword } = require("../../lib/password");
 const { signToken } = require("../../lib/jwt");
 const asyncHandler = require("../../middleware/async-handler");
 
@@ -10,9 +10,7 @@ const register = asyncHandler(async (req, res) => {
   if (!firstName || !lastName || !email || !password) {
     throw new HttpError(400, "Missing required fields.");
   }
-  if (String(password).length < 8) {
-    throw new HttpError(400, "Şifre en az 8 karakter olmalıdır.");
-  }
+  assertUsablePassword(password);
 
   const existing = await prisma.user.findFirst({ where: { email } });
   if (existing) {

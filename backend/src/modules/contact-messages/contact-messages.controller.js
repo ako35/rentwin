@@ -5,14 +5,30 @@ const asyncHandler = require("../../middleware/async-handler");
 
 const ALLOWED_SORT_FIELDS = ["id", "name", "email", "createdAt"];
 
+// Public, unauthenticated form. Caps are well above what the site's own form
+// allows (name 50, body 500), so they only stop scripted junk.
+const CONTACT_LIMITS = { name: 100, email: 254, phone: 30, subject: 200, body: 2000 };
+
 const sendMessage = asyncHandler(async (req, res) => {
-  const { name, email, phone, subject, body } = req.body;
+  const fields = {};
+  for (const [key, max] of Object.entries(CONTACT_LIMITS)) {
+    const value = req.body?.[key];
+    if (value != null && typeof value !== "string") {
+      throw new HttpError(400, "Geçersiz form alanı.");
+    }
+    const trimmed = (value || "").trim();
+    if (trimmed.length > max) {
+      throw new HttpError(400, "Mesaj alanlarından biri çok uzun.");
+    }
+    fields[key] = trimmed;
+  }
+  const { name, email, phone, subject, body } = fields;
   if (!name || !email || !subject || !body) {
     throw new HttpError(400, "Missing required fields.");
   }
 
   const message = await prisma.contactMessage.create({
-    data: { name, email, phone: (phone || "").trim() || null, subject, body },
+    data: { name, email, phone: phone || null, subject, body },
   });
   res.status(201).json(message);
 });
