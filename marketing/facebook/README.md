@@ -528,3 +528,4 @@ Sahibi 22 Kasım'da bu sayfaların takipçilerini her gün otomatik olarak belli
 **Düzenli rutinler (22 Kasım'da kuruldu, zamanlanmış görevler):**
 - `rentwin-instagram-yerel-etkilesim` — Pazartesi–Cumartesi 11:00: yerel sayfaların son paylaşımlarına yorum taslakları; sahibi onaylamadan yorum yazılmaz. Kurallar ve kayıt: `C:\workspace\rentwin-sosyal-medya\etkilesim\README.md`, `log.md`.
 - `rentwin-instagram-haftalik-takip` (adı eski kaldı, artık günlük) — Pazartesi–Cumartesi 15:00: tek tek kontrol edilen en fazla 6 yerel işletme hesabı takip edilir; öncelik müşteri ya da iş ortağı olabilecek firmalar ve oteller. Kayıt: `C:\workspace\rentwin-sosyal-medya\etkilesim\takip-log.md`.
+- `rentwin-google-haftalik-gonderi` — Perşembe 10:00: Google İşletme Profili için bir gönderi taslağı (metin ve 1200×900 görsel) hazırlanır; sahibi onaylamadan yayınlanmaz. Kurallar ve kayıt: `marketing/google/README.md`.
