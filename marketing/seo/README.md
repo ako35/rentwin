@@ -112,7 +112,7 @@ Search Console'da konum 2 görünürken canlı aramada sitenin olmaması çeliş
 | # | İş | Kim | Not |
 |---|---|---|---|
 | 1 | 64 müşteriye yorum isteği: günde 8–10 kişi, 1 hafta içinde bitecek şekilde. Sonra her teslimde aynı gün. | İşletme | Hepsi bir günde gönderilmez; ani yorum yığılması Google'ın filtresine takılabilir. Hedef: Aralık sonunda 30+ yorum. |
-| 2 | Şair Turizm profili kararı: ana kategoriyi transfer/turizm yapmak ya da profilleri ayrıştırmak; sairturizm.com'dan rentwin.com.tr'ye bağlantı. | Karar: işletme · Uygulama: Claude | Dalgalanmanın en olası Haritalar nedeni. |
+| 2 | Şair Turizm profili kararı: ana kategoriyi transfer/turizm yapmak ya da profilleri ayrıştırmak; sairturizm.com'dan rentwin.com.tr'ye bağlantı. | Karar: işletme | **22 Kasım: sahibi Şair'e dokunulmamasını istedi;** Şair çıktığında müşteri yine aynı işletmeye geliyor. Odak yorum toplamak (madde 1). |
 | 3 | Emre Can Çetin'in yorumunu kendisinin silmesi. Aile, çalışan ve tanıdıktan yorum istenmez. | İşletme | |
 | 4 | Gerçek fotoğraflar: tabela, ofis, araçlar, teslim anı (10+), sonra her ay birkaç yeni. | İşletme çeker · Claude yükler | Hâlâ bekliyor. |
 | 5 | Çalışma saatleri: telefon ve WhatsApp'tan gerçekten hizmet veriliyorsa saatler uzatılır (özellikle Pazar). Gerçek olmayan saat yazılmaz. | Karar: işletme | "Şu an açık" olanlar öne çıkıyor. |
