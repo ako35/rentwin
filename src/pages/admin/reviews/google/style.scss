@@ -46,6 +46,13 @@
         font-weight: 500;
     }
 
+    &__qr {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        margin-left: auto;
+    }
+
     &__actions {
         white-space: nowrap;
         text-align: right;
@@ -54,6 +61,11 @@
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
+        }
+
+        .btn + .btn,
+        .btn + span {
+            margin-left: 0.4rem;
         }
     }
 

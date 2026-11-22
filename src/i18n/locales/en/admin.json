@@ -684,7 +684,9 @@
       "reviewRequest": {
         "button": "Ask for a Google Review",
         "title": "Sends the customer a Google review request on WhatsApp",
-        "message": "Hi {{name}}, thank you for choosing Rentwin. If you have a moment, a short Google review would help us a lot: {{url}}"
+        "message": "Hi {{name}}, thank you for choosing Rentwin. If you have a moment, a short Google review would help us a lot: {{url}}",
+        "qrButton": "Review QR",
+        "qrTitle": "Shows the Google review QR card on screen for the customer"
       },
       "returnConfirmTitle": "Has the vehicle been returned?",
       "returnConfirmText": "The contract will be marked as Done.",
@@ -1912,7 +1914,7 @@
   },
   "googleReviewsPage": {
     "title": "Ask for Google Reviews",
-    "hint": "Customers who returned a car, latest return first. “Open in WhatsApp” opens the message ready to send; you press Send. Don't send it to family, staff or friends: Google removes those reviews.",
+    "hint": "Customers who returned a car, latest return first. “Open in WhatsApp” opens the message ready to send; you press Send. If the customer is with you, “Show QR” opens the review QR card on screen for them to scan with their phone. Don't send it to family, staff or friends: Google removes those reviews.",
     "views": {
       "pending": "Not asked",
       "requested": "Asked"
@@ -1932,7 +1934,20 @@
       "requested": "Nobody has been asked yet."
     },
     "loadError": "Couldn't load the list.",
-    "saveError": "Couldn't save; the list was reloaded."
+    "saveError": "Couldn't save; the list was reloaded.",
+    "qr": {
+      "button": "Review QR card",
+      "rowButton": "Show QR",
+      "rowTitle": "If the customer is with you, show the QR card on screen",
+      "title": "Google review QR card",
+      "hint": "Show it to the customer; scanning it with their phone camera opens the Google review page.",
+      "alt": "Rentwin Google review QR card",
+      "download": "Download",
+      "share": "Share",
+      "shareText": "To review Rentwin on Google: {{url}}",
+      "markRequested": "Mark as asked",
+      "marked": "Asked"
+    }
   },
   "comingSoon": {
     "title": "Coming Soon",

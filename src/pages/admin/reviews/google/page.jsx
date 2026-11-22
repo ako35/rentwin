@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, ButtonGroup, Table } from "react-bootstrap";
 import { FaWhatsapp } from "react-icons/fa";
+import { BsQrCode } from "react-icons/bs";
 import { Loading } from "../../../../components";
+import { ReviewQrModal } from "../../../../components/admin";
 import { services } from "../../../../services";
 import { utils } from "../../../../utils";
 import { constants } from "../../../../constants";
@@ -24,6 +26,9 @@ const AdminGoogleReviewsPage = () => {
   const [lists, setLists] = useState({ pending: [], requested: [] });
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState(null);
+  // QR card modal: { row } for one customer asked in person, {} for the
+  // general card (no row → nothing to tick off), null when closed.
+  const [qr, setQr] = useState(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -82,6 +87,9 @@ const AdminGoogleReviewsPage = () => {
     <div className="admin-google-reviews">
       <div className="admin-google-reviews__toolbar">
         <h2>{t("googleReviewsPage.title")}</h2>
+        <Button size="sm" variant="outline-secondary" className="admin-google-reviews__qr" onClick={() => setQr({})}>
+          <BsQrCode /> {t("googleReviewsPage.qr.button")}
+        </Button>
         <ButtonGroup>
           {VIEWS.map((v) => (
             <Button key={v} size="sm" variant={view === v ? "primary" : "outline-primary"} onClick={() => setView(v)}>
@@ -124,21 +132,31 @@ const AdminGoogleReviewsPage = () => {
                   {!isPending && <td>{formatDate(row.requestedAt)}</td>}
                   <td className="admin-google-reviews__actions">
                     {isPending ? (
-                      href ? (
+                      <>
                         <Button
-                          as="a"
                           size="sm"
-                          variant="outline-success"
-                          href={href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => markRequested(row)}
+                          variant="outline-secondary"
+                          title={t("googleReviewsPage.qr.rowTitle")}
+                          onClick={() => setQr({ row })}
                         >
-                          <FaWhatsapp /> {t("googleReviewsPage.open")}
+                          <BsQrCode /> {t("googleReviewsPage.qr.rowButton")}
                         </Button>
-                      ) : (
-                        <span className="admin-google-reviews__muted">{t("googleReviewsPage.noPhone")}</span>
-                      )
+                        {href ? (
+                          <Button
+                            as="a"
+                            size="sm"
+                            variant="outline-success"
+                            href={href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => markRequested(row)}
+                          >
+                            <FaWhatsapp /> {t("googleReviewsPage.open")}
+                          </Button>
+                        ) : (
+                          <span className="admin-google-reviews__muted">{t("googleReviewsPage.noPhone")}</span>
+                        )}
+                      </>
                     ) : (
                       <Button size="sm" variant="link" disabled={busyId === row.id} onClick={() => undo(row)}>
                         {t("googleReviewsPage.undo")}
@@ -151,6 +169,13 @@ const AdminGoogleReviewsPage = () => {
           </tbody>
         </Table>
       )}
+
+      <ReviewQrModal
+        show={qr !== null}
+        onHide={() => setQr(null)}
+        customerName={qr?.row ? titleCaseTr(qr.row.name) : undefined}
+        onMarkRequested={qr?.row ? () => markRequested(qr.row) : undefined}
+      />
     </div>
   );
 };

@@ -8,6 +8,7 @@ import { constants } from "../../../../constants";
 import { utils } from "../../../../utils";
 import { services } from "../../../../services";
 import { Loading } from "../../../../components";
+import { ReviewQrModal } from "../../../../components/admin";
 import { useContractData } from "./use-contract-data";
 import ContractRibbon from "./parts/ContractRibbon";
 import VehicleSection from "./parts/VehicleSection";
@@ -28,6 +29,7 @@ import {
   buildRecordLabels,
   toWhatsAppNumber,
   titleCaseTr,
+  custLabel,
 } from "./contract-helpers";
 import "./style.scss";
 
@@ -46,6 +48,7 @@ const ContractDetail = () => {
   const [newCustModal, setNewCustModal] = useState(false);
   const [newCustTarget, setNewCustTarget] = useState("userId");
   const [returnModal, setReturnModal] = useState(false);
+  const [reviewQr, setReviewQr] = useState(false);
 
   const {
     loading,
@@ -410,6 +413,7 @@ const ContractDetail = () => {
           status={contractStatus}
           reviewRequestHref={reviewRequestHref}
           onReviewRequest={handleReviewRequest}
+          onShowReviewQr={() => setReviewQr(true)}
           onDiscard={() => navigate(routes.adminContracts)}
           onDelete={handleDelete}
           onVehicleReturn={handleVehicleReturn}
@@ -418,6 +422,13 @@ const ContractDetail = () => {
         />
       </Form>
 
+      {/* At car return: the customer scans the review QR on this screen. */}
+      <ReviewQrModal
+        show={reviewQr}
+        onHide={() => setReviewQr(false)}
+        customerName={customer ? titleCaseTr(custLabel(customer)) : undefined}
+        onMarkRequested={customer?.id ? handleReviewRequest : undefined}
+      />
       <NewCustomerModal
         show={newCustModal}
         onHide={() => setNewCustModal(false)}

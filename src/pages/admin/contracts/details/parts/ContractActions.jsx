@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button, Dropdown, Spinner } from "react-bootstrap";
 import { FaWhatsapp } from "react-icons/fa";
+import { BsQrCode } from "react-icons/bs";
 import { constants } from "../../../../../constants";
 import { FormErrorSummary } from "../../../../../components";
 import "./contract-actions.scss";
@@ -19,7 +20,7 @@ const PRINT_DOCS = ["sozlesme", "ek1", "tutanak"];
 // ready review request — the admin still presses send in WhatsApp.
 const ContractActions = ({
   isCreate, contractId, updating, deleting, canSave, status, errors, reviewRequestHref, onReviewRequest,
-  onDiscard, onDelete, onVehicleReturn, onCancelContract, onReopen,
+  onShowReviewQr, onDiscard, onDelete, onVehicleReturn, onCancelContract, onReopen,
 }) => {
   const { t } = useTranslation("admin");
   const c = (key) => t(`reservations.contract.${key}`);
@@ -96,6 +97,11 @@ const ContractActions = ({
             title={c("reviewRequest.title")}
           >
             <FaWhatsapp /> {c("reviewRequest.button")}
+          </Button>
+        )}
+        {status === "DONE" && onShowReviewQr && (
+          <Button variant="outline-secondary" type="button" onClick={onShowReviewQr} title={c("reviewRequest.qrTitle")}>
+            <BsQrCode /> {c("reviewRequest.qrButton")}
           </Button>
         )}
         {printMenu}

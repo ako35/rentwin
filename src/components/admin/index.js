@@ -5,6 +5,7 @@ import AdminFooter from './footer/footer'
 import AdminTopNav from './top-nav/top-nav'
 import ContractRecords from './contract-records/contract-records'
 import MaintenanceAlertBar from './maintenance-alert-bar/maintenance-alert-bar'
+import ReviewQrModal from './review-qr-modal/review-qr-modal'
 import RowLink from './row-link/row-link'
 import ScheduleTable from './schedule-table/schedule-table'
 import TableRow from './table-row/table-row'
@@ -17,6 +18,7 @@ export {
   AdminTopNav,
   ContractRecords,
   MaintenanceAlertBar,
+  ReviewQrModal,
   RowLink,
   ScheduleTable,
   TableRow,

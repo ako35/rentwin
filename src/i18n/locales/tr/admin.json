@@ -684,7 +684,9 @@
       "reviewRequest": {
         "button": "Google Yorumu İste",
         "title": "Müşteriye WhatsApp'tan Google yorumu ricası gönderir",
-        "message": "Merhaba {{name}}, Rentwin'i tercih ettiğiniz için teşekkür ederiz. Deneyiminizi Google'da birkaç cümleyle paylaşırsanız bize çok yardımcı olur: {{url}}"
+        "message": "Merhaba {{name}}, Rentwin'i tercih ettiğiniz için teşekkür ederiz. Deneyiminizi Google'da birkaç cümleyle paylaşırsanız bize çok yardımcı olur: {{url}}",
+        "qrButton": "Yorum QR'ı",
+        "qrTitle": "Google yorum QR kartını müşteriye ekranda gösterir"
       },
       "returnConfirmTitle": "Araç teslim alındı mı?",
       "returnConfirmText": "Kontrat 'Tamamlandı' olarak işaretlenecek.",
@@ -1912,7 +1914,7 @@
   },
   "googleReviewsPage": {
     "title": "Google Yorumu İste",
-    "hint": "Aracı teslim etmiş müşteriler, en son teslim en üstte. “WhatsApp'ta aç” mesajı hazır yazılmış olarak açar, Gönder'e siz basarsınız. Aile, çalışan ve tanıdıklara göndermeyin: Google bu yorumları kaldırıyor.",
+    "hint": "Aracı teslim etmiş müşteriler, en son teslim en üstte. “WhatsApp'ta aç” mesajı hazır yazılmış olarak açar, Gönder'e siz basarsınız. Müşteri yanınızdaysa “QR göster” ile yorum QR kartını ekranda açın, telefonuyla okutsun. Aile, çalışan ve tanıdıklara göndermeyin: Google bu yorumları kaldırıyor.",
     "views": {
       "pending": "İstenmedi",
       "requested": "İstendi"
@@ -1932,7 +1934,20 @@
       "requested": "Henüz kimseden yorum istenmedi."
     },
     "loadError": "Liste yüklenemedi.",
-    "saveError": "Kaydedilemedi, liste yenilendi."
+    "saveError": "Kaydedilemedi, liste yenilendi.",
+    "qr": {
+      "button": "Yorum QR kartı",
+      "rowButton": "QR göster",
+      "rowTitle": "Müşteri yanınızdaysa QR kartını ekranda gösterin",
+      "title": "Google yorum QR kartı",
+      "hint": "Müşteriye gösterin; telefonunun kamerasıyla okutunca Google yorum sayfası açılır.",
+      "alt": "Rentwin Google yorum QR kartı",
+      "download": "İndir",
+      "share": "Paylaş",
+      "shareText": "Rentwin'i Google'da değerlendirmek için: {{url}}",
+      "markRequested": "İstendi olarak işaretle",
+      "marked": "İstendi"
+    }
   },
   "comingSoon": {
     "title": "Yakında",
