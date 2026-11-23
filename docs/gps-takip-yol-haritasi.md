@@ -22,7 +22,7 @@ Filo: sitede 39 araç görünüyor (binek, panelvan, kamyonet; dizel, benzin, LP
 
 Takip cihazları veriyi GSM hattı (GPRS/4G) üzerinden, sürekli açık bir TCP bağlantısıyla bir sunucuya yollar. Rentwin'in backend'i Vercel'de serverless çalışıyor ve bu tür kalıcı bağlantıları kabul edemez. Bu yüzden iki yol var: ya cihazları dinleyen küçük bir sunucu (VPS) kuracağız ya da bu işi hazır bir takip firmasına bırakıp onun API'sini kullanacağız.
 
-KABİS köprüsü için zaten sabit IP'li bir VPS planı var (`kabis-proxy/README.md`). GPS sunucusu aynı VPS'te de çalışabilir; o durumda RAM'in en az 2 GB olması gerekir.
+GPS takip sistemi KABİS'ten tamamen bağımsızdır: kendi sunucusu olur, KABİS köprüsüyle (`kabis-proxy`) sunucu veya kod paylaşmaz.
 
 ## 3. Seçenekler
 
@@ -55,6 +55,7 @@ KABİS köprüsü için zaten sabit IP'li bir VPS planı var (`kabis-proxy/READM
 Tasarım kararları:
 - **Konum verisi yalnızca Türkiye'deki VPS'te durur.** 39 araç her 30 saniyede bir konum yollarsa günde 100 binden fazla satır olur; bunu Neon'a yazmak hem maliyet hem gereksiz yük. Ayrıca Neon yurt dışında olduğu için Neon'a koordinat yazılmaz: yalnızca km, son görülme zamanı, kontak durumu ve olay türleri tutulur. Harita ve rota için koordinatlar her seferinde Traccar'dan çekilir.
 - **Anlık harita "çekme" ile çalışır:** admin haritayı açtığında backend Traccar'dan son konumları ister (10–15 saniyede bir yenileme). Her konum noktası için Vercel fonksiyonu tetiklenmez, yalnızca olaylar webhook ile gelir.
+- **Cihazlara IP değil alan adı yazılır** (ör. `gps.rentwin.com.tr`, Cloudflare'de "DNS only"). Sunucu değişirse cihazlara tek tek dokunmadan yalnızca DNS kaydı güncellenir.
 - **Harita:** Leaflet + OpenStreetMap/CARTO karoları (ücretsiz, API anahtarı gerekmez). Google Maps yalnızca ihtiyaç olursa.
 - **Güvenlik:** Traccar'ın yönetim paneli internete açık kalmaz, yalnızca Rentwin backend'i paylaşılan sırla erişir. Webhook da paylaşılan sırla doğrulanır. Anahtarlar repoya girmez.
 
@@ -71,7 +72,7 @@ Tasarım kararları:
 ### Faz 0: Kararlar ve hazırlık (yaklaşık 1 hafta)
 - [x] A mı B mi kararı: B; araçlarda mevcut takip cihazı yok
 - [ ] 3 cihaz + 3 M2M hat teklifi ve siparişi (sen)
-- [ ] Türkiye'de VPS hesabı (KABİS köprüsüyle ortak, en az 2 GB RAM), hesap ve ödeme sende; kurulumu ben yaparım
+- [ ] Natro XCloud TR "XCloud 2" siparişi (yalnızca GPS takip için), hesap ve ödeme sende; kurulumu ben yaparım
 - [ ] Cihaz, hat ve montaj için teklif iste (hazır metinler: Ek B)
 - [ ] KVKK: sözleşmenin 7.5 maddesini ve gizlilik politikasını güncelle (taslaklar: Ek A). Son kontrolü avukat/danışman yapar.
 
@@ -141,7 +142,7 @@ Kurallar:
 | Takip cihazı | Tek sefer, araç başı | 4G Teltonika FMC sınıfı |
 | Montaj | Tek sefer, araç başı | Oto elektrikçi, gizli kablolama |
 | M2M hat | Aylık, araç başı | Operatör kurumsal teklifi |
-| VPS | Aylık, tek | Küçük plan; KABİS köprüsüyle paylaşılabilir |
+| VPS | Aylık, tek | Natro XCloud 2, yalnızca GPS takip için |
 | Yazılım | — | Traccar açık kaynak; Rentwin entegrasyonunu ben yaparım |
 
 Karşılaştırma için en az bir hazır takip firmasından (A seçeneği) araç başı aylık fiyat da alınmalı.
@@ -161,7 +162,7 @@ Karşılaştırma için en az bir hazır takip firmasından (A seçeneği) araç
 1. **Altyapı:** B, kendi altyapımız (Teltonika + M2M hat + Traccar).
 2. **Mevcut cihaz:** filoda hiçbir araçta takip cihazı yok; tüm filoya yeni cihaz takılacak.
 3. **Pilot araçlar:** Fiat Egea (binek), Ford Transit (kamyonet), Fiat Panda (elektrikli).
-4. **Sunucu:** Türkiye'de bir VPS, KABİS köprüsüyle ortak (en az 2 GB RAM). `kabis-proxy/README.md` Hetzner/DigitalOcean diyor; sunucu açılırken Türkiye'deki bir sağlayıcı seçilecek.
+4. **Sunucu:** yalnızca GPS takip için, KABİS'ten bağımsız, Türkiye'de: **Natro XCloud TR, "XCloud 2" paketi** (2 vCPU, 4 GB RAM, 40 GB SSD, 504,43 TL/ay, Kasım 2026 fiyatı). İşletim sistemi Ubuntu 24.04 LTS. Satın almadan önce Natro'ya sorulacaklar: IP sabit mi, sunucu hangi şehirde, fiyata KDV dahil mi, snapshot var mı. Natro'nun "VPS Pro" ürünü Hollanda'da; o alınmamalı.
 5. **Uyarı kanalı:** ilk sürümde admin paneli + e-posta.
 
 Açık kalan: sözleşme 7.5 ve gizlilik politikası taslaklarının (Ek A) avukat onayı, saklama süresi ([6 ay] önerisi).
