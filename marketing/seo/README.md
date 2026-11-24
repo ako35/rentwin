@@ -140,6 +140,16 @@ Bu ölçümden çıkanlar:
 - **Hatalı rehber kaydı:** "rentwin aliaga" aramasında rentacarss.com, Rentwin adının yanında Şair'in telefonunu (0544 150 30 30) gösteriyor. Kayıt düzeltilmeli.
 - **Listedeki iki satır:** Şair Turizm şirketi ve Emre Can Çetin de yorum isteği listesinde. İkisine istek gönderilmemeli.
 
+## 25 Kasım 2026: 28 günde 40 tıklama, tıklama oranı çalışması
+
+Search Console bildirimi: 22 Kasım itibarıyla son 28 günde Google Arama'dan **40 tıklama** (15 Kasım'daki 3 aylık toplam 62'ydi). Sahibi: "daha yukarı taşıyalım." Chrome eklentisi bağlı olmadığı için o gün sorgu verisine bakılamadı; veriye bağlı olmayan iyileştirmeler yapıldı (80da650, yayında, canlıda doğrulandı):
+
+- **Araç sayfaları (14 adet):** başlık "FIAT EGEA Kiralama | Rentwin" yerine "Fiat Egea Kiralama Aliağa | 2.500 TL+KDV/gün – Rentwin". Model adı düzgün yazılıyor (Fiat, Citroën, Isuzu NPR3D, Jumpy SpaceTourer), konum ve modelin en düşük günlük fiyatı başlıkta. Açıklama kalıp cümle yerine vites/yakıt seçenekleri, günlük ve aylık "…'den" fiyatları, depozitosuz, havalimanı teslimi. Fiyatlar admin panelindeki araç kayıtlarından otomatik gelir (fiyatı olmayan Ford Courier'de fiyat yazmaz). Hedef: "egea/fiorino/doblo kiralama aliağa" gibi model aramaları ve daha yüksek tıklama oranı.
+- **Ana sayfa:** başlık "Aliağa Araç Kiralama & Rent a Car | 7/24, Depozitosuz – Rentwin" ("aliağa rent a car" aramasında geride kalıyorduk); açıklama "binek, panelvan, kamyonet. 7/24 açık ofis, depozito yok, havalimanı teslimi" ile başlıyor.
+- Not: bilinmeyen adresler (ör. `/iletisim`) 200 ile sitenin kabuğunu döndürüyor ama canonical ana sayfa; Google bunları ayrı dizinlemez, şimdilik dokunulmadı.
+
+Sıradaki adım (Chrome bağlanınca): Search Console'da son 28 günün sorgu/sayfa tablosu; 5–20. sıradaki ve tıklama oranı düşük sorgular için sayfa bazında iyileştirme; ana sayfa ve birkaç araç sayfası için dizine ekleme isteği (sahibinin onayıyla).
+
 ## 4. Nasıl ölçülecek
 
 - Her 2 haftada bir Search Console: "aliağa araç kiralama", "aliaga rent a car", "aliağa araç kiralama fiyatları" sorgularının 28 günlük ortalama konumu ve gösterimi.
