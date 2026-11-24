@@ -1,0 +1,17 @@
+// GPS "Kiralama rotası" card (RouteSection.jsx) — left column, under HGS.
+.contract-page {
+  &__route-seg {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.88rem;
+  }
+
+  &__route-swatch {
+    width: 14px;
+    height: 4px;
+    border-radius: 2px;
+  }
+}

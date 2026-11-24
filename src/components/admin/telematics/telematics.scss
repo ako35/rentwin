@@ -1,0 +1,164 @@
+// GPS tracking screens: map markers, cards and small shared bits. Colors go
+// through the admin theme variables (with light fallbacks) so dark mode works.
+
+.tlm-map {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--rw-line, #e6ebf1);
+  overflow: hidden;
+  z-index: 0; // keep Leaflet's panes under the admin top nav dropdowns
+}
+
+.tlm-marker {
+  background: none;
+  border: none;
+
+  &__dot {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--tlm-c);
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.45);
+  }
+
+  // Heading arrow, pointing along `course`.
+  &__arrow {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    margin: -15px 0 0 -4px;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 7px solid var(--tlm-c);
+    transform-origin: 4px 15px;
+  }
+
+  &__label {
+    position: absolute;
+    left: 20px;
+    top: -2px;
+    padding: 1px 6px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #0f172a;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
+  }
+}
+
+.tlm-muted {
+  color: var(--rw-ink-muted, #64748b);
+  font-size: 0.85rem;
+}
+
+.tlm-table {
+  font-size: 0.85rem;
+  margin-bottom: 0;
+}
+
+.tlm-reason__intro {
+  margin-bottom: 1rem;
+}
+
+.tlm-reason__legal {
+  margin: 0.9rem 0 0;
+  color: var(--rw-ink-muted, #64748b);
+  font-size: 0.8rem;
+}
+
+.tlm-pill {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--tlm-c, #64748b);
+  white-space: nowrap;
+}
+
+.tlm-signal {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--rw-ink-muted, #64748b);
+
+  &::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #16a34a;
+  }
+
+  &--stale::before {
+    background: #dc2626;
+  }
+}
+
+.tlm-hidden {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #9a6a12;
+}
+
+.tlm-card {
+  background: var(--rw-panel, #fff);
+  border: 1px solid var(--rw-line, #e6ebf1);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+
+  h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+  }
+}
+
+.tlm-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 0.5rem 0;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    min-width: 7rem;
+  }
+
+  span:first-child {
+    font-size: 0.75rem;
+    color: var(--rw-ink-muted, #64748b);
+  }
+
+  strong {
+    font-size: 0.95rem;
+  }
+}
+
+.tlm-range {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+
+  .form-group,
+  > div {
+    min-width: 12rem;
+  }
+}

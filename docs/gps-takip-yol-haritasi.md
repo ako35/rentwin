@@ -57,7 +57,7 @@ Tasarım kararları:
 - **Anlık harita "çekme" ile çalışır:** admin haritayı açtığında backend Traccar'dan son konumları ister (10–15 saniyede bir yenileme). Her konum noktası için Vercel fonksiyonu tetiklenmez, yalnızca olaylar webhook ile gelir.
 - **Cihazlara IP değil alan adı yazılır** (ör. `gps.rentwin.com.tr`, Cloudflare'de "DNS only"). Sunucu değişirse cihazlara tek tek dokunmadan yalnızca DNS kaydı güncellenir.
 - **Harita:** Leaflet + OpenStreetMap/CARTO karoları (ücretsiz, API anahtarı gerekmez). Google Maps yalnızca ihtiyaç olursa.
-- **Güvenlik:** Traccar'ın yönetim paneli internete açık kalmaz, yalnızca Rentwin backend'i paylaşılan sırla erişir. Webhook da paylaşılan sırla doğrulanır. Anahtarlar repoya girmez.
+- **Güvenlik:** Traccar'ın web paneli internete açık kalmaz; nginx dışarıya yalnızca HTTPS üzerinden `/api/` yolunu açar ve Rentwin backend'i oraya servis kullanıcısının token'ıyla erişir. Webhook da paylaşılan sırla doğrulanır. Anahtarlar repoya girmez.
 
 ## 5. Donanım önerisi
 
@@ -88,13 +88,23 @@ Bitti sayılır: pilot araçlar Traccar'da canlı görünüyor; cihaz km'si gös
 Cihazları beklemek gerekmez: VPS açılır açılmaz telefona kurulan ücretsiz "Traccar Client" uygulaması test cihazı gibi konum yollar. Faz 2'nin yazılımı bu sayede cihazlar gelmeden geliştirilip denenebilir.
 
 ### Faz 2: Rentwin entegrasyonu, ilk sürüm (1–2 hafta)
-- [ ] Veritabanı (koordinatsız): `Vehicle.trackerImei`, `lastSeenAt`, `ignitionOn`; yeni `TelematicsEvent` tablosu (olay türü ve zamanı); konum görüntüleme erişim kaydı (`TelematicsAccessLog`)
-- [ ] Backend `telematics` modülü: Traccar istemcisi, admin uç noktaları (anlık konumlar, araç rotası, olaylar), webhook
-- [ ] Admin "Filo haritası": tüm araçlar; renkler kirada / müsait / serviste; son görülme, hız, kontak
-- [ ] Araç detayında "Konum" sekmesi: son konum + tarih aralığına göre rota
-- [ ] Kontrat detayında "Kiralama rotası": yalnızca kontrat süresi içindeki veri, yalnızca yetkili admin; her görüntüleme kayda geçer
+
+Yazılım 24 Kasım 2026'da yazıldı ve yerel simülatörle denendi; gerçek Traccar sunucusu ve cihazla denemesi Faz 1'den sonra yapılacak.
+
+- [x] Veritabanı (koordinatsız): `Vehicle.trackerImei`, `trackerLastSeenAt`, `trackerIgnitionOn`; `TelematicsEvent` (olay türü ve zamanı); `TelematicsAccessLog` (kim, ne zaman, hangi gerekçeyle baktı)
+- [x] Backend `telematics` modülü (`backend/src/modules/telematics`, `backend/src/lib/traccar.js`): Traccar istemcisi, admin uç noktaları (filo konumları, araç rotası, kontrat rotası, olaylar, erişim kayıtları), webhook
+- [x] Admin "Filo haritası" (`/admin/vehicles/map`, menü: Araç → Filo Haritası): takipli araçlar; renkler müsait / kirada / serviste; son sinyal, hız, kontak; 15 saniyede bir yenilenir
+- [x] Araç detayında "Konum" sekmesi: cihaz kimliği (kaydedince cihaz Traccar'a plakayla otomatik tanımlanır), anlık durum, cihaz km ve Rentwin km, tarih aralığına göre rota (en fazla 7 gün), son olaylar
+- [x] Kontrat detayında "Kiralama rotası": yalnızca kontrat dönemi, araç değişiminde araç başına ayrı çizgi
+- [x] KVKK kuralları sunucuda uygulanıyor: kiradaki aracın konumu, hızı ve kontağı gizli; gerekçe seçilince 30 dakika açılır. Kiralamaya denk gelen rota ve kontrat rotası gerekçe ister. Her erişim kayda geçer ve "Erişim kayıtları" penceresinde görünür.
+- [ ] Gerçek Traccar sunucusu ve pilot cihazlarla deneme
 
 Bitti sayılır: admin panelden pilot araçlar haritada canlı; kontrat rotası açılabiliyor.
+
+**Kurulum notları (sunucu açılınca):**
+- Vercel ortam değişkenleri: `TRACCAR_URL` (ör. `https://gps.rentwin.com.tr`), `TRACCAR_TOKEN` (Traccar'da Rentwin için açılan servis kullanıcısının token'ı), `TELEMATICS_WEBHOOK_SECRET` (uzun rastgele bir değer). Boş kaldıkça panel "GPS sunucusu henüz ayarlanmadı" der, başka bir şey bozulmaz.
+- `traccar.xml`'de olay iletimi: `event.forward.enable` = `true`, `event.forward.url` = `https://rentwin.com.tr/api/telematics/webhook`, `event.forward.header` = `Authorization: Bearer <TELEMATICS_WEBHOOK_SECRET>`. Konum akışı iletilmez, yalnızca olaylar gelir.
+- Yerel geliştirme: `node backend/scripts/traccar-sim.js` Aliağa çevresinde dolaşan sahte araçlarla Traccar API'sini taklit eder ve olayları webhook'a yollar (ayrıntılar dosyanın başında).
 
 ### Faz 3: Operasyon otomasyonu ve tüm filo (2–3 hafta)
 - [ ] Kalan araçlara montaj (araç başına yaklaşık 1 saat; günde birkaç araç)

@@ -32,6 +32,7 @@ const reviewsRoutes = require("./modules/reviews/reviews.routes");
 const ledgerRoutes = require("./modules/ledger/ledger.routes");
 const settingsRoutes = require("./modules/settings/settings.routes");
 const kabisSystemsRoutes = require("./modules/kabis-systems/kabis-systems.routes");
+const telematicsRoutes = require("./modules/telematics/telematics.routes");
 const { getSitemap } = require("./modules/sitemap/sitemap.controller");
 const { renderPage } = require("./modules/prerender/prerender.controller");
 const { purgeSoldVehicles } = require("./modules/maintenance/purge.controller");
@@ -115,6 +116,7 @@ api.use(reviewsRoutes);
 api.use(ledgerRoutes);
 api.use(settingsRoutes);
 api.use(kabisSystemsRoutes);
+api.use(telematicsRoutes);
 
 app.use("/api", api);
 

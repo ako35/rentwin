@@ -197,7 +197,8 @@
       "maintenance": "Bakım / Tamir",
       "inspection": "Muayene / Egzoz",
       "documents": "Evraklar",
-      "contracts": "Kontratlar"
+      "contracts": "Kontratlar",
+      "location": "Konum"
     },
     "contractsTab": {
       "title": "Kontrat Geçmişi",
@@ -1435,6 +1436,7 @@
     "addVehicle": "Yeni Araç",
     "vehicleModelImages": "Model Görselleri ve Bilgileri",
     "vehicleStatusBoard": "Araç Durum Tablosu",
+    "fleetMap": "Filo Haritası",
     "extras": "Ekstralar",
     "priceList": "Fiyat Listesi",
     "reservations": "Rezervasyon",
@@ -1956,5 +1958,145 @@
   "vehicleFilters": {
     "searchPlaceholder": "Plaka, marka, model, şube, vites, yakıt veya durum ara…",
     "clear": "Temizle"
+  },
+  "telematics": {
+    "never": "Henüz sinyal yok",
+    "ago": {
+      "now": "az önce",
+      "minutes": "{{count}} dk önce",
+      "hours": "{{count}} sa önce"
+    },
+    "ignitionOn": "Kontak açık",
+    "ignitionOff": "Kontak kapalı",
+    "speed": "{{speed}} km/s",
+    "device": {
+      "notRegistered": "GPS sunucusunda kayıtlı değil"
+    },
+    "hidden": {
+      "badge": "Konum gizli",
+      "hint": "Araç kirada. Kiradaki araçların konumu rutin olarak izlenmez; görmek için gerekçe seçin, erişim kayda geçer.",
+      "show": "Konumu göster",
+      "grantUntil": "{{time}}'e kadar açık"
+    },
+    "errors": {
+      "TRACCAR_NOT_CONFIGURED": "GPS sunucusu henüz ayarlanmadı. Sunucu kurulunca konumlar burada görünecek.",
+      "TRACCAR_UNREACHABLE": "GPS sunucusuna ulaşılamadı. Sunucu kapalı veya internet bağlantısı yok.",
+      "TRACCAR_AUTH": "GPS sunucusu erişim anahtarını kabul etmedi.",
+      "TRACCAR_ERROR": "GPS sunucusu hata verdi.",
+      "generic": "Konum bilgisi alınamadı."
+    },
+    "fleetMap": {
+      "title": "Filo Haritası",
+      "other": "Serviste / pasif",
+      "updatedAt": "Son güncelleme {{time}}",
+      "refresh": "Yenile",
+      "accessLog": "Erişim kayıtları",
+      "search": "Plaka, model veya şube ara",
+      "noTracked": "Henüz takip cihazı tanımlı araç yok. Araç detayındaki Konum sekmesinden cihaz kimliğini girin.",
+      "untracked": "Takip cihazı olmayan {{count}} araç listede yok.",
+      "details": "Araç detayı",
+      "privacy": "Kiradaki araçların konumu gizlidir; gerekçeyle açılır, {{minutes}} dakika görünür kalır ve her açılış kayda geçer.",
+      "grantError": "Konum açılamadı."
+    },
+    "reasonModal": {
+      "title": "Konum erişim gerekçesi",
+      "introLive": "{{plate}} şu an kirada. KVKK gereği kiradaki aracın konumu yalnızca tanımlı bir gerekçeyle açılır; {{minutes}} dakika görünür kalır.",
+      "introRoute": "Seçilen aralık bir kiralamaya denk geliyor (kontrat: {{contracts}}). Rotayı görmek için gerekçe seçin.",
+      "reason": "Gerekçe",
+      "reasons": {
+        "LATE_RETURN": "Gecikmiş iade",
+        "THEFT": "Hırsızlık şüphesi",
+        "BREACH": "Sözleşme ihlali şüphesi",
+        "ASSISTANCE": "Yol yardımı / kaza",
+        "OTHER": "Diğer"
+      },
+      "note": "Açıklama",
+      "notePlaceholder": "İsteğe bağlı; \"Diğer\" seçildiyse zorunlu",
+      "noteRequired": "\"Diğer\" seçildiğinde açıklama zorunlu.",
+      "legal": "Bu erişim; adınız, zaman ve gerekçeyle birlikte kayda geçer.",
+      "submit": "Kaydet ve göster",
+      "cancel": "Vazgeç"
+    },
+    "vehicleTab": {
+      "tracker": "Takip cihazı",
+      "imei": "Cihaz kimliği (IMEI)",
+      "imeiHelp": "Cihazın 15 haneli IMEI numarası. Telefonla deneme için Traccar Client uygulamasındaki cihaz kimliği yazılabilir. Kaydedince cihaz GPS sunucusuna plakayla tanımlanır.",
+      "save": "Kaydet",
+      "remove": "Cihazı kaldır",
+      "saved": "Cihaz kaydedildi ve GPS sunucusuna tanımlandı.",
+      "savedNoServer": "Cihaz kimliği kaydedildi. GPS sunucusu kurulunca otomatik tanımlanacak.",
+      "savedNotRegistered": "Cihaz kimliği kaydedildi ama GPS sunucusuna tanımlanamadı; daha sonra tekrar kaydedin.",
+      "removed": "Takip cihazı bu araçtan kaldırıldı.",
+      "saveError": "Cihaz kimliği kaydedilemedi.",
+      "registered": "GPS sunucusunda kayıtlı",
+      "live": "Anlık durum",
+      "now": "Şu an",
+      "lastFix": "Son konum zamanı",
+      "ignition": "Kontak",
+      "speedLabel": "Hız",
+      "deviceKm": "Cihaz km",
+      "rentwinKm": "Rentwin km",
+      "goToContract": "Kontrata git",
+      "route": "Rota",
+      "from": "Başlangıç",
+      "to": "Bitiş",
+      "showRoute": "Rotayı göster",
+      "rangeHelp": "En fazla {{days}} günlük aralık. Kiralamaya denk gelen aralık gerekçe ister ve kayda geçer.",
+      "badRange": "Geçerli bir tarih aralığı seçin.",
+      "rentalNotice": "Bu aralık {{count}} kiralama dönemine denk geliyor; erişim kayda geçti.",
+      "noPoints": "Bu aralıkta konum kaydı yok.",
+      "distance": "Mesafe",
+      "maxSpeed": "En yüksek hız",
+      "points": "Konum noktası",
+      "firstLast": "İlk / son kayıt",
+      "events": "Son olaylar",
+      "noEvents": "Henüz olay yok."
+    },
+    "events": {
+      "ignitionOn": "Kontak açıldı",
+      "ignitionOff": "Kontak kapandı",
+      "deviceOverspeed": "Aşırı hız: {{speed}} km/s",
+      "alarm": "Alarm: {{alarm}}",
+      "geofenceEnter": "Bölgeye girdi: {{name}}",
+      "geofenceExit": "Bölgeden çıktı: {{name}}"
+    },
+    "alarms": {
+      "powerCut": "Cihazın gücü kesildi",
+      "powerOff": "Cihaz kapandı",
+      "tow": "Çekici ile taşıma",
+      "sos": "SOS",
+      "tampering": "Cihaza müdahale",
+      "lowBattery": "Düşük batarya",
+      "movement": "İzinsiz hareket",
+      "accident": "Kaza algılandı"
+    },
+    "contractRoute": {
+      "title": "Kiralama rotası",
+      "hint": "Bu kiralama süresince aracın güzergâhı. Gerekçeyle açılır ve her açılış kayda geçer.",
+      "open": "Rotayı aç",
+      "reasonIntro": "Kiralama rotası müşterinin konum verisidir. KVKK gereği yalnızca tanımlı bir gerekçeyle açılır.",
+      "window": "Kiralama dönemi",
+      "refresh": "Güncelle",
+      "noTracker": "Bu araçta takip cihazı yok."
+    },
+    "accessLog": {
+      "title": "Konum erişim kayıtları",
+      "intro": "Kiradaki araçların konumuna kimin, ne zaman ve hangi gerekçeyle baktığı (son 200 kayıt).",
+      "empty": "Kayıt yok.",
+      "loadError": "Kayıtlar yüklenemedi.",
+      "when": "Zaman",
+      "who": "Kişi",
+      "vehicle": "Araç",
+      "scope": "Erişim",
+      "reason": "Gerekçe",
+      "range": "Aralık",
+      "noReason": "Kira dışı dönem",
+      "close": "Kapat",
+      "scopes": {
+        "LIVE": "Canlı konum",
+        "ROUTE": "Araç rotası",
+        "CONTRACT_ROUTE": "Kontrat rotası"
+      }
+    }
   }
 }

@@ -15,6 +15,7 @@ import VehicleSection from "./parts/VehicleSection";
 import KbsSection from "./parts/KbsSection";
 import SignatureSection from "./parts/SignatureSection";
 import HgsSection from "./parts/HgsSection";
+import RouteSection from "./parts/RouteSection";
 import ContractRightCard from "./parts/ContractRightCard";
 import ContractActions from "./parts/ContractActions";
 import NewCustomerModal from "./parts/NewCustomerModal";
@@ -373,6 +374,9 @@ const ContractDetail = () => {
             {!isCreate && (
               <HgsSection formik={formik} contractId={contractId} />
             )}
+            {/* GPS rotası: kontrat dönemine kırpılmış, gerekçeyle açılır ve
+                kayda geçer (KVKK). İptal edilen kontratın dönemi yoktur. */}
+            {!isCreate && contractStatus !== "CANCELLED" && <RouteSection contractId={contractId} />}
           </div>
 
           {/* ---------- RIGHT ---------- */}

@@ -197,7 +197,8 @@
       "maintenance": "Maintenance",
       "inspection": "Inspection",
       "documents": "Documents",
-      "contracts": "Contracts"
+      "contracts": "Contracts",
+      "location": "Location"
     },
     "contractsTab": {
       "title": "Rental History",
@@ -1435,6 +1436,7 @@
     "addVehicle": "New Vehicle",
     "vehicleModelImages": "Model Images & Info",
     "vehicleStatusBoard": "Vehicle Status Board",
+    "fleetMap": "Fleet Map",
     "extras": "Extras",
     "priceList": "Price List",
     "reservations": "Reservation",
@@ -1956,5 +1958,145 @@
   "vehicleFilters": {
     "searchPlaceholder": "Search plate, brand, model, branch, transmission, fuel or status…",
     "clear": "Clear"
+  },
+  "telematics": {
+    "never": "No signal yet",
+    "ago": {
+      "now": "just now",
+      "minutes": "{{count}} min ago",
+      "hours": "{{count}} h ago"
+    },
+    "ignitionOn": "Ignition on",
+    "ignitionOff": "Ignition off",
+    "speed": "{{speed}} km/h",
+    "device": {
+      "notRegistered": "Not registered on the GPS server"
+    },
+    "hidden": {
+      "badge": "Location hidden",
+      "hint": "The vehicle is on rent. Rented vehicles are not tracked routinely; choose a reason to view it — the access is logged.",
+      "show": "Show location",
+      "grantUntil": "Visible until {{time}}"
+    },
+    "errors": {
+      "TRACCAR_NOT_CONFIGURED": "The GPS server is not set up yet. Locations will appear here once it is installed.",
+      "TRACCAR_UNREACHABLE": "Could not reach the GPS server. It may be down or offline.",
+      "TRACCAR_AUTH": "The GPS server rejected the access token.",
+      "TRACCAR_ERROR": "The GPS server returned an error.",
+      "generic": "Could not load location data."
+    },
+    "fleetMap": {
+      "title": "Fleet Map",
+      "other": "In service / passive",
+      "updatedAt": "Updated {{time}}",
+      "refresh": "Refresh",
+      "accessLog": "Access log",
+      "search": "Search plate, model or branch",
+      "noTracked": "No vehicle has a tracker yet. Enter the device id on a vehicle's Location tab.",
+      "untracked": "{{count}} vehicles without a tracker are not listed.",
+      "details": "Vehicle details",
+      "privacy": "Rented vehicles' locations are hidden; they open with a reason, stay visible for {{minutes}} minutes, and every opening is logged.",
+      "grantError": "Could not open the location."
+    },
+    "reasonModal": {
+      "title": "Reason for location access",
+      "introLive": "{{plate}} is currently on rent. Under KVKK, a rented vehicle's location opens only for a defined reason and stays visible for {{minutes}} minutes.",
+      "introRoute": "The selected range overlaps a rental (contract: {{contracts}}). Choose a reason to view the route.",
+      "reason": "Reason",
+      "reasons": {
+        "LATE_RETURN": "Late return",
+        "THEFT": "Suspected theft",
+        "BREACH": "Suspected contract breach",
+        "ASSISTANCE": "Roadside assistance / accident",
+        "OTHER": "Other"
+      },
+      "note": "Note",
+      "notePlaceholder": "Optional; required for \"Other\"",
+      "noteRequired": "A note is required for \"Other\".",
+      "legal": "This access is logged with your name, the time and the reason.",
+      "submit": "Save and show",
+      "cancel": "Cancel"
+    },
+    "vehicleTab": {
+      "tracker": "Tracking device",
+      "imei": "Device id (IMEI)",
+      "imeiHelp": "The device's 15-digit IMEI. For a phone test, use the device id shown in the Traccar Client app. Saving registers the device on the GPS server under the plate.",
+      "save": "Save",
+      "remove": "Remove device",
+      "saved": "Device saved and registered on the GPS server.",
+      "savedNoServer": "Device id saved. It will be registered once the GPS server is set up.",
+      "savedNotRegistered": "Device id saved but could not be registered on the GPS server; save again later.",
+      "removed": "Tracking device removed from this vehicle.",
+      "saveError": "Could not save the device id.",
+      "registered": "Registered on the GPS server",
+      "live": "Live status",
+      "now": "Now",
+      "lastFix": "Last position",
+      "ignition": "Ignition",
+      "speedLabel": "Speed",
+      "deviceKm": "Device km",
+      "rentwinKm": "Rentwin km",
+      "goToContract": "Open contract",
+      "route": "Route",
+      "from": "From",
+      "to": "To",
+      "showRoute": "Show route",
+      "rangeHelp": "Up to {{days}} days. A range overlapping a rental needs a reason and is logged.",
+      "badRange": "Choose a valid date range.",
+      "rentalNotice": "This range overlaps {{count}} rental period(s); the access was logged.",
+      "noPoints": "No positions in this range.",
+      "distance": "Distance",
+      "maxSpeed": "Top speed",
+      "points": "Positions",
+      "firstLast": "First / last fix",
+      "events": "Recent events",
+      "noEvents": "No events yet."
+    },
+    "events": {
+      "ignitionOn": "Ignition on",
+      "ignitionOff": "Ignition off",
+      "deviceOverspeed": "Overspeed: {{speed}} km/h",
+      "alarm": "Alarm: {{alarm}}",
+      "geofenceEnter": "Entered zone: {{name}}",
+      "geofenceExit": "Left zone: {{name}}"
+    },
+    "alarms": {
+      "powerCut": "Device power cut",
+      "powerOff": "Device switched off",
+      "tow": "Towing",
+      "sos": "SOS",
+      "tampering": "Device tampering",
+      "lowBattery": "Low battery",
+      "movement": "Unauthorised movement",
+      "accident": "Accident detected"
+    },
+    "contractRoute": {
+      "title": "Rental route",
+      "hint": "The vehicle's route during this rental. Opens with a reason; every opening is logged.",
+      "open": "Open route",
+      "reasonIntro": "A rental route is the customer's location data. Under KVKK it opens only for a defined reason.",
+      "window": "Rental period",
+      "refresh": "Update",
+      "noTracker": "This vehicle has no tracker."
+    },
+    "accessLog": {
+      "title": "Location access log",
+      "intro": "Who viewed a rented vehicle's location, when and why (last 200 entries).",
+      "empty": "No entries.",
+      "loadError": "Could not load the log.",
+      "when": "Time",
+      "who": "Person",
+      "vehicle": "Vehicle",
+      "scope": "Access",
+      "reason": "Reason",
+      "range": "Range",
+      "noReason": "Outside a rental",
+      "close": "Close",
+      "scopes": {
+        "LIVE": "Live location",
+        "ROUTE": "Vehicle route",
+        "CONTRACT_ROUTE": "Contract route"
+      }
+    }
   }
 }

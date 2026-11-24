@@ -38,6 +38,7 @@ import {
 } from "./review/review-service";
 import { getSettings, updateSettings } from "./settings/settings-service";
 import { getKabisSystems, addKabisSystem, deleteKabisSystem } from "./kabis-system/kabis-system-service";
+import { getContractRoute, getFleetPositions, getTelematicsAccessLogs, getVehicleRoute, getVehicleTelematics, grantLocationAccess, setVehicleTracker } from "./telematics/telematics-service";
 
 import { addLedgerEntry, deleteLedgerEntry, getUserLedger, updateLedgerEntry } from "./ledger/ledger-service";
 import { extractDocument } from "./document-ai/document-ai-service";
@@ -253,6 +254,15 @@ export const services = {
         getKabisSystems,
         addKabisSystem,
         deleteKabisSystem,
+    },
+    telematics: {
+        getFleetPositions,
+        getVehicleTelematics,
+        setVehicleTracker,
+        grantLocationAccess,
+        getVehicleRoute,
+        getContractRoute,
+        getTelematicsAccessLogs,
     },
     encryptedLocalStorage,
     authHeader

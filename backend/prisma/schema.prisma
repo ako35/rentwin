@@ -239,8 +239,55 @@ model Vehicle {
   inspections            VehicleInspection[]
   inspectionAppointments VehicleInspectionAppointment[]
   documents              VehicleDocument[]
+  // GPS takip (docs/gps-takip-yol-haritasi.md). Koordinat burada tutulmaz:
+  // konum geçmişi yalnızca Türkiye'deki Traccar sunucusunda durur, harita ve
+  // rota her açılışta oradan çekilir. Burada yalnızca cihaz kimliği ile
+  // konumsuz durum bilgisi var.
+  trackerImei            String?                        @unique // Traccar "uniqueId": cihaz IMEI'si (testte Traccar Client kimliği)
+  trackerLastSeenAt      DateTime? // cihazdan gelen son olayın zamanı
+  trackerIgnitionOn      Boolean? // son kontak olayına göre; null = henüz bilinmiyor
+  telematicsEvents       TelematicsEvent[]
+  telematicsAccessLogs   TelematicsAccessLog[]
   createdAt              DateTime                       @default(now())
   updatedAt              DateTime                       @updatedAt
+}
+
+// Traccar'ın webhook ile yolladığı önemli olaylar (kontak, aşırı hız, alarm,
+// bölge giriş/çıkış). Koordinat yok: yalnızca olay türü ve zamanı.
+model TelematicsEvent {
+  id             String   @id @default(uuid())
+  vehicleId      String
+  vehicle        Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  traccarEventId Int?     @unique // Traccar'daki olay id'si; aynı olay iki kez gelirse tek kayıt kalır
+  type           String // ignitionOn | ignitionOff | deviceOverspeed | alarm | geofenceEnter | geofenceExit
+  alarm          String? // type "alarm" için Traccar alarm türü (powerCut, tow, ...)
+  geofenceName   String?
+  speedKmh       Int? // aşırı hız olayında ölçülen hız
+  occurredAt     DateTime
+  createdAt      DateTime @default(now())
+
+  @@index([vehicleId, occurredAt])
+}
+
+// KVKK erişim kaydı: kiradaki bir aracın canlı konumu, rotası veya kontrat
+// rotası her açıldığında kim, ne zaman, hangi gerekçeyle baktı. actor* düz
+// metin tutulur ki kullanıcı silinse de kayıt okunur kalsın.
+model TelematicsAccessLog {
+  id         String    @id @default(uuid())
+  vehicleId  String
+  vehicle    Vehicle   @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  contractId String?
+  actorId    String
+  actorName  String
+  scope      String // LIVE | ROUTE | CONTRACT_ROUTE
+  reason     String? // LATE_RETURN | THEFT | BREACH | ASSISTANCE | OTHER (kira dışı dönemde boş olabilir)
+  note       String?
+  rangeFrom  DateTime?
+  rangeTo    DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([vehicleId, createdAt])
+  @@index([actorId, vehicleId, createdAt])
 }
 
 model VehicleInsurance {

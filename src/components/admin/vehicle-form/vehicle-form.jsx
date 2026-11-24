@@ -11,9 +11,13 @@ import { useFleetPicklist } from "./use-fleet-picklist";
 import VehicleIdentityTab from "./vehicle-identity-tab";
 import VehicleContractsTab from "./vehicle-contracts-tab";
 import VehicleDocumentsTab from "./vehicle-documents-tab";
+import VehicleLocationTab from "./vehicle-location-tab";
 import "./vehicle-form.scss";
 
 const RECORD_TABS = ["insurance", "tax", "maintenance", "inspection"];
+// Tabs that only exist for a saved vehicle but can still be deep-linked
+// (the fleet map links straight into "location").
+const EDIT_TABS = ["documents", "contracts", "location"];
 
 const VehicleForm = ({
   mode,
@@ -31,7 +35,11 @@ const VehicleForm = ({
   // vehicle's Sigorta/Kasko, MTV, Bakım or Muayene tab via ?tab=<key>.
   const [searchParams] = useSearchParams();
   const requestedTab = searchParams.get("tab");
-  const [tab, setTab] = useState(RECORD_TABS.includes(requestedTab) ? requestedTab : "vehicle");
+  const [tab, setTab] = useState(
+    RECORD_TABS.includes(requestedTab) || (mode === "edit" && EDIT_TABS.includes(requestedTab))
+      ? requestedTab
+      : "vehicle"
+  );
 
   const { branches, brandOptions, modelOptions, plateTaken, handleModelPicked } =
     useFleetPicklist(formik);
@@ -106,6 +114,11 @@ const VehicleForm = ({
             <Nav.Link eventKey="contracts">{t("vehicles.tabs.contracts")}</Nav.Link>
           </Nav.Item>
         )}
+        {mode === "edit" && (
+          <Nav.Item>
+            <Nav.Link eventKey="location">{t("vehicles.tabs.location")}</Nav.Link>
+          </Nav.Item>
+        )}
       </Nav>
 
       <div className="vehicle-form__body">
@@ -135,6 +148,8 @@ const VehicleForm = ({
         {tab === "documents" && <VehicleDocumentsTab vehicleId={vehicleId} />}
 
         {tab === "contracts" && <VehicleContractsTab vehicleId={vehicleId} />}
+
+        {tab === "location" && <VehicleLocationTab vehicleId={vehicleId} plate={formik.values.licensePlate} />}
       </div>
 
       {builtInWarning && (

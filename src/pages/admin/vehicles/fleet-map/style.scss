@@ -1,0 +1,162 @@
+@use '../../../../styles/variables' as v;
+
+.fleet-map {
+  // Fill the viewport below the admin header like the status board does
+  // (--admin-header-h is published by AdminLayout; 2rem = content padding).
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--admin-header-h, 0px) - 2rem);
+
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  &__title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0 0 0.4rem;
+  }
+
+  &__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+  }
+
+  &__privacy {
+    margin: 0 0 0.75rem;
+  }
+
+  &__grid {
+    flex: 1;
+    min-height: 520px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 1rem;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+      grid-template-rows: 60vh auto;
+    }
+  }
+
+  &__map {
+    min-height: 420px;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: var(--rw-panel, #fff);
+    border: 1px solid var(--rw-line, #{v.$color3});
+    border-radius: 12px;
+    overflow: hidden;
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      overflow-y: auto;
+      flex: 1;
+    }
+  }
+
+  &__search {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--rw-line, #{v.$color3});
+
+    input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: inherit;
+      font-size: 0.9rem;
+    }
+  }
+
+  &__empty,
+  &__untracked {
+    padding: 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  &__row {
+    border-bottom: 1px solid var(--rw-line, #{v.$color3});
+
+    &--selected {
+      background: var(--rw-hover, #{v.$color3_5});
+    }
+  }
+
+  &__row-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    width: 100%;
+    padding: 0.6rem 0.8rem 0.3rem;
+    border: none;
+    background: none;
+    color: inherit;
+    text-align: left;
+  }
+
+  &__row-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  &__plate {
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+
+  &__model {
+    font-size: 0.82rem;
+    color: var(--rw-ink-muted, #64748b);
+  }
+
+  &__row-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  &__row-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.6rem;
+    padding: 0 0.8rem 0.6rem;
+  }
+
+  &__detail-link {
+    margin-left: auto;
+    font-size: 0.8rem;
+  }
+}
