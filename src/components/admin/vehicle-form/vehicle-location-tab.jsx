@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, Form, Spinner, Table } from "react-bootstrap";
-import { BsEyeSlash, BsJournalText } from "react-icons/bs";
+import { BsCheck2All, BsEyeSlash, BsJournalText } from "react-icons/bs";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
 import { constants } from "../../../constants";
@@ -13,10 +13,13 @@ import AccessLogModal from "../telematics/access-log-modal";
 import {
   STATUS_COLORS,
   agoText,
+  alertText,
+  alertTitle,
   eventText,
   formatDateTime,
   formatTime,
   isStale,
+  severityClass,
   toLocalInput,
   traccarErrorKey,
 } from "../telematics/telematics-format";
@@ -50,6 +53,11 @@ const VehicleLocationTab = ({ vehicleId, plate }) => {
   const [reasonFor, setReasonFor] = useState(null);
   const [granting, setGranting] = useState(false);
   const [showLog, setShowLog] = useState(false);
+
+  // Km tracking (Faz 3): "the dashboard shows this km now".
+  const [calKm, setCalKm] = useState("");
+  const [calibrating, setCalibrating] = useState(false);
+  const [acking, setAcking] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -139,6 +147,35 @@ const VehicleLocationTab = ({ vehicleId, plate }) => {
       utils.functions.swalToast(error?.response?.data?.message || t("telematics.fleetMap.grantError"), "error");
     } finally {
       setGranting(false);
+    }
+  };
+
+  const calibrate = async (e) => {
+    e.preventDefault();
+    const km = Number(calKm);
+    if (!Number.isInteger(km) || km < 0) return;
+    setCalibrating(true);
+    try {
+      await services.telematics.calibrateVehicleKm(vehicleId, km);
+      utils.functions.swalToast(t("telematics.km.calibrated"), "success");
+      setCalKm("");
+      await load();
+    } catch (error) {
+      utils.functions.swalToast(error?.response?.data?.message || t("telematics.km.calibrateError"), "error");
+    } finally {
+      setCalibrating(false);
+    }
+  };
+
+  const acknowledgeAll = async () => {
+    setAcking(true);
+    try {
+      await services.telematics.acknowledgeTelematicsAlerts({ all: true, vehicleId });
+      await load();
+    } catch {
+      utils.functions.swalToast(t("telematics.alerts.ackError"), "error");
+    } finally {
+      setAcking(false);
     }
   };
 
@@ -283,19 +320,14 @@ const VehicleLocationTab = ({ vehicleId, plate }) => {
                 <span>{l("speedLabel")}</span>
                 <strong>{p ? t("telematics.speed", { speed: p.speedKmh ?? 0 }) : "—"}</strong>
               </div>
+              {info.atOffice != null && (
+                <div>
+                  <span>{t("telematics.km.office")}</span>
+                  <strong>{info.atOffice ? t("telematics.km.atOffice") : t("telematics.km.awayFromOffice")}</strong>
+                </div>
+              )}
             </div>
           )}
-
-          <div className="tlm-stats">
-            <div>
-              <span>{l("deviceKm")}</span>
-              <strong>{info.deviceOdometerKm != null ? `${info.deviceOdometerKm.toLocaleString(lang)} km` : "—"}</strong>
-            </div>
-            <div>
-              <span>{l("rentwinKm")}</span>
-              <strong>{info.currentKm != null ? `${info.currentKm.toLocaleString(lang)} km` : "—"}</strong>
-            </div>
-          </div>
 
           <LeafletMap markers={markers} routes={routes} fitKey={fitKey} height={380} />
 
@@ -359,6 +391,102 @@ const VehicleLocationTab = ({ vehicleId, plate }) => {
                 </div>
               )}
             </>
+          )}
+        </div>
+      )}
+
+      {hasTracker && info.km && (
+        <div className="tlm-card">
+          <h4>{t("telematics.km.title")}</h4>
+          <div className="tlm-stats">
+            <div>
+              <span>{t("telematics.km.estimated")}</span>
+              <strong>{info.km.estimatedKm != null ? `${info.km.estimatedKm.toLocaleString(lang)} km` : "—"}</strong>
+            </div>
+            <div>
+              <span>{t("telematics.km.rentwin")}</span>
+              <strong>{info.km.currentKm != null ? `${info.km.currentKm.toLocaleString(lang)} km` : "—"}</strong>
+            </div>
+            <div>
+              <span>{t("telematics.km.raw")}</span>
+              <strong>{info.km.deviceRawKm != null ? `${info.km.deviceRawKm.toLocaleString(lang)} km` : "—"}</strong>
+            </div>
+            <div>
+              <span>{t("telematics.km.reading")}</span>
+              <strong>{info.km.deviceReadingAt ? agoText(info.km.deviceReadingAt, t, lang) : "—"}</strong>
+            </div>
+          </div>
+          <div className="tlm-muted mb-2">
+            {info.km.calibrationPending
+              ? t("telematics.km.pending")
+              : info.km.calibrated
+                ? t("telematics.km.calibratedAt", { time: formatDateTime(info.km.calibratedAt, lang) })
+                : t("telematics.km.notCalibrated")}
+          </div>
+          <Form className="tlm-range" onSubmit={calibrate}>
+            <Form.Group>
+              <Form.Label>{t("telematics.km.calibrateLabel")}</Form.Label>
+              <Form.Control
+                type="number"
+                min="0"
+                step="1"
+                inputMode="numeric"
+                value={calKm}
+                placeholder={info.km.estimatedKm != null ? String(info.km.estimatedKm) : ""}
+                onChange={(e) => setCalKm(e.target.value)}
+              />
+            </Form.Group>
+            <div>
+              <Button type="submit" variant="outline-primary" disabled={calibrating || calKm === ""}>
+                {calibrating && <Spinner animation="border" size="sm" />} {t("telematics.km.calibrate")}
+              </Button>
+            </div>
+          </Form>
+          <div className="tlm-muted">{t("telematics.km.help")}</div>
+        </div>
+      )}
+
+      {hasTracker && (
+        <div className="tlm-card">
+          <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+            <h4 className="mb-0">{t("telematics.km.alerts")}</h4>
+            <div className="d-flex gap-2 align-items-center flex-wrap">
+              {(info.alerts || []).some((a) => !a.acknowledgedAt) && (
+                <Button size="sm" variant="outline-success" disabled={acking} onClick={acknowledgeAll}>
+                  {acking ? <Spinner animation="border" size="sm" /> : <BsCheck2All />} {t("telematics.alerts.ackAll")}
+                </Button>
+              )}
+              <Link to={constants.routes.adminGpsAlerts} className="tlm-muted">
+                {t("telematics.alerts.viewAll")}
+              </Link>
+            </div>
+          </div>
+          {!info.alerts?.length ? (
+            <div className="tlm-muted">{t("telematics.km.noAlerts")}</div>
+          ) : (
+            <div className="table-responsive">
+              <Table size="sm" className="tlm-table">
+                <tbody>
+                  {info.alerts.map((a) => (
+                    <tr key={a.id} className={a.acknowledgedAt ? "tlm-alert--acked" : ""}>
+                      <td className="text-nowrap">
+                        <span className={severityClass(a.severity)}>{t(`telematics.alerts.severity.${a.severity}`)}</span>{" "}
+                        {formatDateTime(a.occurredAt, lang)}
+                      </td>
+                      <td>
+                        <span className="tlm-alert__title">{alertTitle(a, t)}</span>{" "}
+                        <span className="tlm-alert__text">{alertText(a, t, lang)}</span>
+                      </td>
+                      <td className="text-nowrap">
+                        {a.contractId && (
+                          <Link to={`${constants.routes.adminContracts}/${a.contractId}`}>{a.data?.contractNo || "→"}</Link>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
           )}
         </div>
       )}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert, Button, ButtonGroup, Form, Spinner } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
@@ -38,10 +38,17 @@ const AdminVehicleDetailsPage = () => {
     ...utils.initialValues.adminNewVehicleFormInitialValues,
   });
 
+  // GPS takip: a tracked vehicle's km moves on its own (device sync), so the
+  // km field only counts as an edit when it differs from what was loaded or
+  // last saved here; otherwise the backend keeps the synced value.
+  const kmBaseline = useRef("");
+
   const onSubmit = async (values) => {
     setUpdating(true);
     try {
-      await services.vehicle.updateVehicle(vehicleId, values);
+      const currentKmEdited = String(values.currentKm ?? "") !== kmBaseline.current;
+      await services.vehicle.updateVehicle(vehicleId, { ...values, currentKmEdited });
+      kmBaseline.current = String(values.currentKm ?? "");
       utils.functions.swalToast(t("vehicles.toasts.updateSuccess"), "success");
     } catch (error) {
       const key =
@@ -65,6 +72,7 @@ const AdminVehicleDetailsPage = () => {
     try {
       const response = await services.vehicle.getVehicleByIdAdmin(vehicleId);
       setVehicle(response);
+      kmBaseline.current = String(response.currentKm ?? "");
       setInitialValues({
         ...utils.initialValues.adminNewVehicleFormInitialValues,
         ...response,

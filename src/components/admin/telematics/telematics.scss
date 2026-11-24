@@ -162,3 +162,57 @@
     min-width: 12rem;
   }
 }
+
+// GPS alerts (Faz 3): severity pill and the compact alert row text.
+.tlm-sev {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: #fff;
+
+  &--critical {
+    background: #b91c1c;
+  }
+
+  &--warning {
+    background: #c2700c;
+  }
+
+  &--info {
+    background: #2563eb;
+  }
+}
+
+.tlm-alert {
+  &__title {
+    font-weight: 700;
+  }
+
+  &__text {
+    color: var(--rw-ink-muted, #64748b);
+    font-size: 0.82rem;
+  }
+
+  &--acked {
+    opacity: 0.6;
+  }
+}
+
+// Device km suggestion under a km input (return / vehicle swap forms).
+.tlm-km-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--rw-ink-muted, #64748b);
+
+  .btn {
+    padding: 0 0.45rem;
+    font-size: 0.75rem;
+  }
+}

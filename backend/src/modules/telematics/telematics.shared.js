@@ -188,6 +188,7 @@ module.exports = {
   contractSegments,
   rentalSpansForVehicle,
   parseRange,
+  haversineKm,
   summarizeRoute,
   mapForwardedEvent,
 };

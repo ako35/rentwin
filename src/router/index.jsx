@@ -71,6 +71,7 @@ const AdminNewVehiclePage = lazy(() => import("../pages/admin/vehicles/new/page"
 const AdminVehicleModelImagesPage = lazy(() => import("../pages/admin/vehicles/model-images/page"));
 const AdminVehicleStatusBoardPage = lazy(() => import("../pages/admin/vehicles/status-board/page"));
 const AdminFleetMapPage = lazy(() => import("../pages/admin/vehicles/fleet-map/page"));
+const AdminGpsAlertsPage = lazy(() => import("../pages/admin/vehicles/gps-alerts/page"));
 const AdminNewCustomerPage = lazy(() => import("../pages/admin/users/new/page"));
 
 const lazyRoute = (element) => <Suspense fallback={<LoadingPage />}>{element}</Suspense>;
@@ -221,6 +222,7 @@ const router = createBrowserRouter([
           { path: "model-images", element: lazyRoute(<AdminVehicleModelImagesPage />) },
           { path: "status", element: lazyRoute(<AdminVehicleStatusBoardPage />) },
           { path: "map", element: lazyRoute(<AdminFleetMapPage />) },
+          { path: "gps-alerts", element: lazyRoute(<AdminGpsAlertsPage />) },
           { path: ":vehicleId", element: lazyRoute(<AdminVehicleDetailsPage />) },
         ],
       },

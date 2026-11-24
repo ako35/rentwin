@@ -246,8 +246,18 @@ model Vehicle {
   trackerImei            String?                        @unique // Traccar "uniqueId": cihaz IMEI'si (testte Traccar Client kimliği)
   trackerLastSeenAt      DateTime? // cihazdan gelen son olayın zamanı
   trackerIgnitionOn      Boolean? // son kontak olayına göre; null = henüz bilinmiyor
+  // Km eşitleme (Faz 3): cihazın ham km'si ile gösterge farkı. Gösterge km'si
+  // girildiğinde (araç dönüşü, araç değişimi, araç formu) fark yeniden
+  // hesaplanır; currentKm = ham km + fark, yalnızca artarken yazılır.
+  trackerOdometerKm      Int? // cihazın son ham km okuması
+  trackerOdometerAt      DateTime?
+  trackerKmOffset        Int? // gösterge km - cihaz km; null = henüz ayarlanmadı
+  trackerKmAnchorKm      Int? // cihaz okuması bekleyen gösterge km'si (okuma eskiyse)
+  trackerKmCalibratedAt  DateTime?
+  trackerAtOffice        Boolean? // son konuma göre ofis yarıçapında mı; koordinat saklanmaz
   telematicsEvents       TelematicsEvent[]
   telematicsAccessLogs   TelematicsAccessLog[]
+  telematicsAlerts       TelematicsAlert[]
   createdAt              DateTime                       @default(now())
   updatedAt              DateTime                       @updatedAt
 }
@@ -266,6 +276,30 @@ model TelematicsEvent {
   occurredAt     DateTime
   createdAt      DateTime @default(now())
 
+  @@index([vehicleId, occurredAt])
+}
+
+// GPS uyarıları (Faz 3): güç kesilmesi, çekici, aşırı hız, km limiti, bakım,
+// gecikmiş iade, cihazdan sinyal gelmemesi... Koordinat yok; data yalnızca
+// metin parametreleri (hız, km, kontrat no). dedupeKey aynı uyarının tekrar
+// açılmasını engeller.
+model TelematicsAlert {
+  id                 String    @id @default(uuid())
+  vehicleId          String
+  vehicle            Vehicle   @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  contractId         String?
+  type               String
+  severity           String // CRITICAL | WARNING | INFO
+  dedupeKey          String    @unique
+  data               Json?
+  occurredAt         DateTime
+  createdAt          DateTime  @default(now())
+  acknowledgedAt     DateTime?
+  acknowledgedById   String?
+  acknowledgedByName String?
+  emailedAt          DateTime?
+
+  @@index([acknowledgedAt, occurredAt])
   @@index([vehicleId, occurredAt])
 }
 
@@ -859,6 +893,17 @@ model Setting {
   // Bakım is purely km-based (no "days left" concept) — see
   // vehicles.dashboard.controller.js.
   alertWindowMaintenanceKm  Int?
+  // GPS uyarıları (Faz 3); boş alan varsayılanı kullanır (telematics.alerts.js).
+  gpsAlertEmails            String? // virgülle ayrılmış alıcılar
+  gpsOverspeedKmh           Int?
+  gpsKmLimitWarnPercent     Int?
+  gpsLateReturnGraceMinutes Int?
+  gpsOfflineHours           Int?
+  gpsOfficeLat              Float?
+  gpsOfficeLng              Float?
+  gpsOfficeRadiusM          Int?
+  gpsOutOfRegionKm          Int? // boş = kapalı
+  gpsLastTickAt             DateTime? // otomatik kontrolün son çalışması (sunucu yazar)
   updatedAt                 DateTime @updatedAt
 }
 

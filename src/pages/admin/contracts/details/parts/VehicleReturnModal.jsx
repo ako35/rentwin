@@ -7,6 +7,7 @@ import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import { buildFuelEighthsOptions } from "../../../../../utils/fuel-eighths";
 import { computeReturnOverage } from "../contract-helpers";
+import DeviceKmHint from "../../../../../components/admin/telematics/device-km-hint";
 import "./vehicle-return-modal.scss";
 
 // "Araç Teslim Al" opens this. Operator enters the hand-back odometer + fuel;
@@ -218,6 +219,7 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
                   ? c("returnKmBelowPickup", { km: values.pickUpKm })
                   : c("returnKmRequired")}
               </Form.Control.Feedback>
+              {show && <DeviceKmHint vehicleId={values.carId} onUse={setReturnKm} />}
             </Form.Group>
           </div>
 

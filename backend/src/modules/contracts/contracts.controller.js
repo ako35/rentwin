@@ -10,6 +10,7 @@ const { CAR_INCLUDE } = require("./contracts.shared");
 const { num, pickContractFields, rentalTerm } = require("./contract-fields");
 const { recomputeContractFinancials, contractUnitPrice } = require("./contract-financials");
 const { kbsStamp, kbsSwapUpdate } = require("./kbs");
+const { noteManualKm } = require("../telematics/telematics.sync");
 
 const invoiceWithDownloadUrl = async (invoice) => ({
   ...invoice,
@@ -332,6 +333,9 @@ const changeVehicle = asyncHandler(async (req, res) => {
         },
       });
     }
+    // GPS takip: dashboard km typed at the swap recalibrates both devices.
+    if (parsedReturnKm !== null) await noteManualKm(tx, contract.carId, parsedReturnKm);
+    if (parsedNewCarKm !== null) await noteManualKm(tx, newCarId, parsedNewCarKm);
     if (parsedNewCarKm !== null || parsedNewCarFuelEighths !== null) {
       await tx.vehicle.update({
         where: { id: newCarId },

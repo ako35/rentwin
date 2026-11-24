@@ -64,3 +64,58 @@ export const traccarErrorKey = (code) =>
   ["TRACCAR_NOT_CONFIGURED", "TRACCAR_UNREACHABLE", "TRACCAR_AUTH", "TRACCAR_ERROR"].includes(code)
     ? `telematics.errors.${code}`
     : "telematics.errors.generic";
+
+// ---- GPS alerts (Faz 3)
+
+export const ALERT_TYPES = [
+  "DEVICE_TAMPER",
+  "TOW",
+  "LATE_RETURN",
+  "OVERSPEED",
+  "KM_LIMIT_NEAR",
+  "KM_LIMIT_EXCEEDED",
+  "MAINTENANCE_DUE",
+  "MAINTENANCE_OVERDUE",
+  "DEVICE_OFFLINE",
+  "LOW_BATTERY",
+  "OUT_OF_REGION",
+  "ARRIVED_AT_OFFICE",
+];
+
+export const severityClass = (severity) => `tlm-sev tlm-sev--${String(severity || "info").toLowerCase()}`;
+
+// Rental times (dropOffTime) are Türkiye wall-clock stored as UTC: show them
+// as typed, not shifted by the browser's zone.
+const formatWall = (value, lang) =>
+  new Date(value).toLocaleString(lang, {
+    timeZone: "UTC",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+export const alertTitle = (alert, t) =>
+  t(`telematics.alerts.types.${alert.type}.title`, { defaultValue: alert.type });
+
+export const alertText = (alert, t, lang = "tr") => {
+  const d = alert.data || {};
+  const km = (n) => (Number.isFinite(Number(n)) ? Number(n).toLocaleString(lang) : "?");
+  return t(`telematics.alerts.types.${alert.type}.text`, {
+    defaultValue: "",
+    contractNo: d.contractNo || "—",
+    usedKm: km(d.usedKm),
+    allowedKm: km(d.allowedKm),
+    percent: d.percent ?? "?",
+    kmLeft: km(Math.abs(Number(d.kmLeft) || 0)),
+    nextKm: km(d.nextKm),
+    speed: d.speedKmh ?? "?",
+    limit: d.limitKmh ?? "?",
+    hours: d.hours ?? "?",
+    distance: d.distanceKm ?? "?",
+    alarm: d.alarm ? t(`telematics.alarms.${d.alarm}`, { defaultValue: d.alarm }) : "",
+    dropOff: d.dropOffTime ? formatWall(d.dropOffTime, lang) : "?",
+    interpolation: { escapeValue: false },
+  });
+};

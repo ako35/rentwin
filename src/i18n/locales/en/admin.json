@@ -1326,6 +1326,47 @@
     "SOLD": "Sold"
   },
   "settings": {
+    "gpsAlerts": {
+      "title": "GPS Alerts",
+      "hint": "Alert thresholds and e-mail recipients for vehicles with a tracker. Blank fields use the default.",
+      "status": "Status",
+      "traccar": "GPS server",
+      "webhook": "Event link",
+      "mail": "E-mail sending (SMTP)",
+      "tick": "Automatic check",
+      "ok": "Set up",
+      "missing": "Not set up",
+      "never": "Not run yet",
+      "tracked": "Tracked vehicles: {{count}}",
+      "emails": "Alert e-mail recipients",
+      "emailsPlaceholder": "name@rentwin.com.tr, ...",
+      "emailsHelp": "Separate with commas (up to 10). New urgent and warning alerts arrive in a combined e-mail; info alerts stay in the panel.",
+      "thresholds": "Thresholds",
+      "office": "Office location",
+      "officeHelp": "Blank uses the Aliağa office location from the website. A vehicle inside this radius counts as at the office.",
+      "gpsOverspeedKmh": "Speed limit",
+      "gpsKmLimitWarnPercent": "Km limit warning",
+      "gpsLateReturnGraceMinutes": "Late return grace",
+      "gpsOfflineHours": "No signal alert",
+      "gpsOfficeRadiusM": "Office radius",
+      "gpsOutOfRegionKm": "Out of region alert",
+      "gpsOfficeLat": "Latitude",
+      "gpsOfficeLng": "Longitude",
+      "units": {
+        "kmh": "km/h",
+        "percent": "%",
+        "minutes": "min",
+        "hours": "hours",
+        "meters": "m",
+        "km": "km"
+      },
+      "outOfRegionHelp": "Alert for a vehicle this far from the office. Blank means off. Before turning it on, make sure the rental contract and privacy notice mention it.",
+      "offPlaceholder": "Off",
+      "testEmail": "Send a test e-mail",
+      "testEmailSent": "Test e-mail sent to: {{to}}",
+      "testEmailError": "Could not send the test e-mail.",
+      "mailNotConfigured": "SMTP details for e-mail are not set up yet. Until then alerts only show in the panel."
+    },
     "pageTitle": "Settings",
     "save": "Save",
     "saveSuccess": "Settings saved.",
@@ -1430,6 +1471,7 @@
     "loadError": "Could not load appointment data."
   },
   "topNav": {
+    "gpsAlerts": "GPS Alerts",
     "home": "Home",
     "vehicle": "Vehicle",
     "vehicleList": "Vehicle List",
@@ -1485,6 +1527,9 @@
     "manageAnnouncements": "Announcement Settings"
   },
   "alertBar": {
+    "gps": "GPS",
+    "gpsHead": "Open GPS alerts",
+    "gpsNone": "No open GPS alerts.",
     "maintenance": "Maintenance",
     "inspection": "Inspection / Exhaust",
     "inspectionAppointments": "Inspection appointments",
@@ -1960,6 +2005,115 @@
     "clear": "Clear"
   },
   "telematics": {
+    "alerts": {
+      "title": "GPS Alerts",
+      "hint": "Alerts from tracker events and the automatic check that runs every 5 minutes. An acknowledged alert leaves the open list. Alerts carry no location.",
+      "statusOpen": "Open",
+      "statusAll": "All",
+      "allTypes": "All alert types",
+      "search": "Search plate",
+      "ack": "Acknowledge",
+      "ackAll": "Acknowledge all",
+      "ackAllConfirm": "Acknowledge all {{count}} open alerts?",
+      "acked": "Acknowledged: {{name}}",
+      "emailed": "Sent by e-mail",
+      "empty": "No open alerts.",
+      "emptyAll": "No alerts yet.",
+      "noTracked": "No vehicle has a tracker yet. Add one from the Location tab of a vehicle.",
+      "viewAll": "All GPS alerts",
+      "lastTick": "Last automatic check: {{time}}",
+      "noTick": "The automatic check has not run yet. It runs every 5 minutes once the timer on the GPS server is set up.",
+      "loadError": "Could not load alerts.",
+      "ackError": "Could not acknowledge the alert.",
+      "openCount": "{{count}} open alerts",
+      "col": {
+        "time": "Time",
+        "vehicle": "Vehicle",
+        "alert": "Alert",
+        "contract": "Contract",
+        "status": "Status"
+      },
+      "severity": {
+        "CRITICAL": "Urgent",
+        "WARNING": "Warning",
+        "INFO": "Info"
+      },
+      "types": {
+        "DEVICE_TAMPER": {
+          "title": "Tracker tampering",
+          "text": "Tracker alarm: {{alarm}}. Its power may have been cut or it is being removed."
+        },
+        "TOW": {
+          "title": "Possible towing",
+          "text": "The vehicle is moving with the engine off ({{speed}} km/h)."
+        },
+        "OVERSPEED": {
+          "title": "Speeding",
+          "text": "Speed {{speed}} km/h (limit {{limit}} km/h)."
+        },
+        "KM_LIMIT_NEAR": {
+          "title": "Near the km limit",
+          "text": "Contract {{contractNo}}: {{percent}}% of the km allowance used ({{usedKm}} / {{allowedKm}} km)."
+        },
+        "KM_LIMIT_EXCEEDED": {
+          "title": "Km limit exceeded",
+          "text": "Contract {{contractNo}}: {{usedKm}} / {{allowedKm}} km used."
+        },
+        "MAINTENANCE_DUE": {
+          "title": "Service due soon",
+          "text": "{{kmLeft}} km to the next service (at {{nextKm}} km)."
+        },
+        "MAINTENANCE_OVERDUE": {
+          "title": "Service overdue",
+          "text": "Service overdue by {{kmLeft}} km (due at {{nextKm}} km)."
+        },
+        "LATE_RETURN": {
+          "title": "Late return",
+          "text": "Contract {{contractNo}}: return time ({{dropOff}}) has passed and the vehicle is not at the office."
+        },
+        "DEVICE_OFFLINE": {
+          "title": "No signal",
+          "text": "No signal from the tracker for {{hours}} hours."
+        },
+        "LOW_BATTERY": {
+          "title": "Tracker battery low",
+          "text": "The tracker's battery is low."
+        },
+        "OUT_OF_REGION": {
+          "title": "Out of region",
+          "text": "The vehicle is about {{distance}} km from the office."
+        },
+        "ARRIVED_AT_OFFICE": {
+          "title": "Arrived at the office",
+          "text": "A rented vehicle arrived at the office (contract {{contractNo}})."
+        }
+      }
+    },
+    "km": {
+      "title": "Km tracking",
+      "estimated": "Dashboard km from the device",
+      "raw": "Device's own counter",
+      "rentwin": "Rentwin km",
+      "reading": "Last reading",
+      "calibratedAt": "Last adjusted: {{time}}",
+      "notCalibrated": "Not adjusted yet. The first reading from the device is matched to the vehicle's km.",
+      "pending": "The dashboard km entered will be matched with the device's next reading.",
+      "help": "The device counts km from the day it was installed. Whenever a dashboard km is entered at a return or a vehicle swap, the difference is corrected automatically. Rentwin km only ever moves up.",
+      "calibrateLabel": "Km on the dashboard right now",
+      "calibrate": "Match the dashboard",
+      "calibrated": "Km matched to the dashboard.",
+      "calibrateError": "Could not adjust the km.",
+      "alerts": "Alerts",
+      "noAlerts": "No alerts for this vehicle.",
+      "atOffice": "At the office",
+      "office": "Office",
+      "awayFromOffice": "Away from the office"
+    },
+    "kmHint": {
+      "device": "GPS tracker: {{km}} km",
+      "use": "Use",
+      "uncalibrated": "The GPS tracker's km is not adjusted yet."
+    },
     "never": "No signal yet",
     "ago": {
       "now": "just now",

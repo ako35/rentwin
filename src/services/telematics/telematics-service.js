@@ -64,3 +64,46 @@ export const getTelematicsAccessLogs = async (params = {}) => {
   });
   return response.data;
 };
+
+// ---- Faz 3: alerts, km, settings helpers
+
+// { status: "open" | "all", vehicleId?, contractId?, type?, limit? }
+export const getTelematicsAlerts = async (params = {}) => {
+  const response = await axios.get(`${API_URL}/telematics/admin/alerts/auth`, {
+    ...services.authHeader(),
+    params,
+  });
+  return response.data;
+};
+
+// { ids: [...] } or { all: true, vehicleId? }
+export const acknowledgeTelematicsAlerts = async (payload) => {
+  const response = await axios.post(`${API_URL}/telematics/admin/alerts/ack/auth`, payload, services.authHeader());
+  return response.data;
+};
+
+// Device km suggestion for the return / vehicle-swap forms.
+export const getVehicleDeviceKm = async (vehicleId) => {
+  const response = await axios.get(`${API_URL}/telematics/admin/vehicles/${vehicleId}/km/auth`, services.authHeader());
+  return response.data;
+};
+
+// "The dashboard shows this km now" (Konum tab).
+export const calibrateVehicleKm = async (vehicleId, km) => {
+  const response = await axios.post(
+    `${API_URL}/telematics/admin/vehicles/${vehicleId}/km/auth`,
+    { km },
+    services.authHeader()
+  );
+  return response.data;
+};
+
+export const getGpsStatus = async () => {
+  const response = await axios.get(`${API_URL}/telematics/admin/status/auth`, services.authHeader());
+  return response.data;
+};
+
+export const sendGpsTestEmail = async () => {
+  const response = await axios.post(`${API_URL}/telematics/admin/test-email/auth`, {}, services.authHeader());
+  return response.data;
+};

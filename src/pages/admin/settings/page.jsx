@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { Button, Form, InputGroup, Spinner } from "react-bootstrap";
-import { BsCircleHalf, BsSun, BsMoonStars, BsTrash, BsPencil, BsPalette, BsCashCoin, BsShieldCheck, BsPeopleFill, BsBell } from "react-icons/bs";
+import { BsCircleHalf, BsSun, BsMoonStars, BsTrash, BsPencil, BsPalette, BsCashCoin, BsShieldCheck, BsPeopleFill, BsBell, BsBroadcast, BsEnvelope } from "react-icons/bs";
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { Loading } from "../../../components";
 import { services } from "../../../services";
@@ -41,17 +41,33 @@ const ALERT_FIELDS = [
   { name: "alertWindowMaintenanceKm", unit: "km", placeholder: "1000" },
 ];
 
+// GPS uyarıları (Faz 3). Blank = the backend default (shown as placeholder,
+// from /telematics/admin/status). Out-of-region stays off while blank.
+const GPS_FIELDS = [
+  { name: "gpsOverspeedKmh", unit: "kmh", defaultKey: "overspeedKmh", min: 60, max: 250 },
+  { name: "gpsKmLimitWarnPercent", unit: "percent", defaultKey: "kmLimitWarnPercent", min: 10, max: 99 },
+  { name: "gpsLateReturnGraceMinutes", unit: "minutes", defaultKey: "lateReturnGraceMinutes", min: 0, max: 1440 },
+  { name: "gpsOfflineHours", unit: "hours", defaultKey: "offlineHours", min: 1, max: 720 },
+];
+const GPS_OFFICE_FIELDS = [
+  { name: "gpsOfficeLat", unit: null, defaultKey: "officeLat", step: "any" },
+  { name: "gpsOfficeLng", unit: null, defaultKey: "officeLng", step: "any" },
+  { name: "gpsOfficeRadiusM", unit: "meters", defaultKey: "officeRadiusM", min: 50, max: 5000 },
+];
+const GPS_TEXT_FIELDS = [{ name: "gpsAlertEmails" }, { name: "gpsOutOfRegionKm" }];
+
 // Left-nav sections — each maps 1:1 to a settings.<key>.title translation.
 const SECTIONS = [
   { key: "appearance", icon: BsPalette },
   { key: "contractDefaults", icon: BsCashCoin },
   { key: "alertWindows", icon: BsBell },
+  { key: "gpsAlerts", icon: BsBroadcast },
   { key: "kabisSystems", icon: BsShieldCheck },
   { key: "admins", icon: BsPeopleFill },
 ];
 const SECTION_KEYS = SECTIONS.map((s) => s.key);
 
-const ALL_FORM_FIELDS = [...FIELDS, ...ALERT_FIELDS];
+const ALL_FORM_FIELDS = [...FIELDS, ...ALERT_FIELDS, ...GPS_FIELDS, ...GPS_OFFICE_FIELDS, ...GPS_TEXT_FIELDS];
 const toForm = (data) =>
   ALL_FORM_FIELDS.reduce((acc, f) => ({ ...acc, [f.name]: data?.[f.name] == null ? "" : String(data[f.name]) }), {});
 
@@ -73,6 +89,9 @@ const AdminSettingsPage = () => {
   const [kabisName, setKabisName] = useState("");
   const [kabisAdding, setKabisAdding] = useState(false);
   const [kabisRemovingId, setKabisRemovingId] = useState(null);
+
+  const [gpsStatus, setGpsStatus] = useState(null);
+  const [testingEmail, setTestingEmail] = useState(false);
 
   const [admins, setAdmins] = useState([]);
   const [adminForm, setAdminForm] = useState(EMPTY_ADMIN);
@@ -96,6 +115,7 @@ const AdminSettingsPage = () => {
   useEffect(() => {
     Promise.all([
       services.settings.getSettings().then((data) => setForm(toForm(data))).catch(() => {}),
+      services.telematics.getGpsStatus().then(setGpsStatus).catch(() => {}),
       loadKabisSystems(),
       loadAdmins(),
     ]).finally(() => setLoading(false));
@@ -109,12 +129,59 @@ const AdminSettingsPage = () => {
       const saved = await services.settings.updateSettings(form);
       setForm(toForm(saved));
       utils.functions.swalToast(c("saveSuccess"), "success");
-    } catch {
-      utils.functions.swalToast(c("saveError"), "error");
+    } catch (error) {
+      // GPS fields are range-checked on the server; show its message.
+      utils.functions.swalToast(error?.response?.data?.message || c("saveError"), "error");
     } finally {
       setSaving(false);
     }
   };
+
+  const sendTestEmail = async () => {
+    setTestingEmail(true);
+    try {
+      const res = await services.telematics.sendGpsTestEmail();
+      utils.functions.swalToast(c("gpsAlerts.testEmailSent").replace("{{to}}", (res.to || []).join(", ")), "success");
+    } catch (error) {
+      utils.functions.swalToast(error?.response?.data?.message || c("gpsAlerts.testEmailError"), "error");
+    } finally {
+      setTestingEmail(false);
+    }
+  };
+
+  const saveOnEnter = (e) => {
+    if (e.key === "Enter" && !saving && e.target.tagName !== "TEXTAREA") {
+      e.preventDefault();
+      save();
+    }
+  };
+
+  const gpsField = (f) => (
+    <Form.Group key={f.name} className="admin-settings__field">
+      <Form.Label>{c(`gpsAlerts.${f.name}`)}</Form.Label>
+      <div className="admin-settings__input">
+        <Form.Control
+          type="number"
+          min={f.min}
+          max={f.max}
+          step={f.step || "1"}
+          value={form[f.name]}
+          onChange={setV(f.name)}
+          placeholder={gpsStatus?.defaults?.[f.defaultKey] != null ? String(gpsStatus.defaults[f.defaultKey]) : ""}
+        />
+        {f.unit && <span>{c(`gpsAlerts.units.${f.unit}`)}</span>}
+      </div>
+    </Form.Group>
+  );
+
+  const statusRow = (label, ok, okText) => (
+    <li>
+      <span>{label}</span>
+      <strong className={ok ? "admin-settings__ok" : "admin-settings__missing"}>
+        {ok ? okText || c("gpsAlerts.ok") : c("gpsAlerts.missing")}
+      </strong>
+    </li>
+  );
 
   const addKabisSystem = async () => {
     const name = kabisName.trim();
@@ -362,6 +429,90 @@ const AdminSettingsPage = () => {
               </div>
 
               <div className="admin-settings__actions">
+                <Button type="button" disabled={saving} onClick={save}>
+                  {saving && <Spinner animation="border" size="sm" />} {c("save")}
+                </Button>
+              </div>
+            </section>
+          )}
+
+          {activeSection === "gpsAlerts" && (
+            <section className="admin-settings__card">
+              <div className="admin-settings__card-head">
+                <h3>{c("gpsAlerts.title")}</h3>
+                <p>{c("gpsAlerts.hint")}</p>
+              </div>
+
+              {gpsStatus && (
+                <ul className="admin-settings__status">
+                  {statusRow(c("gpsAlerts.traccar"), gpsStatus.traccarConfigured)}
+                  {statusRow(c("gpsAlerts.webhook"), gpsStatus.webhookConfigured)}
+                  {statusRow(c("gpsAlerts.mail"), gpsStatus.mailConfigured)}
+                  <li>
+                    <span>{c("gpsAlerts.tick")}</span>
+                    <strong className={gpsStatus.lastTickAt ? "admin-settings__ok" : "admin-settings__missing"}>
+                      {gpsStatus.lastTickAt
+                        ? new Date(gpsStatus.lastTickAt).toLocaleString("tr-TR", { dateStyle: "short", timeStyle: "short" })
+                        : c("gpsAlerts.never")}
+                    </strong>
+                  </li>
+                  <li>
+                    <span>{c("gpsAlerts.tracked").replace("{{count}}", String(gpsStatus.trackedCount ?? 0))}</span>
+                  </li>
+                </ul>
+              )}
+
+              <div onKeyDown={saveOnEnter}>
+                <Form.Group className="admin-settings__field mb-3">
+                  <Form.Label>{c("gpsAlerts.emails")}</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={2}
+                    value={form.gpsAlertEmails}
+                    onChange={setV("gpsAlertEmails")}
+                    placeholder={c("gpsAlerts.emailsPlaceholder")}
+                  />
+                  <Form.Text muted>{c("gpsAlerts.emailsHelp")}</Form.Text>
+                  {gpsStatus && !gpsStatus.mailConfigured && (
+                    <Form.Text className="d-block admin-settings__warn">{c("gpsAlerts.mailNotConfigured")}</Form.Text>
+                  )}
+                </Form.Group>
+
+                <h4 className="admin-settings__subhead">{c("gpsAlerts.thresholds")}</h4>
+                <div className="admin-settings__grid">
+                  {GPS_FIELDS.map(gpsField)}
+                  <Form.Group className="admin-settings__field">
+                    <Form.Label>{c("gpsAlerts.gpsOutOfRegionKm")}</Form.Label>
+                    <div className="admin-settings__input">
+                      <Form.Control
+                        type="number"
+                        min="10"
+                        max="2000"
+                        step="1"
+                        value={form.gpsOutOfRegionKm}
+                        onChange={setV("gpsOutOfRegionKm")}
+                        placeholder={c("gpsAlerts.offPlaceholder")}
+                      />
+                      <span>{c("gpsAlerts.units.km")}</span>
+                    </div>
+                  </Form.Group>
+                </div>
+                <Form.Text muted className="d-block mb-3">{c("gpsAlerts.outOfRegionHelp")}</Form.Text>
+
+                <h4 className="admin-settings__subhead">{c("gpsAlerts.office")}</h4>
+                <div className="admin-settings__grid">{GPS_OFFICE_FIELDS.map(gpsField)}</div>
+                <Form.Text muted className="d-block">{c("gpsAlerts.officeHelp")}</Form.Text>
+              </div>
+
+              <div className="admin-settings__actions">
+                <Button
+                  type="button"
+                  variant="outline-secondary"
+                  disabled={testingEmail || !gpsStatus?.mailConfigured}
+                  onClick={sendTestEmail}
+                >
+                  {testingEmail ? <Spinner animation="border" size="sm" /> : <BsEnvelope />} {c("gpsAlerts.testEmail")}
+                </Button>
                 <Button type="button" disabled={saving} onClick={save}>
                   {saving && <Spinner animation="border" size="sm" />} {c("save")}
                 </Button>

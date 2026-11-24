@@ -18,6 +18,7 @@ const {
   loadModelContext,
 } = require("./vehicles.shared");
 const { getModelCopy, modelKey } = require("../../lib/vehicle-models");
+const { noteManualKm } = require("../telematics/telematics.sync");
 const { pickVehicleFields } = require("./vehicle-fields");
 
 // Prisma unique-constraint violation on Vehicle.licensePlate -> a clean 409.
@@ -386,12 +387,26 @@ const updateVehicle = asyncHandler(async (req, res) => {
   if (!target) throw new HttpError(404, "Vehicle not found.");
   if (target.builtIn) throw new HttpError(403, "This vehicle cannot be modified.");
 
+  const data = pickVehicleFields(req.body);
+  // GPS takip: a tracked vehicle's km moves on its own, so a form that was
+  // opened earlier would write a stale value back. Only an explicit edit
+  // (currentKmEdited, sent by the form when the field changed) writes km —
+  // and recalibrates the device.
+  const kmEdited = target.trackerImei ? req.body.currentKmEdited === true : data.currentKm !== undefined;
+  if (target.trackerImei && !kmEdited) delete data.currentKm;
+
   let vehicle;
   try {
-    vehicle = await prisma.vehicle.update({
-      where: { id },
-      data: pickVehicleFields(req.body),
-      include: IMAGES_AND_BRANCH_INCLUDE,
+    vehicle = await prisma.$transaction(async (tx) => {
+      const updated = await tx.vehicle.update({
+        where: { id },
+        data,
+        include: IMAGES_AND_BRANCH_INCLUDE,
+      });
+      if (kmEdited && data.currentKm != null && data.currentKm !== target.currentKm) {
+        await noteManualKm(tx, id, data.currentKm);
+      }
+      return updated;
     });
   } catch (err) {
     if (isPlateClash(err)) throw plateTakenError();

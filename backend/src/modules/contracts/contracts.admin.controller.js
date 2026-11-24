@@ -22,6 +22,7 @@ const { getBusyVehicleIds } = require("../../lib/availability");
 const { loadModelImageMap } = require("../vehicles/vehicles.shared");
 const { readSettings } = require("../settings/settings.controller");
 const { kbsSwapPending } = require("./kbs");
+const { noteManualKm } = require("../telematics/telematics.sync");
 
 const RETURN_CHARGE_CATEGORIES = [
   "KM_EXCESS",
@@ -473,6 +474,8 @@ const returnContract = asyncHandler(async (req, res) => {
       where: { id: existing.carId },
       data: { currentKm: returnKm, currentFuelEighths: returnFuelEighths },
     });
+    // GPS takip: the dashboard km typed at hand-back recalibrates the device km.
+    await noteManualKm(tx, existing.carId, returnKm);
   });
 
   res.json({ id: existing.id, status: "DONE" });

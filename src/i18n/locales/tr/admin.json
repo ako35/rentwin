@@ -1326,6 +1326,47 @@
     "SOLD": "Satıldı"
   },
   "settings": {
+    "gpsAlerts": {
+      "title": "GPS Uyarıları",
+      "hint": "Takip cihazlı araçların uyarı eşikleri ve e-posta alıcıları. Boş bırakılan alan varsayılanı kullanır.",
+      "status": "Durum",
+      "traccar": "GPS sunucusu",
+      "webhook": "Olay bağlantısı",
+      "mail": "E-posta gönderimi (SMTP)",
+      "tick": "Otomatik kontrol",
+      "ok": "Ayarlı",
+      "missing": "Ayarlanmadı",
+      "never": "Henüz çalışmadı",
+      "tracked": "Takipli araç: {{count}}",
+      "emails": "Uyarı e-postası alıcıları",
+      "emailsPlaceholder": "ornek@rentwin.com.tr, ...",
+      "emailsHelp": "Virgülle ayırın (en fazla 10). Acil ve uyarı seviyesindeki yeni uyarılar toplu e-postayla gelir; bilgi seviyesindekiler yalnızca panelde görünür.",
+      "thresholds": "Eşikler",
+      "office": "Ofis konumu",
+      "officeHelp": "Boş bırakılırsa sitedeki Aliağa ofis konumu kullanılır. Araç bu yarıçapın içindeyse ofiste sayılır.",
+      "gpsOverspeedKmh": "Hız sınırı",
+      "gpsKmLimitWarnPercent": "Km limiti uyarısı",
+      "gpsLateReturnGraceMinutes": "Gecikmiş iade toleransı",
+      "gpsOfflineHours": "Sinyal yok uyarısı",
+      "gpsOfficeRadiusM": "Ofis yarıçapı",
+      "gpsOutOfRegionKm": "Bölge dışı uyarısı",
+      "gpsOfficeLat": "Enlem",
+      "gpsOfficeLng": "Boylam",
+      "units": {
+        "kmh": "km/s",
+        "percent": "%",
+        "minutes": "dk",
+        "hours": "saat",
+        "meters": "m",
+        "km": "km"
+      },
+      "outOfRegionHelp": "Ofisten bu kadar uzaklaşan araç için uyarı. Boş bırakılırsa kapalı. Açmadan önce kira sözleşmesinde ve aydınlatma metninde bu takibin yazdığından emin olun.",
+      "offPlaceholder": "Kapalı",
+      "testEmail": "Deneme e-postası gönder",
+      "testEmailSent": "Deneme e-postası gönderildi: {{to}}",
+      "testEmailError": "Deneme e-postası gönderilemedi.",
+      "mailNotConfigured": "E-posta gönderimi için SMTP bilgileri henüz girilmedi. O zamana kadar uyarılar yalnızca panelde görünür."
+    },
     "pageTitle": "Ayarlar",
     "save": "Kaydet",
     "saveSuccess": "Ayarlar kaydedildi.",
@@ -1430,6 +1471,7 @@
     "loadError": "Randevu bilgileri yüklenemedi."
   },
   "topNav": {
+    "gpsAlerts": "GPS Uyarıları",
     "home": "Ana Sayfa",
     "vehicle": "Araç",
     "vehicleList": "Araç Listesi",
@@ -1485,6 +1527,9 @@
     "manageAnnouncements": "Duyuru Ayarları"
   },
   "alertBar": {
+    "gps": "GPS",
+    "gpsHead": "Açık GPS uyarıları",
+    "gpsNone": "Açık GPS uyarısı yok.",
     "maintenance": "Bakım",
     "inspection": "Muayene / Egzoz",
     "inspectionAppointments": "Muayene randevuları",
@@ -1960,6 +2005,115 @@
     "clear": "Temizle"
   },
   "telematics": {
+    "alerts": {
+      "title": "GPS Uyarıları",
+      "hint": "Takip cihazlarından gelen olaylar ve 5 dakikada bir yapılan otomatik kontrolden çıkan uyarılar. Okundu işaretlenen uyarı açık listeden çıkar. Uyarılar konum içermez.",
+      "statusOpen": "Açık",
+      "statusAll": "Tümü",
+      "allTypes": "Tüm uyarı türleri",
+      "search": "Plaka ara",
+      "ack": "Okundu",
+      "ackAll": "Tümünü okundu say",
+      "ackAllConfirm": "{{count}} açık uyarının tümü okundu işaretlensin mi?",
+      "acked": "Okundu: {{name}}",
+      "emailed": "E-postayla gönderildi",
+      "empty": "Açık uyarı yok.",
+      "emptyAll": "Henüz uyarı yok.",
+      "noTracked": "Henüz takip cihazı tanımlı araç yok. Araç detayındaki Konum sekmesinden cihaz ekleyin.",
+      "viewAll": "Tüm GPS uyarıları",
+      "lastTick": "Son otomatik kontrol: {{time}}",
+      "noTick": "Otomatik kontrol henüz çalışmadı. GPS sunucusundaki zamanlayıcı kurulunca 5 dakikada bir çalışır.",
+      "loadError": "Uyarılar yüklenemedi.",
+      "ackError": "Uyarı okundu işaretlenemedi.",
+      "openCount": "{{count}} açık uyarı",
+      "col": {
+        "time": "Zaman",
+        "vehicle": "Araç",
+        "alert": "Uyarı",
+        "contract": "Kontrat",
+        "status": "Durum"
+      },
+      "severity": {
+        "CRITICAL": "Acil",
+        "WARNING": "Uyarı",
+        "INFO": "Bilgi"
+      },
+      "types": {
+        "DEVICE_TAMPER": {
+          "title": "Cihaza müdahale",
+          "text": "Cihaz alarmı: {{alarm}}. Takip cihazının gücü kesilmiş veya cihaz sökülüyor olabilir."
+        },
+        "TOW": {
+          "title": "Çekici şüphesi",
+          "text": "Kontak kapalıyken araç hareket ediyor ({{speed}} km/s)."
+        },
+        "OVERSPEED": {
+          "title": "Aşırı hız",
+          "text": "Hız {{speed}} km/s (sınır {{limit}} km/s)."
+        },
+        "KM_LIMIT_NEAR": {
+          "title": "Km limitine yaklaştı",
+          "text": "Kontrat {{contractNo}}: km limitinin %{{percent}}'i kullanıldı ({{usedKm}} / {{allowedKm}} km)."
+        },
+        "KM_LIMIT_EXCEEDED": {
+          "title": "Km limiti aşıldı",
+          "text": "Kontrat {{contractNo}}: {{usedKm}} / {{allowedKm}} km kullanıldı."
+        },
+        "MAINTENANCE_DUE": {
+          "title": "Bakım yaklaşıyor",
+          "text": "Bakıma {{kmLeft}} km kaldı (bakım km'si {{nextKm}})."
+        },
+        "MAINTENANCE_OVERDUE": {
+          "title": "Bakım km'si geçti",
+          "text": "Bakım km'si {{kmLeft}} km geçti (bakım km'si {{nextKm}})."
+        },
+        "LATE_RETURN": {
+          "title": "Gecikmiş iade",
+          "text": "Kontrat {{contractNo}}: dönüş zamanı ({{dropOff}}) geçti, araç ofiste değil."
+        },
+        "DEVICE_OFFLINE": {
+          "title": "Sinyal yok",
+          "text": "{{hours}} saattir takip cihazından sinyal gelmiyor."
+        },
+        "LOW_BATTERY": {
+          "title": "Cihaz bataryası zayıf",
+          "text": "Takip cihazının bataryası zayıf."
+        },
+        "OUT_OF_REGION": {
+          "title": "Bölge dışında",
+          "text": "Araç ofisten yaklaşık {{distance}} km uzakta."
+        },
+        "ARRIVED_AT_OFFICE": {
+          "title": "Ofise geldi",
+          "text": "Kiradaki araç ofise geldi (kontrat {{contractNo}})."
+        }
+      }
+    },
+    "km": {
+      "title": "Km takibi",
+      "estimated": "Cihaza göre gösterge km",
+      "raw": "Cihazın kendi sayacı",
+      "rentwin": "Rentwin km",
+      "reading": "Son okuma",
+      "calibratedAt": "Son ayar: {{time}}",
+      "notCalibrated": "Henüz ayarlanmadı. Cihazdan ilk okuma gelince araçtaki km'ye göre ayarlanır.",
+      "pending": "Girilen gösterge km'si cihazdan gelecek bir sonraki okumayla eşleşecek.",
+      "help": "Cihaz km'yi takıldığı günden itibaren sayar. Araç dönüşünde veya araç değişiminde gösterge km'si girildiğinde aradaki fark kendiliğinden düzeltilir. Rentwin km'si yalnızca artarken güncellenir.",
+      "calibrateLabel": "Göstergede şu an yazan km",
+      "calibrate": "Göstergeye göre ayarla",
+      "calibrated": "Km göstergeye göre ayarlandı.",
+      "calibrateError": "Km ayarlanamadı.",
+      "alerts": "Uyarılar",
+      "noAlerts": "Bu araç için uyarı yok.",
+      "atOffice": "Ofiste",
+      "office": "Ofis",
+      "awayFromOffice": "Ofis dışında"
+    },
+    "kmHint": {
+      "device": "GPS cihazı: {{km}} km",
+      "use": "Kullan",
+      "uncalibrated": "GPS cihazının km'si henüz ayarlanmadı."
+    },
     "never": "Henüz sinyal yok",
     "ago": {
       "now": "az önce",

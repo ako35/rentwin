@@ -12,10 +12,13 @@ import {
   BsFileEarmarkText,
   BsPersonBadge,
   BsPen,
+  BsBroadcast,
 } from "react-icons/bs";
 import { utils } from "../../../utils";
 import { constants } from "../../../constants";
 import RowLink from "../row-link/row-link";
+import { alertText, alertTitle, formatDateTime, severityClass } from "../telematics/telematics-format";
+import "../telematics/telematics.scss";
 import "./maintenance-alert-bar.scss";
 
 const CATEGORIES = [
@@ -31,6 +34,38 @@ const INVOICE_KEY = "invoicePending";
 const KBS_KEY = "kbsPending";
 const SIGN_KEY = "signPending";
 const APPOINTMENT_KEY = "inspectionAppointments";
+const GPS_KEY = "gpsAlerts";
+
+// Open GPS alerts (Faz 3), newest first; the full list lives on its own page.
+const GpsAlertsTable = ({ rows }) => {
+  const { t, i18n } = useTranslation("admin");
+  return (
+    <table className="maintenance-alert-bar__table maintenance-alert-bar__table--gps">
+      <thead>
+        <tr>
+          <th>{t("telematics.alerts.col.time")}</th>
+          <th>{t("alertBar.col.plate")}</th>
+          <th>{t("telematics.alerts.col.alert")}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr key={row.id} className="maintenance-alert-bar__rowlink row-link-host">
+            <td>
+              <RowLink to={`${constants.routes.adminVehicles}/${row.vehicleId}?tab=location`} label={row.licensePlate} />
+              <span className={severityClass(row.severity)}>{t(`telematics.alerts.severity.${row.severity}`)}</span>{" "}
+              {formatDateTime(row.occurredAt, i18n.language)}
+            </td>
+            <td className="maintenance-alert-bar__plate">{row.licensePlate || "—"}</td>
+            <td title={alertText(row, t, i18n.language)}>
+              <strong>{alertTitle(row, t)}</strong> — {alertText(row, t, i18n.language)}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
 
 // Maps an alert category to the vehicle-detail record tab it belongs to —
 // Sigorta and Kasko are both entries on the vehicle form's single "insurance"
@@ -167,13 +202,23 @@ const MaintenanceAlertBar = ({
   signPending = [],
   inspectionAppointments = [],
   appointmentReminderDays = 7,
+  gpsAlerts = null,
 }) => {
   const { t, i18n } = useTranslation("admin");
   const [open, setOpen] = useState(null);
 
   const categories = alerts?.categories || {};
   const isSpecialTab = (key) =>
-    key === HGS_KEY || key === INVOICE_KEY || key === KBS_KEY || key === SIGN_KEY || key === APPOINTMENT_KEY;
+    key === HGS_KEY ||
+    key === INVOICE_KEY ||
+    key === KBS_KEY ||
+    key === SIGN_KEY ||
+    key === APPOINTMENT_KEY ||
+    key === GPS_KEY;
+  // The GPS tab only shows once a vehicle has a tracker (or alerts exist).
+  const showGps = !!gpsAlerts && (gpsAlerts.trackedCount > 0 || gpsAlerts.openCount > 0);
+  const gpsItems = gpsAlerts?.items || [];
+  const gpsUrgent = gpsItems.some((a) => a.severity !== "INFO");
   const kbsCount = kbsPending.length + kbsReleasePending.length + kbsSwapPending.length;
 
   const activeList = open && !isSpecialTab(open) ? categories[open] || [] : [];
@@ -247,6 +292,21 @@ const MaintenanceAlertBar = ({
           >
             <BsPen /> {t("alertBar.signPending")} ({signPending.length})
           </button>
+
+          {showGps && (
+            <button
+              type="button"
+              className={
+                "maintenance-alert-bar__tab" +
+                (gpsAlerts.openCount ? " maintenance-alert-bar__tab--due" : "") +
+                (gpsUrgent ? " maintenance-alert-bar__tab--overdue" : "") +
+                (open === GPS_KEY ? " maintenance-alert-bar__tab--active" : "")
+              }
+              onClick={() => setOpen(open === GPS_KEY ? null : GPS_KEY)}
+            >
+              <BsBroadcast /> {t("alertBar.gps")} ({gpsAlerts.openCount})
+            </button>
+          )}
         </div>
         <button
           type="button"
@@ -396,6 +456,20 @@ const MaintenanceAlertBar = ({
             <div className="maintenance-alert-bar__empty">{t("alertBar.kbsSwapPendingNone")}</div>
           ) : (
             <KbsSwapTable rows={kbsSwapPending} />
+          )}
+        </div>
+      )}
+
+      {open === GPS_KEY && showGps && (
+        <div className="maintenance-alert-bar__panel">
+          <div className="maintenance-alert-bar__panel-head">
+            {t("alertBar.gpsHead")} ·{" "}
+            <Link to={constants.routes.adminGpsAlerts}>{t("telematics.alerts.viewAll")}</Link>
+          </div>
+          {gpsItems.length === 0 ? (
+            <div className="maintenance-alert-bar__empty">{t("alertBar.gpsNone")}</div>
+          ) : (
+            <GpsAlertsTable rows={gpsItems} />
           )}
         </div>
       )}

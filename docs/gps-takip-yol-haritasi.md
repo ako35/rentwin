@@ -46,10 +46,11 @@ GPS takip sistemi KABİS'ten tamamen bağımsızdır: kendi sunucusu olur, KABİ
 [VPS] Traccar sunucusu ── kendi veritabanı (tam konum geçmişi burada)
    │  1) Olay webhook'u (kontak, hız, geofence, güç kesildi) ──► Rentwin /api/telematics/webhook
    │  2) REST API ◄── Rentwin backend (anlık konum, rota, km) sorar
+   │  3) 5 dakikada bir otomatik kontrol ──► Rentwin /api/telematics/tick
    ▼
 [Vercel] Rentwin backend (Express + Prisma) ── Neon: km, son görülme, olay türleri (koordinat yok)
    ▼
-[Admin panel] Filo haritası · Araç "Konum" sekmesi · Kontrat rotası · Uyarılar
+[Admin panel] Filo haritası · Araç "Konum" sekmesi · Kontrat rotası · GPS uyarıları
 ```
 
 Tasarım kararları:
@@ -107,16 +108,28 @@ Bitti sayılır: admin panelden pilot araçlar haritada canlı; kontrat rotası 
 - Yerel geliştirme: `node backend/scripts/traccar-sim.js` Aliağa çevresinde dolaşan sahte araçlarla Traccar API'sini taklit eder ve olayları webhook'a yollar (ayrıntılar dosyanın başında).
 
 ### Faz 3: Operasyon otomasyonu ve tüm filo (2–3 hafta)
+
+Yazılım 24 Kasım 2026'da yazıldı ve yerel simülatörle denendi; gerçek cihazla denemesi Faz 1'den sonra yapılacak.
+
 - [ ] Kalan araçlara montaj (araç başına yaklaşık 1 saat; günde birkaç araç)
-- [ ] Km senkronu: `currentKm` otomatik; teslim ve dönüş formunda cihaz km'si önerisi
-- [ ] Km limiti uyarısı: limitli kontratlarda kullanılan km, izin verilen km'nin %80'ine ulaşınca admin uyarısı
-- [ ] Bakım uyarısı gerçek km ile (`nextMaintenanceKm` yaklaşınca)
-- [ ] Bölge (geofence) uyarıları: Aliağa ofisi (araç geldi), isteğe bağlı il dışına çıkış
-- [ ] Güvenlik uyarıları: cihazın gücü kesildi/söküldü, kontak kapalıyken hareket (çekici ile taşıma), aşırı hız (ör. 140 km/s üzeri)
-- [ ] Gecikmiş iade: kontrat bitti ama araç ofiste değil
-- [ ] Uyarı kanalı: admin paneli + e-posta (sonra Saha uygulamasına bildirim)
+- [x] Km senkronu: `currentKm` cihazdan otomatik güncellenir, yalnızca artarken. Cihaz km'yi takıldığı günden sayar; aradaki fark gösterge km'si her girildiğinde yeniden ayarlanır (araç dönüşü, araç değişimi, araç formu, Konum sekmesindeki "Göstergeye göre ayarla"). Dönüş ve araç değişimi formunda "GPS cihazı: … km [Kullan]" önerisi çıkar; gösterge km'si esas kalır.
+- [x] Km limiti uyarısı: limitli kontratlarda izin verilen km'nin %80'inde (ayarlanabilir) ve aşıldığında. İzin verilen km, dönüş formundaki hesapla aynı.
+- [x] Bakım uyarısı gerçek km ile: son periyodik bakımın "sonraki km"sine panodaki bakım penceresi kadar kalınca ve geçilince
+- [x] Ofis ve bölge: araç ofis yarıçapındaysa (varsayılan 300 m) "ofiste" sayılır; kiradaki araç ofise gelince bilgi uyarısı. İl sınırı yerine "ofisten X km uzaklaştı" uyarısı var, varsayılan kapalı (açmadan önce sözleşme ve aydınlatma metni).
+- [x] Güvenlik uyarıları: cihaz alarmı (güç kesildi, sökülüyor, düşük batarya), kontak kapalıyken hareket (çekici), aşırı hız (varsayılan 140 km/s; cihazların Traccar'daki hız sınırı kendiliğinden eşitlenir), 24 saat sinyal gelmemesi
+- [x] Gecikmiş iade: dönüş zamanı + tolerans (varsayılan 60 dk) geçti, kontrat açık ve araç ofiste değil
+- [x] Uyarı kanalı: panodaki uyarı çubuğunda "GPS" sekmesi, Araç → GPS Uyarıları sayfası, aracın Konum sekmesi. Acil ve uyarı seviyesindekiler toplu e-postayla gelir. Eşikler, ofis konumu ve alıcılar: Ayarlar → GPS Uyarıları.
+- [ ] E-posta hesabı (uyarıların hangi adresten gideceği) ve SMTP bilgilerinin Vercel'e girilmesi
+- [ ] Gerçek cihazlarla deneme
+- Sonra: Saha uygulamasına bildirim
 
 Bitti sayılır: tüm filo haritada; km ve bakım alanları elle girilmeden güncelleniyor; uyarılar geliyor.
+
+**Kurulum notları (Faz 3):**
+- Otomatik kontrol: GPS sunucusunda 5 dakikada bir çalışan bir zamanlayıcı (systemd timer) `POST https://rentwin.com.tr/api/telematics/tick` adresini `Authorization: Bearer <TELEMATICS_WEBHOOK_SECRET>` ile çağırır. Ayarlar → GPS Uyarıları'ndaki "Otomatik kontrol" satırı son çalışma zamanını gösterir.
+- E-posta: Vercel'de `SMTP_HOST`, `SMTP_PORT` (587; 465 için `SMTP_SECURE=true`), `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM`. Ardından Ayarlar → GPS Uyarıları'na alıcıları girip "Deneme e-postası gönder".
+- Neon'a eklenen konumla ilgili tek bilgi aracın ofiste olup olmadığı (evet/hayır). Koordinat yine yazılmaz; uyarılar ve e-postalar konum içermez.
+- Yerel deneme: simülatör Rentwin'in otomatik kontrolünü dakikada bir çağırır; `/sim/tow`, `/sim/goto`, `/sim/drive`, `/sim/alarm` ile uyarılar tetiklenir (ayrıntılar `backend/scripts/traccar-sim.js` başında).
 
 ### Faz 4: İleri özellikler (ihtiyaca göre)
 - Rentwin Saha uygulamasında harita ve en yakın araç

@@ -190,6 +190,23 @@
                 white-space: nowrap;
             }
         }
+
+        // GPS alerts: Zaman (with severity) | Plaka | Uyarı — the alert text
+        // takes the slack and ellipsizes (full text in the title tooltip).
+        &--gps {
+            th:nth-child(1),
+            td:nth-child(1) { width: 28%; white-space: nowrap; }
+            th:nth-child(2),
+            td:nth-child(2) { width: 16%; overflow: visible; text-overflow: clip; white-space: nowrap; }
+            th:nth-child(3),
+            td:nth-child(3) { width: 56%; }
+
+            td:nth-child(3) {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
     }
 
     &__status {

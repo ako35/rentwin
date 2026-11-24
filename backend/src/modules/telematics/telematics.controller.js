@@ -2,7 +2,9 @@ const crypto = require("crypto");
 const prisma = require("../../lib/prisma");
 const HttpError = require("../../lib/http-error");
 const traccar = require("../../lib/traccar");
+const mailer = require("../../lib/mailer");
 const asyncHandler = require("../../middleware/async-handler");
+const { readSettings } = require("../settings/settings.controller");
 const {
   getRentedVehicleIds,
   getVehicleStatus,
@@ -20,6 +22,17 @@ const {
   summarizeRoute,
   mapForwardedEvent,
 } = require("./telematics.shared");
+const {
+  ALERT_TYPES,
+  DEFAULTS: ALERT_DEFAULTS,
+  gpsSettings,
+  alarmAlertType,
+  timeBucket,
+  createAlert,
+  buildAlertEmail,
+  flushAlertEmails,
+} = require("./telematics.alerts");
+const { syncKmFromPosition, runTick } = require("./telematics.sync");
 
 // GPS takip (docs/gps-takip-yol-haritasi.md, Faz 2).
 //
@@ -75,6 +88,38 @@ const VEHICLE_SELECT = {
   trackerImei: true,
   trackerLastSeenAt: true,
   trackerIgnitionOn: true,
+  trackerOdometerKm: true,
+  trackerOdometerAt: true,
+  trackerKmOffset: true,
+  trackerKmAnchorKm: true,
+  trackerKmCalibratedAt: true,
+  trackerAtOffice: true,
+};
+
+// Km block of the Konum tab and the hand-over forms' suggestion. Km is not
+// location data: it is shown whether or not the car is out.
+const kmInfo = (v, estimatedKm) => ({
+  currentKm: v.currentKm,
+  deviceRawKm: v.trackerOdometerKm,
+  deviceReadingAt: v.trackerOdometerAt,
+  estimatedKm:
+    estimatedKm ?? (v.trackerOdometerKm != null && v.trackerKmOffset != null ? v.trackerOdometerKm + v.trackerKmOffset : null),
+  calibrated: v.trackerKmOffset != null,
+  calibrationPending: v.trackerKmAnchorKm != null,
+  calibratedAt: v.trackerKmCalibratedAt,
+});
+
+const ALERT_SELECT = {
+  id: true,
+  vehicleId: true,
+  contractId: true,
+  type: true,
+  severity: true,
+  data: true,
+  occurredAt: true,
+  acknowledgedAt: true,
+  acknowledgedByName: true,
+  emailedAt: true,
 };
 
 const findVehicle = async (id) => {
@@ -157,7 +202,7 @@ const getFleet = asyncHandler(async (req, res) => {
 
 const getVehicleTelematics = asyncHandler(async (req, res) => {
   const v = await findVehicle(req.params.id);
-  const [rentedIds, grants, events, activeContractId] = await Promise.all([
+  const [rentedIds, grants, events, activeContractId, alerts] = await Promise.all([
     getRentedVehicleIds([v.id]),
     activeGrants(req.user.id, [v.id]),
     prisma.telematicsEvent.findMany({
@@ -167,6 +212,12 @@ const getVehicleTelematics = asyncHandler(async (req, res) => {
       select: { id: true, type: true, alarm: true, geofenceName: true, speedKmh: true, occurredAt: true },
     }),
     getActiveRentalContractId(v.id),
+    prisma.telematicsAlert.findMany({
+      where: { vehicleId: v.id },
+      orderBy: { occurredAt: "desc" },
+      take: 30,
+      select: ALERT_SELECT,
+    }),
   ]);
   const status = getVehicleStatus(v, rentedIds);
   const grantUntil = grants.get(v.id) || null;
@@ -184,6 +235,8 @@ const getVehicleTelematics = asyncHandler(async (req, res) => {
       traccarError = err.code || "TRACCAR_ERROR";
     }
   }
+  const estimatedKm = pos ? await syncKmFromPosition(v.id, pos) : null;
+  const fresh = estimatedKm != null ? await findVehicle(v.id) : v;
 
   res.json({
     configured,
@@ -202,8 +255,11 @@ const getVehicleTelematics = asyncHandler(async (req, res) => {
     // Odometer is not location data — the km limit and maintenance flows need
     // it whether or not the car is out.
     deviceOdometerKm: pos?.odometerKm ?? null,
-    currentKm: v.currentKm,
+    km: kmInfo(fresh, estimatedKm),
+    currentKm: fresh.currentKm,
+    atOffice: hidden ? null : fresh.trackerAtOffice,
     events,
+    alerts,
   });
 });
 
@@ -229,7 +285,19 @@ const setTracker = asyncHandler(async (req, res) => {
     where: { id: v.id },
     data: {
       trackerImei: raw || null,
-      ...(changed ? { trackerLastSeenAt: null, trackerIgnitionOn: null } : {}),
+      // A different device counts km from its own zero: recalibrate.
+      ...(changed
+        ? {
+            trackerLastSeenAt: null,
+            trackerIgnitionOn: null,
+            trackerOdometerKm: null,
+            trackerOdometerAt: null,
+            trackerKmOffset: null,
+            trackerKmAnchorKm: null,
+            trackerKmCalibratedAt: null,
+            trackerAtOffice: null,
+          }
+        : {}),
     },
   });
 
@@ -241,7 +309,14 @@ const setTracker = asyncHandler(async (req, res) => {
   if (raw && traccar.isConfigured()) {
     try {
       const device = await traccar.findDeviceByUniqueId(raw);
-      if (!device) await traccar.createDevice({ name: v.licensePlate, uniqueId: raw });
+      if (!device) {
+        const { overspeedKmh } = gpsSettings(await readSettings());
+        await traccar.createDevice({
+          name: v.licensePlate,
+          uniqueId: raw,
+          attributes: { speedLimit: Math.round((overspeedKmh / 1.852) * 100) / 100 },
+        });
+      }
       else if (device.name !== v.licensePlate) await traccar.updateDevice({ ...device, name: v.licensePlate });
       deviceRegistered = true;
     } catch (err) {
@@ -429,6 +504,14 @@ const listAccessLogs = asyncHandler(async (req, res) => {
 
 const sha256 = (s) => crypto.createHash("sha256").update(String(s)).digest();
 
+// Bearer token equal to one of the given secrets (timing-safe).
+const bearerMatches = (req, secrets) => {
+  const header = req.headers.authorization || "";
+  const given = header.startsWith("Bearer ") ? header.slice(7) : "";
+  if (!given) return false;
+  return secrets.filter(Boolean).some((secret) => crypto.timingSafeEqual(sha256(given), sha256(secret)));
+};
+
 // Traccar event forwarding (traccar.xml):
 //   event.forward.enable = true
 //   event.forward.url    = https://rentwin.com.tr/api/telematics/webhook
@@ -438,13 +521,9 @@ const sha256 = (s) => crypto.createHash("sha256").update(String(s)).digest();
 const handleWebhook = asyncHandler(async (req, res) => {
   const secret = process.env.TELEMATICS_WEBHOOK_SECRET;
   if (!secret) return res.status(503).json({ message: "Webhook not configured." });
-  const header = req.headers.authorization || "";
-  const given = header.startsWith("Bearer ") ? header.slice(7) : "";
-  if (!given || !crypto.timingSafeEqual(sha256(given), sha256(secret))) {
-    return res.status(401).json({ message: "Unauthorized." });
-  }
+  if (!bearerMatches(req, [secret])) return res.status(401).json({ message: "Unauthorized." });
 
-  const { event, device, geofence } = req.body || {};
+  const { event, device, geofence, position } = req.body || {};
   const uniqueId = device?.uniqueId != null ? String(device.uniqueId) : "";
   if (!event?.type || !uniqueId) return res.status(400).json({ message: "Invalid event." });
 
@@ -482,7 +561,229 @@ const handleWebhook = asyncHandler(async (req, res) => {
     });
   }
 
-  res.json({ stored: !!row });
+  // Traccar attaches the event's position: its odometer keeps km current
+  // between ticks. Its coordinates are not used or stored.
+  const pos = traccar.normalizePosition(position);
+  if (pos?.odometerKm != null) await syncKmFromPosition(vehicle.id, pos);
+
+  const alerted = await alertFromEvent(vehicle, event, pos, seenAt);
+  if (alerted?.severity === "CRITICAL") {
+    // Don't wait for the next tick for a power cut or a tow.
+    await flushAlertEmails(gpsSettings(await readSettings())).catch((err) =>
+      console.error("[telematics] alert e-mail:", err.message)
+    );
+  }
+
+  res.json({ stored: !!row, alert: alerted?.type || null });
+});
+
+// Webhook event -> alert (alarm, overspeed, moving with the engine off).
+const alertFromEvent = async (vehicle, event, pos, occurredAt) => {
+  const at = Number.isNaN(occurredAt.getTime()) ? new Date() : occurredAt;
+  const attrs = event.attributes || {};
+  let alert = null;
+
+  if (event.type === "alarm") {
+    const type = alarmAlertType(attrs.alarm);
+    if (!type) return null;
+    alert = {
+      type,
+      dedupeKey: `alarm:${vehicle.id}:${attrs.alarm}:${timeBucket(at, 30)}`,
+      data: { alarm: String(attrs.alarm).slice(0, 64) },
+    };
+  } else if (event.type === "deviceOverspeed") {
+    alert = {
+      type: "OVERSPEED",
+      dedupeKey: `overspeed:${vehicle.id}:${timeBucket(at, 30)}`,
+      data: {
+        speedKmh: traccar.knotsToKmh(attrs.speed) ?? pos?.speedKmh ?? null,
+        limitKmh: traccar.knotsToKmh(attrs.speedLimit),
+      },
+    };
+  } else if (event.type === "deviceMoving" && pos?.ignition === false) {
+    alert = {
+      type: "TOW",
+      dedupeKey: `tow:${vehicle.id}:${timeBucket(at, 60)}`,
+      data: { speedKmh: pos.speedKmh },
+    };
+  }
+  if (!alert) return null;
+  const contractId = await getActiveRentalContractId(vehicle.id);
+  return createAlert({ ...alert, vehicleId: vehicle.id, contractId, occurredAt: at });
+};
+
+// ------------------------------------------------------------------ tick
+
+// Periodic check (telematics.sync.js runTick). Called every 5 minutes by a
+// timer on the GPS server with the webhook secret; Vercel Cron's CRON_SECRET
+// is accepted too.
+const handleTick = asyncHandler(async (req, res) => {
+  const secrets = [process.env.TELEMATICS_WEBHOOK_SECRET, process.env.CRON_SECRET];
+  if (!secrets.some(Boolean)) return res.status(503).json({ message: "Tick not configured." });
+  if (!bearerMatches(req, secrets)) return res.status(401).json({ message: "Unauthorized." });
+  res.json(await runTick());
+});
+
+// ---------------------------------------------------------------- alerts
+
+const listAlerts = asyncHandler(async (req, res) => {
+  const { status = "open", vehicleId, contractId, type, branchId } = req.query;
+  const limit = Math.min(Math.max(Number(req.query.limit) || 200, 1), 500);
+  // Dashboard branch filter: alerts of that branch's vehicles.
+  const branch = typeof branchId === "string" && branchId ? { branchId } : null;
+  const where = {
+    ...(status === "open" ? { acknowledgedAt: null } : {}),
+    ...(typeof vehicleId === "string" && vehicleId ? { vehicleId } : {}),
+    ...(typeof contractId === "string" && contractId ? { contractId } : {}),
+    ...(typeof type === "string" && ALERT_TYPES.includes(type) ? { type } : {}),
+    ...(branch ? { vehicle: branch } : {}),
+  };
+  const [items, openCount, trackedCount] = await Promise.all([
+    prisma.telematicsAlert.findMany({
+      where,
+      orderBy: { occurredAt: "desc" },
+      take: limit,
+      select: { ...ALERT_SELECT, vehicle: { select: { licensePlate: true, brand: true, model: true } } },
+    }),
+    prisma.telematicsAlert.count({ where: { acknowledgedAt: null, ...(branch ? { vehicle: branch } : {}) } }),
+    prisma.vehicle.count({ where: { soldAt: null, trackerImei: { not: null }, ...(branch || {}) } }),
+  ]);
+  res.json({
+    openCount,
+    trackedCount,
+    items: items.map(({ vehicle, ...a }) => ({
+      ...a,
+      licensePlate: vehicle?.licensePlate || null,
+      vehicleName: [vehicle?.brand, vehicle?.model].filter(Boolean).join(" ") || null,
+    })),
+  });
+});
+
+// Body: { ids: [...] } or { all: true } (optionally with vehicleId).
+const acknowledgeAlerts = asyncHandler(async (req, res) => {
+  const ids = Array.isArray(req.body?.ids) ? req.body.ids.filter((id) => typeof id === "string").slice(0, 500) : [];
+  const all = req.body?.all === true;
+  if (!ids.length && !all) throw new HttpError(400, "Okundu işaretlenecek uyarı seçilmedi.");
+  const vehicleId = typeof req.body?.vehicleId === "string" && req.body.vehicleId ? req.body.vehicleId : null;
+  const result = await prisma.telematicsAlert.updateMany({
+    where: {
+      acknowledgedAt: null,
+      ...(all ? {} : { id: { in: ids } }),
+      ...(vehicleId ? { vehicleId } : {}),
+    },
+    data: { acknowledgedAt: new Date(), acknowledgedById: req.user.id, acknowledgedByName: actorName(req.user) },
+  });
+  res.json({ acknowledged: result.count });
+});
+
+// ------------------------------------------------------------ km for forms
+
+const liveDevicePosition = async (trackerImei) => {
+  const device = await traccar.findDeviceByUniqueId(trackerImei);
+  return device?.positionId ? traccar.normalizePosition(await traccar.getPosition(device.positionId)) : null;
+};
+
+// GET: the device's km for the return / vehicle-swap forms (a suggestion;
+// the dashboard reading typed in stays authoritative and recalibrates).
+const getVehicleKm = asyncHandler(async (req, res) => {
+  const v = await findVehicle(req.params.id);
+  if (!v.trackerImei) return res.json({ tracked: false, ...kmInfo(v) });
+  let estimatedKm = null;
+  let traccarError = null;
+  if (traccar.isConfigured()) {
+    try {
+      const pos = await liveDevicePosition(v.trackerImei);
+      if (pos) estimatedKm = await syncKmFromPosition(v.id, pos);
+    } catch (err) {
+      traccarError = err.code || "TRACCAR_ERROR";
+    }
+  } else {
+    traccarError = "TRACCAR_NOT_CONFIGURED";
+  }
+  const fresh = await findVehicle(v.id);
+  res.json({ tracked: true, traccarError, ...kmInfo(fresh, estimatedKm) });
+});
+
+// POST { km }: "the dashboard shows this now" from the Konum tab — sets the
+// vehicle's km and the device offset.
+const calibrateVehicleKm = asyncHandler(async (req, res) => {
+  const km = Number(req.body?.km);
+  if (!Number.isInteger(km) || km < 0 || km > 5000000) throw new HttpError(400, "Geçerli bir km girin.");
+  const v = await findVehicle(req.params.id);
+  if (!v.trackerImei) throw new HttpError(409, "Bu araca takip cihazı tanımlı değil.", "NO_TRACKER");
+
+  let raw = null;
+  if (traccar.isConfigured()) {
+    try {
+      const pos = await liveDevicePosition(v.trackerImei);
+      if (pos?.odometerKm != null) raw = { km: pos.odometerKm, at: pos.fixTime ? new Date(pos.fixTime) : new Date() };
+    } catch {
+      // no live reading: the next one sets the offset
+    }
+  }
+  const now = new Date();
+  await prisma.vehicle.update({
+    where: { id: v.id },
+    data: {
+      currentKm: km,
+      ...(raw
+        ? {
+            trackerOdometerKm: raw.km,
+            trackerOdometerAt: raw.at,
+            trackerKmOffset: km - raw.km,
+            trackerKmAnchorKm: null,
+            trackerKmCalibratedAt: now,
+          }
+        : { trackerKmAnchorKm: km }),
+    },
+  });
+  res.json(kmInfo(await findVehicle(v.id)));
+});
+
+// ------------------------------------------------------ settings helpers
+
+const getGpsStatus = asyncHandler(async (req, res) => {
+  const settings = await readSettings();
+  const trackedCount = await prisma.vehicle.count({ where: { soldAt: null, trackerImei: { not: null } } });
+  res.json({
+    traccarConfigured: traccar.isConfigured(),
+    webhookConfigured: !!process.env.TELEMATICS_WEBHOOK_SECRET,
+    mailConfigured: mailer.isConfigured(),
+    lastTickAt: settings.gpsLastTickAt || null,
+    trackedCount,
+    defaults: ALERT_DEFAULTS,
+  });
+});
+
+const sendTestEmail = asyncHandler(async (req, res) => {
+  if (!mailer.isConfigured()) {
+    throw new HttpError(409, "E-posta gönderimi henüz ayarlanmadı (SMTP).", "MAIL_NOT_CONFIGURED");
+  }
+  const cfg = gpsSettings(await readSettings());
+  if (!cfg.alertEmails.length) {
+    throw new HttpError(400, "Önce uyarı e-postası alıcılarını kaydedin.", "MAIL_NO_RECIPIENTS");
+  }
+  const sample = buildAlertEmail([
+    {
+      type: "DEVICE_TAMPER",
+      severity: "CRITICAL",
+      data: { alarm: "test" },
+      occurredAt: new Date(),
+      vehicle: { licensePlate: "TEST" },
+    },
+  ]);
+  try {
+    await mailer.sendMail({
+      to: cfg.alertEmails,
+      subject: "Rentwin GPS: deneme e-postası",
+      text: `Bu bir deneme e-postasıdır. GPS uyarıları bu adreslere böyle gelecek:\n\n${sample.text}`,
+      html: `<p>Bu bir deneme e-postasıdır. GPS uyarıları bu adreslere böyle gelecek:</p>${sample.html}`,
+    });
+  } catch (err) {
+    console.error("[telematics] test e-mail failed:", err.message);
+    throw new HttpError(502, "E-posta gönderilemedi. SMTP ayarlarını kontrol edin.", "MAIL_FAILED");
+  }
+  res.json({ sent: true, to: cfg.alertEmails });
 });
 
 module.exports = {
@@ -494,4 +795,11 @@ module.exports = {
   getContractRoute,
   listAccessLogs,
   handleWebhook,
+  handleTick,
+  listAlerts,
+  acknowledgeAlerts,
+  getVehicleKm,
+  calibrateVehicleKm,
+  getGpsStatus,
+  sendTestEmail,
 };

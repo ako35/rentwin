@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Container, Form, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { AiOutlineHome } from "react-icons/ai";
-import { BsListUl, BsPlusLg, BsTag, BsMegaphone, BsGift, BsFileText, BsStar, BsGoogle, BsGlobe2, BsBoxArrowRight, BsImages, BsSun, BsMoonStars, BsGrid3X3Gap, BsGeoAlt } from "react-icons/bs";
+import { BsListUl, BsPlusLg, BsTag, BsMegaphone, BsGift, BsFileText, BsStar, BsGoogle, BsGlobe2, BsBoxArrowRight, BsImages, BsSun, BsMoonStars, BsGrid3X3Gap, BsGeoAlt, BsBell } from "react-icons/bs";
 import { utils } from "../../../utils";
 import { logout } from "../../../store";
 import { services } from "../../../services";
@@ -74,6 +74,9 @@ const AdminTopNav = () => {
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to={routes.adminFleetMap}>
                 <BsGeoAlt className="admin-top-nav__item-icon" /> {t("topNav.fleetMap")}
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to={routes.adminGpsAlerts}>
+                <BsBell className="admin-top-nav__item-icon" /> {t("topNav.gpsAlerts")}
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown

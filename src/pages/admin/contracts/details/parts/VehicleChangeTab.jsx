@@ -7,6 +7,7 @@ import { buildFuelEighthsOptions } from "../../../../../utils/fuel-eighths";
 import { buildVehicleOptions } from "../contract-helpers";
 import SearchableCombobox from "../../../../../components/common/searchable-select/searchable-combobox";
 import SaveFirstHint from "./SaveFirstHint";
+import DeviceKmHint from "../../../../../components/admin/telematics/device-km-hint";
 import "./vehicle-change-tab.scss";
 
 const EMPTY_FORM = {
@@ -154,6 +155,7 @@ const VehicleChangeTab = ({
               <Form.Group className="vct__field">
                 <Form.Label>{c("vehicleChange.returnKm")}</Form.Label>
                 <Form.Control type="number" size="sm" value={form.returnKm} onChange={setField("returnKm")} />
+                <DeviceKmHint vehicleId={carId} onUse={(km) => setForm((f) => ({ ...f, returnKm: km }))} />
               </Form.Group>
               <Form.Group className="vct__field">
                 <Form.Label>{c("vehicleChange.returnFuelLevel")}</Form.Label>
@@ -183,6 +185,7 @@ const VehicleChangeTab = ({
                   type="number" size="sm" value={form.newCarKm}
                   disabled={!form.newCarId} onChange={setField("newCarKm")}
                 />
+                <DeviceKmHint vehicleId={form.newCarId} onUse={(km) => setForm((f) => ({ ...f, newCarKm: km }))} />
               </Form.Group>
               <Form.Group className="vct__field">
                 <Form.Label>{c("vehicleChange.newCarFuelLevel")}</Form.Label>

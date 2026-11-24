@@ -203,6 +203,52 @@
     margin-top: 1.5rem;
     padding-top: 1.1rem;
     border-top: 1px solid v.$color3_5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+  }
+
+  // GPS uyarıları: server-side setup status (Traccar, webhook, SMTP, tick).
+  &__status {
+    list-style: none;
+    margin: 0 0 1.2rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid v.$color3_5;
+    border-radius: 10px;
+    display: grid;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+  }
+
+  &__ok {
+    color: #1b7a43;
+  }
+
+  &__missing {
+    color: #b45309;
+  }
+
+  &__warn {
+    color: #b45309;
+  }
+
+  &__subhead {
+    margin: 0.5rem 0 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: v.$color5;
   }
 
   &__list-actions {
