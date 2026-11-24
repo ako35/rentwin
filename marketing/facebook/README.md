@@ -398,6 +398,7 @@ Paylaşımlar (her grupta en fazla haftada 1):
 | 15 Kas 2026, 15:19 | SATILIK KİRALIK ALİAĞA (7,9K) | Aylık kiralama ilanı + `03-uzun-donem-kiralama.png` | Yönetici onayı bekliyor (sayfa yeni katılımcı olarak da incelemede); 14 Kas'a planlanan görev 15 Kas'ta çalıştı |
 | 24 Kas 2026, 17:39 (19 Kas görevi) | İzmir Menemen Aliağa Foça Sahibinden Alım Satım (36K) | Filomuzdan videosu (Metin A) + `reels/reel-filo.mp4` | Paylaşılmadı: Claude in Chrome bağlı değildi (Chrome açık ama eklenti bağlantısı yok, büyük olasılıkla eklentinin oturumu kapanmış). 19 Kas 19:30'daki görev o gün hiç çalışmamış, 24 Kas'ta geç çalıştı. 12 Kas ilanının durumu kontrol edilemedi |
 | 24 Kas 2026, 17:40 (22 Kas'a planlanmıştı) | SATILIK KİRALIK ALİAĞA (7,9K) | Ticari araç videosu (Metin B) + `reels/reel-ticari.mp4` | Paylaşılmadı: Claude in Chrome bağlı değildi (bağlı tarayıcı yok, Chrome kapalı ya da eklenti oturumu kapalı). Önceki ilanın durumu bu yüzden kontrol edilemedi |
+| 24 Kas 2026, 17:41 (23 Kas'a planlanmıştı) | Aliağa kiralık satılık sayfası (3,4K) | Ticari araç videosu (Metin B) + `reels/reel-ticari.mp4` | Paylaşılmadı: Claude in Chrome bağlı değildi (Chrome açık ama bağlı tarayıcı yok, büyük olasılıkla eklenti oturumu kapalı). Bu gruptaki ilk ilanın (15 Kas 19:30 görevi, havalimanı teslimi) durumu kontrol edilemedi; o ilan bu tabloda hiç kayıtlı değil, paylaşılıp paylaşılmadığı bilinmiyor |
 
 Planlı paylaşımlar (zamanlanmış görevler, uygulama ve Chrome açıkken çalışır; her görev paylaşınca tabloya kendi satırını ekler):
 
