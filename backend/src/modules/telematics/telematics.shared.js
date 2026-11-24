@@ -10,7 +10,12 @@ const wallToInstant = (d) => new Date(new Date(d).getTime() - TR_OFFSET_MS);
 
 // KVKK: a rented vehicle's location is not watched routinely. Opening it needs
 // one of these reasons, and every opening is written to TelematicsAccessLog.
-const ACCESS_REASONS = ["LATE_RETURN", "THEFT", "BREACH", "ASSISTANCE", "OTHER"];
+const ACCESS_REASONS = ["LATE_RETURN", "THEFT", "BREACH", "ASSISTANCE", "HGS_DISPUTE", "OTHER"];
+
+// Driving-behaviour alarms from the device's accelerometer (Teltonika eco /
+// green driving, crash detection). Stored as "alarm" events and only counted
+// per rental — no score is computed for the customer (KVKK: profiling).
+const DRIVING_ALARMS = ["hardBraking", "hardAcceleration", "hardCornering", "accident"];
 
 // After a reason is given, the live location of that vehicle stays visible to
 // that admin for this long without asking again.
@@ -178,6 +183,7 @@ module.exports = {
   TR_OFFSET_MS,
   wallToInstant,
   ACCESS_REASONS,
+  DRIVING_ALARMS,
   LIVE_GRANT_MINUTES,
   MAX_ROUTE_DAYS,
   MAX_ROUTE_POINTS,

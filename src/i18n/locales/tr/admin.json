@@ -2005,6 +2005,58 @@
     "clear": "Temizle"
   },
   "telematics": {
+    "hgsReport": {
+      "button": "HGS itiraz raporu",
+      "title": "HGS/OGS geçiş itirazı: güzergâh raporu",
+      "formIntro": "Müşterinin itiraz ettiği geçişin tarih ve saatini girin. Rapor, aracın bu saatin öncesindeki ve sonrasındaki güzergâhını gösterir.",
+      "at": "Geçiş zamanı",
+      "window": "Geçişin öncesi ve sonrası",
+      "windowOption": "±{{minutes}} dk",
+      "tollName": "Gişe / geçiş yeri",
+      "tollNamePlaceholder": "Örn. Aliağa gişesi",
+      "create": "Raporu oluştur",
+      "badAt": "Geçerli bir geçiş zamanı girin.",
+      "reasonIntro": "Rapor, kiralama dönemindeki konum kayıtlarını gösterir. Gerekçe ve açan kişi kayda geçer.",
+      "contract": "Kontrat",
+      "plate": "Plaka",
+      "passTime": "Geçiş zamanı",
+      "range": "Rapor aralığı",
+      "nearest": "Geçişe en yakın konum kaydı",
+      "offsetBefore": "geçişten {{seconds}} sn önce",
+      "offsetAfter": "geçişten {{seconds}} sn sonra",
+      "offsetExact": "geçiş anında",
+      "coords": "Koordinat",
+      "noNearest": "Bu aralıkta konum kaydı yok.",
+      "points": "Konum kayıtları (dakikada bir)",
+      "time": "Saat",
+      "speed": "Hız",
+      "lat": "Enlem",
+      "lng": "Boylam",
+      "distance": "Aralıkta gidilen yol",
+      "generated": "Oluşturan: {{name}} · {{time}}",
+      "footnote": "Konum kayıtları Rentwin'in Türkiye'deki GPS sunucusundan alınmıştır. Bu raporun açılması erişim kayıtlarına işlenmiştir.",
+      "passMarker": "Geçiş anı",
+      "print": "Yazdır",
+      "close": "Kapat",
+      "noTracker": "Bu kiralamadaki araçta takip cihazı yok."
+    },
+    "driving": {
+      "title": "Sürüş olayları",
+      "help": "Kiralama boyunca cihazın ivmeölçerinin kaydettiği olaylar. Müşteri için puan hesaplanmaz.",
+      "none": "Kiralama boyunca sert sürüş olayı kaydedilmedi.",
+      "hardBraking": "{{count}} sert fren",
+      "hardAcceleration": "{{count}} sert hızlanma",
+      "hardCornering": "{{count}} sert viraj",
+      "accident": "{{count}} kaza algılandı"
+    },
+    "fuel": {
+      "label": "Yakıt (cihaz)",
+      "labelBattery": "Şarj (cihaz)",
+      "value": "{{eighths}}/8 · %{{percent}}",
+      "hint": "yakıt {{eighths}}/8",
+      "hintBattery": "şarj {{eighths}}/8",
+      "use": "Kullan"
+    },
     "alerts": {
       "title": "GPS Uyarıları",
       "hint": "Takip cihazlarından gelen olaylar ve 5 dakikada bir yapılan otomatik kontrolden çıkan uyarılar. Okundu işaretlenen uyarı açık listeden çıkar. Uyarılar konum içermez.",
@@ -2039,6 +2091,10 @@
         "INFO": "Bilgi"
       },
       "types": {
+        "ACCIDENT": {
+          "title": "Kaza algılandı",
+          "text": "Cihazın ivmeölçeri kaza algıladı. Aracı ve sürücüyü hemen kontrol edin."
+        },
         "DEVICE_TAMPER": {
           "title": "Cihaza müdahale",
           "text": "Cihaz alarmı: {{alarm}}. Takip cihazının gücü kesilmiş veya cihaz sökülüyor olabilir."
@@ -2158,6 +2214,7 @@
       "introRoute": "Seçilen aralık bir kiralamaya denk geliyor (kontrat: {{contracts}}). Rotayı görmek için gerekçe seçin.",
       "reason": "Gerekçe",
       "reasons": {
+        "HGS_DISPUTE": "HGS/OGS geçiş itirazı",
         "LATE_RETURN": "Gecikmiş iade",
         "THEFT": "Hırsızlık şüphesi",
         "BREACH": "Sözleşme ihlali şüphesi",
@@ -2215,6 +2272,9 @@
       "geofenceExit": "Bölgeden çıktı: {{name}}"
     },
     "alarms": {
+      "hardBraking": "Sert fren",
+      "hardAcceleration": "Sert hızlanma",
+      "hardCornering": "Sert viraj",
       "powerCut": "Cihazın gücü kesildi",
       "powerOff": "Cihaz kapandı",
       "tow": "Çekici ile taşıma",
@@ -2247,6 +2307,7 @@
       "noReason": "Kira dışı dönem",
       "close": "Kapat",
       "scopes": {
+        "HGS_REPORT": "HGS itiraz raporu",
         "LIVE": "Canlı konum",
         "ROUTE": "Araç rotası",
         "CONTRACT_ROUTE": "Kontrat rotası"

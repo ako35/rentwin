@@ -1,0 +1,69 @@
+.hgs-report {
+  &__print-title {
+    display: none;
+  }
+
+  &__facts {
+    font-size: 0.85rem;
+
+    th {
+      width: 18%;
+      white-space: nowrap;
+      color: var(--rw-ink-muted, #64748b);
+      font-weight: 600;
+    }
+  }
+
+  &__subhead {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 1rem 0 0.5rem;
+  }
+
+  &__points {
+    font-size: 0.8rem;
+  }
+
+  &__footnote {
+    margin: 0.75rem 0 0;
+    font-size: 0.75rem;
+    color: var(--rw-ink-muted, #64748b);
+  }
+}
+
+// Print only the report: everything else on the page is hidden while the
+// body carries .hgs-report-printing (set by the Yazdır button).
+@media print {
+  body.hgs-report-printing * {
+    visibility: hidden;
+  }
+
+  body.hgs-report-printing .hgs-report,
+  body.hgs-report-printing .hgs-report * {
+    visibility: visible;
+  }
+
+  body.hgs-report-printing .hgs-report {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    color: #000;
+  }
+
+  body.hgs-report-printing .hgs-report-modal .modal-dialog {
+    max-width: none;
+    margin: 0;
+    transform: none;
+  }
+
+  body.hgs-report-printing .hgs-report__print-title {
+    display: block;
+    font-size: 1.2rem;
+    margin: 0 0 0.75rem;
+  }
+
+  body.hgs-report-printing .hgs-report .tlm-map {
+    break-inside: avoid;
+  }
+}

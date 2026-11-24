@@ -3,7 +3,7 @@
     "name": "Rentwin Saha",
     "slug": "mobile",
     "scheme": "rentwinstaff",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -37,6 +37,12 @@
         {
           "cameraPermission": "Araç teslim/iade fotoğrafı çekmek için kameraya erişim gerekiyor.",
           "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Rentwin Saha, size en yakın aracı gösterebilmek için konumunuzu yalnızca uygulama açıkken kullanır."
         }
       ]
     ],

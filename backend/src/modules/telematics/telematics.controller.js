@@ -21,6 +21,7 @@ const {
   parseRange,
   summarizeRoute,
   mapForwardedEvent,
+  DRIVING_ALARMS,
 } = require("./telematics.shared");
 const {
   ALERT_TYPES,
@@ -98,16 +99,20 @@ const VEHICLE_SELECT = {
 
 // Km block of the Konum tab and the hand-over forms' suggestion. Km is not
 // location data: it is shown whether or not the car is out.
-const kmInfo = (v, estimatedKm) => ({
-  currentKm: v.currentKm,
-  deviceRawKm: v.trackerOdometerKm,
-  deviceReadingAt: v.trackerOdometerAt,
-  estimatedKm:
-    estimatedKm ?? (v.trackerOdometerKm != null && v.trackerKmOffset != null ? v.trackerOdometerKm + v.trackerKmOffset : null),
-  calibrated: v.trackerKmOffset != null,
-  calibrationPending: v.trackerKmAnchorKm != null,
-  calibratedAt: v.trackerKmCalibratedAt,
-});
+const kmInfo = (v, estimatedKm) => {
+  const est =
+    estimatedKm ?? (v.trackerOdometerKm != null && v.trackerKmOffset != null ? v.trackerOdometerKm + v.trackerKmOffset : null);
+  return {
+    currentKm: v.currentKm,
+    deviceRawKm: v.trackerOdometerKm,
+    deviceReadingAt: v.trackerOdometerAt,
+    // Never suggest a negative km (a counter reset is recalibrated on the next reading).
+    estimatedKm: est != null && est >= 0 ? est : null,
+    calibrated: v.trackerKmOffset != null,
+    calibrationPending: v.trackerKmAnchorKm != null,
+    calibratedAt: v.trackerKmCalibratedAt,
+  };
+};
 
 const ALERT_SELECT = {
   id: true,
@@ -256,6 +261,7 @@ const getVehicleTelematics = asyncHandler(async (req, res) => {
     // it whether or not the car is out.
     deviceOdometerKm: pos?.odometerKm ?? null,
     km: kmInfo(fresh, estimatedKm),
+    fuel: fuelInfo(pos),
     currentKm: fresh.currentKm,
     atOffice: hidden ? null : fresh.trackerAtOffice,
     events,
@@ -482,6 +488,156 @@ const getContractRoute = asyncHandler(async (req, res) => {
   res.json({ window, from, to, maxRouteDays: MAX_ROUTE_DAYS, segments: result });
 });
 
+// ------------------------------------------------------ HGS dispute report
+
+const HGS_WINDOW_DEFAULT_MIN = 30;
+const HGS_WINDOW_MAX_MIN = 180;
+
+// When a customer disputes an HGS/OGS toll pass, the vehicle's route around
+// the pass time is the evidence. Body: { at (ISO instant), windowMinutes?,
+// tollName?, reason, note? }. The pass must fall inside the rental; the
+// report covers at ± windowMinutes, clipped to the rental, per car. Always
+// needs a reason and is logged (scope HGS_REPORT).
+const getHgsReport = asyncHandler(async (req, res) => {
+  const { reason, note } = parseAccessReason(req.body);
+  const at = new Date(req.body?.at);
+  if (!req.body?.at || Number.isNaN(at.getTime())) throw new HttpError(400, "Geçiş zamanı geçersiz.");
+  const windowMinutes = Math.min(
+    Math.max(Number.parseInt(req.body?.windowMinutes, 10) || HGS_WINDOW_DEFAULT_MIN, 5),
+    HGS_WINDOW_MAX_MIN
+  );
+  const tollName = typeof req.body?.tollName === "string" ? req.body.tollName.trim().slice(0, 120) || null : null;
+
+  const contract = await prisma.contract.findUnique({
+    where: { id: req.params.id },
+    select: {
+      id: true,
+      contractNo: true,
+      carId: true,
+      status: true,
+      pickUpTime: true,
+      dropOffTime: true,
+      returnedAt: true,
+      vehicleChanges: { select: { changeDate: true, previousCarId: true, newCarId: true } },
+    },
+  });
+  if (!contract) throw new HttpError(404, "Kontrat bulunamadı.");
+  const segments = contractSegments(contract, contract.vehicleChanges);
+  if (!segments.some((s) => s.from <= at && at <= s.to)) {
+    throw new HttpError(400, "Bu geçiş zamanı kiralama dönemine denk gelmiyor.", "OUTSIDE_RENTAL");
+  }
+  const from = new Date(at.getTime() - windowMinutes * 60 * 1000);
+  const to = new Date(at.getTime() + windowMinutes * 60 * 1000);
+  const parts = segments.filter((s) => overlaps(s.from, s.to, from, to)).map((s) => clip(s, from, to));
+
+  const cars = await prisma.vehicle.findMany({
+    where: { id: { in: [...new Set(parts.map((p) => p.carId))] } },
+    select: { id: true, licensePlate: true, trackerImei: true },
+  });
+  const carById = new Map(cars.map((c) => [c.id, c]));
+  if (!parts.some((p) => carById.get(p.carId)?.trackerImei)) {
+    throw new HttpError(409, "Bu kiralamadaki araçta takip cihazı yok.", "NO_TRACKER");
+  }
+  const devices = await traccar.listDevices();
+  const deviceByUid = new Map((devices || []).map((d) => [d.uniqueId, d]));
+
+  const result = [];
+  let atPosition = null;
+  for (const part of parts) {
+    const car = carById.get(part.carId);
+    const device = car?.trackerImei ? deviceByUid.get(car.trackerImei) : null;
+    const base = { carId: part.carId, licensePlate: car?.licensePlate || null, from: part.from, to: part.to };
+    if (!device) {
+      result.push({ ...base, noTracker: !car?.trackerImei, deviceMissing: !!car?.trackerImei, points: [], summary: null });
+      continue;
+    }
+    const positions = await traccar.positionsBetween(device.id, part.from, part.to);
+    await logAccess(req, {
+      vehicleId: part.carId,
+      contractId: contract.id,
+      scope: "HGS_REPORT",
+      reason,
+      note: [tollName && `Gişe: ${tollName}`, note].filter(Boolean).join(" · ") || null,
+      rangeFrom: part.from,
+      rangeTo: part.to,
+    });
+    // The recorded position closest to the pass time.
+    for (const p of positions || []) {
+      if (p.valid === false || !p.fixTime) continue;
+      const offset = Math.round((new Date(p.fixTime) - at) / 1000);
+      if (!atPosition || Math.abs(offset) < Math.abs(atPosition.offsetSeconds)) {
+        atPosition = {
+          latitude: Math.round(p.latitude * 1e5) / 1e5,
+          longitude: Math.round(p.longitude * 1e5) / 1e5,
+          speedKmh: traccar.knotsToKmh(p.speed) ?? 0,
+          fixTime: p.fixTime,
+          offsetSeconds: offset,
+          licensePlate: car.licensePlate,
+        };
+      }
+    }
+    result.push({ ...base, ...summarizeRoute(positions) });
+  }
+
+  res.json({
+    contractNo: contract.contractNo || null,
+    at,
+    from,
+    to,
+    windowMinutes,
+    tollName,
+    reason,
+    segments: result,
+    atPosition,
+    generatedAt: new Date(),
+    generatedBy: actorName(req.user),
+  });
+});
+
+// ------------------------------------------------------- driving events
+
+// Hard braking / acceleration / cornering and accidents during a rental, per
+// car the customer had. Counts only: no location, no score, so no reason is
+// asked (the events table holds no coordinates either).
+const getContractDriving = asyncHandler(async (req, res) => {
+  const contract = await prisma.contract.findUnique({
+    where: { id: req.params.id },
+    select: {
+      id: true,
+      carId: true,
+      status: true,
+      pickUpTime: true,
+      dropOffTime: true,
+      returnedAt: true,
+      vehicleChanges: { select: { changeDate: true, previousCarId: true, newCarId: true } },
+    },
+  });
+  if (!contract) throw new HttpError(404, "Kontrat bulunamadı.");
+  const segments = contractSegments(contract, contract.vehicleChanges);
+  const cars = segments.length
+    ? await prisma.vehicle.findMany({
+        where: { id: { in: [...new Set(segments.map((s) => s.carId))] } },
+        select: { id: true, trackerImei: true },
+      })
+    : [];
+  const tracked = segments.filter((s) => cars.find((c) => c.id === s.carId)?.trackerImei);
+
+  const counts = Object.fromEntries(DRIVING_ALARMS.map((a) => [a, 0]));
+  if (tracked.length) {
+    const rows = await prisma.telematicsEvent.groupBy({
+      by: ["alarm"],
+      where: {
+        type: "alarm",
+        alarm: { in: DRIVING_ALARMS },
+        OR: tracked.map((s) => ({ vehicleId: s.carId, occurredAt: { gte: s.from, lte: s.to } })),
+      },
+      _count: { _all: true },
+    });
+    for (const r of rows) counts[r.alarm] = r._count._all;
+  }
+  res.json({ tracked: tracked.length > 0, counts });
+});
+
 // ------------------------------------------------------------- access log
 
 const listAccessLogs = asyncHandler(async (req, res) => {
@@ -541,7 +697,15 @@ const handleWebhook = asyncHandler(async (req, res) => {
     const data = { ...row, vehicleId: vehicle.id };
     if (row.traccarEventId != null) {
       await prisma.telematicsEvent.upsert({
-        where: { traccarEventId: row.traccarEventId },
+        // Same Traccar event delivered twice -> one row. The id alone is not
+        // enough: a reinstalled Traccar restarts ids from 1.
+        where: {
+          traccarEventId_vehicleId_occurredAt: {
+            traccarEventId: row.traccarEventId,
+            vehicleId: vehicle.id,
+            occurredAt: row.occurredAt,
+          },
+        },
         create: data,
         update: {},
       });
@@ -685,14 +849,26 @@ const liveDevicePosition = async (trackerImei) => {
 
 // GET: the device's km for the return / vehicle-swap forms (a suggestion;
 // the dashboard reading typed in stays authoritative and recalibrates).
+const fuelInfo = (pos) =>
+  pos?.fuel
+    ? {
+        percent: pos.fuel.percent,
+        eighths: traccar.percentToEighths(pos.fuel.percent),
+        source: pos.fuel.source,
+        at: pos.fixTime || null,
+      }
+    : null;
+
 const getVehicleKm = asyncHandler(async (req, res) => {
   const v = await findVehicle(req.params.id);
-  if (!v.trackerImei) return res.json({ tracked: false, ...kmInfo(v) });
+  if (!v.trackerImei) return res.json({ tracked: false, ...kmInfo(v), fuel: null });
   let estimatedKm = null;
   let traccarError = null;
+  let fuel = null;
   if (traccar.isConfigured()) {
     try {
       const pos = await liveDevicePosition(v.trackerImei);
+      fuel = fuelInfo(pos);
       if (pos) estimatedKm = await syncKmFromPosition(v.id, pos);
     } catch (err) {
       traccarError = err.code || "TRACCAR_ERROR";
@@ -701,7 +877,7 @@ const getVehicleKm = asyncHandler(async (req, res) => {
     traccarError = "TRACCAR_NOT_CONFIGURED";
   }
   const fresh = await findVehicle(v.id);
-  res.json({ tracked: true, traccarError, ...kmInfo(fresh, estimatedKm) });
+  res.json({ tracked: true, traccarError, ...kmInfo(fresh, estimatedKm), fuel });
 });
 
 // POST { km }: "the dashboard shows this now" from the Konum tab — sets the
@@ -794,6 +970,8 @@ module.exports = {
   getVehicleRoute,
   getContractRoute,
   listAccessLogs,
+  getContractDriving,
+  getHgsReport,
   handleWebhook,
   handleTick,
   listAlerts,

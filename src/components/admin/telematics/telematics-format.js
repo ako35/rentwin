@@ -1,6 +1,6 @@
 // Shared display helpers for the GPS tracking screens.
 
-export const ACCESS_REASONS = ["LATE_RETURN", "THEFT", "BREACH", "ASSISTANCE", "OTHER"];
+export const ACCESS_REASONS = ["LATE_RETURN", "THEFT", "BREACH", "ASSISTANCE", "HGS_DISPUTE", "OTHER"];
 
 // Same palette as the vehicle status pills (vehicle-form.scss).
 export const STATUS_COLORS = {
@@ -68,6 +68,7 @@ export const traccarErrorKey = (code) =>
 // ---- GPS alerts (Faz 3)
 
 export const ALERT_TYPES = [
+  "ACCIDENT",
   "DEVICE_TAMPER",
   "TOW",
   "LATE_RETURN",

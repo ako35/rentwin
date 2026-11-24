@@ -45,6 +45,10 @@ export const getCurrentUser = () => http.get("/user").then((r) => r.data);
 // done; see backend/src/modules/field/field.controller.js.
 export const getFieldSchedule = () => http.get("/field/schedule/auth").then((r) => r.data);
 
+// Filo Haritası (GPS takip): tracked vehicles with their latest position.
+// Rented vehicles come back with locationHidden and no position (KVKK).
+export const getFleetPositions = () => http.get("/telematics/admin/fleet/auth").then((r) => r.data);
+
 export const getFieldContract = (contractId) =>
   http.get(`/field/contracts/${contractId}/auth`).then((r) => r.data);
 

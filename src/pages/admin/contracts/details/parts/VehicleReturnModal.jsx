@@ -219,7 +219,7 @@ const VehicleReturnModal = ({ show, onHide, contractId, values, billableDays, mo
                   ? c("returnKmBelowPickup", { km: values.pickUpKm })
                   : c("returnKmRequired")}
               </Form.Control.Feedback>
-              {show && <DeviceKmHint vehicleId={values.carId} onUse={setReturnKm} />}
+              {show && <DeviceKmHint vehicleId={values.carId} onUse={setReturnKm} onUseFuel={setReturnFuelEighths} />}
             </Form.Group>
           </div>
 

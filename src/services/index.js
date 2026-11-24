@@ -38,7 +38,7 @@ import {
 } from "./review/review-service";
 import { getSettings, updateSettings } from "./settings/settings-service";
 import { getKabisSystems, addKabisSystem, deleteKabisSystem } from "./kabis-system/kabis-system-service";
-import { acknowledgeTelematicsAlerts, calibrateVehicleKm, getContractRoute, getFleetPositions, getGpsStatus, getTelematicsAccessLogs, getTelematicsAlerts, getVehicleDeviceKm, getVehicleRoute, getVehicleTelematics, grantLocationAccess, sendGpsTestEmail, setVehicleTracker } from "./telematics/telematics-service";
+import { acknowledgeTelematicsAlerts, calibrateVehicleKm, getContractDriving, getContractRoute, getHgsReport, getFleetPositions, getGpsStatus, getTelematicsAccessLogs, getTelematicsAlerts, getVehicleDeviceKm, getVehicleRoute, getVehicleTelematics, grantLocationAccess, sendGpsTestEmail, setVehicleTracker } from "./telematics/telematics-service";
 
 import { addLedgerEntry, deleteLedgerEntry, getUserLedger, updateLedgerEntry } from "./ledger/ledger-service";
 import { extractDocument } from "./document-ai/document-ai-service";
@@ -269,6 +269,8 @@ export const services = {
         calibrateVehicleKm,
         getGpsStatus,
         sendGpsTestEmail,
+        getContractDriving,
+        getHgsReport,
     },
     encryptedLocalStorage,
     authHeader

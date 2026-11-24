@@ -9,6 +9,8 @@ const {
   getVehicleRoute,
   getContractRoute,
   listAccessLogs,
+  getContractDriving,
+  getHgsReport,
   handleWebhook,
   handleTick,
   listAlerts,
@@ -45,5 +47,8 @@ router.post(`/telematics/admin/vehicles/:id${ID}/access/auth`, authenticate, req
 // reason in the body.
 router.post(`/telematics/admin/vehicles/:id${ID}/route/auth`, authenticate, requireAdmin, getVehicleRoute);
 router.post(`/telematics/admin/contracts/:id${ID}/route/auth`, authenticate, requireAdmin, getContractRoute);
+router.get(`/telematics/admin/contracts/:id${ID}/driving/auth`, authenticate, requireAdmin, getContractDriving);
+// HGS/OGS dispute: route around a toll pass time (reason required, logged).
+router.post(`/telematics/admin/contracts/:id${ID}/hgs-report/auth`, authenticate, requireAdmin, getHgsReport);
 
 module.exports = router;

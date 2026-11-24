@@ -9,9 +9,10 @@ import "./telematics.scss";
 // Under a km input in the return / vehicle-swap forms (GPS takip Faz 3): the
 // km the vehicle's tracker reports, with a button to copy it in. Only a
 // suggestion — the dashboard reading staff type in stays authoritative and
-// recalibrates the device. Renders nothing for a vehicle without a tracker or
-// when the GPS server can't be reached.
-const DeviceKmHint = ({ vehicleId, onUse }) => {
+// recalibrates the device. With a CAN reader in the car (Faz 4) it also offers
+// the fuel / charge level in eighths (onUseFuel). Renders nothing for a
+// vehicle without a tracker or when the GPS server can't be reached.
+const DeviceKmHint = ({ vehicleId, onUse, onUseFuel }) => {
   const { t, i18n } = useTranslation("admin");
   const [info, setInfo] = useState(null);
 
@@ -29,12 +30,25 @@ const DeviceKmHint = ({ vehicleId, onUse }) => {
   }, [vehicleId]);
 
   if (!info?.tracked) return null;
+  const fuel = onUseFuel && info.fuel ? info.fuel : null;
+  const fuelPart = fuel && (
+    <>
+      <span>
+        {t(fuel.source === "battery" ? "telematics.fuel.hintBattery" : "telematics.fuel.hint", { eighths: fuel.eighths })}
+      </span>
+      <Button size="sm" variant="outline-secondary" onClick={() => onUseFuel(String(fuel.eighths))}>
+        {t("telematics.fuel.use")}
+      </Button>
+    </>
+  );
   if (info.estimatedKm == null) {
-    return info.deviceRawKm != null ? (
+    if (info.deviceRawKm == null && !fuelPart) return null;
+    return (
       <div className="tlm-km-hint">
-        <BsBroadcast /> {t("telematics.kmHint.uncalibrated")}
+        <BsBroadcast /> {info.deviceRawKm != null && <span>{t("telematics.kmHint.uncalibrated")}</span>}
+        {fuelPart}
       </div>
-    ) : null;
+    );
   }
   return (
     <div className="tlm-km-hint">
@@ -48,6 +62,7 @@ const DeviceKmHint = ({ vehicleId, onUse }) => {
           {t("telematics.kmHint.use")}
         </Button>
       )}
+      {fuelPart}
     </div>
   );
 };

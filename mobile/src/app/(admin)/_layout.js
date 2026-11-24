@@ -103,6 +103,7 @@ export default function AdminLayout() {
         <Tabs.Screen name="reservations/[id]" options={hidden("Rezervasyon Detayı")} />
         <Tabs.Screen name="pending/[type]" options={hidden("Bekleyenler")} />
         <Tabs.Screen name="finance/index" options={hidden("Finans")} />
+        <Tabs.Screen name="fleet-map" options={hidden("Filo Haritası")} />
         <Tabs.Screen name="users/index" options={hidden("Kullanıcılar")} />
         <Tabs.Screen name="users/[id]" options={hidden("Kullanıcı")} />
         <Tabs.Screen name="branches/index" options={hidden("Şubeler")} />

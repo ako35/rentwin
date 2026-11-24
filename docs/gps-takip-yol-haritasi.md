@@ -132,11 +132,18 @@ Bitti sayılır: tüm filo haritada; km ve bakım alanları elle girilmeden gün
 - Yerel deneme: simülatör Rentwin'in otomatik kontrolünü dakikada bir çağırır; `/sim/tow`, `/sim/goto`, `/sim/drive`, `/sim/alarm` ile uyarılar tetiklenir (ayrıntılar `backend/scripts/traccar-sim.js` başında).
 
 ### Faz 4: İleri özellikler (ihtiyaca göre)
-- Rentwin Saha uygulamasında harita ve en yakın araç
-- Yakıt seviyesi (CAN modülü) → `currentFuelEighths` otomatik
-- Kaza/sert fren algılama (cihazın ivmeölçeri), sürüş puanı
-- HGS itirazlarında güzergâh raporu
-- Uzaktan motor durdurma: yalnızca araç dururken ve yazılı prosedürle. Hareket hâlinde motoru durdurmak can güvenliği riski taşır, bu yüzden en sona bırakıldı.
+
+Sahibi 24 Kasım 2026'da ilk dört maddeyi seçti; yazılımı aynı gün yazıldı ve simülatörle denendi.
+
+- [x] Kaza ve sert sürüş: cihazın ivmeölçeri kaza algılarsa acil uyarı ve e-posta gider (Teltonika IO 247 → Traccar `accident`). Sert fren, sert hızlanma ve sert viraj (IO 253) kontrat sayfasındaki "Kiralama rotası" kartında kiralama boyunca sayılır. Sürüş puanı hesaplanmaz: müşteriye puan vermek KVKK'da profilleme sayılır.
+- [x] HGS itiraz raporu: kontrat sayfasındaki "Kiralama rotası" kartında "HGS itiraz raporu" düğmesi. Geçiş zamanı, ±15/30/60/120 dk ve isteğe bağlı gişe adı girilir; gerekçe ("HGS/OGS geçiş itirazı") ister ve erişim kaydına `HGS_REPORT` olarak yazılır. Yalnızca kiralama dönemine denk gelen zaman için açılır. Rapor: harita, geçişe en yakın konum kaydı, dakikalık kayıt tablosu; "Yazdır" ile yalnızca rapor basılır.
+- [x] Yakıt seviyesi: CAN okuyucudan gelen yüzde (`fuelLevel`, Teltonika IO 89) ya da elektrikli araçta şarj (`energyLevel`) 8'lik ölçeğe çevrilir. Araç park hâlindeyken (kontak kapalı) `currentFuelEighths` güncellenir. Dönüş ve araç değişimi formunda km önerisinin yanında "yakıt 5/8 [Kullan]" çıkar. Litre gönderen (`fuel`) cihazlar için depo hacmi gerekir; şimdilik desteklenmiyor.
+- [x] Saha uygulamasında Filo Haritası: saha ana ekranında "Filo haritası" kartı, yönetimde Daha Fazla → Filo Haritası. Takipli araçlar haritada (Leaflet + OpenStreetMap, WebView içinde), liste telefona uzaklığa göre sıralı, en yakın müsait araç ve "Yol tarifi" (Google Haritalar). Kiradaki araçların konumu web panelindeki gibi gizli. Telefonun konumu yalnızca telefonda sıralama için kullanılır, sunucuya gönderilmez.
+- [ ] Saha uygulamasının yeni sürümü (1.1.0): harita ve konum yerel modül gerektirdiği için mağazaya yeni derleme yüklenmeli (kablosuz güncellemeyle gelmez). Sürüm 1.1.0'a yükseltildi; bu koddan yapılan kablosuz güncellemeler 1.0.0 kullanan telefonlara gitmez.
+- [ ] CAN okuyucu donanımı (yakıt için): araç modeline göre seçilecek
+- [ ] Uzaktan motor durdurma: yapılmadı. Araca röle takılması, yazılı prosedür ve avukat görüşü gerekir; hareket hâlinde motoru durdurmak can güvenliği riski taşır.
+
+Ek: Traccar yeniden kurulursa olay numaraları 1'den başlar. Olaylar artık "olay numarası + araç + zaman" ile tekilleştiriliyor ve cihaz km sayacı geriye giderse (cihaz değişimi, sıfırlama) km farkı mevcut km'ye göre yeniden ayarlanıyor.
 
 ## 7. KVKK ve hukuki notlar
 

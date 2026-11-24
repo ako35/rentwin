@@ -11,6 +11,7 @@ const { SITE_URL, business } = require("../../lib/site");
 // recipients are set); info alerts stay in the panel.
 
 const SEVERITY_BY_TYPE = {
+  ACCIDENT: "CRITICAL", // cihazın ivmeölçeri kaza algıladı (Faz 4)
   DEVICE_TAMPER: "CRITICAL", // cihazın gücü kesildi / sökülüyor
   TOW: "CRITICAL", // kontak kapalıyken hareket
   LATE_RETURN: "WARNING", // dönüş saati geçti, araç ofiste değil
@@ -59,6 +60,7 @@ const gpsSettings = (s = {}) => ({
 
 // Traccar alarm names (attributes.alarm) that open an alert.
 const ALARM_ALERTS = {
+  accident: "ACCIDENT",
   powerCut: "DEVICE_TAMPER",
   powerOff: "DEVICE_TAMPER",
   tampering: "DEVICE_TAMPER",
@@ -69,6 +71,10 @@ const ALARM_ALERTS = {
 };
 const alarmAlertType = (alarm) => ALARM_ALERTS[alarm] || null;
 const ALARM_TR = {
+  accident: "kaza algılandı",
+  hardBraking: "sert fren",
+  hardAcceleration: "sert hızlanma",
+  hardCornering: "sert viraj",
   powerCut: "güç kesildi",
   powerOff: "cihaz kapandı",
   tampering: "cihaza müdahale",
@@ -110,6 +116,8 @@ const alertText = (alert) => {
   const d = alert.data || {};
   const contract = d.contractNo ? `kontrat ${d.contractNo}` : "kontrat";
   switch (alert.type) {
+    case "ACCIDENT":
+      return "Cihazın ivmeölçeri kaza algıladı. Aracı ve sürücüyü hemen kontrol edin.";
     case "DEVICE_TAMPER":
       return `Takip cihazı alarmı: ${ALARM_TR[d.alarm] || d.alarm || "alarm"}. Cihazın gücü kesilmiş veya cihaz sökülüyor olabilir.`;
     case "TOW":

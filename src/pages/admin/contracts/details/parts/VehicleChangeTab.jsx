@@ -155,7 +155,11 @@ const VehicleChangeTab = ({
               <Form.Group className="vct__field">
                 <Form.Label>{c("vehicleChange.returnKm")}</Form.Label>
                 <Form.Control type="number" size="sm" value={form.returnKm} onChange={setField("returnKm")} />
-                <DeviceKmHint vehicleId={carId} onUse={(km) => setForm((f) => ({ ...f, returnKm: km }))} />
+                <DeviceKmHint
+                  vehicleId={carId}
+                  onUse={(km) => setForm((f) => ({ ...f, returnKm: km }))}
+                  onUseFuel={(e) => setForm((f) => ({ ...f, returnFuelEighths: e }))}
+                />
               </Form.Group>
               <Form.Group className="vct__field">
                 <Form.Label>{c("vehicleChange.returnFuelLevel")}</Form.Label>
@@ -185,7 +189,11 @@ const VehicleChangeTab = ({
                   type="number" size="sm" value={form.newCarKm}
                   disabled={!form.newCarId} onChange={setField("newCarKm")}
                 />
-                <DeviceKmHint vehicleId={form.newCarId} onUse={(km) => setForm((f) => ({ ...f, newCarKm: km }))} />
+                <DeviceKmHint
+                  vehicleId={form.newCarId}
+                  onUse={(km) => setForm((f) => ({ ...f, newCarKm: km }))}
+                  onUseFuel={(e) => setForm((f) => ({ ...f, newCarFuelEighths: e }))}
+                />
               </Form.Group>
               <Form.Group className="vct__field">
                 <Form.Label>{c("vehicleChange.newCarFuelLevel")}</Form.Label>

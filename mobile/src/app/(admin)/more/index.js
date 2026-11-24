@@ -58,6 +58,12 @@ export default function MoreScreen() {
               router.replace("/(saha)");
             },
           },
+          {
+            emoji: "🗺️",
+            label: "Filo Haritası",
+            sub: "Takipli araçlar ve size en yakın müsait araç. Kiradaki araçların konumu gizli.",
+            onPress: () => router.push("/(admin)/fleet-map"),
+          },
         ]}
       />
 

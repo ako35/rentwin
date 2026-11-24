@@ -2005,6 +2005,58 @@
     "clear": "Clear"
   },
   "telematics": {
+    "hgsReport": {
+      "button": "HGS dispute report",
+      "title": "HGS/OGS toll dispute: route report",
+      "formIntro": "Enter the date and time of the toll pass the customer disputes. The report shows the vehicle's route before and after that time.",
+      "at": "Pass time",
+      "window": "Before and after the pass",
+      "windowOption": "±{{minutes}} min",
+      "tollName": "Toll / pass location",
+      "tollNamePlaceholder": "e.g. Aliağa toll gate",
+      "create": "Create report",
+      "badAt": "Enter a valid pass time.",
+      "reasonIntro": "The report shows location records from the rental period. The reason and who opened it are logged.",
+      "contract": "Contract",
+      "plate": "Plate",
+      "passTime": "Pass time",
+      "range": "Report range",
+      "nearest": "Location record closest to the pass",
+      "offsetBefore": "{{seconds}} s before the pass",
+      "offsetAfter": "{{seconds}} s after the pass",
+      "offsetExact": "at the pass",
+      "coords": "Coordinates",
+      "noNearest": "No location records in this range.",
+      "points": "Location records (one per minute)",
+      "time": "Time",
+      "speed": "Speed",
+      "lat": "Latitude",
+      "lng": "Longitude",
+      "distance": "Distance in range",
+      "generated": "Created by: {{name}} · {{time}}",
+      "footnote": "Location records come from Rentwin's GPS server in Türkiye. Opening this report was written to the access log.",
+      "passMarker": "Pass time",
+      "print": "Print",
+      "close": "Close",
+      "noTracker": "The vehicle in this rental has no tracker."
+    },
+    "driving": {
+      "title": "Driving events",
+      "help": "Events recorded by the tracker's accelerometer during the rental. No score is computed for the customer.",
+      "none": "No harsh driving events recorded during the rental.",
+      "hardBraking": "{{count}} hard braking",
+      "hardAcceleration": "{{count}} hard acceleration",
+      "hardCornering": "{{count}} hard cornering",
+      "accident": "{{count}} accident detected"
+    },
+    "fuel": {
+      "label": "Fuel (device)",
+      "labelBattery": "Charge (device)",
+      "value": "{{eighths}}/8 · {{percent}}%",
+      "hint": "fuel {{eighths}}/8",
+      "hintBattery": "charge {{eighths}}/8",
+      "use": "Use"
+    },
     "alerts": {
       "title": "GPS Alerts",
       "hint": "Alerts from tracker events and the automatic check that runs every 5 minutes. An acknowledged alert leaves the open list. Alerts carry no location.",
@@ -2039,6 +2091,10 @@
         "INFO": "Info"
       },
       "types": {
+        "ACCIDENT": {
+          "title": "Accident detected",
+          "text": "The tracker's accelerometer detected an accident. Check the vehicle and the driver right away."
+        },
         "DEVICE_TAMPER": {
           "title": "Tracker tampering",
           "text": "Tracker alarm: {{alarm}}. Its power may have been cut or it is being removed."
@@ -2158,6 +2214,7 @@
       "introRoute": "The selected range overlaps a rental (contract: {{contracts}}). Choose a reason to view the route.",
       "reason": "Reason",
       "reasons": {
+        "HGS_DISPUTE": "HGS/OGS toll dispute",
         "LATE_RETURN": "Late return",
         "THEFT": "Suspected theft",
         "BREACH": "Suspected contract breach",
@@ -2215,6 +2272,9 @@
       "geofenceExit": "Left zone: {{name}}"
     },
     "alarms": {
+      "hardBraking": "Hard braking",
+      "hardAcceleration": "Hard acceleration",
+      "hardCornering": "Hard cornering",
       "powerCut": "Device power cut",
       "powerOff": "Device switched off",
       "tow": "Towing",
@@ -2247,6 +2307,7 @@
       "noReason": "Outside a rental",
       "close": "Close",
       "scopes": {
+        "HGS_REPORT": "HGS dispute report",
         "LIVE": "Live location",
         "ROUTE": "Vehicle route",
         "CONTRACT_ROUTE": "Contract route"

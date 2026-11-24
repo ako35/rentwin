@@ -97,6 +97,23 @@ const positionsBetween = (deviceId, from, to) =>
 
 const knotsToKmh = (knots) => (Number.isFinite(knots) ? Math.round(knots * KNOTS_TO_KMH) : null);
 
+const percentOrNull = (v) => (Number.isFinite(v) && v >= 0 && v <= 100 ? v : null);
+
+// Fuel (Faz 4): a CAN reader reports the tank level in percent as
+// "fuelLevel" (Teltonika IO 89); an electric car's charge comes as
+// "energyLevel" (IO 152/411). "batteryLevel" is the tracker's own battery
+// and "fuel" is litres, so neither is used here.
+const fuelFromAttributes = (a = {}) => {
+  const fuel = percentOrNull(a.fuelLevel);
+  if (fuel != null) return { percent: Math.round(fuel), source: "fuel" };
+  const energy = percentOrNull(a.energyLevel);
+  if (energy != null) return { percent: Math.round(energy), source: "battery" };
+  return null;
+};
+
+// Percent -> the 0-8 "eighths" the hand-over forms use.
+const percentToEighths = (percent) => Math.min(8, Math.max(0, Math.round(percent / 12.5)));
+
 // Traccar position -> the shape the admin UI uses. Speed comes in knots and
 // distances in meters.
 const normalizePosition = (p) => {
@@ -113,6 +130,7 @@ const normalizePosition = (p) => {
     ignition: typeof a.ignition === "boolean" ? a.ignition : null,
     motion: typeof a.motion === "boolean" ? a.motion : null,
     odometerKm: odometerM != null ? Math.round(odometerM / 1000) : null,
+    fuel: fuelFromAttributes(a),
   };
 };
 
@@ -126,5 +144,6 @@ module.exports = {
   getPosition,
   positionsBetween,
   knotsToKmh,
+  percentToEighths,
   normalizePosition,
 };

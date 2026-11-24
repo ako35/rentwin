@@ -121,3 +121,38 @@ test("alert texts and e-mail carry no coordinates", () => {
   assert.match(mail.html, /admin\/vehicles\/gps-alerts/);
   assert.doesNotMatch(mail.text + mail.html, /latitude|longitude|38\.\d{3}/);
 });
+
+// ---- Faz 4
+
+const { normalizePosition, percentToEighths } = require("../../lib/traccar");
+
+test("accident alarm is a critical alert; harsh driving alarms open none", () => {
+  assert.equal(alarmAlertType("accident"), "ACCIDENT");
+  assert.equal(SEVERITY_BY_TYPE.ACCIDENT, "CRITICAL");
+  assert.equal(alarmAlertType("hardBraking"), null);
+  assert.equal(alarmAlertType("hardCornering"), null);
+});
+
+test("fuel: CAN fuelLevel % first, EV energyLevel % next, litres and tracker battery ignored", () => {
+  assert.deepEqual(normalizePosition({ attributes: { fuelLevel: 62 } }).fuel, { percent: 62, source: "fuel" });
+  assert.deepEqual(normalizePosition({ attributes: { energyLevel: 80 } }).fuel, { percent: 80, source: "battery" });
+  assert.equal(normalizePosition({ attributes: { fuel: 31.5, batteryLevel: 90 } }).fuel, null);
+  assert.equal(normalizePosition({ attributes: { fuelLevel: 140 } }).fuel, null); // not a percentage
+});
+
+test("percentToEighths rounds to the nearest eighth within 0-8", () => {
+  assert.equal(percentToEighths(0), 0);
+  assert.equal(percentToEighths(40), 3);
+  assert.equal(percentToEighths(62), 5);
+  assert.equal(percentToEighths(100), 8);
+});
+
+test("computeKmSync: a device counter that went backwards recalibrates from the vehicle's km", () => {
+  const v = { currentKm: 50300, trackerOdometerKm: 2700, trackerKmOffset: 47600, trackerKmAnchorKm: null };
+  const r = computeKmSync(v, 15); // device replaced / reset
+  assert.equal(r.data.trackerKmOffset, 50285);
+  assert.equal(r.estimatedKm, 50300);
+  assert.equal(r.data.currentKm, undefined);
+  // small jitter is not a reset
+  assert.equal(computeKmSync(v, 2699.5).data.trackerKmOffset, undefined);
+});

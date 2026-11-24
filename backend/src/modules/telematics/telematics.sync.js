@@ -23,6 +23,9 @@ const HOUR = 60 * MINUTE;
 // A reading this recent (or taken after the engine was switched off) is
 // trusted for calibrating against a dashboard km typed in at the counter.
 const CALIBRATION_FRESH_MS = 15 * MINUTE;
+// A fuel reading counts only when taken parked (engine off; the level swings
+// while driving) and this recently.
+const FUEL_FRESH_MS = 2 * HOUR;
 // A position older than this doesn't count as "moving now" for towing.
 const TOW_FRESH_MS = 15 * MINUTE;
 const TOW_MIN_SPEED_KMH = 20;
@@ -47,7 +50,14 @@ const computeKmSync = (vehicle, rawKm, readingAt, now = new Date()) => {
   if (!Number.isFinite(rawKm)) return null;
   const data = { trackerOdometerKm: rawKm, trackerOdometerAt: readingAt || now };
   let offset = vehicle.trackerKmOffset;
-  if (vehicle.trackerKmAnchorKm != null) {
+  // The device counter went backwards (device reset or replaced, Traccar
+  // reinstalled): the old offset is meaningless, start again from the
+  // vehicle's km as on a first reading.
+  const counterReset = vehicle.trackerOdometerKm != null && rawKm < vehicle.trackerOdometerKm - 1;
+  if (counterReset && vehicle.trackerKmAnchorKm == null) {
+    offset = (vehicle.currentKm ?? rawKm) - rawKm;
+    Object.assign(data, { trackerKmOffset: offset, trackerKmCalibratedAt: now });
+  } else if (vehicle.trackerKmAnchorKm != null) {
     offset = vehicle.trackerKmAnchorKm - rawKm;
     Object.assign(data, { trackerKmOffset: offset, trackerKmAnchorKm: null, trackerKmCalibratedAt: now });
   } else if (offset == null) {
@@ -147,6 +157,7 @@ const runTick = async ({ now = new Date() } = {}) => {
       trackerImei: true,
       trackerLastSeenAt: true,
       trackerAtOffice: true,
+      currentFuelEighths: true,
       ...KM_SELECT,
     },
   });
@@ -217,6 +228,14 @@ const runTick = async ({ now = new Date() } = {}) => {
           if (km.data.currentKm != null) summary.kmUpdated += 1;
           Object.assign(updates, km.data);
           Object.assign(v, km.data);
+        }
+      }
+      // Fuel level (needs a CAN reader in the car): only a parked reading.
+      if (pos.fuel && pos.ignition === false && fixAt && now - fixAt <= FUEL_FRESH_MS) {
+        const eighths = traccar.percentToEighths(pos.fuel.percent);
+        if (eighths !== v.currentFuelEighths) {
+          updates.currentFuelEighths = eighths;
+          summary.fuelUpdated = (summary.fuelUpdated || 0) + 1;
         }
       }
       if (fixAt && (!v.trackerLastSeenAt || fixAt > v.trackerLastSeenAt)) {

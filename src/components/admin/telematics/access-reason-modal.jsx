@@ -5,7 +5,7 @@ import { ACCESS_REASONS } from "./telematics-format";
 
 // KVKK: a rented vehicle's location only opens with a stated reason, and the
 // backend logs every such access. `intro` explains what is being opened.
-const AccessReasonModal = ({ show, intro, submitLabel, saving, onHide, onConfirm }) => {
+const AccessReasonModal = ({ show, intro, submitLabel, saving, onHide, onConfirm, defaultReason = "" }) => {
   const { t } = useTranslation("admin");
   const r = (key, opts) => t(`telematics.reasonModal.${key}`, opts);
   const [reason, setReason] = useState("");
@@ -14,11 +14,11 @@ const AccessReasonModal = ({ show, intro, submitLabel, saving, onHide, onConfirm
 
   useEffect(() => {
     if (show) {
-      setReason("");
+      setReason(defaultReason);
       setNote("");
       setTouched(false);
     }
-  }, [show]);
+  }, [show, defaultReason]);
 
   const noteMissing = reason === "OTHER" && !note.trim();
   const canSubmit = !!reason && !noteMissing && !saving;

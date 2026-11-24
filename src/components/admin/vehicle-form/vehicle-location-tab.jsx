@@ -415,6 +415,12 @@ const VehicleLocationTab = ({ vehicleId, plate }) => {
               <span>{t("telematics.km.reading")}</span>
               <strong>{info.km.deviceReadingAt ? agoText(info.km.deviceReadingAt, t, lang) : "—"}</strong>
             </div>
+            {info.fuel && (
+              <div>
+                <span>{t(info.fuel.source === "battery" ? "telematics.fuel.labelBattery" : "telematics.fuel.label")}</span>
+                <strong>{t("telematics.fuel.value", { eighths: info.fuel.eighths, percent: info.fuel.percent })}</strong>
+              </div>
+            )}
           </div>
           <div className="tlm-muted mb-2">
             {info.km.calibrationPending

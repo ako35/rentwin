@@ -30,6 +30,7 @@
 //   POST /sim/goto?uniqueId=<imei>&place=office      parks at the office
 //   POST /sim/goto?uniqueId=<imei>&place=far         parks ~450 km away (Ankara)
 //   POST /sim/drive?uniqueId=<imei>&km=250           adds km to the odometer
+//   POST /sim/fuel?uniqueId=<imei>&percent=40        sets the tank level (fuelLevel %)
 //   POST /sim/rentwin-tick                           runs Rentwin's check now
 const http = require("http");
 const fs = require("fs");
@@ -90,6 +91,7 @@ const newSim = (index) => ({
   speeder: index === 0, // the first device occasionally speeds, to test alerts
   towTicks: 0,
   parkedTicks: 0,
+  fuelPct: rand(30, 100), // CAN "fuelLevel" (%)
 });
 
 const overspeedKmh = (device) => {
@@ -131,6 +133,8 @@ const step = (sim, seconds, limitKmh = DEFAULT_OVERSPEED_KMH) => {
   const cruising = sim.speeder && Math.random() < 0.08 ? rand(125, 150) : rand(25, 95);
   sim.speedKmh = Math.round(sim.speedKmh * 0.5 + cruising * 0.5);
   if (sim.speedKmh > limitKmh) events.push("deviceOverspeed");
+  // Accelerometer (green driving): now and then a hard brake / acceleration.
+  if (Math.random() < 0.01) events.push({ alarm: Math.random() < 0.5 ? "hardBraking" : "hardAcceleration" });
 
   // Steer back toward the office when leaving the box.
   if (sim.lat < BOX.minLat || sim.lat > BOX.maxLat || sim.lng < BOX.minLng || sim.lng > BOX.maxLng) {
@@ -145,6 +149,8 @@ const step = (sim, seconds, limitKmh = DEFAULT_OVERSPEED_KMH) => {
   sim.lat += (km * Math.cos(rad)) / 111;
   sim.lng += (km * Math.sin(rad)) / (111 * Math.cos((sim.lat * Math.PI) / 180));
   sim.odometerM += Math.round(km * 1000);
+  sim.fuelPct = Math.max(5, sim.fuelPct - km * 0.15);
+  if (sim.fuelPct < 15 && Math.random() < 0.3) sim.fuelPct = 100; // filled up
   return events;
 };
 
@@ -169,6 +175,7 @@ const makePosition = (device, sim, at) => ({
     motion: sim.speedKmh > 0,
     odometer: sim.odometerM,
     totalDistance: sim.odometerM,
+    fuelLevel: Math.round(sim.fuelPct),
     sat: 11,
   },
 });
@@ -232,8 +239,9 @@ setInterval(() => {
     const events = step(sim, TICK_SECONDS, limitKmh);
     const position = makePosition(device, sim, now);
     record(device, position);
-    for (const type of events) {
-      forward(device, type, position, type === "deviceOverspeed" ? { speed: position.speed, speedLimit: limitKmh / KMH_PER_KNOT } : {});
+    for (const ev of events) {
+      if (typeof ev === "object") forward(device, "alarm", position, { alarm: ev.alarm });
+      else forward(device, ev, position, ev === "deviceOverspeed" ? { speed: position.speed, speedLimit: limitKmh / KMH_PER_KNOT } : {});
     }
   }
   // Keep memory bounded: drop positions older than the history window + 1 day.
@@ -341,6 +349,11 @@ const server = http.createServer(async (req, res) => {
       sim.parkedTicks = Number(q.get("ticks") || 60);
       recordNow(device);
       return send(res, 200, { ok: true, place: q.get("place") || "office" });
+    }
+    if (url.pathname === "/sim/fuel") {
+      sim.fuelPct = Math.min(100, Math.max(0, Number(q.get("percent") ?? 50)));
+      const position = recordNow(device);
+      return send(res, 200, { ok: true, fuelLevel: position.attributes.fuelLevel });
     }
     if (url.pathname === "/sim/drive") {
       sim.odometerM += Math.round(Number(q.get("km") || 100) * 1000);

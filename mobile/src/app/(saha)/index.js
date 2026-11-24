@@ -207,6 +207,20 @@ export default function ScheduleScreen() {
 
         <UpdateBanner />
 
+        <Pressable
+          onPress={() => router.push("/(saha)/map")}
+          style={styles.mapLink}
+          accessibilityRole="button"
+          accessibilityLabel="Filo haritasını aç"
+        >
+          <Text style={styles.mapLinkEmoji}>🗺️</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.mapLinkTitle}>Filo haritası</Text>
+            <Text style={styles.mapLinkSub}>Sana en yakın müsait aracı bul</Text>
+          </View>
+          <Text style={styles.mapLinkArrow}>›</Text>
+        </Pressable>
+
         {/* The two counters double as the tab switch, so the numbers aren't repeated elsewhere. */}
         <View style={styles.summaryCard}>
           <View style={styles.summaryMain}>
@@ -296,6 +310,11 @@ export default function ScheduleScreen() {
 }
 
 const styles = StyleSheet.create({
+  mapLink: { flexDirection: "row", alignItems: "center", gap: 12, backgroundColor: COLORS.card, borderWidth: 1, borderColor: COLORS.line, borderRadius: 17, padding: 14, marginBottom: 16 },
+  mapLinkEmoji: { fontSize: 22 },
+  mapLinkTitle: { fontSize: 15, fontWeight: "800", color: COLORS.ink },
+  mapLinkSub: { fontSize: 12, color: COLORS.muted, marginTop: 2 },
+  mapLinkArrow: { fontSize: 24, color: COLORS.subtle },
   screen: { flex: 1, backgroundColor: COLORS.canvas },
   content: { paddingHorizontal: 20, paddingTop: 14, paddingBottom: 36 },
   topBar: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 28 },

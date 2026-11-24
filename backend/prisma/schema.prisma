@@ -268,7 +268,7 @@ model TelematicsEvent {
   id             String   @id @default(uuid())
   vehicleId      String
   vehicle        Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  traccarEventId Int?     @unique // Traccar'daki olay id'si; aynı olay iki kez gelirse tek kayıt kalır
+  traccarEventId Int? // Traccar'daki olay id'si; aynı olay iki kez gelirse tek kayıt kalır (aşağıdaki unique)
   type           String // ignitionOn | ignitionOff | deviceOverspeed | alarm | geofenceEnter | geofenceExit
   alarm          String? // type "alarm" için Traccar alarm türü (powerCut, tow, ...)
   geofenceName   String?
@@ -276,6 +276,8 @@ model TelematicsEvent {
   occurredAt     DateTime
   createdAt      DateTime @default(now())
 
+  // Olay id'si tek başına yetmez: Traccar yeniden kurulursa id'ler 1'den başlar.
+  @@unique([traccarEventId, vehicleId, occurredAt])
   @@index([vehicleId, occurredAt])
 }
 

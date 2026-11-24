@@ -1,12 +1,13 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, Form, Modal, Spinner } from "react-bootstrap";
-import { BsGeoAlt, BsJournalText } from "react-icons/bs";
+import { BsGeoAlt, BsJournalText, BsSignpost2 } from "react-icons/bs";
 import { services } from "../../../../../services";
 import { utils } from "../../../../../utils";
 import LeafletMap from "../../../../../components/admin/telematics/leaflet-map";
 import AccessReasonModal from "../../../../../components/admin/telematics/access-reason-modal";
 import AccessLogModal from "../../../../../components/admin/telematics/access-log-modal";
+import HgsReportModal from "./HgsReportModal";
 import {
   ROUTE_COLORS,
   formatDateTime,
@@ -31,6 +32,26 @@ const RouteSection = ({ contractId }) => {
   const [error, setError] = useState("");
   const [fitKey, setFitKey] = useState(0);
   const [showLog, setShowLog] = useState(false);
+  const [showHgs, setShowHgs] = useState(false);
+  // Faz 4: hard braking / acceleration / cornering and accidents (counts only).
+  const [driving, setDriving] = useState(null);
+
+  useEffect(() => {
+    let alive = true;
+    services.telematics
+      .getContractDriving(contractId)
+      .then((d) => alive && setDriving(d))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [contractId]);
+
+  const drivingParts = driving?.tracked
+    ? ["accident", "hardBraking", "hardAcceleration", "hardCornering"]
+        .filter((k) => driving.counts?.[k] > 0)
+        .map((k) => ({ key: k, text: t(`telematics.driving.${k}`, { count: driving.counts[k] }) }))
+    : [];
 
   const fetchRoute = async (payload, sub) => {
     setLoading(true);
@@ -83,10 +104,31 @@ const RouteSection = ({ contractId }) => {
         <Button size="sm" variant="outline-primary" disabled={loading} onClick={() => setAskReason(true)}>
           {loading && !data ? <Spinner animation="border" size="sm" /> : <BsGeoAlt />} {c("open")}
         </Button>
+        <Button size="sm" variant="outline-primary" onClick={() => setShowHgs(true)}>
+          <BsSignpost2 /> {t("telematics.hgsReport.button")}
+        </Button>
         <Button size="sm" variant="outline-secondary" onClick={() => setShowLog(true)}>
           <BsJournalText /> {t("telematics.fleetMap.accessLog")}
         </Button>
       </div>
+
+      {driving?.tracked && (
+        <div className="contract-page__route-driving" title={t("telematics.driving.help")}>
+          <span className="tlm-muted">{t("telematics.driving.title")}:</span>{" "}
+          {drivingParts.length === 0 ? (
+            <span className="tlm-muted">{t("telematics.driving.none")}</span>
+          ) : (
+            drivingParts.map((part, i) => (
+              <span key={part.key} className={part.key === "accident" ? "contract-page__route-accident" : ""}>
+                {i > 0 ? " · " : ""}
+                {part.text}
+              </span>
+            ))
+          )}
+        </div>
+      )}
+
+      <HgsReportModal show={showHgs} onHide={() => setShowHgs(false)} contractId={contractId} />
 
       <AccessReasonModal
         show={askReason}

@@ -13,6 +13,7 @@ export default function SahaLayout() {
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="contract/[id]" options={{ title: "Kontrat" }} />
       <Stack.Screen name="capture/[id]" options={{ title: "Fotoğraflar" }} />
+      <Stack.Screen name="map" options={{ title: "Filo Haritası" }} />
     </Stack>
   );
 }

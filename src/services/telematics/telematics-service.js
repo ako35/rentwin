@@ -107,3 +107,21 @@ export const sendGpsTestEmail = async () => {
   const response = await axios.post(`${API_URL}/telematics/admin/test-email/auth`, {}, services.authHeader());
   return response.data;
 };
+
+// ---- Faz 4
+
+// Hard braking / acceleration / cornering and accidents during a rental (counts only).
+export const getContractDriving = async (contractId) => {
+  const response = await axios.get(`${API_URL}/telematics/admin/contracts/${contractId}/driving/auth`, services.authHeader());
+  return response.data;
+};
+
+// { at (ISO), windowMinutes, tollName?, reason, note? } — logged on the server.
+export const getHgsReport = async (contractId, payload) => {
+  const response = await axios.post(
+    `${API_URL}/telematics/admin/contracts/${contractId}/hgs-report/auth`,
+    payload,
+    services.authHeader()
+  );
+  return response.data;
+};
