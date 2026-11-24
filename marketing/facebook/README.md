@@ -396,6 +396,7 @@ Paylaşımlar (her grupta en fazla haftada 1):
 | 12 Kas 2026, 19:58 | İzmir Menemen Aliağa Foça Sahibinden Alım Satım (36K) | Yukarıdaki örnek ilan + `01-hos-geldiniz.png` | Yönetici onayı bekliyor |
 | 16 Kas 2026, 20:35 (deneme) | Aliağa KİRALIK ve SATILIK (23K) | Ticari araç ilanı + `02-ticari-arac-kiralama.png` | Paylaşılmadı: rentwin sayfa profiliyle grupta "Bir şeyler yaz..." kutusu hiç çıkmıyor (sayfa "Katıldın" durumunda, grup günde ~30 gönderi alıyor; yöneticiler sayfaların paylaşımını kapatmış görünüyor). Bekleyen/yayınlanan gönderi yok. 13 Kas denemesi Chrome kapalı olduğu için yapılamamıştı. 24 Kas Reels görevi de aynı nedenle paylaşamayabilir |
 | 15 Kas 2026, 15:19 | SATILIK KİRALIK ALİAĞA (7,9K) | Aylık kiralama ilanı + `03-uzun-donem-kiralama.png` | Yönetici onayı bekliyor (sayfa yeni katılımcı olarak da incelemede); 14 Kas'a planlanan görev 15 Kas'ta çalıştı |
+| 24 Kas 2026, 17:40 (22 Kas'a planlanmıştı) | SATILIK KİRALIK ALİAĞA (7,9K) | Ticari araç videosu (Metin B) + `reels/reel-ticari.mp4` | Paylaşılmadı: Claude in Chrome bağlı değildi (bağlı tarayıcı yok, Chrome kapalı ya da eklenti oturumu kapalı). Önceki ilanın durumu bu yüzden kontrol edilemedi |
 
 Planlı paylaşımlar (zamanlanmış görevler, uygulama ve Chrome açıkken çalışır; her görev paylaşınca tabloya kendi satırını ekler):
 
