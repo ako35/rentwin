@@ -20,6 +20,7 @@ import { breadcrumbLd, vehicleLd } from "../../../../utils/seo";
 import { localeFromPath, localizePath } from "../../../../i18n/locale-routing";
 import { modelKey } from "../../../../utils/vehicle-model";
 import "./style.scss";
+import { vehicleSeoText } from "../../../../utils/vehicle-model";
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
 
@@ -57,9 +58,14 @@ const VehicleDetailsPage = () => {
   // thin /en/vehicles/* pages into each other as duplicates. Mirrors backend
   // seo-ld buildHead.
   const english = localeFromPath(window.location.pathname) === "en";
+  // Model name + Aliağa + "from" price, specs in the description — same text
+  // the bot prerender serves (backend vehicle-models.vehicleSeoText).
+  const seo = vehicleName
+    ? vehicleSeoText({ ...vehicle, variants: vehicle?.modelInfo?.variants }, english ? "en" : "tr")
+    : null;
   usePageMeta({
-    title: vehicleName ? t("seoDetailsTitle", { name: vehicleName }) : t("detailsPageTitle"),
-    description: vehicleName ? t("seoDetailsDescription", { name: vehicleName }) : undefined,
+    title: seo ? seo.title : t("detailsPageTitle"),
+    description: seo ? seo.description : undefined,
     image: imageUrl,
     canonical: canonicalPath,
     type: "product",

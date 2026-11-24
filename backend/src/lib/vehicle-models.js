@@ -204,6 +204,11 @@ const uniqueSorted = (values) => [...new Set(values.filter((v) => v != null && v
 
 // units: the active fleet units of one model [{ modelYear, transmission, fuelType }].
 // Raw enum values — the caller labels transmissions/fuels for its locale.
+const lowestPrice = (values) => {
+  const prices = values.map(Number).filter((n) => n > 0);
+  return prices.length ? Math.min(...prices) : null;
+};
+
 const summarizeVariants = (units) => {
   const years = units.map((u) => u.modelYear).filter((y) => Number.isInteger(y));
   return {
@@ -212,6 +217,70 @@ const summarizeVariants = (units) => {
     maxYear: years.length ? Math.max(...years) : null,
     transmissions: uniqueSorted(units.map((u) => u.transmission)),
     fuelTypes: uniqueSorted(units.map((u) => u.fuelType)),
+    // Lowest list price across the model's units (KDV hariç) — the "from"
+    // price the vehicle page title and description quote.
+    minDaily: lowestPrice(units.map((u) => u.dailyPrice)),
+    minMonthly: lowestPrice(units.map((u) => u.monthlyPrice)),
+  };
+};
+
+// Brand/model as people search for it: fleet records are typed in capitals
+// with mixed dotted/undotted I ("FIAT", "FİAT", "CİTROEN"). Tokens with a digit
+// stay as typed (C3, NPR3D); Turkish casing only where the token already has a
+// Turkish letter, so "FIAT" doesn't become "Fıat". Mirrored in
+// src/utils/vehicle-model.js — KEEP IN SYNC.
+const BRAND_NAMES = { FIAT: "Fiat", CITROEN: "Citroën", ISUZU: "Isuzu", SKODA: "Skoda", RENAULT: "Renault", FORD: "Ford", OPEL: "Opel", PEUGEOT: "Peugeot", TOYOTA: "Toyota", HYUNDAI: "Hyundai", VOLKSWAGEN: "Volkswagen", DACIA: "Dacia", MERCEDES: "Mercedes" };
+const TOKEN_NAMES = { SPACETOURER: "SpaceTourer" };
+const asciiUpper = (s) => s.replace(/İ/g, "I").replace(/Ş/g, "S").replace(/Ğ/g, "G").replace(/Ç/g, "C").replace(/Ö/g, "O").replace(/Ü/g, "U").toUpperCase();
+const prettyToken = (token, index) => {
+  const key = asciiUpper(token);
+  if (index === 0 && BRAND_NAMES[key]) return BRAND_NAMES[key];
+  if (TOKEN_NAMES[key]) return TOKEN_NAMES[key];
+  if (/\d/.test(token)) return token.toUpperCase();
+  const lower = /[İŞĞÇÖÜışğçöü]/.test(token) ? token.toLocaleLowerCase("tr") : token.toLowerCase();
+  return lower.charAt(0).toLocaleUpperCase("tr") + lower.slice(1);
+};
+const prettyModelName = (brand, model) =>
+  `${brand || ""} ${model || ""}`.trim().split(/\s+/).filter(Boolean).map(prettyToken).join(" ");
+
+const SPEC_WORDS = {
+  tr: {
+    transmission: { Manual: "manuel", Automatic: "otomatik", SemiAutomatic: "yarı otomatik" },
+    fuel: { Diesel: "dizel", Gasoline: "benzin", LPG: "LPG", Hybrid: "hibrit", Electricity: "elektrikli", CNG: "CNG" },
+    and: " ve ",
+  },
+  en: {
+    transmission: { Manual: "manual", Automatic: "automatic", SemiAutomatic: "semi-automatic" },
+    fuel: { Diesel: "diesel", Gasoline: "petrol", LPG: "LPG", Hybrid: "hybrid", Electricity: "electric", CNG: "CNG" },
+    and: " and ",
+  },
+};
+const tl = (n) => Number(n).toLocaleString("tr-TR");
+
+// Title + meta description of a vehicle (model) page, from the model's fleet
+// summary: model name, location, the lowest daily/monthly list price and the
+// transmission/fuel options. Mirrored in src/utils/vehicle-model.js.
+const vehicleSeoText = ({ brand, model, variants = {}, dailyPrice, monthlyPrice }, locale = "tr") => {
+  const w = SPEC_WORDS[locale] || SPEC_WORDS.tr;
+  const name = prettyModelName(brand, model);
+  const daily = variants.minDaily || (Number(dailyPrice) > 0 ? Number(dailyPrice) : null);
+  const monthly = variants.minMonthly || (Number(monthlyPrice) > 0 ? Number(monthlyPrice) : null);
+  const list = (values, dict) => values.map((v) => dict[v] || v).filter(Boolean).join(w.and);
+  const trans = list(variants.transmissions || [], w.transmission);
+  const fuel = list(variants.fuelTypes || [], w.fuel);
+  if (locale === "en") {
+    const spec = [trans && `${trans} transmission`, fuel].filter(Boolean).join(", ");
+    const prices = [daily && `from ${tl(daily)} TL/day`, monthly && `${tl(monthly)} TL/month`].filter(Boolean).join(", ");
+    return {
+      title: daily ? `${name} Rental in Aliağa | ${tl(daily)} TL+VAT/day – Rentwin` : `${name} Rental in Aliağa | Rentwin`,
+      description: `Rent a ${name} in Aliağa${spec ? `: ${spec}` : ""}.${prices ? ` ${prices.charAt(0).toUpperCase()}${prices.slice(1)} (excl. VAT).` : ""} No deposit, airport delivery, online booking.`,
+    };
+  }
+  const spec = [trans && `${trans} vites`, fuel].filter(Boolean).join(", ");
+  const prices = [daily && `günlük ${tl(daily)} TL'den`, monthly && `aylık ${tl(monthly)} TL'den`].filter(Boolean).join(", ");
+  return {
+    title: daily ? `${name} Kiralama Aliağa | ${tl(daily)} TL+KDV/gün – Rentwin` : `${name} Kiralama Aliağa | Rentwin`,
+    description: `${name} kiralama Aliağa'da${spec ? `: ${spec}` : ""}.${prices ? ` ${prices.charAt(0).toLocaleUpperCase("tr")}${prices.slice(1)} (KDV hariç).` : ""} Depozito yok, havalimanı teslimi, online rezervasyon.`,
   };
 };
 
@@ -322,4 +391,6 @@ module.exports = {
   summarizeVariants,
   buildCanonicalVehicleMap,
   pickRelatedModels,
+  prettyModelName,
+  vehicleSeoText,
 };

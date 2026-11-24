@@ -92,7 +92,7 @@ test("English vehicle page is noindex, follow with no canonical or hreflang", ()
   assert.doesNotMatch(html, /rel="canonical"/);
   assert.doesNotMatch(html, /hreflang=/);
   // Still a full English page for whoever lands on it.
-  assert.match(html, /<title>Rent a FORD TRANSİT ÇİFT KABİN \| Rentwin<\/title>/);
+  assert.match(html, /<title>Ford Transit Çift Kabin Rental in Aliağa \| Rentwin<\/title>/);
   assert.ok(head.bodyHtml && head.bodyHtml.length > 0);
 });
 

@@ -114,7 +114,9 @@ test("home and vehicle metadata target local rental searches in both languages",
   assert.match(trHome.title, /Aliağa Araç Kiralama/);
   assert.match(enHome.title, /Car Rental in Aliağa/);
   for (const page of [trHome, enHome]) {
-    assert.match(page.description, /Adnan Menderes Airport|Adnan Menderes Havalimanı/);
+    // The 24/7 + no-deposit + airport-delivery hook (CTR, 25 Nov 2026).
+    assert.match(page.description, /havalimanı teslimi|Airport delivery/);
+    assert.match(page.description, /7\/24|24\/7/);
   }
 });
 

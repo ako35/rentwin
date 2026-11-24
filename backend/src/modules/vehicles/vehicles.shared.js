@@ -77,6 +77,8 @@ const MODEL_CONTEXT_SELECT = {
   fuelType: true,
   bodyType: true,
   createdAt: true,
+  dailyPrice: true,
+  monthlyPrice: true,
 };
 
 // Everything the public detail route and the bot prerender need about a

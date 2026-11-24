@@ -9,6 +9,8 @@ const {
   pickRelatedModels,
   groupFleetByModel,
   summarizeFleetPrices,
+  prettyModelName,
+  vehicleSeoText,
 } = require("./vehicle-models");
 
 const unit = (id, brand, model, extra = {}) => ({
@@ -78,8 +80,42 @@ test("summarizeVariants reports count, year range and distinct options", () => {
       unit("b", "FIAT", "EGEA", { modelYear: 2023, transmission: "Automatic" }),
       unit("c", "FIAT", "EGEA", { modelYear: null }),
     ]),
-    { count: 3, minYear: 2023, maxYear: 2026, transmissions: ["Automatic", "Manual"], fuelTypes: ["Diesel"] }
+    { count: 3, minYear: 2023, maxYear: 2026, transmissions: ["Automatic", "Manual"], fuelTypes: ["Diesel"], minDaily: null, minMonthly: null }
   );
+});
+
+test("summarizeVariants quotes the lowest positive daily and monthly price", () => {
+  const v = summarizeVariants([
+    { ...unit("a", "FIAT", "EGEA"), dailyPrice: 3000, monthlyPrice: 60000 },
+    { ...unit("b", "FIAT", "EGEA"), dailyPrice: 2500, monthlyPrice: 0 },
+    { ...unit("c", "FIAT", "EGEA"), dailyPrice: null, monthlyPrice: 45000 },
+  ]);
+  assert.equal(v.minDaily, 2500);
+  assert.equal(v.minMonthly, 45000);
+});
+
+test("prettyModelName fixes capitals and dotted/undotted I", () => {
+  assert.equal(prettyModelName("FIAT", "EGEA"), "Fiat Egea");
+  assert.equal(prettyModelName("FİAT", "FİORİNO"), "Fiat Fiorino");
+  assert.equal(prettyModelName("CİTROEN", "C3"), "Citroën C3");
+  assert.equal(prettyModelName("CİTROEN", "JUMPY SPACETOURER"), "Citroën Jumpy SpaceTourer");
+  assert.equal(prettyModelName("İSUZU", "NPR3D"), "Isuzu NPR3D");
+  assert.equal(prettyModelName("FORD", "TRANSİT ÇİFT KABİN"), "Ford Transit Çift Kabin");
+});
+
+test("vehicleSeoText puts model, Aliağa and the from-price in the title", () => {
+  const v = { brand: "FIAT", model: "EGEA", variants: { transmissions: ["Automatic", "Manual"], fuelTypes: ["Diesel"], minDaily: 2500, minMonthly: 45000 } };
+  const tr = vehicleSeoText(v, "tr");
+  assert.equal(tr.title, "Fiat Egea Kiralama Aliağa | 2.500 TL+KDV/gün – Rentwin");
+  assert.match(tr.description, /otomatik ve manuel vites, dizel/);
+  assert.ok(tr.description.includes("Günlük 2.500 TL'den, aylık 45.000 TL'den (KDV hariç)."), tr.description);
+  assert.equal(vehicleSeoText(v, "en").title, "Fiat Egea Rental in Aliağa | 2.500 TL+VAT/day – Rentwin");
+});
+
+test("vehicleSeoText without prices leaves the price out", () => {
+  const tr = vehicleSeoText({ brand: "FORD", model: "COURİER", variants: { transmissions: ["Manual"], fuelTypes: ["Diesel"] } }, "tr");
+  assert.equal(tr.title, "Ford Courier Kiralama Aliağa | Rentwin");
+  assert.doesNotMatch(tr.description, /TL/);
 });
 
 test("groupFleetByModel: one canonical unit per model, body types pooled across units", () => {

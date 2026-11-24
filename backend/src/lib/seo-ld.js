@@ -18,7 +18,7 @@
 // only the surrounding page chrome (titles, labels, breadcrumbs) is bilingual.
 
 const { SITE_URL, business, slugify, localeFromPath, localizePath, stripLocalePrefix } = require("./site");
-const { getModelCopy, groupFleetByModel, summarizeFleetPrices } = require("./vehicle-models");
+const { getModelCopy, groupFleetByModel, summarizeFleetPrices, vehicleSeoText } = require("./vehicle-models");
 const HOME_COPY = {
   tr: require("../../../src/i18n/locales/tr/home.json"),
   en: require("../../../src/i18n/locales/en/home.json"),
@@ -1128,9 +1128,9 @@ const buildLandingHead = ({ head, page, canonicalPath, fleet, locale }) => {
 const STATIC_META = {
   tr: {
     "/": {
-      title: "Aliağa Araç Kiralama | Rentwin — Aliağa ve İzmir",
+      title: "Aliağa Araç Kiralama & Rent a Car | 7/24, Depozitosuz – Rentwin",
       description:
-        "Aliağa'da günlük ve aylık araç kiralama. İzmir Adnan Menderes Havalimanı'nda teslim ve karşılama; bakımlı filoyu inceleyip online rezervasyon yapın.",
+        "Aliağa'da günlük ve aylık araç kiralama: binek, panelvan, kamyonet. 7/24 açık ofis, depozito yok, havalimanı teslimi. Fiyatları görün, online rezervasyon yapın.",
       jsonLd: (locale) => [webSiteLd(locale)],
     },
     "/vehicles": {
@@ -1205,9 +1205,9 @@ const STATIC_META = {
       jsonLd: (locale) => [breadcrumbLd([{ name: NAV.en.home, path: "/" }, { name: "Reviews" }], locale)],
     },
     "/": {
-      title: "Car Rental in Aliağa | Rentwin — Aliağa & İzmir",
+      title: "Car Rental in Aliağa | 24/7, No Deposit – Rentwin",
       description:
-        "Daily and monthly car rental in Aliağa. Request vehicle delivery and meet-and-greet at İzmir Adnan Menderes Airport, and book online.",
+        "Daily and monthly car rental in Aliağa: cars, panel vans and pickups. Office open 24/7, no deposit, İzmir Airport delivery. See prices and book online.",
       jsonLd: (locale) => [webSiteLd(locale)],
     },
     "/vehicles": {
@@ -1361,12 +1361,9 @@ const buildHead = ({
       canonical: english ? null : canonical,
       robots: english ? "noindex, follow" : "index, follow",
       noHreflang: true,
-      title:
-        locale === "en" ? `Rent a ${name} | Rentwin` : `${name} Kiralama | Rentwin`,
-      description:
-        locale === "en"
-          ? `Rent the ${name} with Rentwin. Great rates, smooth handover, and dependable service — book your reservation now.`
-          : `${name} aracını Rentwin güvencesiyle kiralayın. Uygun fiyat, sorunsuz teslimat ve güvenilir hizmet için hemen rezervasyon yapın.`,
+      // Model name + Aliağa + "from" price in the title, specs and prices in
+      // the description (vehicle-models.vehicleSeoText, mirrored on the page).
+      ...vehicleSeoText(vehicle, locale),
       ogImage: vehicle.image || DEFAULT_IMAGE,
       ogImageDefault: !vehicle.image,
       ogType: "product",
