@@ -148,7 +148,19 @@ Search Console bildirimi: 22 Kasım itibarıyla son 28 günde Google Arama'dan *
 - **Ana sayfa:** başlık "Aliağa Araç Kiralama & Rent a Car | 7/24, Depozitosuz – Rentwin" ("aliağa rent a car" aramasında geride kalıyorduk); açıklama "binek, panelvan, kamyonet. 7/24 açık ofis, depozito yok, havalimanı teslimi" ile başlıyor.
 - Not: bilinmeyen adresler (ör. `/iletisim`) 200 ile sitenin kabuğunu döndürüyor ama canonical ana sayfa; Google bunları ayrı dizinlemez, şimdilik dokunulmadı.
 
-Sıradaki adım (Chrome bağlanınca): Search Console'da son 28 günün sorgu/sayfa tablosu; 5–20. sıradaki ve tıklama oranı düşük sorgular için sayfa bazında iyileştirme; ana sayfa ve birkaç araç sayfası için dizine ekleme isteği (sahibinin onayıyla).
+**Search Console, 27 Ekim – 23 Kasım (aynı gün, uygulama tarayıcısında okundu):** 43 tıklama, 404 gösterim, tıklama oranı %10,6, ortalama sıra 12,2. 39 sorgu.
+
+| Sorgu | Tıklama | Gösterim | TO | Sıra |
+|---|---|---|---|---|
+| rentwin | 19 | 41 | %46 | 1,3 |
+| aliağa araç kiralama | 8 | 102 | %7,8 | 5,5 |
+| aliağa rent a car | 1 | 24 | %4,2 | 12,2 |
+| aliaga rent a car | 0 | 6 | %0 | 7,2 |
+| izmir havalimanı araç kiralama (ve 10+ benzeri) | 0 | ~30 | %0 | 46–97 |
+
+"aliağa araç kiralama" iki sayfaya bölünmüş: **ana sayfa** 56 gösterim, sıra 3,0 ama TO yalnızca **%3,6**; **/vehicles** 46 gösterim, sıra 8,3, TO %13. Ana sayfanın 3. sırada bu kadar az tıklanması eski, sıradan başlıktan (bugün değişti); iki sayfanın yarışması 22 Kasım'da ayrıştırıldı (veri 23 Kasım'da bittiği için etkisi henüz görünmüyor). `/lokasyonlar` (52 gösterim), `/kampanyalar` (34) ve `/about` (73) gösterimlerinin neredeyse tamamı "rentwin" aramasından (ana sayfanın altında yan sonuç); sorun değil. Havalimanı aramalarında 35–97. sıradayız; rekabet çok yüksek, öncelik değil. `www.rentwin.com.tr/uzun-donem-arac-kiralama` hâlâ 19 gösterim alıyor (20 Kasım'daki www yönlendirmesi zamanla birleştirecek).
+
+**Dizine ekleme isteği (25 Kasım, URL denetimi):** `/`, `/vehicles`, `/arac-kiralama-fiyatlari` ve Fiat Egea, Fiat Fiorino, Fiat Doblo, Ford Transit Çift Kabin, Renault Clio araç sayfaları öncelikli tarama sırasına alındı. Etki 7–14 gün içinde ölçülmeli: ana sayfanın "aliağa araç kiralama" tıklama oranı (%3,6 → hedef %10+) ve araç sayfalarına gelen model aramaları.
 
 ## 4. Nasıl ölçülecek
 
