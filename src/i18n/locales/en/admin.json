@@ -1709,36 +1709,22 @@
   },
   "priceList": {
     "pageTitle": "Price List",
-    "intro": "Edit the daily and monthly price for each vehicle here. Prices exclude VAT; the site shows \"+ VAT\" next to them.",
+    "intro": "Edit the daily and monthly price for each vehicle here. Prices exclude VAT; the site shows \"+ VAT\" next to them. The \"Suggested\" column shows a sensible price for the vehicle based on November 2026 market prices (excl. VAT, 3,000 km a month); you still enter and save the price yourself.",
     "vehicle": "Vehicle",
     "plate": "Plate",
     "dailyPrice": "Daily Price (TL, excl. VAT)",
     "monthlyPrice": "Monthly Price (TL, excl. VAT)",
+    "suggested": "Suggested (excl. VAT)",
+    "suggestedHint": "November 2026 market: short-term 28+ day rates and corporate fleet price lists, by model, gearbox and model year. The daily price includes a short-rental premium.",
+    "perDay": "{{v}} / day",
+    "perMonth": "{{v}} / month",
+    "noSuggestion": "No market reference for this model",
     "actions": "Action",
     "save": "Save",
     "empty": "No vehicles on record",
     "toasts": {
       "saveSuccess": "Price updated.",
       "saveError": "There was an error while updating the price."
-    },
-    "research": {
-      "button": "Research with AI",
-      "modalTitle": "Market Price Research",
-      "confidence": "Confidence",
-      "confidence_low": "Low",
-      "confidence_medium": "Medium",
-      "confidence_high": "High",
-      "sourcesTitle": "Sources",
-      "sourceLink": "View Source",
-      "marketDaily": "Market daily (incl. VAT)",
-      "marketMonthly": "Market monthly (incl. VAT)",
-      "netValue": "Excl. VAT: {{v}}",
-      "vatNote": "Market prices include VAT. \"Apply to Prices\" converts them to VAT-exclusive amounts (÷ 1.20) before filling the price fields.",
-      "apply": "Apply to Prices",
-      "close": "Close",
-      "toasts": {
-        "error": "There was an error while researching the price. This runs a live web search, so it can take a bit — try again in a few minutes."
-      }
     }
   },
   "branches": {

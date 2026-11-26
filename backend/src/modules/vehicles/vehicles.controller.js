@@ -18,6 +18,7 @@ const {
   loadModelContext,
 } = require("./vehicles.shared");
 const { getModelCopy, modelKey } = require("../../lib/vehicle-models");
+const { suggestPrice } = require("../../lib/price-suggestions");
 const { noteManualKm } = require("../telematics/telematics.sync");
 const { pickVehicleFields } = require("./vehicle-fields");
 
@@ -344,9 +345,10 @@ const getVehiclesByPageAdmin = asyncHandler(async (req, res) => {
 });
 
 // Fiyat Listesi admin page: every live-fleet vehicle (sold ones excluded, same
-// as the rest of the admin fleet) with just the columns that page needs.
-// Price edits themselves go through the existing updateVehicle endpoint
-// (PUT /car/admin/auth?id=..., body { dailyPrice, monthlyPrice }).
+// as the rest of the admin fleet) with just the columns that page needs, plus
+// a suggested daily/monthly price (lib/price-suggestions) the admin can copy
+// by hand. Price edits themselves go through the existing updateVehicle
+// endpoint (PUT /car/admin/auth?id=..., body { dailyPrice, monthlyPrice }).
 const getPriceList = asyncHandler(async (req, res) => {
   const vehicles = await prisma.vehicle.findMany({
     where: { soldAt: null },
@@ -356,12 +358,13 @@ const getPriceList = asyncHandler(async (req, res) => {
       model: true,
       licensePlate: true,
       modelYear: true,
+      transmission: true,
       dailyPrice: true,
       monthlyPrice: true,
     },
     orderBy: [{ brand: "asc" }, { model: "asc" }],
   });
-  res.json(vehicles);
+  res.json(vehicles.map((vehicle) => ({ ...vehicle, suggestedPrice: suggestPrice(vehicle) })));
 });
 
 const addVehicle = asyncHandler(async (req, res) => {
