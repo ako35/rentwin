@@ -1709,7 +1709,7 @@
   },
   "priceList": {
     "pageTitle": "Fiyat Listesi",
-    "intro": "Her araç için günlük ve aylık fiyatı buradan düzenleyebilirsiniz. Fiyatlar KDV hariçtir; sitede yanlarında \"+ KDV\" yazar. \"Önerilen\" sütunu, Kasım 2026 piyasa fiyatlarına göre bu araç için makul bir fiyatı gösterir (KDV hariç, aylık 3.000 km); fiyatı siz girip kaydedersiniz.",
+    "intro": "Her araç için günlük ve aylık fiyatı buradan düzenleyebilirsiniz. Fiyatlar KDV hariçtir; sitede yanlarında \"+ KDV\" yazar. \"Önerilen\" sütunu, Kasım 2026 piyasa fiyatlarına göre bu araç için makul bir fiyatı gösterir (KDV hariç, aylık 3.000 km). \"Aktar\" öneriyi alanlara yazar; fiyat siz Kaydet'e basınca değişir.",
     "vehicle": "Araç",
     "plate": "Plaka",
     "dailyPrice": "Günlük Fiyat (TL, KDV hariç)",
@@ -1719,6 +1719,8 @@
     "perDay": "{{v}} / gün",
     "perMonth": "{{v}} / ay",
     "noSuggestion": "Bu model için piyasa referansı yok",
+    "useSuggestion": "Aktar",
+    "useSuggestionHint": "Önerilen günlük ve aylık fiyatı alanlara yazar; kaydetmek için Kaydet'e basın.",
     "actions": "İşlem",
     "save": "Kaydet",
     "empty": "Kayıtlı araç yok",

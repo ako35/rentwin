@@ -1709,7 +1709,7 @@
   },
   "priceList": {
     "pageTitle": "Price List",
-    "intro": "Edit the daily and monthly price for each vehicle here. Prices exclude VAT; the site shows \"+ VAT\" next to them. The \"Suggested\" column shows a sensible price for the vehicle based on November 2026 market prices (excl. VAT, 3,000 km a month); you still enter and save the price yourself.",
+    "intro": "Edit the daily and monthly price for each vehicle here. Prices exclude VAT; the site shows \"+ VAT\" next to them. The \"Suggested\" column shows a sensible price for the vehicle based on November 2026 market prices (excl. VAT, 3,000 km a month). \"Apply\" fills the fields with it; the price only changes when you press Save.",
     "vehicle": "Vehicle",
     "plate": "Plate",
     "dailyPrice": "Daily Price (TL, excl. VAT)",
@@ -1719,6 +1719,8 @@
     "perDay": "{{v}} / day",
     "perMonth": "{{v}} / month",
     "noSuggestion": "No market reference for this model",
+    "useSuggestion": "Apply",
+    "useSuggestionHint": "Fills the daily and monthly fields with the suggested prices; press Save to keep them.",
     "actions": "Action",
     "save": "Save",
     "empty": "No vehicles on record",

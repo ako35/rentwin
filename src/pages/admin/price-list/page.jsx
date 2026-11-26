@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Form, Table } from "react-bootstrap";
+import { BsArrowLeftShort } from "react-icons/bs";
 import { Loading } from "../../../components";
 import { services } from "../../../services";
 import { utils } from "../../../utils";
@@ -38,6 +39,16 @@ const AdminPriceListPage = () => {
 
   const setDraftField = (id, field, value) =>
     setDrafts((prev) => ({ ...prev, [id]: { ...prev[id], [field]: value } }));
+
+  // Copies the suggestion into the two inputs; nothing is saved until "Kaydet".
+  const applySuggestion = (vehicle) =>
+    setDrafts((prev) => ({
+      ...prev,
+      [vehicle.id]: {
+        dailyPrice: String(vehicle.suggestedPrice.daily),
+        monthlyPrice: String(vehicle.suggestedPrice.monthly),
+      },
+    }));
 
   const handleSave = async (vehicle) => {
     const draft = drafts[vehicle.id];
@@ -94,6 +105,10 @@ const AdminPriceListPage = () => {
               const original = toDraft(vehicle);
               const dirty = draft.dailyPrice !== original.dailyPrice || draft.monthlyPrice !== original.monthlyPrice;
               const suggestion = vehicle.suggestedPrice;
+              const suggestionApplied =
+                !!suggestion &&
+                draft.dailyPrice === String(suggestion.daily) &&
+                draft.monthlyPrice === String(suggestion.monthly);
               return (
                 <tr key={vehicle.id}>
                   <td>
@@ -121,10 +136,21 @@ const AdminPriceListPage = () => {
                   </td>
                   <td className="admin-price-list-page__suggested">
                     {suggestion ? (
-                      <>
-                        <span>{t("priceList.perDay", { v: formatTRY(suggestion.daily) })}</span>
-                        <span>{t("priceList.perMonth", { v: formatTRY(suggestion.monthly) })}</span>
-                      </>
+                      <div className="admin-price-list-page__suggested-row">
+                        <div>
+                          <span>{t("priceList.perDay", { v: formatTRY(suggestion.daily) })}</span>
+                          <span>{t("priceList.perMonth", { v: formatTRY(suggestion.monthly) })}</span>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline-secondary"
+                          disabled={suggestionApplied}
+                          title={t("priceList.useSuggestionHint")}
+                          onClick={() => applySuggestion(vehicle)}
+                        >
+                          <BsArrowLeftShort /> {t("priceList.useSuggestion")}
+                        </Button>
+                      </div>
                     ) : (
                       <span className="admin-price-list-page__suggested-none" title={t("priceList.noSuggestion")}>
                         —

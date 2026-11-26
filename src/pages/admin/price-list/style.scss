@@ -30,6 +30,20 @@
         }
     }
 
+    &__suggested-row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.15rem;
+            padding: 0.15rem 0.5rem;
+            font-size: 0.8rem;
+        }
+    }
+
     &__suggested-none {
         cursor: help;
     }
