@@ -8,7 +8,7 @@ Aliağa Ticaret Odası üyelerinden çıkarılan iletişim listesine (`C:\temp\A
 
 - **Alıcılar:** "İletişim Bulunanlar" sayfasından e-postası olan, önceliği Düşük olmayan firmalar; aynı adresi paylaşan şubeler birleştirildi; perakende zincirleri, Rentwin'in kendi şirketleri (Şair Turizm, Movilo) ve araç kiralama rakipleri (NACE 77.1) çıkarıldı. Sonuç: **175 adres** (45 büyük tesis şablonu, 130 KOBİ şablonu).
 - **Takvim:** iş günlerinde günde en fazla 40: 18, 19, 20, 23 Kasım (40'ar) ve 24 Kasım (15).
-- **Gönderen:** info@rentwin.com.tr, webmail https://webmail.maillb.com (Atak Domain "Mail LB"); oturumu sahibi açar. İmza: Ali Koçan.
+- **Gönderen:** info@rentwin.com.tr, webmail https://webmail.maillb.com (Atak Domain "Mail LB"; 26 Kasım itibarıyla yeni arayüz `/app/`); oturumu sahibi açar. Gönderim Claude in Chrome ya da uygulamanın kendi tarayıcısıyla yapılır. İmza: Ali Koçan.
 - **Akış:** Zamanlanmış görev `rentwin-b2b-teklif-epostalari` her iş günü ~09:30'da o günün partisini ve örnek metinleri gösterir, webmail'e kendi adresine örnek taslak kaydeder, **sahibinin sohbette açık onayını bekler**, sonra tek tek gönderir. Geri dönen ve "çıkmak istiyorum" diyen adresleri işaretler; yanıtlara cevap vermez.
 - **Dosyalar (depoda değil):** `C:\temp\rentwin-b2b\send-plan.json` (alıcı, konu, metin, durum), `Gonderim-Plani.xlsx` (takip tablosu), `mark.cjs` (durum kaydı).
 - Tüm partiler bitince görev kendini kapatır ve yanıt vermeyenlere tek bir hatırlatma (Şablon 3) için ayrı görev önerir.
@@ -16,6 +16,16 @@ Aliağa Ticaret Odası üyelerinden çıkarılan iletişim listesine (`C:\temp\A
 18 Kasım 2026: sahibinin isteğiyle Citroën C3, Isuzu NPR3D ve Fiat Ducato tekliflerden çıkarıldı (şablonlar ve bekleyen tüm e-postalar).
 
 26 Kasım 2026: sahibinin isteğiyle fiyatlar çıkarıldı. Bekleyen 136 e-posta (40 büyük tesis, 96 KOBİ) yeni metinlere geçirildi; fiyat listesi yerine "Filomuzdan bazı araçlar", sonunda "Fiyat; araç tipine, adedine ve süreye göre belirleniyor". Şablon 1'in konusundan "teklifi" çıktı, bağlantısı fiyat sayfası yerine `/uzun-donem-arac-kiralama`. Hatırlatma (Şablon 3) her iki gruba uyacak şekilde fiyattan bahsetmiyor. Eski plan `send-plan.before-fiyatsiz.json` olarak saklandı.
+
+**26 Kasım 2026, 1. partinin sonuçları (gelen kutusu):** 40 e-postanın 34'ü teslim edildi. 6'sı ulaşmadı:
+- Tüpraş: posta kutusu dolu.
+- Ege Hurda: alan adı yok.
+- Erdem İnşaat: adres yok.
+- Ege Gemi, İnaltaş İnşaat ve GDK Endüstriyel: alıcının sunucusu e-postayı spam saydı (cPanel filtresi, skor 152–164).
+
+Rentwin tarafı temiz: gönderen sunucu (smx2.atakmail.com, 185.46.43.50) SPF aralığında, ters DNS doğru, DKIM (`mail` seçicisi) ve DMARC var, Spamhaus/SpamCop/Barracuda'da değil. **Güneş Paslanmaz 19 Kasım'da yanıt verdi** (HGS'nin faturaya nasıl yansıdığı ve iki kez KDV eklenip eklenmediği, km sınırı, Egea'da iskonto var mı); 26 Kasım itibarıyla yanıtlanmadı.
+
+**26 Kasım 2026, 2. parti:** Tüpraş (kurumsal.iletisim@) dahil 40 e-posta, fiyatsız metinle, sahibinin onayıyla uygulamanın tarayıcısından gönderildi; hepsi Gönderilenler'de. Webmail'in arayüzü değişti (`/app/`, Svelte), 18 Kasım'daki IceWarp seçicileri artık geçersiz. Görevdeki teknik notlar yenilendi.
 
 **Gönderim kaydı:** 18 Kasım 2026, 1. parti: 40 e-posta gönderildi (sabahki görev webmail oturumu kapalı olduğu için durdu; sahibinin onayıyla ana oturumdan gönderildi). 1 geri dönüş: info@tupras.com.tr (alıcının posta kutusu dolu; alternatif kurumsal.iletisim@tupras.com.tr, sahibinin onayı gerekir). 1 otomatik yanıt ("ilgili ekiplere iletildi"). Kalan 135 firma iş günü partileriyle (19, 20, 23, 24 Kasım).
 
