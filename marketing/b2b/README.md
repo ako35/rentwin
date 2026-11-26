@@ -27,6 +27,19 @@ Rentwin tarafı temiz: gönderen sunucu (smx2.atakmail.com, 185.46.43.50) SPF ar
 
 **26 Kasım 2026, 2. parti:** Tüpraş (kurumsal.iletisim@) dahil 40 e-posta, fiyatsız metinle, sahibinin onayıyla uygulamanın tarayıcısından gönderildi; hepsi Gönderilenler'de. Webmail'in arayüzü değişti (`/app/`, Svelte), 18 Kasım'daki IceWarp seçicileri artık geçersiz. Görevdeki teknik notlar yenilendi.
 
+Aynı gün 2 geri dönüş:
+- Demar Marine: adres yok (Office 365).
+- Ark Halat: spam reddi, skor 164.
+
+Ark Halat ve Ege Gemi aynı barındırma firmasında (aysima.net) ve ikisi de aynı skorla reddetti; metin farklı olduğu hâlde (fiyatlı ve fiyatsız) skor değişmedi. Sebep büyük ihtimalle o sunucunun kendi kuralı. Gönderen IP'si 10 küçük kara listede daha (UCEPROTECT, SORBS, PSBL, Mailspike vb.) sorgulandı, hiçbirinde yok. Bu firmalara telefonla ulaşmak daha doğru.
+
+**Güneş Paslanmaz'a yanıt (26 Kasım, 11:36, sahibinin onayıyla, muhasebe@ bilgide):**
+- HGS ödenen tutarla, kapsadığı tarih aralığı yazılarak yansıtılır, üstüne KDV eklenmez.
+- Aylık kiralamada araç başına 3.000 km dahil, aşım km başına 6 TL + KDV.
+- Adet ve süreye göre iskonto var; net teklif için araç sayısı ve süre soruldu.
+
+Sahibine ayrıca telefonla aranması önerildi.
+
 **Gönderim kaydı:** 18 Kasım 2026, 1. parti: 40 e-posta gönderildi (sabahki görev webmail oturumu kapalı olduğu için durdu; sahibinin onayıyla ana oturumdan gönderildi). 1 geri dönüş: info@tupras.com.tr (alıcının posta kutusu dolu; alternatif kurumsal.iletisim@tupras.com.tr, sahibinin onayı gerekir). 1 otomatik yanıt ("ilgili ekiplere iletildi"). Kalan 135 firma iş günü partileriyle (19, 20, 23, 24 Kasım).
 
 ## Gönderirken
