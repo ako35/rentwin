@@ -2,7 +2,7 @@
 
 Aliağa Ticaret Odası üyelerinden çıkarılan iletişim listesine (`C:\temp\Aliaga-Firmalar-Iletisim-Listesi.xlsx`, 17 Kasım 2026) gönderilecek araç kiralama teklif e-postaları. Liste kişisel/firma iletişim bilgisi içerdiği için bu depoya eklenmedi.
 
-Fiyatlar 17 Kasım 2026'da sitedeki fiyat sayfasından (`/arac-kiralama-fiyatlari`) alındı; değişirse e-postadaki tabloyu da güncelleyin. Metindeki her avantaj sitede zaten yazan bir bilgi (depozito yok, şirkete fatura, bakım ve muayene takibi, havalimanı teslimi, 7 gün açık ofis, toplu kiralama).
+**26 Kasım 2026'dan beri e-postalarda fiyat yok** (sahibi: "fiyat belirtmeden ilerleyeceğiz"). Firma araç tipini, adedini ve süreyi yazınca özel teklif verilir. 1. partideki 39 firmaya 17 Kasım fiyatlarıyla (sitedeki `/arac-kiralama-fiyatlari`) giden metin gitti. Metindeki her avantaj sitede zaten yazan bir bilgi (depozito yok, şirkete fatura, bakım ve muayene takibi, havalimanı teslimi, 7/24 açık ofis, toplu kiralama). Bağlantı verilen site sayfaları fiyatları göstermeye devam ediyor.
 
 ## Gönderim planı (17 Kasım 2026)
 
@@ -14,6 +14,8 @@ Fiyatlar 17 Kasım 2026'da sitedeki fiyat sayfasından (`/arac-kiralama-fiyatlar
 - Tüm partiler bitince görev kendini kapatır ve yanıt vermeyenlere tek bir hatırlatma (Şablon 3) için ayrı görev önerir.
 
 18 Kasım 2026: sahibinin isteğiyle Citroën C3, Isuzu NPR3D ve Fiat Ducato tekliflerden çıkarıldı (şablonlar ve bekleyen tüm e-postalar).
+
+26 Kasım 2026: sahibinin isteğiyle fiyatlar çıkarıldı. Bekleyen 136 e-posta (40 büyük tesis, 96 KOBİ) yeni metinlere geçirildi; fiyat listesi yerine "Filomuzdan bazı araçlar", sonunda "Fiyat; araç tipine, adedine ve süreye göre belirleniyor". Şablon 1'in konusundan "teklifi" çıktı, bağlantısı fiyat sayfası yerine `/uzun-donem-arac-kiralama`. Hatırlatma (Şablon 3) her iki gruba uyacak şekilde fiyattan bahsetmiyor. Eski plan `send-plan.before-fiyatsiz.json` olarak saklandı.
 
 **Gönderim kaydı:** 18 Kasım 2026, 1. parti: 40 e-posta gönderildi (sabahki görev webmail oturumu kapalı olduğu için durdu; sahibinin onayıyla ana oturumdan gönderildi). 1 geri dönüş: info@tupras.com.tr (alıcının posta kutusu dolu; alternatif kurumsal.iletisim@tupras.com.tr, sahibinin onayı gerekir). 1 otomatik yanıt ("ilgili ekiplere iletildi"). Kalan 135 firma iş günü partileriyle (19, 20, 23, 24 Kasım).
 
@@ -33,7 +35,7 @@ Site bağlantılarındaki `utm_` kodu, bu e-postalardan siteye gelenleri Google 
 
 ## Şablon 1: Büyük tesisler (rafineri, petrokimya, liman, çelik)
 
-**Konu:** Aliağa'dan kurumsal araç kiralama teklifi — Rentwin Araç Kiralama
+**Konu:** Aliağa'dan kurumsal araç kiralama — Rentwin Araç Kiralama
 
 ```
 Sayın Yetkili,
@@ -42,27 +44,22 @@ Sayın Yetkili,
 
 Aliağa'da faaliyet gösteren Rentwin Araç Kiralama olarak tesisinizin binek ve ticari araç ihtiyaçları için günlük ve aylık kiralama hizmeti sunuyoruz. Ofisimiz Aliağa merkezde; araç teslimi, değişimi ve sözleşme işlemleri için İzmir'e gitmenize gerek kalmıyor.
 
-Aylık kiralama fiyatlarımızdan bazıları (KDV hariç):
-
-  Binek    Fiat Egea .............................. 45.000 TL'den
-           Renault Clio ........................... 55.000 TL
-           Renault Taliant, Skoda Octavia (otomatik) 75.000 TL
-  Ticari   Fiat Fiorino ........................... 55.000 TL
-           Fiat Doblo ............................. 60.000 TL
-           Ford Transit Çift Kabin ................ 85.000 TL
-  Personel Citroën Jumpy SpaceTourer (otomatik) .. 110.000 TL
+Filomuzdan bazı araçlar:
+- Binek: Fiat Egea, Renault Clio, Renault Taliant ve Skoda Octavia (otomatik)
+- Ticari: Fiat Fiorino, Fiat Doblo, Ford Transit Çift Kabin
+- Personel taşıma: Citroën Jumpy SpaceTourer (otomatik)
 
 Kurumsal kiralamalarda:
 - Depozito almıyoruz; fatura şirket ünvanınıza düzenlenir.
 - Periyodik bakım ve muayene takibi bizde.
 - Aynı modelden birden fazla araçla ekipler için toplu kiralama yapabiliyoruz.
 - Kilometre limiti ve aşım ücreti sözleşmede açıkça yazılır.
-- Ofisimiz haftanın 7 günü açık; talep ederseniz İzmir Adnan Menderes Havalimanı'nda da teslim ediyoruz.
+- Ofisimiz 7/24 açık; talep ederseniz İzmir Adnan Menderes Havalimanı'nda da teslim ediyoruz.
 
-Tüm araçlar ve güncel fiyatlar:
-https://rentwin.com.tr/arac-kiralama-fiyatlari?utm_source=email&utm_medium=b2b&utm_campaign=aliaga-kurumsal
+Kurumsal ve uzun dönem kiralama:
+https://rentwin.com.tr/uzun-donem-arac-kiralama?utm_source=email&utm_medium=b2b&utm_campaign=aliaga-kurumsal
 
-İhtiyaç duyduğunuz araç tipini, adedini ve süreyi iletirseniz size özel teklifimizi aynı gün gönderelim.
+Fiyat; araç tipine, adedine ve kiralama süresine göre belirleniyor. İhtiyacınızı iletirseniz size özel teklifimizi aynı gün gönderelim.
 
 Saygılarımla,
 
@@ -82,22 +79,22 @@ Bu e-postayı almak istemiyorsanız yanıt olarak bildirmeniz yeterlidir; size t
 **Konu:** [Firma Adı] için aylık ticari araç kiralama — Aliağa
 
 ```
-Merhaba,
+Merhaba [Firma Adı] ekibi,
 
 Aliağa'dan Rentwin Araç Kiralama olarak yazıyorum. Şantiye, saha ve servis işleriniz için panelvan, çift kabin kamyonet ve binek araçları günlük ya da aylık kiralıyoruz.
 
-Aylık fiyatlarımızdan bazıları (KDV hariç):
-- Fiat Fiorino: 55.000 TL
-- Fiat Doblo: 60.000 TL
-- Ford Transit Çift Kabin: 85.000 TL
-- Binek (Fiat Egea): 45.000 TL'den
+Filomuzdan bazı araçlar:
+- Fiat Fiorino
+- Fiat Doblo
+- Ford Transit Çift Kabin
+- Binek: Fiat Egea ve diğer modeller
 
-Depozito almıyoruz, faturayı şirketinize kesiyoruz. Aynı modelden birden fazla aracımız olduğu için ekibinize toplu araç verebiliyoruz. Bakım ve muayene takibi bizde; ofisimiz Aliağa'da ve haftanın 7 günü açık.
+Depozito almıyoruz, faturayı şirketinize kesiyoruz. Aynı modelden birden fazla aracımız olduğu için ekibinize toplu araç verebiliyoruz. Bakım ve muayene takibi bizde; ofisimiz Aliağa'da ve 7/24 açık.
 
-Tüm araçlar ve fiyatlar:
+Ticari araçlarımız:
 https://rentwin.com.tr/ticari-arac-kiralama?utm_source=email&utm_medium=b2b&utm_campaign=aliaga-kobi
 
-Kaç araca, ne kadar süreyle ihtiyacınız olduğunu yazarsanız size özel teklif hazırlayayım. Telefonla da ulaşabilirsiniz: 0507 350 31 35.
+Fiyat; araç tipine, adedine ve süreye göre belirleniyor. Kaç araca, ne kadar süreyle ihtiyacınız olduğunu yazarsanız size özel teklif hazırlayayım. Telefonla da ulaşabilirsiniz: 0507 350 31 35.
 
 İyi çalışmalar,
 
@@ -112,14 +109,14 @@ Bu tür e-postaları almak istemiyorsanız yanıt olarak bildirmeniz yeterli.
 
 ## Şablon 3: Hatırlatma (7–10 gün sonra, yanıt gelmeyenlere bir kez)
 
-**Konu:** Ynt: Aliağa'dan kurumsal araç kiralama teklifi
+**Konu:** Ynt: Aliağa'dan kurumsal araç kiralama
 
 ```
 Merhaba,
 
-Geçen hafta araç kiralama fiyatlarımızı iletmiştim. Önümüzdeki dönemde [Firma Adı] için binek ya da ticari araç ihtiyacı olursa, araç tipini ve süreyi yazmanız yeterli; teklifimizi aynı gün gönderiyorum.
+Geçen hafta size Rentwin Araç Kiralama'yı tanıtmak için yazmıştım. Önümüzdeki dönemde [Firma Adı] için binek ya da ticari araç ihtiyacı olursa, araç tipini, adedini ve süreyi yazmanız yeterli; teklifimizi aynı gün gönderiyorum.
 
-Güncel fiyatlar: https://rentwin.com.tr/arac-kiralama-fiyatlari?utm_source=email&utm_medium=b2b&utm_campaign=aliaga-hatirlatma
+Araç filomuz: https://rentwin.com.tr/vehicles?utm_source=email&utm_medium=b2b&utm_campaign=aliaga-hatirlatma
 
 İyi çalışmalar,
 [Ad Soyad] · Rentwin Araç Kiralama · 0507 350 31 35
